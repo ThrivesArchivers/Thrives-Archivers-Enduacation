@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Online Lessons</title>
+  <style>
+    /* Basic Styling */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100vh;
+      text-align: center;
+    }
+
+    header {
+      background-color: #333;
+      padding: 1rem;
+      width: 100%;
+      color: white;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      padding: 0;
+      margin: 0;
+    }
+
+    nav ul li {
+      margin: 0 10px;
+    }
+
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-size: 18px;
+      padding: 10px;
+      border-radius: 5px;
+      background-color: #444;
+    }
+
+    nav ul li a:hover {
+      background-color: #555;
+    }
+
+    h2 {
+      color: #333;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    /* Main content styling */
+    main {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    section {
+      margin: 20px 0;
+      padding: 20px;
+      background-color: white;
+      border-radius: 10px;
+      width: 80%;
+      max-width: 800px;
+    }
+
+    /* Accessibility Improvements */
+    [aria-live] {
+      border: 2px dashed #ccc;
+      padding: 5px;
+    }
+
+    footer {
+      background-color: #333;
+      padding: 1rem;
+      color: white;
+      position: relative;
+      bottom: 0;
+      width: 100%;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <header>
+    <nav>
+      <ul>
+        <li><a href="#lesson">Lesson</a></li>
+        <li><a href="#whiteboard">Whiteboard</a></li>
+        <li><a href="#upload">Upload</a></li>
+        <li><a href="#testRoom">Test</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Login Modal -->
+    <div id="authModal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:20px; box-shadow:0px 0px 10px rgba(0,0,0,0.5);">
+      <h2>Login</h2>
+      <label for="username">Username:</label>
+      <input type="text" id="username" /><br><br>
+      <label for="password">Password:</label>
+      <input type="password" id="password" /><br><br>
+      <button onclick="login()">Login</button>
+      <button onclick="closeModal()">Close</button>
+    </div>
+
+    <!-- Live Lesson Section -->
+    <section id="lesson">
+      <h2>Live Lesson</h2>
+      <p>Stream your lesson here:</p>
+      <video controls style="max-width:100%;"></video>
+      <button onclick="openAuthModal()">Login</button>
+    </section>
+
+    <!-- Whiteboard Section -->
+    <section id="whiteboard">
+      <h2>Whiteboard</h2>
+      <canvas id="board" width="600" height="400" style="border: 1px solid black;"></canvas>
+      <div>
+        <button onclick="setPenColor('black')">Black</button>
+        <button onclick="setPenColor('red')">Red</button>
+        <button onclick="setPenColor('blue')">Blue</button>
+        <button onclick="clearCanvas()">Clear</button>
+        <button onclick="saveDrawing()">Save</button>
+      </div>
+      <div id="savedDrawing" aria-live="polite"></div>
+    </section>
+
+    <!-- Upload Documents Section -->
+    <section id="upload">
+      <h2>Upload Documents</h2>
+      <input type="file" id="fileUpload" />
+      <button onclick="uploadFile()">Upload</button>
+      <ul id="uploadedFiles"></ul>
+    </section>
+
+    <!-- Test Room Section -->
+    <section id="testRoom">
+      <h2>Test Room</h2>
+      <p>Check your audio/video before the lesson:</p>
+      <button onclick="toggleVideo()">Toggle Video</button>
+      <button onclick="toggleAudio()">Toggle Audio</button>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2025 Online Lessons Platform. All rights reserved.
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    let ctx;
+    let drawing = false;
+    let color = 'black';
+
+    function openAuthModal() {
+      document.getElementById('authModal').style.display = 'block';
+    }
+
+    function closeModal() {
+      document.getElementById('authModal').style.display = 'none';
+    }
+
+    function setPenColor(newColor) {
+      color = newColor;
+    }
+
+    function saveDrawing() {
+      const canvas = document.getElementById('board');
+      const dataURL = canvas.toDataURL();
+      const img = new Image();
+      img.src = dataURL;
+      const savedDrawing = document.getElementById('savedDrawing');
+      savedDrawing.innerHTML = '';
+      savedDrawing.appendChild(img);
+    }
+
+    function clearCanvas() {
+      const canvas = document.getElementById('board');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function toggleVideo() {
+      alert('Video toggled (simulated)');
+    }
+
+    function toggleAudio() {
+      alert('Audio toggled (simulated)');
+    }
+
+    function uploadFile() {
+      const fileInput = document.getElementById('fileUpload');
+      const file = fileInput.files[0];
+      if (file) {
+        const listItem = document.createElement('li');
+        listItem.textContent = file.name;
+        document.getElementById('uploadedFiles').appendChild(listItem);
+        alert(`File ${file.name} uploaded successfully.`);
+      }
+    }
+
+    // Whiteboard Drawing Logic
+    document.getElementById('board').addEventListener('mousedown', () => (drawing = true));
+    document.getElementById('board').addEventListener('mouseup', () => (drawing = false));
+    document.getElementById('board').addEventListener('mousemove', draw);
+
+    function draw(e) {
+      if (!drawing) return;
+      const canvas = document.getElementById('board');
+      ctx = ctx || canvas.getContext('2d');
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.lineCap = 'round';
+
+      ctx.lineTo(e.offsetX, e.offsetY);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(e.offsetX, e.offsetY);
+    }
+  </script>
+</body>
+</html>

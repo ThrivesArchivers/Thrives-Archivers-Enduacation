@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Lessons</title>
+  <style>
+    /* General Styling */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f9;
+      color: #333;
+    }
+
+    /* Header */
+    header {
+      background: #007bff;
+      color: white;
+      text-align: center;
+      padding: 1rem 0;
+    }
+
+    header h1 {
+      margin: 0;
+    }
+
+    /* Main Content */
+    main {
+      padding: 2rem;
+    }
+
+    /* Section Styling */
+    section {
+      margin-bottom: 2rem;
+      padding: 1rem;
+      background: #fff;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    section h2 {
+      margin-top: 0;
+    }
+
+    /* Form Inputs */
+    input, textarea, button {
+      width: 100%;
+      padding: 0.75rem;
+      margin: 0.5rem 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    /* Playlist and Video Container */
+    #playlist-container, #video-container {
+      margin-top: 1rem;
+    }
+
+    #playlist-container .playlist, #video-container .video-item {
+      padding: 1rem;
+      background: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin-bottom: 1rem;
+    }
+
+    footer {
+      text-align: center;
+      background: #333;
+      color: white;
+      padding: 1rem 0;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Video Lessons</h1>
+  </header>
+
+  <main>
+    <!-- Video Upload Section -->
+    <section id="video-upload">
+      <h2>Upload Video</h2>
+      <input type="file" id="video-file" accept="video/*">
+      <input type="text" id="video-description" placeholder="Enter video description">
+      <button onclick="uploadVideo()">Upload Video</button>
+    </section>
+
+    <!-- Playlist Section -->
+    <section id="playlist-section">
+      <h2>Create Playlist</h2>
+      <input type="text" id="playlist-name" placeholder="Enter playlist name">
+      <textarea id="playlist-description" placeholder="Enter playlist description"></textarea>
+      <button onclick="createPlaylist()">Create Playlist</button>
+      <h3>Playlists</h3>
+      <div id="playlist-container"></div>
+    </section>
+
+    <!-- Video Player Section -->
+    <section id="video-player">
+      <h2>Video Lessons</h2>
+      <div id="video-container"></div> <!-- Container to display uploaded videos -->
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Online Learning</p>
+  </footer>
+
+  <script>
+    const videoContainer = document.getElementById("video-container");
+    const playlistContainer = document.getElementById("playlist-container");
+
+    let videos = [];
+    let playlists = [];
+
+    // Function to upload a video
+    function uploadVideo() {
+      const videoFile = document.getElementById("video-file").files[0];
+      const videoDescription = document.getElementById("video-description").value;
+
+      if (!videoFile || !videoDescription) {
+        alert("Please select a video and enter a description.");
+        return;
+      }
+
+      const videoURL = URL.createObjectURL(videoFile);
+
+      videos.push({ url: videoURL, description: videoDescription });
+      displayVideos();
+
+      // Clear inputs
+      document.getElementById("video-file").value = "";
+      document.getElementById("video-description").value = "";
+    }
+
+    // Function to display videos
+    function displayVideos() {
+      videoContainer.innerHTML = "";
+      videos.forEach((video, index) => {
+        const videoElement = document.createElement("div");
+        videoElement.classList.add("video-item");
+        videoElement.innerHTML = `
+          <video controls width="100%">
+            <source src="${video.url}" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+          <p>${video.description}</p>
+        `;
+        videoContainer.appendChild(videoElement);
+      });
+    }
+
+    // Function to create a playlist
+    function createPlaylist() {
+      const playlistName = document.getElementById("playlist-name").value;
+      const playlistDescription = document.getElementById("playlist-description").value;
+
+      if (!playlistName || !playlistDescription) {
+        alert("Please enter both a name and description for the playlist.");
+        return;
+      }
+
+      playlists.push({ name: playlistName, description: playlistDescription });
+      displayPlaylists();
+
+      // Clear inputs
+      document.getElementById("playlist-name").value = "";
+      document.getElementById("playlist-description").value = "";
+    }
+
+    // Function to display playlists
+    function displayPlaylists() {
+      playlistContainer.innerHTML = "";
+      playlists.forEach((playlist) => {
+        const playlistElement = document.createElement("div");
+        playlistElement.classList.add("playlist");
+        playlistElement.innerHTML = `
+          <h4>${playlist.name}</h4>
+          <p>${playlist.description}</p>
+        `;
+        playlistContainer.appendChild(playlistElement);
+      });
+    }
+  </script>
+</body>
+</html>

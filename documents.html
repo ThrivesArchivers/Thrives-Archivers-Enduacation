@@ -1,0 +1,219 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document Upload & AI Assistant</title>
+  <style>
+    /* General Styling */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+    }
+
+    header {
+      background-color: #007BFF;
+      color: white;
+      padding: 20px 10px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+    }
+
+    nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    nav ul li {
+      display: inline;
+    }
+
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-size: 18px;
+    }
+
+    nav ul li a:hover {
+      text-decoration: underline;
+    }
+
+    /* Main Content */
+    main {
+      padding: 20px;
+    }
+
+    section {
+      margin: 20px auto;
+      padding: 20px;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      max-width: 800px;
+    }
+
+    h2 {
+      color: #333;
+      margin-top: 0;
+    }
+
+    textarea, input[type="file"], button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 16px;
+    }
+
+    textarea {
+      resize: vertical;
+    }
+
+    button {
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #upload-response, #ai-response {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #f0f8ff;
+      border: 1px solid #007BFF;
+      border-radius: 5px;
+      display: none;
+    }
+
+    footer {
+      background-color: #007BFF;
+      color: white;
+      padding: 10px;
+      text-align: center;
+    }
+
+    a {
+      color: #007BFF;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Natural Sciences Document Hub</h1>
+    <nav>
+      <ul>
+        <li><a href="#upload-section">Upload Documents</a></li>
+        <li><a href="#ai-assistant-section">AI Assistant</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Document Upload Section -->
+    <section id="upload-section">
+      <h2>Upload Documents</h2>
+      <p>Share summarized notes and important study materials.</p>
+      <form id="document-upload-form" enctype="multipart/form-data">
+        <label for="file">Choose a document:</label>
+        <input type="file" id="file" name="file" accept=".pdf,.doc,.docx,.txt" required>
+        <label for="description">Document Description:</label>
+        <textarea id="description" name="description" rows="4" placeholder="Enter a brief description of the document..." required></textarea>
+        <button type="submit">Upload Document</button>
+      </form>
+      <div id="upload-response"></div>
+    </section>
+
+    <!-- AI Assistant Section -->
+    <section id="ai-assistant-section">
+      <h2>AI Natural Science Assistant</h2>
+      <p>Ask the AI assistant any question about natural sciences, or seek motivation and greetings.</p>
+      <textarea id="ai-question" rows="4" placeholder="Type your question here..."></textarea>
+      <button id="ask-button">Ask</button>
+      <div id="ai-response"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Natural Sciences Hub</p>
+  </footer>
+
+  <script>
+    // Document Upload Handler
+    document.getElementById("document-upload-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const fileInput = document.getElementById("file");
+      const descriptionInput = document.getElementById("description");
+      const uploadResponse = document.getElementById("upload-response");
+
+      if (!fileInput.files[0]) {
+        uploadResponse.textContent = "Please select a file.";
+        uploadResponse.style.display = "block";
+        return;
+      }
+
+      const file = fileInput.files[0];
+      const description = descriptionInput.value;
+
+      // Mock Upload Process
+      setTimeout(() => {
+        uploadResponse.textContent = `Document "${file.name}" uploaded successfully with description: "${description}"`;
+        uploadResponse.style.display = "block";
+
+        // Clear Inputs
+        fileInput.value = "";
+        descriptionInput.value = "";
+      }, 1000);
+    });
+
+    // AI Assistant Handler
+    document.getElementById("ask-button").addEventListener("click", function () {
+      const questionInput = document.getElementById("ai-question");
+      const responseDiv = document.getElementById("ai-response");
+
+      const question = questionInput.value.trim();
+
+      if (!question) {
+        responseDiv.textContent = "Please type a question.";
+        responseDiv.style.display = "block";
+        return;
+      }
+
+      // AI Response
+      setTimeout(() => {
+        const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(question)}`;
+        const youtubeSearchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(question)}`;
+        const response = `
+          Hi, how are you? Thanks for sharing that question.<br>
+          For more information, you can: <br>
+          - <a href="${googleSearchUrl}" target="_blank">Search on Google</a><br>
+          - <a href="${youtubeSearchUrl}" target="_blank">Watch related videos on YouTube</a>
+        `;
+        responseDiv.innerHTML = response;
+        responseDiv.style.display = "block";
+
+        // Clear Input
+        questionInput.value = "";
+      }, 1000);
+    });
+  </script>
+</body>
+</html>    

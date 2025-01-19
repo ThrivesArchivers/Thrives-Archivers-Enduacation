@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome - Thrives Archivers</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+
+    header {
+      background-color: #333;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+
+    header h1 {
+      margin: 0;
+    }
+
+    section {
+      padding: 20px;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      text-align: center;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .testimonial {
+      background-color: white;
+      padding: 15px;
+      margin: 15px 0;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    #testimonials {
+      margin-top: 30px;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    #contact-info {
+      background-color: #fff;
+      padding: 20px;
+      margin-top: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      background-color: #333;
+      color: white;
+    }
+
+    .social-icon {
+      width: 30px;
+      margin: 0 10px;
+    }
+
+    .error {
+      color: red;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    /* Hidden login form */
+    #login-form {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Welcome to Thrives Archivers</h1>
+  </header>
+
+  <section>
+    <p>Discover Resources to Help You Succeed!</p>
+    <p>The purpose of Thrives Archivers is to provide simplified Natural Science materials to help students excel in their studies, without the difficulty. Our platform offers easy-to-understand resources and tools that make learning engaging and effective.</p>
+    <button onclick="showLoginForm()">Login to Access Dashboard</button>
+  </section>
+
+  <!-- Hidden login form -->
+  <div id="login-form">
+    <h2>Please Login</h2>
+    <form id="loginForm" onsubmit="return validateLogin()">
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username" required><br><br>
+
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required><br><br>
+
+      <button type="submit">Submit</button>
+    </form>
+    <p id="error-message" class="error"></p>
+  </div>
+
+  <!-- Testimonials Section -->
+  <section id="testimonials">
+    <h2>What Our Students Are Saying</h2>
+    <div>
+      <div class="testimonial">
+        <h3>John Chilabwe (Mulungushi University)</h3>
+        <p>"Thrives Archivers has provided me with the best resources to understand my subjects better!"</p>
+      </div>
+      <div class="testimonial">
+        <h3>Elizabeth Mwewa (CBU)</h3>
+        <p>"The lessons are well-structured and have helped me stay on track with my studies."</p>
+      </div>
+      <div class="testimonial">
+        <h3>Lewis Mwape (Mukuba University)</h3>
+        <p>"I can easily find notes and content that makes studying a lot easier."</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact-info">
+    <h2>Contact Us</h2>
+    <p>If you have any questions or need assistance, feel free to contact us:</p>
+    <ul>
+      <li>WhatsApp: <a href="https://wa.me/260762514399" target="_blank">0762514399</a></li>
+      <li>Email: <a href="mailto:thrivesarchivers@gmail.com">thrivesarchivers@gmail.com</a></li>
+    </ul>
+  </section>
+
+  <!-- Footer Section -->
+  <footer>
+    <p>&copy; 2025 Thrives Archivers</p>
+    <div>
+      <!-- YouTube Link -->
+      <a href="https://youtube.com/@thrivesarchivers?si=79Gs79_wjWXXwNQT" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/4/42/YouTube_icon_%282013-2017%29.png" alt="YouTube" class="social-icon">
+      </a>
+      <!-- Facebook Link -->
+      <a href="https://www.facebook.com/profile.php?id=61565387636780" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook" class="social-icon">
+      </a>
+      <!-- WhatsApp Link -->
+      <a href="https://chat.whatsapp.com/CFyiOb2RIjPE7svjERiPcz" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" class="social-icon">
+      </a>
+    </div>
+  </footer>
+
+  <script>
+    function showLoginForm() {
+      document.getElementById('login-form').style.display = 'block';
+    }
+
+    function validateLogin() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      // Correct login credentials
+      const correctUsername = 'yourgoal';
+      const correctPassword = 'thrives@2024';
+
+      if (username === correctUsername && password === correctPassword) {
+        window.location.href = 'dashboard.html'; // Redirect to dashboard after successful login
+      } else {
+        document.getElementById('error-message').textContent = 'Incorrect username or password.';
+        return false; // Prevent form submission
+      }
+    }
+  </script>
+</body>
+</html>

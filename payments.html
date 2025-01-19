@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment for Account Access</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            color: #007BFF;
+        }
+
+        h2 {
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .payment-options {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+
+        .payment-option {
+            background-color: #fff;
+            padding: 20px;
+            margin: 10px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 45%;
+            min-width: 250px;
+        }
+
+        .payment-option h3 {
+            color: #007BFF;
+        }
+
+        .payment-option p {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #confirmation-message {
+            background-color: #28a745;
+            color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            font-size: 14px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Payment Options</h1>
+        <p>Please select a payment method to access all documents and features.</p>
+    </header>
+
+    <section id="payment">
+        <h2>Payment for Account Access</h2>
+        <p>To gain full access to the content and account features, please make a payment using one of the following options:</p>
+
+        <div class="payment-options">
+            <div class="payment-option" id="mtn-option">
+                <h3>MTN Mobile Money</h3>
+                <p>To pay via MTN Mobile Money, dial <strong>*115#</strong> and follow the instructions to send K200 to:</p>
+                <p><strong>MTN Number: 0762514399</strong></p>
+                <p><strong>Step 1:</strong> Dial <strong>*115#</strong> on your phone.</p>
+                <p><strong>Step 2:</strong> Select "Pay Bill" and enter the number <strong>0762514399</strong>.</p>
+                <p><strong>Step 3:</strong> Enter the amount (K200) and confirm the payment.</p>
+                <button onclick="showConfirmation('MTN')">I have completed the payment</button>
+            </div>
+
+            <div class="payment-option" id="airtel-option">
+                <h3>Airtel Mobile Money</h3>
+                <p>To pay via Airtel Mobile Money, dial <strong>*885#</strong> and follow the instructions to send K200 to:</p>
+                <p><strong>Airtel Number: 0973178100</strong></p>
+                <p><strong>Step 1:</strong> Dial <strong>*885#</strong> on your phone.</p>
+                <p><strong>Step 2:</strong> Select "Pay Bill" and enter the number <strong>0973178100</strong>.</p>
+                <p><strong>Step 3:</strong> Enter the amount (K200) and confirm the payment.</p>
+                <button onclick="showConfirmation('Airtel')">I have completed the payment</button>
+            </div>
+        </div>
+
+        <div id="confirmation-message" class="hidden">
+            <h3>Thank you for your payment!</h3>
+            <p>Your payment has been successfully processed. You now have access to all documents and features.</p>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Thrives Archivers. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Function to show the confirmation message after payment completion
+        function showConfirmation(paymentMethod) {
+            // Hide payment options
+            document.querySelector('.payment-options').style.display = 'none';
+            
+            // Show confirmation message
+            const confirmationMessage = document.getElementById('confirmation-message');
+            confirmationMessage.classList.remove('hidden');
+            confirmationMessage.innerHTML = `<h3>Thank you for your ${paymentMethod} payment!</h3>
+                                             <p>Your payment has been successfully processed. You now have access to all documents and features.</p>`;
+        }
+    </script>
+
+</body>
+</html>
