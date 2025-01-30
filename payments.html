@@ -32,29 +32,26 @@
             margin-bottom: 20px;
         }
 
-        .payment-options {
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-        }
-
-        .payment-option {
+        form {
             background-color: #fff;
             padding: 20px;
-            margin: 10px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 45%;
-            min-width: 250px;
+            max-width: 400px;
+            margin: auto;
         }
 
-        .payment-option h3 {
-            color: #007BFF;
+        label {
+            display: block;
+            margin: 10px 0 5px;
         }
 
-        .payment-option p {
-            font-size: 16px;
-            line-height: 1.6;
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
         }
 
         button {
@@ -65,71 +62,104 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
-            margin-top: 20px;
+            display: block;
+            width: 100%;
         }
 
         button:hover {
             background-color: #0056b3;
         }
 
-        #confirmation-message {
-            background-color: #28a745;
-            color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
+        table {
+            width: 100%;
+            border-collapse: collapse;
             margin-top: 30px;
+            background: #fff;
         }
 
-        .hidden {
-            display: none;
-        }
-
-        footer {
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
             text-align: center;
-            margin-top: 50px;
-            font-size: 14px;
-            color: #777;
+        }
+
+        th {
+            background-color: #007BFF;
+            color: white;
+        }
+
+        .remove-btn {
+            background-color: red;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .remove-btn:hover {
+            background-color: darkred;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Payment Options</h1>
-        <p>Please select a payment method to access all documents and features.</p>
+        <h1>Payment for Account Access</h1>
+        <p>Please fill out the form to register your payment.</p>
     </header>
 
-    <section id="payment">
-        <h2>Payment for Account Access</h2>
-        <p>To gain full access to the content and account features, please make a payment using one of the following options:</p>
+    <section id="payment-form">
+        <h2>Submit Your Payment</h2>
+        <form id="paymentForm">
+            <label for="name">Full Name:</label>
+            <input type="text" id="name" required>
 
-        <div class="payment-options">
-            <div class="payment-option" id="mtn-option">
-                <h3>MTN Mobile Money</h3>
-                <p>To pay via MTN Mobile Money, dial <strong>*115#</strong> and follow the instructions to send K200 to:</p>
-                <p><strong>MTN Number: 0762514399</strong></p>
-                <p><strong>Step 1:</strong> Dial <strong>*115#</strong> on your phone.</p>
-                <p><strong>Step 2:</strong> Select "Pay Bill" and enter the number <strong>0762514399</strong>.</p>
-                <p><strong>Step 3:</strong> Enter the amount (K200) and confirm the payment.</p>
-                <button onclick="showConfirmation('MTN')">I have completed the payment</button>
-            </div>
+            <label for="paymentMethod">Payment Method:</label>
+            <select id="paymentMethod" required>
+                <option value="MTN">MTN Mobile Money</option>
+                <option value="Airtel">Airtel Mobile Money</option>
+            </select>
 
-            <div class="payment-option" id="airtel-option">
-                <h3>Airtel Mobile Money</h3>
-                <p>To pay via Airtel Mobile Money, dial <strong>*885#</strong> and follow the instructions to send K200 to:</p>
-                <p><strong>Airtel Number: 0973178100</strong></p>
-                <p><strong>Step 1:</strong> Dial <strong>*885#</strong> on your phone.</p>
-                <p><strong>Step 2:</strong> Select "Pay Bill" and enter the number <strong>0973178100</strong>.</p>
-                <p><strong>Step 3:</strong> Enter the amount (K200) and confirm the payment.</p>
-                <button onclick="showConfirmation('Airtel')">I have completed the payment</button>
-            </div>
-        </div>
+            <label for="amount">Amount Paid (K):</label>
+            <input type="number" id="amount" required>
 
-        <div id="confirmation-message" class="hidden">
-            <h3>Thank you for your payment!</h3>
-            <p>Your payment has been successfully processed. You now have access to all documents and features.</p>
-        </div>
+            <label for="month">Payment Month:</label>
+            <select id="month" required>
+                <option value="January">January</option>
+                <option value="February">February</option>
+                <option value="March">March</option>
+                <option value="April">April</option>
+                <option value="May">May</option>
+                <option value="June">June</option>
+                <option value="July">July</option>
+                <option value="August">August</option>
+                <option value="September">September</option>
+                <option value="October">October</option>
+                <option value="November">November</option>
+                <option value="December">December</option>
+            </select>
+
+            <button type="button" onclick="addPayment()">Submit Payment</button>
+        </form>
+    </section>
+
+    <section id="enrollment">
+        <h2>Enrollment Payments</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Payment Method</th>
+                    <th>Amount (K)</th>
+                    <th>Month</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="enrollment-table">
+                <!-- Payments will be added here dynamically -->
+            </tbody>
+        </table>
     </section>
 
     <footer>
@@ -137,16 +167,40 @@
     </footer>
 
     <script>
-        // Function to show the confirmation message after payment completion
-        function showConfirmation(paymentMethod) {
-            // Hide payment options
-            document.querySelector('.payment-options').style.display = 'none';
-            
-            // Show confirmation message
-            const confirmationMessage = document.getElementById('confirmation-message');
-            confirmationMessage.classList.remove('hidden');
-            confirmationMessage.innerHTML = `<h3>Thank you for your ${paymentMethod} payment!</h3>
-                                             <p>Your payment has been successfully processed. You now have access to all documents and features.</p>`;
+        // Function to add a payment to the table
+        function addPayment() {
+            const name = document.getElementById("name").value.trim();
+            const paymentMethod = document.getElementById("paymentMethod").value;
+            const amount = document.getElementById("amount").value.trim();
+            const month = document.getElementById("month").value;
+
+            if (name === "" || amount === "") {
+                alert("Please fill in all fields.");
+                return;
+            }
+
+            // Add payment entry to the table
+            const table = document.getElementById("enrollment-table");
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>${name}</td>
+                <td>${paymentMethod}</td>
+                <td>${amount}</td>
+                <td>${month}</td>
+                <td><button class="remove-btn" onclick="removePayment(this)">Remove</button></td>
+            `;
+
+            table.appendChild(row);
+
+            // Clear form fields after submission
+            document.getElementById("paymentForm").reset();
+        }
+
+        // Function to remove a payment entry
+        function removePayment(button) {
+            const row = button.parentElement.parentElement;
+            row.remove();
         }
     </script>
 
