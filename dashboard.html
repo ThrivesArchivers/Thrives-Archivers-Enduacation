@@ -1,3 +1,61 @@
+<script>
+  // Chart Handling with AI API
+  async function generateChartData() {
+    const apiKey = 'YOUR_API_KEY_HERE';
+    const endpoint = 'https://api.openai.com/v1/completions';
+
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`,
+    };
+
+    const body = JSON.stringify({
+      model: 'text-davinci-003',
+      prompt: "Generate a set of data points for a bar chart.",
+      max_tokens: 100,
+      temperature: 0.7,
+    });
+
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: headers,
+      body: body,
+    });
+
+    const data = await response.json();
+    const chartData = JSON.parse(data.choices[0].text.trim());  // Expecting JSON format
+
+    renderChart(chartData);
+  }
+
+  function renderChart(data) {
+    const ctx = document.getElementById('chart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: data.labels,
+        datasets: [{
+          label: 'AI Generated Data',
+          data: data.values,
+          backgroundColor: 'rgba(0, 123, 255, 0.5)',
+          borderColor: 'rgba(0, 123, 255, 1)',
+          borderWidth: 1,
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  }
+
+  // Generate Chart on page load
+  generateChartData();
+</script>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,15 +63,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI-Enhanced Dashboard - Thrives Archivers</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    /* Basic Reset */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    /* Body and Background */
+    /* Reset & General Styling */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: Arial, sans-serif;
       background-color: #f4f4f9;
@@ -23,7 +76,7 @@
       min-height: 100vh;
     }
 
-    /* Navigation Bar */
+    /* Navbar */
     header nav {
       background-color: #3f51b5;
       padding: 15px 0;
@@ -31,72 +84,45 @@
       justify-content: center;
       gap: 20px;
       position: sticky;
-      top: 0;
-      z-index: 1;
+      top: 0; z-index: 1;
     }
-
     header nav ul {
       list-style-type: none;
       display: flex;
       gap: 30px;
     }
-
     header nav ul li {
       display: inline-block;
     }
-
     header nav ul li a {
       color: white;
       text-decoration: none;
-      font-size: 30px;
+      font-size: 18px;
       padding: 10px;
       transition: transform 0.3s ease, background-color 0.3s ease;
     }
-
     header nav ul li a:hover {
       background-color: #303f9f;
       border-radius: 5px;
       transform: scale(1.1);
     }
 
-    /* Main Dashboard Layout */
-    main {
-      padding: 20px;
-      flex-grow: 1;
-    }
-
-    /* Section Layout */
+    /* Main Dashboard */
+    main { padding: 20px; flex-grow: 1; }
     section {
-      margin-bottom: 40px;
+      margin-bottom: 20px;
       padding: 20px;
-      background-color: #ffffff;
+      background-color: white;
       border-radius: 8px;
       box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     }
-
-    section h2 {
-      font-size: 24px;
-      color: #3f51b5;
-    }
-
-    section p {
-      font-size: 16px;
-      margin: 10px 0;
-    }
-
+    h2 { color: #3f51b5; }
     button {
-      background-color: #3f51b5;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 16px;
+      background-color: #3f51b5; color: white;
+      padding: 10px 20px; border: none; border-radius: 5px;
+      cursor: pointer; font-size: 16px;
     }
-
-    button:hover {
-      background-color: #303f9f;
-    }
+    button:hover { background-color: #303f9f; }
 
     /* Footer */
     footer {
@@ -104,239 +130,185 @@
       padding: 10px;
       background-color: #3f51b5;
       color: white;
-      position: relative;
-      bottom: 0;
-      width: 100%;
+      position: relative; bottom: 0; width: 100%;
     }
 
-    /* Logout Button at the Footer */
-    #logout-button {
-      background-color: #3f51b5;
-      color: white;
-      padding: 8px 15px;
-      border: none;
-      border-radius: 5px;
-      font-size: 16px;
-      cursor: pointer;
+    /* Chatbot */
+    #chatbot {
+      position: fixed;
+      bottom: 20px; right: 20px;
+      width: 250px; height: 350px;
+      background: white; border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      display: none;
+      padding: 10px;
+    }
+    #chatbot button { width: 100%; margin-top: 10px; }
+    #chat-button {
+      position: fixed; bottom: 20px; right: 20px;
+      background: #3f51b5; color: white;
+      padding: 10px 15px; border-radius: 50%;
+      font-size: 18px;
+    }
+
+    /* Chart Section */
+    #chart-section {
       margin-top: 20px;
-    }
-
-    #logout-button:hover {
-      background-color: #303f9f;
-    }
-
-    /* News Section */
-    #news-section {
-      margin-top: 30px;
-    }
-
-    #news-list {
-      margin-top: 20px;
-    }
-
-    .news-item {
-      background-color: #fff;
-      padding: 15px;
-      margin-bottom: 10px;
+      padding: 20px;
+      background-color: white;
       border-radius: 8px;
       box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     }
-
-    .news-item h3 {
-      margin-bottom: 10px;
-      font-size: 20px;
-      color: #3f51b5;
+    #chart-container {
+      width: 100%;
+      height: 300px;
     }
-
-    .news-item p {
-      font-size: 16px;
-    }
-
-    .delete-btn {
-      background-color: red;
-      color: white;
-      padding: 5px 10px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .delete-btn:hover {
-      background-color: #d32f2f;
-    }
-
-    /* Add News Section */
-    #add-news-section {
-      margin-top: 30px;
-    }
-
-    #add-news-form {
-      display: flex;
-      flex-direction: column;
-    }
-
-    #add-news-form input,
-    #add-news-form textarea {
-      margin-bottom: 10px;
-      padding: 10px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-
-    #add-news-form button {
-      background-color: #3f51b5;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    #add-news-form button:hover {
-      background-color: #303f9f;
-    }
-
   </style>
 </head>
 <body>
-  <!-- Navigation Bar with Icons -->
+
+  <!-- Navigation Bar -->
   <header>
     <nav>
       <ul>
-        <li><a href="#videos" title="Videos"><i class="fas fa-video"></i></a></li>
-        <li><a href="#quizzes" title="Quizzes"><i class="fas fa-question-circle"></i></a></li>
-        <li><a href="#news-section" title="News & Updates"><i class="fas fa-newspaper"></i></a></li>
-        <li><a href="#lessons" title="Join Lessons"><i class="fas fa-chalkboard-teacher"></i></a></li>
+        <li><a href="videos.html"><i class="fas fa-video"></i> Videos</a></li>
+        <li><a href="quizzes.html"><i class="fas fa-question-circle"></i> Quizzes</a></li>
+        <li><a href="payments.html"><i class="fas fa-credit-card"></i> Payments</a></li>
+        <li><a href="livelessons.html"><i class="fas fa-chalkboard-teacher"></i> Lessons</a></li>
       </ul>
     </nav>
   </header>
 
-  <!-- Main Dashboard Content -->
+  <!-- Dashboard -->
   <main>
-    <section id="greeting">
-      <h2>Welcome, Guest!</h2>
-    </section>
-
-    <!-- News Section -->
     <section id="news-section">
       <h2>Latest News</h2>
-      <div id="news-list">
-        <!-- News items will appear here dynamically -->
-      </div>
+      <div id="news-list"></div>
     </section>
 
-    <!-- Add News Section (Only for Instructors) -->
     <section id="add-news-section">
       <h2>Add News</h2>
       <form id="add-news-form">
-        <label for="news-title">News Title:</label>
-        <input type="text" id="news-title" name="title" placeholder="Enter news title" required>
-
-        <label for="news-content">News Content:</label>
-        <textarea id="news-content" name="content" rows="4" placeholder="Enter news content" required></textarea>
-
+        <input type="text" id="news-title" placeholder="Enter title" required>
+        <textarea id="news-content" rows="4" placeholder="Enter news content" required></textarea>
         <button type="submit">Add News</button>
       </form>
-      <div id="add-news-response"></div>
     </section>
 
-    <section id="quizzes">
-      <h2>Quizzes</h2>
-      <p>Access various quizzes here to test your knowledge on different subjects.</p>
-      <button>Start Quizzes</button>
+    <!-- Chart Section -->
+    <section id="chart-section">
+      <h2>AI-Generated Chart</h2>
+      <div id="chart-container">
+        <canvas id="chart"></canvas>
+      </div>
     </section>
-
-    <section id="videos">
-      <h2>Videos</h2>
-      <p>Watch videos to enhance your learning experience.</p>
-      <button>Watch Videos</button>
-    </section>
-
-    <section id="documents">
-      <h2>Documents</h2>
-      <p>Download and access documents for your studies.</p>
-      <button>View Documents</button>
-    </section>
-
-    <section id="lessons">
-      <h2>Online Lessons</h2>
-      <p>Join live online lessons with interactive features such as video and audio.</p>
-      <button>Join Lessons</button>
-    </section>
-
-    <section id="payment">
-      <h2>Payment</h2>
-      <p>Make payments to access full content and features.</p>
-      <button>Make Payment</button>
-    </section>
-
   </main>
+
+  <!-- Chatbot -->
+  <div id="chatbot">
+    <h3>AI Chatbot</h3>
+    <textarea placeholder="Ask me anything..."></textarea>
+    <button>Send</button>
+  </div>
+  <button id="chat-button"><i class="fas fa-comments"></i></button>
 
   <!-- Footer -->
   <footer>
     <p>&copy; 2025 Thrives Archivers</p>
-    <button id="logout-button">Logout</button>
   </footer>
 
   <script>
-    // Mock news items
+    // News Handling
     const newsItems = [
-      { title: "New Video Tutorial Released", content: "We've released a new video on advanced chemistry concepts." },
-      { title: "Upcoming Quiz Alert", content: "A new quiz on vectors will be available next week. Stay tuned!" }
+      { title: "New Quiz Available", content: "Check out our latest quiz on vectors!" },
+      { title: "Live Lesson Tomorrow", content: "Join our physics live lesson at 7 PM." }
     ];
-
-    // Mock user role (change this to check the actual logged-in user role)
-    const userRole = 'instructor'; // Change to 'student' if not an instructor
-
-    // Show Add News section only if the user is an instructor
-    if (userRole === 'instructor') {
-      document.getElementById("add-news-section").style.display = 'block';
-    } else {
-      document.getElementById("add-news-section").style.display = 'none';
-    }
-
-    // Function to display news
     function displayNews() {
-      const newsList = document.getElementById("news-list");
-      newsList.innerHTML = ''; // Clear the existing list
-
-      newsItems.forEach((news, index) => {
-        const newsDiv = document.createElement("div");
-        newsDiv.classList.add("news-item");
-        newsDiv.innerHTML = `
+      document.getElementById("news-list").innerHTML = newsItems.map((news, index) => `
+        <div class="news-item">
           <h3>${news.title}</h3>
           <p>${news.content}</p>
           <button class="delete-btn" onclick="deleteNews(${index})">Delete</button>
-        `;
-        newsList.appendChild(newsDiv);
-      });
+        </div>
+      `).join('');
     }
-
-    // Delete news function
     function deleteNews(index) {
-      newsItems.splice(index, 1); // Remove the news item from the array
-      displayNews(); // Refresh the news list
+      newsItems.splice(index, 1);
+      displayNews();
     }
-
-    // Event listener for adding news
     document.getElementById("add-news-form").addEventListener("submit", function(event) {
       event.preventDefault();
       const title = document.getElementById("news-title").value;
       const content = document.getElementById("news-content").value;
-
-      // Add new news item
-      newsItems.unshift({ title, content }); // Adds at the top (latest news first)
+      newsItems.unshift({ title, content });
       displayNews();
-
-      // Clear the form
       document.getElementById("news-title").value = '';
       document.getElementById("news-content").value = '';
     });
-
-    // Initial display of news
     displayNews();
+
+    // Chatbot Toggle
+    document.getElementById("chat-button").addEventListener("click", function() {
+      const bot = document.getElementById("chatbot");
+      bot.style.display = bot.style.display === "none" ? "block" : "none";
+    });
+
+    // Chart Handling with AI API
+    async function generateChartData() {
+      const apiKey = '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';
+      const endpoint = 'https://api.openai.com/v1/completions';
+
+      const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+      };
+
+      const body = JSON.stringify({
+        model: 'text-davinci-003',
+        prompt: "Generate a set of data points for a bar chart.",
+        max_tokens: 100,
+        temperature: 0.7,
+      });
+
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: headers,
+        body: body,
+      });
+
+      const data = await response.json();
+      const chartData = JSON.parse(data.choices[0].text.trim());  // Expecting JSON format
+
+      renderChart(chartData);
+    }
+
+    function renderChart(data) {
+      const ctx = document.getElementById('chart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: data.labels,
+          datasets: [{
+            label: 'AI Generated Data',
+            data: data.values,
+            backgroundColor: 'rgba(0, 123, 255, 0.5)',
+            borderColor: 'rgba(0, 123, 255, 1)',
+            borderWidth: 1,
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    }
+
+    // Generate Chart on page load
+    generateChartData();
   </script>
 
 </body>
