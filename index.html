@@ -19,10 +19,6 @@
       padding: 20px;
     }
 
-    header h1 {
-      margin: 0;
-    }
-
     section {
       padding: 20px;
     }
@@ -32,7 +28,6 @@
       color: white;
       border: none;
       padding: 10px 20px;
-      text-align: center;
       cursor: pointer;
       border-radius: 5px;
     }
@@ -41,26 +36,10 @@
       background-color: #45a049;
     }
 
-    .testimonial {
+    .testimonial, #testimonials, #contact-info {
       background-color: white;
-      padding: 15px;
-      margin: 15px 0;
-      border-radius: 5px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    #testimonials {
-      margin-top: 30px;
-      background-color: #fff;
       padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    #contact-info {
-      background-color: #fff;
-      padding: 20px;
-      margin-top: 30px;
+      margin-top: 20px;
       border-radius: 8px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
@@ -86,6 +65,19 @@
     /* Hidden login form */
     #login-form {
       display: none;
+      background-color: white;
+      padding: 20px;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+    }
+
+    #close-btn {
+      background-color: red;
+      margin-top: 10px;
     }
   </style>
 </head>
@@ -97,21 +89,22 @@
 
   <section>
     <p>Discover Resources to Help You Succeed!</p>
-    <p>The purpose of Thrives Archivers is to provide simplified Natural Science materials to help students excel in their studies, without the difficulty. Our platform offers easy-to-understand resources and tools that make learning engaging and effective.</p>
+    <p>The purpose of Thrives Archivers is to provide simplified Natural Science materials to help students excel in their studies, without difficulty.</p>
     <button onclick="showLoginForm()">Login to Access Dashboard</button>
   </section>
 
-  <!-- Hidden login form -->
+  <!-- Hidden Login Form -->
   <div id="login-form">
     <h2>Please Login</h2>
-    <form id="loginForm" onsubmit="return validateLogin()">
+    <form id="loginForm">
       <label for="username">Username:</label>
       <input type="text" id="username" name="username" required><br><br>
 
       <label for="password">Password:</label>
       <input type="password" id="password" name="password" required><br><br>
 
-      <button type="submit">Submit</button>
+      <button type="button" onclick="validateLogin()">Submit</button>
+      <button id="close-btn" onclick="hideLoginForm()">Close</button>
     </form>
     <p id="error-message" class="error"></p>
   </div>
@@ -119,25 +112,23 @@
   <!-- Testimonials Section -->
   <section id="testimonials">
     <h2>What Our Students Are Saying</h2>
-    <div>
-      <div class="testimonial">
-        <h3>John Chilabwe (Mulungushi University)</h3>
-        <p>"Thrives Archivers has provided me with the best resources to understand my subjects better!"</p>
-      </div>
-      <div class="testimonial">
-        <h3>Elizabeth Mwewa (CBU)</h3>
-        <p>"The lessons are well-structured and have helped me stay on track with my studies."</p>
-      </div>
-      <div class="testimonial">
-        <h3>Lewis Mwape (Mukuba University)</h3>
-        <p>"I can easily find notes and content that makes studying a lot easier."</p>
-      </div>
+    <div class="testimonial">
+      <h3>John Chilabwe (Mulungushi University)</h3>
+      <p>"Thrives Archivers has provided me with the best resources to understand my subjects better!"</p>
+    </div>
+    <div class="testimonial">
+      <h3>Elizabeth Mwewa (CBU)</h3>
+      <p>"The lessons are well-structured and have helped me stay on track with my studies."</p>
+    </div>
+    <div class="testimonial">
+      <h3>Lewis Mwape (Mukuba University)</h3>
+      <p>"I can easily find notes and content that makes studying a lot easier."</p>
     </div>
   </section>
 
   <section id="contact-info">
     <h2>Contact Us</h2>
-    <p>If you have any questions or need assistance, feel free to contact us:</p>
+    <p>If you have any questions, feel free to contact us:</p>
     <ul>
       <li>WhatsApp: <a href="https://wa.me/260762514399" target="_blank">0762514399</a></li>
       <li>Email: <a href="mailto:thrivesarchivers@gmail.com">thrivesarchivers@gmail.com</a></li>
@@ -148,15 +139,12 @@
   <footer>
     <p>&copy; 2025 Thrives Archivers</p>
     <div>
-      <!-- YouTube Link -->
-      <a href="https://youtube.com/@thrivesarchivers?si=79Gs79_wjWXXwNQT" target="_blank">
+      <a href="https://youtube.com/@thrivesarchivers" target="_blank">
         <img src="https://upload.wikimedia.org/wikipedia/commons/4/42/YouTube_icon_%282013-2017%29.png" alt="YouTube" class="social-icon">
       </a>
-      <!-- Facebook Link -->
       <a href="https://www.facebook.com/profile.php?id=61565387636780" target="_blank">
         <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook" class="social-icon">
       </a>
-      <!-- WhatsApp Link -->
       <a href="https://chat.whatsapp.com/CFyiOb2RIjPE7svjERiPcz" target="_blank">
         <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" class="social-icon">
       </a>
@@ -168,19 +156,24 @@
       document.getElementById('login-form').style.display = 'block';
     }
 
+    function hideLoginForm() {
+      document.getElementById('login-form').style.display = 'none';
+    }
+
     function validateLogin() {
       const username = document.getElementById('username').value;
       const password = document.getElementById('password').value;
+      const errorMessage = document.getElementById('error-message');
 
-      // Correct login credentials
       const correctUsername = 'yourgoal';
       const correctPassword = 'thrives@2024';
 
       if (username === correctUsername && password === correctPassword) {
-        window.location.href = 'dashboard.html'; // Redirect to dashboard after successful login
+        errorMessage.textContent = '';
+        alert('Login successful! Redirecting to dashboard...');
+        window.location.href = 'dashboard.html'; 
       } else {
-        document.getElementById('error-message').textContent = 'Incorrect username or password.';
-        return false; // Prevent form submission
+        errorMessage.textContent = 'Incorrect username or password.';
       }
     }
   </script>
