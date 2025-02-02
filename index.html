@@ -62,8 +62,8 @@
       margin-top: 5px;
     }
 
-    /* Hidden login form */
-    #login-form {
+    /* Hidden forms */
+    #login-form, #create-account-form {
       display: none;
       background-color: white;
       padding: 20px;
@@ -91,6 +91,7 @@
     <p>Discover Resources to Help You Succeed!</p>
     <p>The purpose of Thrives Archivers is to provide simplified Natural Science materials to help students excel in their studies, without difficulty.</p>
     <button onclick="showLoginForm()">Login to Access Dashboard</button>
+    <button onclick="showCreateAccountForm()">Create an Account</button>
   </section>
 
   <!-- Hidden Login Form -->
@@ -107,6 +108,31 @@
       <button id="close-btn" onclick="hideLoginForm()">Close</button>
     </form>
     <p id="error-message" class="error"></p>
+  </div>
+
+  <!-- Hidden Create Account Form -->
+  <div id="create-account-form">
+    <h2>Create an Account</h2>
+    <form id="createAccountForm">
+      <label for="new-username">Username:</label>
+      <input type="text" id="new-username" name="new-username" required><br><br>
+
+      <label for="new-password">Password:</label>
+      <input type="password" id="new-password" name="new-password" required><br><br>
+
+      <label for="confirm-password">Confirm Password:</label>
+      <input type="password" id="confirm-password" name="confirm-password" required><br><br>
+
+      <label for="role">Select Role:</label>
+      <select id="role" name="role" required>
+        <option value="student">Student</option>
+        <option value="instructor">Instructor</option>
+      </select><br><br>
+
+      <button type="button" onclick="createAccount()">Create Account</button>
+      <button id="close-btn" onclick="hideCreateAccountForm()">Close</button>
+    </form>
+    <p id="create-error-message" class="error"></p>
   </div>
 
   <!-- Testimonials Section -->
@@ -152,28 +178,69 @@
   </footer>
 
   <script>
+    // Show Login Form
     function showLoginForm() {
       document.getElementById('login-form').style.display = 'block';
     }
 
+    // Hide Login Form
     function hideLoginForm() {
       document.getElementById('login-form').style.display = 'none';
     }
 
+    // Show Create Account Form
+    function showCreateAccountForm() {
+      document.getElementById('create-account-form').style.display = 'block';
+    }
+
+    // Hide Create Account Form
+    function hideCreateAccountForm() {
+      document.getElementById('create-account-form').style.display = 'none';
+    }
+
+    // Login Validation
     function validateLogin() {
       const username = document.getElementById('username').value;
       const password = document.getElementById('password').value;
       const errorMessage = document.getElementById('error-message');
 
-      const correctUsername = 'yourgoal';
-      const correctPassword = 'thrives@2024';
+      // Retrieve saved credentials from localStorage
+      const savedUser = localStorage.getItem(username);
 
-      if (username === correctUsername && password === correctPassword) {
-        errorMessage.textContent = '';
-        alert('Login successful! Redirecting to dashboard...');
-        window.location.href = 'dashboard.html'; 
+      if (savedUser) {
+        const { savedPassword, savedRole } = JSON.parse(savedUser);
+        if (password === savedPassword) {
+          errorMessage.textContent = '';
+          alert(`Login successful! Welcome ${savedRole}`);
+          window.location.href = 'dashboard.html'; // Replace with your dashboard URL
+        } else {
+          errorMessage.textContent = 'Incorrect password.';
+        }
       } else {
-        errorMessage.textContent = 'Incorrect username or password.';
+        errorMessage.textContent = 'Username not found.';
+      }
+    }
+
+    // Create Account Validation
+    function createAccount() {
+      const newUsername = document.getElementById('new-username').value;
+      const newPassword = document.getElementById('new-password').value;
+      const confirmPassword = document.getElementById('confirm-password').value;
+      const role = document.getElementById('role').value;
+      const errorMessage = document.getElementById('create-error-message');
+
+      if (newPassword !== confirmPassword) {
+        errorMessage.textContent = 'Passwords do not match.';
+      } else {
+        // Save the account details to localStorage
+        const user = {
+          savedPassword: newPassword,
+          savedRole: role
+        };
+        localStorage.setItem(newUsername, JSON.stringify(user));
+        errorMessage.textContent = '';
+        alert(`Account created successfully as ${role}! You can now log in.`);
+        hideCreateAccountForm();
       }
     }
   </script>
