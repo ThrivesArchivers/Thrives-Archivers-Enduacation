@@ -4,6 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Welcome - Thrives Archivers</title>
+  
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-firestore.js"></script>
+  
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -98,8 +104,8 @@
   <div id="login-form">
     <h2>Please Login</h2>
     <form id="loginForm">
-      <label for="username">Username:</label>
-      <input type="text" id="username" name="username" required><br><br>
+      <label for="username">Email:</label>
+      <input type="email" id="username" name="username" required><br><br>
 
       <label for="password">Password:</label>
       <input type="password" id="password" name="password" required><br><br>
@@ -114,8 +120,8 @@
   <div id="create-account-form">
     <h2>Create an Account</h2>
     <form id="createAccountForm">
-      <label for="new-username">Username:</label>
-      <input type="text" id="new-username" name="new-username" required><br><br>
+      <label for="new-username">Email:</label>
+      <input type="email" id="new-username" name="new-username" required><br><br>
 
       <label for="new-password">Password:</label>
       <input type="password" id="new-password" name="new-password" required><br><br>
@@ -178,6 +184,21 @@
   </footer>
 
   <script>
+    // Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AlzaSyAoShd_AbP4EFi46fz-n2DFn24lyxt6BiAQ",
+      authDomain: "thrives-archivers-4a821.firebaseapp.com",
+      projectId: "thrives-archivers-4a821",
+      storageBucket: "thrives-archivers-4a821.appspot.com",
+      messagingSenderId: "928343613062",
+      appId: "1:928343613062:web:ec4c3d0d1b2d9b1e0c1d2d"
+    };
+
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
     // Show Login Form
     function showLoginForm() {
       document.getElementById('login-form').style.display = 'block';
@@ -198,51 +219,84 @@
       document.getElementById('create-account-form').style.display = 'none';
     }
 
-    // Login Validation
+    // Login Function with Firebase Authentication
     function validateLogin() {
-      const username = document.getElementById('username').value;
+      const email = document.getElementById('username').value;
       const password = document.getElementById('password').value;
       const errorMessage = document.getElementById('error-message');
 
-      // Retrieve saved credentials from localStorage
-      const savedUser = localStorage.getItem(username);
-
-      if (savedUser) {
-        const { savedPassword, savedRole } = JSON.parse(savedUser);
-        if (password === savedPassword) {
+      auth.signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          const user = userCredential.user;
           errorMessage.textContent = '';
-          alert(`Login successful! Welcome ${savedRole}`);
-          window.location.href = 'dashboard.html'; // Replace with your dashboard URL
-        } else {
-          errorMessage.textContent = 'Incorrect password.';
-        }
-      } else {
-        errorMessage.textContent = 'Username not found.';
-      }
+          alert(`Login successful! Welcome ${user.email}`);
+          window.location.href = 'dashboard.html'; // Redirect to your dashboard
+        })
+        .catch((error) => {
+          errorMessage.textContent = error.message;
+        });
     }
 
-    // Create Account Validation
+    // Create Account Function with Firebase Authentication
     function createAccount() {
-      const newUsername = document.getElementById('new-username').value;
-      const newPassword = document.getElementById('new-password').value;
+      const email = document.getElementById('new-username').value;
+      const password = document.getElementById('new-password').value;
       const confirmPassword = document.getElementById('confirm-password').value;
       const role = document.getElementById('role').value;
       const errorMessage = document.getElementById('create-error-message');
 
-      if (newPassword !== confirmPassword) {
+      if (password !== confirmPassword) {
         errorMessage.textContent = 'Passwords do not match.';
       } else {
-        // Save the account details to localStorage
-        const user = {
-          savedPassword: newPassword,
-          savedRole: role
-        };
-        localStorage.setItem(newUsername, JSON.stringify(user));
-        errorMessage.textContent = '';
-        alert(`Account created successfully as ${role}! You can now log in.`);
-        hideCreateAccountForm();
+        auth.createUserWithEmailAndPassword(email, password)
+          .then((userCredential) => {
+            const user = userCredential.user;
+            db.collection('users').doc(user.uid).set({ role: role });
+
+            errorMessage.textContent = '';
+            alert(`Account created successfully as ${role}! You can now log in.`);
+            hideCreateAccountForm();
+          })
+          .catch((error) => {
+            errorMessage.textContent = error.message;
+          });
       }
     }
+
+    // Fetch news from Firestore
+    async function fetchNews() {
+      const newsList = document.getElementById('news-list');
+      newsList.innerHTML = '';
+      const querySnapshot = await db.collection('news').get();
+      querySnapshot.forEach((doc) => {
+        const news = doc.data();
+        newsList.innerHTML += `
+          <div class="news-item">
+            <h3>${news.title}</h3>
+            <p>${news.content}</p>
+            <button class="delete-btn" onclick="deleteNews('${doc.id}')">Delete</button>
+          </div>
+        `;
+      });
+    }
+
+    // Add news to Firestore
+    async function addNews(event) {
+      event.preventDefault();
+      const title = document.getElementById('news-title').value;
+      const content = document.getElementById('news-content').value;
+      await db.collection('news').add({ title, content });
+      fetchNews();
+    }
+
+    // Delete news from Firestore
+    async function deleteNews(id) {
+      await db.collection('news').doc(id).delete();
+      fetchNews();
+    }
+
+    document.getElementById('add-news-form').addEventListener('submit', addNews);
+    fetchNews();
   </script>
 </body>
 </html>
