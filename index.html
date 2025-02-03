@@ -16,6 +16,7 @@
       margin: 0;
       padding: 0;
       background-color: #f4f4f4;
+      text-align: center;
     }
 
     header {
@@ -23,38 +24,99 @@
       color: white;
       text-align: center;
       padding: 20px;
+      font-size: 24px;
     }
 
     section {
       padding: 20px;
     }
 
-    button {
+    .btn-container {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .turtle-btn {
       background-color: #4CAF50;
       color: white;
       border: none;
-      padding: 10px 20px;
+      padding: 15px 30px;
       cursor: pointer;
-      border-radius: 5px;
+      border-radius: 50px;
+      font-size: 18px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease-in-out;
     }
 
-    button:hover {
+    .turtle-btn:hover {
       background-color: #45a049;
+      transform: scale(1.1);
     }
 
-    .testimonial, #testimonials, #contact-info {
+    /* Testimonials Section */
+    #testimonials {
       background-color: white;
-      padding: 20px;
+      padding: 30px;
       margin-top: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
     }
 
+    .testimonial-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .testimonial {
+      background-color: #f9f9f9;
+      padding: 20px;
+      border-radius: 10px;
+      width: 300px;
+      text-align: left;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .testimonial h3 {
+      margin-top: 0;
+      color: #333;
+    }
+
+    .testimonial p {
+      font-style: italic;
+      color: #555;
+    }
+
+    /* Contact Section */
+    #contact-info {
+      background-color: white;
+      padding: 30px;
+      margin-top: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    #contact-info ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    #contact-info li {
+      margin: 10px 0;
+    }
+
+    /* Footer */
     footer {
       text-align: center;
       padding: 20px;
       background-color: #333;
       color: white;
+      margin-top: 20px;
     }
 
     .social-icon {
@@ -62,13 +124,8 @@
       margin: 0 10px;
     }
 
-    .error {
-      color: red;
-      font-size: 12px;
-      margin-top: 5px;
-    }
-
-    #login-form {
+    /* Hidden Login Form */
+    #login-form, #register-form {
       display: none;
       background-color: white;
       padding: 20px;
@@ -78,11 +135,17 @@
       transform: translate(-50%, -50%);
       box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
       border-radius: 10px;
+      text-align: left;
     }
 
     #close-btn {
       background-color: red;
       margin-top: 10px;
+      padding: 10px;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
     }
   </style>
 </head>
@@ -94,23 +157,29 @@
 
   <section>
     <p>Discover Resources to Help You Succeed!</p>
-    <p>The purpose of Thrives Archivers is to provide simplified Natural Science materials to help students excel in their studies, without difficulty.</p>
-    <button onclick="showLoginForm()">Login to Access Dashboard</button>
+    <p>The purpose of Thrives Archivers is to provide simplified Natural Science materials to help students excel in their studies.</p>
+
+    <div class="btn-container">
+      <button class="turtle-btn" onclick="showLoginForm()">Login</button>
+      <button class="turtle-btn" onclick="showRegisterForm()">Register</button>
+    </div>
   </section>
 
   <section id="testimonials">
     <h2>What Our Students Are Saying</h2>
-    <div class="testimonial">
-      <h3>John Chilabwe (Mulungushi University)</h3>
-      <p>"Thrives Archivers has provided me with the best resources to understand my subjects better!"</p>
-    </div>
-    <div class="testimonial">
-      <h3>Elizabeth Mwewa (CBU)</h3>
-      <p>"The lessons are well-structured and have helped me stay on track with my studies."</p>
-    </div>
-    <div class="testimonial">
-      <h3>Lewis Mwape (Mukuba University)</h3>
-      <p>"I can easily find notes and content that makes studying a lot easier."</p>
+    <div class="testimonial-container">
+      <div class="testimonial">
+        <h3>John Chilabwe (Mulungushi University)</h3>
+        <p>"Thrives Archivers has provided me with the best resources to understand my subjects better!"</p>
+      </div>
+      <div class="testimonial">
+        <h3>Elizabeth Mwewa (CBU)</h3>
+        <p>"The lessons are well-structured and have helped me stay on track with my studies."</p>
+      </div>
+      <div class="testimonial">
+        <h3>Lewis Mwape (Mukuba University)</h3>
+        <p>"I can easily find notes and content that makes studying a lot easier."</p>
+      </div>
     </div>
   </section>
 
@@ -123,7 +192,6 @@
     </ul>
   </section>
 
-  <!-- Footer Section -->
   <footer>
     <p>&copy; 2025 Thrives Archivers</p>
     <div>
@@ -133,86 +201,55 @@
       <a href="https://www.facebook.com/profile.php?id=61565387636780" target="_blank">
         <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook" class="social-icon">
       </a>
-      <a href="https://chat.whatsapp.com/CFyiOb2RIjPE7svjERiPcz" target="_blank">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" class="social-icon">
-      </a>
     </div>
   </footer>
 
+  <!-- Hidden Login Form -->
+  <div id="login-form">
+    <h2>Login</h2>
+    <label for="login-email">Email:</label>
+    <input type="email" id="login-email" required><br><br>
+    <label for="login-password">Password:</label>
+    <input type="password" id="login-password" required><br><br>
+    <button onclick="validateLogin()">Submit</button>
+    <button id="close-btn" onclick="hideLoginForm()">Close</button>
+  </div>
+
+  <!-- Hidden Register Form -->
+  <div id="register-form">
+    <h2>Register</h2>
+    <label for="register-email">Email:</label>
+    <input type="email" id="register-email" required><br><br>
+    <label for="register-password">Password:</label>
+    <input type="password" id="register-password" required><br><br>
+    <button onclick="registerUser()">Submit</button>
+    <button id="close-btn" onclick="hideRegisterForm()">Close</button>
+  </div>
+
   <script>
-    // Firebase Configuration
-    const firebaseConfig = {
-      apiKey: "AlzaSyAoShd_AbP4EFi46fz-n2DFn24lyxt6BiAQ",
-      authDomain: "thrives-archivers-4a821.firebaseapp.com",
-      projectId: "thrives-archivers-4a821",
-      storageBucket: "thrives-archivers-4a821.appspot.com",
-      messagingSenderId: "928343613062",
-      appId: "1:928343613062:web:ec4c3d0d1b2d9b1e0c1d2d"
-    };
-
-    // Initialize Firebase
-    const app = firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-
-    // Show Login Form
     function showLoginForm() {
       document.getElementById('login-form').style.display = 'block';
     }
 
-    // Hide Login Form
     function hideLoginForm() {
       document.getElementById('login-form').style.display = 'none';
     }
 
-    // Login Function with Firebase Authentication
-    function validateLogin() {
-      const email = document.getElementById('username').value;
-      const role = document.getElementById('role').value;
-      const errorMessage = document.getElementById('error-message');
-
-      auth.signInWithEmailAndPassword(email, 'defaultPassword') // Default password for all users
-        .then((userCredential) => {
-          const user = userCredential.user;
-          checkUserApproval(user.uid, role);
-        })
-        .catch((error) => {
-          errorMessage.textContent = error.message;
-        });
+    function showRegisterForm() {
+      document.getElementById('register-form').style.display = 'block';
     }
 
-    // Check user approval status
-    function checkUserApproval(uid, role) {
-      db.collection('users').doc(uid).get().then((doc) => {
-        if (doc.exists && doc.data().approved) {
-          db.collection('users').doc(uid).update({ role: role });
-          window.location.href = 'dashboard.html'; // Redirect to your dashboard
-        } else {
-          alert('Your account is not approved yet.');
-        }
-      }).catch((error) => {
-        console.error('Error checking user approval:', error);
-      });
+    function hideRegisterForm() {
+      document.getElementById('register-form').style.display = 'none';
+    }
+
+    function validateLogin() {
+      alert("Login functionality to be implemented!");
+    }
+
+    function registerUser() {
+      alert("Registration functionality to be implemented!");
     }
   </script>
-
-  <!-- Hidden Login Form -->
-  <div id="login-form">
-    <h2>Please Login</h2>
-    <form id="loginForm">
-      <label for="username">Email:</label>
-      <input type="email" id="username" name="username" required><br><br>
-
-      <label for="role">Select Role:</label>
-      <select id="role" name="role" required>
-        <option value="student">Student</option>
-        <option value="instructor">Instructor</option>
-      </select><br><br>
-
-      <button type="button" onclick="validateLogin()">Submit</button>
-      <button id="close-btn" onclick="hideLoginForm()">Close</button>
-    </form>
-    <p id="error-message" class="error"></p>
-  </div>
 </body>
 </html>
