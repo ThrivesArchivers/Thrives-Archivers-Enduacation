@@ -137,6 +137,205 @@
       <p>Thank you! Your notes have been submitted.</p>
       <p>Click below to generate MCQs:</p>
       <a id="chatgpt-link" href="" target="_blank">Click here to generate MCQs</a>
+      <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chemical Kinetics Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 50px auto;
+            background: white;
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        #quiz-container {
+            margin-top: 20px;
+        }
+
+        #question {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .option {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            background: white;
+            color: black;
+            border: 2px solid #ccc;
+            transition: 0.3s;
+        }
+
+        .option:hover {
+            background: #e0e0e0;
+        }
+
+        .correct {
+            background: #28a745 !important;
+            color: white !important;
+        }
+
+        .wrong {
+            background: #dc3545 !important;
+            color: white !important;
+        }
+
+        .message {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .correct-message {
+            color: #28a745;
+        }
+
+        .wrong-message {
+            color: #dc3545;
+        }
+
+        #next-btn {
+            padding: 10px 20px;
+            margin-top: 20px;
+            border: none;
+            background: #007bff;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            display: none;
+        }
+
+        #next-btn:hover {
+            background: #0056b3;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Chemical Kinetics Quiz</h1>
+        <div id="quiz-container">
+            <p id="question"></p>
+            <div id="options"></div>
+            <p id="message" class="message"></p>
+            <button id="next-btn" onclick="nextQuestion()">Next Question</button>
+        </div>
+        <div id="result-container" class="hidden">
+            <h2>Quiz Completed!</h2>
+            <p id="score"></p>
+            <button onclick="restartQuiz()">Retry Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            { question: "What is the rate of a chemical reaction?", options: ["Change in mass", "Change in concentration over time", "Total energy change", "Entropy change"], answer: "Change in concentration over time" },
+            { question: "Which is NOT a type of reaction rate?", options: ["Instantaneous rate", "Final rate", "Initial rate", "Average rate"], answer: "Final rate" },
+            { question: "How do you calculate the instantaneous rate?", options: ["Slope of tangent line on concentration-time graph", "Using equilibrium constant", "Total concentration/time", "Sum of all reactant concentrations"], answer: "Slope of tangent line on concentration-time graph" },
+            { question: "What is the unit of reaction rate?", options: ["mol/L", "L/mol", "mol/L·s", "s/mol"], answer: "mol/L·s" },
+            { question: "Which equation represents the rate law?", options: ["Rate = k[A]^m[B]^n", "Rate = [A]^2 + [B]^2", "Rate = ΔG/RT", "Rate = m × v"], answer: "Rate = k[A]^m[B]^n" },
+            { question: "What is the overall order of Rate = k[A]^2[B]?", options: ["1", "2", "3", "4"], answer: "3" },
+            { question: "Which does NOT affect reaction rate?", options: ["Temperature", "Catalyst", "Surface area", "Number of neutrons"], answer: "Number of neutrons" },
+            { question: "Which factor lowers activation energy?", options: ["Temperature", "Catalyst", "Concentration", "Surface area"], answer: "Catalyst" },
+            { question: "The half-life of a first-order reaction is:", options: ["Independent of concentration", "Depends on concentration", "Equal to rate constant", "Equal to reaction time"], answer: "Independent of concentration" },
+            { question: "For a second-order reaction, half-life formula is:", options: ["t½ = ln(2)/k", "t½ = 1/k[A]₀", "t½ = k[A]₀²", "t½ = 1/2k"], answer: "t½ = 1/k[A]₀" }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        function loadQuestion() {
+            const questionData = quizData[currentQuestionIndex];
+            document.getElementById("question").textContent = questionData.question;
+            document.getElementById("options").innerHTML = "";
+            document.getElementById("message").textContent = "";
+            document.getElementById("next-btn").style.display = "none";
+
+            questionData.options.forEach(option => {
+                const button = document.createElement("button");
+                button.classList.add("option");
+                button.textContent = option;
+                button.onclick = () => checkAnswer(button, option);
+                document.getElementById("options").appendChild(button);
+            });
+        }
+
+        function checkAnswer(button, selectedOption) {
+            const questionData = quizData[currentQuestionIndex];
+            const correctAnswer = questionData.answer;
+            const buttons = document.querySelectorAll(".option");
+
+            if (selectedOption === correctAnswer) {
+                button.classList.add("correct");
+                document.getElementById("message").textContent = "Correct!";
+                document.getElementById("message").classList.add("correct-message");
+                score++;
+            } else {
+                button.classList.add("wrong");
+                document.getElementById("message").textContent = "Wrong!";
+                document.getElementById("message").classList.add("wrong-message");
+                buttons.forEach(btn => {
+                    if (btn.textContent === correctAnswer) {
+                        btn.classList.add("correct");
+                    }
+                });
+            }
+
+            buttons.forEach(btn => btn.onclick = null);
+            document.getElementById("next-btn").style.display = "block";
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizData.length) {
+                loadQuestion();
+            } else {
+                document.getElementById("quiz-container").classList.add("hidden");
+                document.getElementById("result-container").classList.remove("hidden");
+                document.getElementById("score").textContent = `You scored ${score} out of ${quizData.length}!`;
+            }
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            document.getElementById("quiz-container").classList.remove("hidden");
+            document.getElementById("result-container").classList.add("hidden");
+            loadQuestion();
+        }
+
+        loadQuestion();
+    </script>
+</body>
+</html>
     </div>
   </section>
 </main>
