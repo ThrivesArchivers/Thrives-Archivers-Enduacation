@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chemical Kinetics Quiz</title>
+    <title>Quizzes</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -20,23 +20,24 @@
             padding: 20px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
+            margin-bottom: 50px;
         }
 
-        h1 {
+        h1, h2 {
             color: #333;
         }
 
-        #quiz-container {
+        #quiz-container, #biology-quiz-container {
             margin-top: 20px;
         }
 
-        #question {
+        #question, #biology-question {
             font-size: 20px;
             font-weight: bold;
             margin-bottom: 15px;
         }
 
-        .option {
+        .option, .biology-option {
             display: block;
             width: 100%;
             padding: 12px;
@@ -51,7 +52,7 @@
             transition: 0.3s;
         }
 
-        .option:hover {
+        .option:hover, .biology-option:hover {
             background: #e0e0e0;
         }
 
@@ -89,7 +90,7 @@
             color: #dc3545;
         }
 
-        #next-btn {
+        #next-btn, #biology-next-btn {
             padding: 10px 20px;
             margin-top: 20px;
             border: none;
@@ -101,7 +102,7 @@
             display: none;
         }
 
-        #next-btn:hover {
+        #next-btn:hover, #biology-next-btn:hover {
             background: #0056b3;
         }
 
@@ -126,8 +127,23 @@
         </div>
     </div>
 
+    <div class="container">
+        <h2>Biology Quiz</h2>
+        <div id="biology-quiz-container">
+            <p id="biology-question"></p>
+            <div id="biology-options"></div>
+            <p id="biology-message" class="message"></p>
+            <button id="biology-next-btn" onclick="nextBiologyQuestion()">Next Question</button>
+        </div>
+        <div id="biology-result-container" class="hidden">
+            <h2>Quiz Completed!</h2>
+            <p id="biology-score"></p>
+            <button onclick="restartBiologyQuiz()">Retry Quiz</button>
+        </div>
+    </div>
+
     <script>
-        const quizData = [
+        const chemistryQuizData = [
             { question: "What is the rate of a chemical reaction?", options: ["Change in mass", "Change in concentration over time", "Total energy change", "Entropy change"], answer: "Change in concentration over time" },
             { question: "Which is NOT a type of reaction rate?", options: ["Instantaneous rate", "Final rate", "Initial rate", "Average rate"], answer: "Final rate" },
             { question: "How do you calculate the instantaneous rate?", options: ["Slope of tangent line on concentration-time graph", "Using equilibrium constant", "Total concentration/time", "Sum of all reactant concentrations"], answer: "Slope of tangent line on concentration-time graph" },
@@ -150,11 +166,34 @@
             { question: "What happens to the rate constant when the temperature increases?", options: ["It decreases", "It increases", "It remains constant", "It becomes zero"], answer: "It increases" }
         ];
 
-        let currentQuestionIndex = 0;
-        let score = 0;
+        const biologyQuizData = [
+            { question: "Who proposed the Cell Theory?", options: ["Schleiden & Schwann", "Darwin", "Pasteur", "Watson & Crick"], answer: "Schleiden & Schwann" },
+            { question: "Which scientist discovered cells?", options: ["Robert Hooke", "Louis Pasteur", "Antonie van Leeuwenhoek", "Gregor Mendel"], answer: "Robert Hooke" },
+            { question: "Which statement is NOT part of Cell Theory?", options: ["All living things are made of cells", "Cells arise from pre-existing cells", "Cells are the basic unit of life", "All cells contain DNA"], answer: "All cells contain DNA" },
+            { question: "Which of the following is NOT a type of cell?", options: ["Prokaryotic", "Eukaryotic", "Multicellular", "Unicellular"], answer: "Multicellular" },
+            { question: "Which scientist confirmed that cells come from pre-existing cells?", options: ["Rudolf Virchow", "Schleiden", "Watson & Crick", "Darwin"], answer: "Rudolf Virchow" },
+            { question: "Which structure is present only in plant cells?", options: ["Mitochondria", "Nucleus", "Chloroplast", "Ribosome"], answer: "Chloroplast" },
+            { question: "Which organelle stores water and nutrients in plant cells?", options: ["Mitochondria", "Vacuole", "Ribosome", "Golgi Apparatus"], answer: "Vacuole" },
+            { question: "What is the function of the cell wall in plant cells?", options: ["Energy production", "Structural support", "Protein synthesis", "Lipid storage"], answer: "Structural support" },
+            { question: "Which organelle is present in animal cells but not in plant cells?", options: ["Chloroplast", "Cell wall", "Lysosome", "Vacuole"], answer: "Lysosome" },
+            { question: "Which structure controls what enters and exits a cell?", options: ["Nucleus", "Cytoplasm", "Cell membrane", "Mitochondria"], answer: "Cell membrane" },
+            { question: "Which type of cell lacks a nucleus?", options: ["Animal cell", "Plant cell", "Bacterial cell", "Fungal cell"], answer: "Bacterial cell" },
+            { question: "Which cell type is more complex?", options: ["Prokaryotic", "Eukaryotic", "Bacterial", "Virus"], answer: "Eukaryotic" },
+            { question: "Which domain contains prokaryotic organisms?", options: ["Eukarya", "Archaea", "Fungi", "Animalia"], answer: "Archaea" },
+            { question: "Which structure is found in both prokaryotic and eukaryotic cells?", options: ["Nucleus", "Mitochondria", "Ribosome", "Golgi Apparatus"], answer: "Ribosome" },
+            { question: "What is the genetic material in prokaryotic cells?", options: ["DNA", "RNA", "Plasmids", "Both DNA and RNA"], answer: "Both DNA and RNA" },
+            { question: "Which of the following is an example of a prokaryote?", options: ["Amoeba", "Bacteria", "Mushroom", "Frog"], answer: "Bacteria" },
+            { question: "What is the major difference between prokaryotic and eukaryotic cells?", options: ["Eukaryotic cells have a nucleus", "Prokaryotic cells are larger", "Eukaryotic cells lack DNA", "Prokaryotic cells have mitochondria"], answer: "Eukaryotic cells have a nucleus" },
+            { question: "Which of the following is NOT found in a prokaryotic cell?", options: ["Ribosomes", "DNA", "Mitochondria", "Cell membrane"], answer: "Mitochondria" },
+            { question: "Which organelle is responsible for cellular respiration?", options: ["Chloroplast", "Golgi Apparatus", "Mitochondria", "Ribosome"], answer: "Mitochondria" },
+            { question: "What is the process by which cells divide?", options: ["Mitosis", "Photosynthesis", "Osmosis", "Glycolysis"], answer: "Mitosis" }
+        ];
 
-        function loadQuestion() {
-            const questionData = quizData[currentQuestionIndex];
+        let currentChemistryQuestionIndex = 0;
+        let chemistryScore = 0;
+
+        function loadChemistryQuestion() {
+            const questionData = chemistryQuizData[currentChemistryQuestionIndex];
             document.getElementById("question").textContent = questionData.question;
             document.getElementById("options").innerHTML = "";
             document.getElementById("message").textContent = "";
@@ -164,13 +203,13 @@
                 const button = document.createElement("button");
                 button.classList.add("option");
                 button.textContent = option;
-                button.onclick = () => checkAnswer(button, option);
+                button.onclick = () => checkChemistryAnswer(button, option);
                 document.getElementById("options").appendChild(button);
             });
         }
 
-        function checkAnswer(button, selectedOption) {
-            const questionData = quizData[currentQuestionIndex];
+        function checkChemistryAnswer(button, selectedOption) {
+            const questionData = chemistryQuizData[currentChemistryQuestionIndex];
             const correctAnswer = questionData.answer;
             const buttons = document.querySelectorAll(".option");
 
@@ -178,7 +217,7 @@
                 button.classList.add("correct");
                 document.getElementById("message").textContent = "Correct!";
                 document.getElementById("message").classList.add("correct-message");
-                score++;
+                chemistryScore++;
             } else {
                 button.classList.add("wrong");
                 document.getElementById("message").textContent = "Wrong!";
@@ -195,25 +234,90 @@
         }
 
         function nextQuestion() {
-            currentQuestionIndex++;
-            if (currentQuestionIndex < quizData.length) {
-                loadQuestion();
+            currentChemistryQuestionIndex++;
+            if (currentChemistryQuestionIndex < chemistryQuizData.length) {
+                loadChemistryQuestion();
             } else {
                 document.getElementById("quiz-container").classList.add("hidden");
                 document.getElementById("result-container").classList.remove("hidden");
-                document.getElementById("score").textContent = `You scored ${score} out of ${quizData.length}!`;
+                document.getElementById("score").textContent = `You scored ${chemistryScore} out of ${chemistryQuizData.length}!`;
             }
         }
 
         function restartQuiz() {
-            currentQuestionIndex = 0;
-            score = 0;
+            currentChemistryQuestionIndex = 0;
+            chemistryScore = 0;
             document.getElementById("quiz-container").classList.remove("hidden");
             document.getElementById("result-container").classList.add("hidden");
-            loadQuestion();
+            loadChemistryQuestion();
         }
 
-        loadQuestion();
+        loadChemistryQuestion();
+
+        let currentBiologyQuestionIndex = 0;
+        let biologyScore = 0;
+        
+        function loadBiologyQuestion() {
+            const questionData = biologyQuizData[currentBiologyQuestionIndex];
+            document.getElementById("biology-question").textContent = questionData.question;
+            document.getElementById("biology-options").innerHTML = "";
+            document.getElementById("biology-message").textContent = "";
+            document.getElementById("biology-next-btn").style.display = "none";
+
+            questionData.options.forEach(option => {
+                const button = document.createElement("button");
+                button.classList.add("biology-option");
+                button.textContent = option;
+                button.onclick = () => checkBiologyAnswer(button, option);
+                document.getElementById("biology-options").appendChild(button);
+            });
+        }
+
+        function checkBiologyAnswer(button, selectedOption) {
+            const questionData = biologyQuizData[currentBiologyQuestionIndex];
+            const correctAnswer = questionData.answer;
+            const buttons = document.querySelectorAll(".biology-option");
+
+            if (selectedOption === correctAnswer) {
+                button.classList.add("correct");
+                document.getElementById("biology-message").textContent = "Correct!";
+                document.getElementById("biology-message").classList.add("correct-message");
+                biologyScore++;
+            } else {
+                button.classList.add("wrong");
+                document.getElementById("biology-message").textContent = "Wrong!";
+                document.getElementById("biology-message").classList.add("wrong-message");
+                buttons.forEach(btn => {
+                    if (btn.textContent === correctAnswer) {
+                        btn.classList.add("correct-answer");
+                    }
+                });
+            }
+
+            buttons.forEach(btn => btn.onclick = null);
+            document.getElementById("biology-next-btn").style.display = "block";
+        }
+
+        function nextBiologyQuestion() {
+            currentBiologyQuestionIndex++;
+            if (currentBiologyQuestionIndex < biologyQuizData.length) {
+                loadBiologyQuestion();
+            } else {
+                document.getElementById("biology-quiz-container").classList.add("hidden");
+                document.getElementById("biology-result-container").classList.remove("hidden");
+                document.getElementById("biology-score").textContent = `You scored ${biologyScore} out of ${biologyQuizData.length}!`;
+            }
+        }
+
+        function restartBiologyQuiz() {
+            currentBiologyQuestionIndex = 0;
+            biologyScore = 0;
+            document.getElementById("biology-quiz-container").classList.remove("hidden");
+            document.getElementById("biology-result-container").classList.add("hidden");
+            loadBiologyQuestion();
+        }
+
+        loadBiologyQuestion();
     </script>
 </body>
 </html>
