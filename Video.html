@@ -1,203 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Video Lessons</title>
-  <style>
-    /* General Styling */
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f4f4f9;
-      color: #333;
-    }
-
-    /* Header */
-    header {
-      background: #007bff;
-      color: white;
-      text-align: center;
-      padding: 1rem 0;
-    }
-
-    header h1 {
-      margin: 0;
-    }
-
-    /* Main Content */
-    main {
-      padding: 2rem;
-    }
-
-    /* Section Styling */
-    section {
-      margin-bottom: 2rem;
-      padding: 1rem;
-      background: #fff;
-      border-radius: 5px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    section h2 {
-      margin-top: 0;
-    }
-
-    /* Form Inputs */
-    input, textarea, button {
-      width: 100%;
-      padding: 0.75rem;
-      margin: 0.5rem 0;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      font-size: 1rem;
-    }
-
-    button {
-      background: #007bff;
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    button:hover {
-      background: #0056b3;
-    }
-
-    /* Playlist and Video Container */
-    #playlist-container, #video-container {
-      margin-top: 1rem;
-    }
-
-    #playlist-container .playlist, #video-container .video-item {
-      padding: 1rem;
-      background: #f9f9f9;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      margin-bottom: 1rem;
-    }
-
-    footer {
-      text-align: center;
-      background: #333;
-      color: white;
-      padding: 1rem 0;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thrives Archivers - Video Streaming</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        h2 {
+            background: #333;
+            color: white;
+            padding: 15px;
+            margin: 0;
+        }
+        .container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            padding: 20px;
+        }
+        .section {
+            width: 45%;
+            background: white;
+            padding: 15px;
+            margin: 10px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .section h3 {
+            background: #444;
+            color: white;
+            padding: 10px;
+            margin-top: 0;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            padding: 10px;
+            cursor: pointer;
+            background: #ddd;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+        li:hover {
+            background: #bbb;
+        }
+        .video-player {
+            margin-top: 20px;
+            width: 100%;
+            height: 300px;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
 </head>
 <body>
 
-  <header>
-    <h1>Video Lessons</h1>
-  </header>
+    <h2>Thrives Archivers - Video Streaming</h2>
+    
+    <div class="container">
+        <!-- Maths Section -->
+        <div class="section">
+            <h3>Maths</h3>
+            <ul>
+                <li onclick="playVideo('KB-YDjS4Y90')">Set Questions</li>
+                <li onclick="playVideo('ihl7GXCU_X4')">Introduction to Surd</li>
+                <li onclick="playVideo('UHy079K1_Yw')">Set Intervals</li>
+                <li onclick="playVideo('1_HbyR_8dWQ')">Trigonometry</li>
+                <li onclick="playVideo('SSrhsCz3Rrs')">Trigonometry by Tutor Nerd</li>
+            </ul>
+        </div>
 
-  <main>
-    <!-- Video Upload Section -->
-    <section id="video-upload">
-      <h2>Upload Video</h2>
-      <input type="file" id="video-file" accept="video/*">
-      <input type="text" id="video-description" placeholder="Enter video description">
-      <button onclick="uploadVideo()">Upload Video</button>
-    </section>
+        <!-- Physics Section -->
+        <div class="section">
+            <h3>Physics</h3>
+            <ul>
+                <li onclick="playVideo('jIJ3HJSeDts')">Dimension Analysis</li>
+                <li onclick="playVideo('Yr8IJddj9-E')">Deformation of a Solid</li>
+                <li onclick="playVideo('6JQY8Pyh0z0')">Deformation of a Solid Tutorial Sheet 1</li>
+            </ul>
+        </div>
 
-    <!-- Playlist Section -->
-    <section id="playlist-section">
-      <h2>Create Playlist</h2>
-      <input type="text" id="playlist-name" placeholder="Enter playlist name">
-      <textarea id="playlist-description" placeholder="Enter playlist description"></textarea>
-      <button onclick="createPlaylist()">Create Playlist</button>
-      <h3>Playlists</h3>
-      <div id="playlist-container"></div>
-    </section>
+        <!-- Chemistry Section -->
+        <div class="section">
+            <h3>Chemistry</h3>
+            <ul>
+                <li onclick="playVideo('Wxd35Axqda0')">Introduction to Chemistry</li>
+                <li onclick="playVideo('WYx4OP6ntCA')">Percentage Yield</li>
+            </ul>
+        </div>
 
-    <!-- Video Player Section -->
-    <section id="video-player">
-      <h2>Video Lessons</h2>
-      <div id="video-container"></div> <!-- Container to display uploaded videos -->
-    </section>
-  </main>
+        <!-- Biology Section -->
+        <div class="section">
+            <h3>Biology</h3>
+            <ul>
+                <li onclick="playVideo('4B7GbZhzPYM')">Drawing Eukaryotic Cell</li>
+                <li onclick="playVideo('l1TtKZyPy6E')">Drawing Prokaryotic Cell</li>
+            </ul>
+        </div>
+    </div>
 
-  <footer>
-    <p>&copy; 2025 Online Learning</p>
-  </footer>
+    <!-- Video Player -->
+    <div class="video-player">
+        <iframe id="videoFrame" src="https://www.youtube.com/embed/KB-YDjS4Y90" allowfullscreen></iframe>
+    </div>
 
-  <script>
-    const videoContainer = document.getElementById("video-container");
-    const playlistContainer = document.getElementById("playlist-container");
+    <script>
+        function playVideo(videoId) {
+            document.getElementById("videoFrame").src = "https://www.youtube.com/embed/" + videoId;
+        }
+    </script>
 
-    let videos = [];
-    let playlists = [];
-
-    // Function to upload a video
-    function uploadVideo() {
-      const videoFile = document.getElementById("video-file").files[0];
-      const videoDescription = document.getElementById("video-description").value;
-
-      if (!videoFile || !videoDescription) {
-        alert("Please select a video and enter a description.");
-        return;
-      }
-
-      const videoURL = URL.createObjectURL(videoFile);
-
-      videos.push({ url: videoURL, description: videoDescription });
-      displayVideos();
-
-      // Clear inputs
-      document.getElementById("video-file").value = "";
-      document.getElementById("video-description").value = "";
-    }
-
-    // Function to display videos
-    function displayVideos() {
-      videoContainer.innerHTML = "";
-      videos.forEach((video, index) => {
-        const videoElement = document.createElement("div");
-        videoElement.classList.add("video-item");
-        videoElement.innerHTML = `
-          <video controls width="100%">
-            <source src="${video.url}" type="video/mp4">
-            Your browser does not support the video tag.
-          </video>
-          <p>${video.description}</p>
-        `;
-        videoContainer.appendChild(videoElement);
-      });
-    }
-
-    // Function to create a playlist
-    function createPlaylist() {
-      const playlistName = document.getElementById("playlist-name").value;
-      const playlistDescription = document.getElementById("playlist-description").value;
-
-      if (!playlistName || !playlistDescription) {
-        alert("Please enter both a name and description for the playlist.");
-        return;
-      }
-
-      playlists.push({ name: playlistName, description: playlistDescription });
-      displayPlaylists();
-
-      // Clear inputs
-      document.getElementById("playlist-name").value = "";
-      document.getElementById("playlist-description").value = "";
-    }
-
-    // Function to display playlists
-    function displayPlaylists() {
-      playlistContainer.innerHTML = "";
-      playlists.forEach((playlist) => {
-        const playlistElement = document.createElement("div");
-        playlistElement.classList.add("playlist");
-        playlistElement.innerHTML = `
-          <h4>${playlist.name}</h4>
-          <p>${playlist.description}</p>
-        `;
-        playlistContainer.appendChild(playlistElement);
-      });
-    }
-  </script>
 </body>
 </html>
