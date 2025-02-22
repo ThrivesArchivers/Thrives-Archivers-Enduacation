@@ -1,219 +1,93 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document Upload & AI Assistant</title>
-  <style>
-    /* General Styling */
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f9f9f9;
-    }
-
-    header {
-      background-color: #007BFF;
-      color: white;
-      padding: 20px 10px;
-      text-align: center;
-    }
-
-    header h1 {
-      margin: 0;
-    }
-
-    nav ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-    }
-
-    nav ul li {
-      display: inline;
-    }
-
-    nav ul li a {
-      color: white;
-      text-decoration: none;
-      font-size: 18px;
-    }
-
-    nav ul li a:hover {
-      text-decoration: underline;
-    }
-
-    /* Main Content */
-    main {
-      padding: 20px;
-    }
-
-    section {
-      margin: 20px auto;
-      padding: 20px;
-      background-color: white;
-      border-radius: 10px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      max-width: 800px;
-    }
-
-    h2 {
-      color: #333;
-      margin-top: 0;
-    }
-
-    textarea, input[type="file"], button {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      font-size: 16px;
-    }
-
-    textarea {
-      resize: vertical;
-    }
-
-    button {
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #0056b3;
-    }
-
-    #upload-response, #ai-response {
-      margin-top: 20px;
-      padding: 10px;
-      background-color: #f0f8ff;
-      border: 1px solid #007BFF;
-      border-radius: 5px;
-      display: none;
-    }
-
-    footer {
-      background-color: #007BFF;
-      color: white;
-      padding: 10px;
-      text-align: center;
-    }
-
-    a {
-      color: #007BFF;
-      text-decoration: none;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thrives Archivers Documents</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        .document-section {
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #e8f4fd;
+            border: 1px solid #007BFF;
+            border-radius: 10px;
+        }
+        .document-section h2 {
+            color: #007BFF;
+        }
+        iframe {
+            width: 100%;
+            height: 500px;
+            border: none;
+            display: none;
+        }
+        a {
+            display: block;
+            margin: 5px 0;
+            text-decoration: none;
+            color: blue;
+        }
+    </style>
+    <script>
+        function loadDocument(url) {
+            const viewer = document.getElementById("docViewer");
+            viewer.src = url;
+            viewer.style.display = 'block';
+        }
+    </script>
 </head>
 <body>
-  <header>
-    <h1>Natural Sciences Document Hub</h1>
-    <nav>
-      <ul>
-        <li><a href="#upload-section">Upload Documents</a></li>
-        <li><a href="#ai-assistant-section">AI Assistant</a></li>
-      </ul>
-    </nav>
-  </header>
+    <div class="container">
+        <h1>Thrives Archivers Documents</h1>
+        <div class="document-section">
+            <h2>Physics</h2>
+            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1Jvg0B_v00KDUXTTK5_iy9zlVkssvetpf/preview')">Introduction to Physics</a>
+            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1Jw5asjR44Rw35OcaC5tMG81MuXWFTrpu/preview')">Uncertainty and Measurements</a>
+            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1K3Kg1ICdqZqb-pogiMlWRXb5zChGHATz/preview')">Temperature Convention</a>
+            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1JwVrTLxLrOomRWeasMVUXyxUcfHhNWGe/preview')">Pen Write Surprise Test 1</a>
+            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1JnztD_6ea6TmyxMO-0iJaWV9JK0_vWGD/preview')">Physics Study Hub (Thrives Tutor)</a>
+            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1JuWnxmlq1-gRm9_zL4A2qAtU9VpJ4OeT/preview')">Dimension Analysis</a>
+            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1K1liFlpkp4Kmv24Ml0ecgTYFnu7bnv9I/preview')">Projectile Motion</a>
+            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1A2W_K0qOKK8gimRN_ZhWoaeqyxlB6Quq/preview')">Deformation of a Solid</a>
+            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1A51_phW4qkgIITKAEdr3iYlx7SQIlMfK/preview')">Tutorial Sheet 1 (Deformation of a Solid)</a>
+            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1EcWkwyftm_9Yydoe1yKIKjIyWsZMtf0S/preview')">Additional Document</a>
+        </div>
 
-  <main>
-    <!-- Document Upload Section -->
-    <section id="upload-section">
-      <h2>Upload Documents</h2>
-      <p>Share summarized notes and important study materials.</p>
-      <form id="document-upload-form" enctype="multipart/form-data">
-        <label for="file">Choose a document:</label>
-        <input type="file" id="file" name="file" accept=".pdf,.doc,.docx,.txt" required>
-        <label for="description">Document Description:</label>
-        <textarea id="description" name="description" rows="4" placeholder="Enter a brief description of the document..." required></textarea>
-        <button type="submit">Upload Document</button>
-      </form>
-      <div id="upload-response"></div>
-    </section>
+        <div class="document-section">
+            <h2>Maths</h2>
+            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/18R_MaQlozuX04OEJi9avb3SLvbWOGu68/preview')">Trigonometry</a>
+            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/193rmbYzWE6-YQML4eLs2b9RWFysinGmB/preview')">Additional Document</a>
+            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1EVt4NVB97UjHZ7BN2fMvnWKT4-s8UNgn/preview')">Tutorial 1 (Questions 1-4)</a>
+            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1BdA_Kg6Y9wsINlUStNZEtrlOu-5FfgKP/preview')">Trigonometry By Tutor Nerd</a>
+        </div>
 
-    <!-- AI Assistant Section -->
-    <section id="ai-assistant-section">
-      <h2>AI Natural Science Assistant</h2>
-      <p>Ask the AI assistant any question about natural sciences, or seek motivation and greetings.</p>
-      <textarea id="ai-question" rows="4" placeholder="Type your question here..."></textarea>
-      <button id="ask-button">Ask</button>
-      <div id="ai-response"></div>
-    </section>
-  </main>
+        <div class="document-section">
+            <h2>Biology</h2>
+            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1Cf0sqjbIL28pID_Nr_KZTyAVPFBWSwe7/preview')">Cell Division Introduction</a>
+            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1Ka0endHzlg9clvGhtQtoJINO-SH_jzZS/preview')">Additional Document</a>
+        </div>
 
-  <footer>
-    <p>&copy; 2025 Natural Sciences Hub</p>
-  </footer>
+        <div class="document-section">
+            <h2>Chemistry</h2>
+            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1CB6pUnTcl_tk_qUPoMDDAM9ucnJJh8hE/preview')">Chemical Kinetics</a>
+            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1Bc431Hb7kuwQ_z_IksU5PsyGsxrfz0mU/preview')">Chemical Kinetics (Rate Law)</a>
+        </div>
 
-  <script>
-    // Document Upload Handler
-    document.getElementById("document-upload-form").addEventListener("submit", function (e) {
-      e.preventDefault();
-
-      const fileInput = document.getElementById("file");
-      const descriptionInput = document.getElementById("description");
-      const uploadResponse = document.getElementById("upload-response");
-
-      if (!fileInput.files[0]) {
-        uploadResponse.textContent = "Please select a file.";
-        uploadResponse.style.display = "block";
-        return;
-      }
-
-      const file = fileInput.files[0];
-      const description = descriptionInput.value;
-
-      // Mock Upload Process
-      setTimeout(() => {
-        uploadResponse.textContent = `Document "${file.name}" uploaded successfully with description: "${description}"`;
-        uploadResponse.style.display = "block";
-
-        // Clear Inputs
-        fileInput.value = "";
-        descriptionInput.value = "";
-      }, 1000);
-    });
-
-    // AI Assistant Handler
-    document.getElementById("ask-button").addEventListener("click", function () {
-      const questionInput = document.getElementById("ai-question");
-      const responseDiv = document.getElementById("ai-response");
-
-      const question = questionInput.value.trim();
-
-      if (!question) {
-        responseDiv.textContent = "Please type a question.";
-        responseDiv.style.display = "block";
-        return;
-      }
-
-      // AI Response
-      setTimeout(() => {
-        const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(question)}`;
-        const youtubeSearchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(question)}`;
-        const response = `
-          Hi, how are you? Thanks for sharing that question.<br>
-          For more information, you can: <br>
-          - <a href="${googleSearchUrl}" target="_blank">Search on Google</a><br>
-          - <a href="${youtubeSearchUrl}" target="_blank">Watch related videos on YouTube</a>
-        `;
-        responseDiv.innerHTML = response;
-        responseDiv.style.display = "block";
-
-        // Clear Input
-        questionInput.value = "";
-      }, 1000);
-    });
-  </script>
+        <iframe id="docViewer"></iframe>
+    </div>
 </body>
-</html>    
+</html>
