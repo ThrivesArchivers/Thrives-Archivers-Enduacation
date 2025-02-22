@@ -1,71 +1,11 @@
-<script>
-  // Chart Handling with AI API
-  async function generateChartData() {
-    const apiKey = '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';
-    const endpoint = 'https://api.openai.com/v1/completions';
-
-    const headers = {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`,
-    };
-
-    const body = JSON.stringify({
-      model: 'text-davinci-003',
-      prompt: "Generate a set of data points for a bar chart.",
-      max_tokens: 100,
-      temperature: 0.7,
-    });
-
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: headers,
-      body: body,
-    });
-
-    const data = await response.json();
-    const chartData = JSON.parse(data.choices[0].text.trim());  // Expecting JSON format
-
-    renderChart(chartData);
-  }
-
-  function renderChart(data) {
-    const ctx = document.getElementById('chart').getContext('2d');
-    new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: data.labels,
-        datasets: [{
-          label: 'AI Generated Data',
-          data: data.values,
-          backgroundColor: 'rgba(0, 123, 255, 0.5)',
-          borderColor: 'rgba(0, 123, 255, 1)',
-          borderWidth: 1,
-        }]
-      },
-      options: {
-        responsive: true,
-        scales: {
-          y: {
-            beginAtZero: true
-          }
-        }
-      }
-    });
-  }
-
-  // Generate Chart on page load
-  generateChartData();
-</script>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI-Enhanced Dashboard - Thrives Archivers</title>
+  <title>Dashboard - Thrives Archivers</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    /* Reset & General Styling */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: Arial, sans-serif;
@@ -75,39 +15,51 @@
       flex-direction: column;
       min-height: 100vh;
     }
-
-    /* Navbar */
     header nav {
       background-color: #3f51b5;
       padding: 15px 0;
       display: flex;
       justify-content: center;
+      flex-wrap: wrap;
       gap: 20px;
       position: sticky;
-      top: 0; z-index: 1;
+      top: 0;
+      z-index: 1;
     }
     header nav ul {
       list-style-type: none;
       display: flex;
-      gap: 30px;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
     }
     header nav ul li {
       display: inline-block;
     }
     header nav ul li a {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       color: white;
       text-decoration: none;
-      font-size: 18px;
+      font-size: 18px; /* Increased font size */
       padding: 10px;
       transition: transform 0.3s ease, background-color 0.3s ease;
+    }
+    header nav ul li a i {
+      font-size: 24px; /* Increased icon size */
+    }
+    header nav ul li a span {
+      display: none; /* Hide text by default */
     }
     header nav ul li a:hover {
       background-color: #303f9f;
       border-radius: 5px;
       transform: scale(1.1);
     }
-
-    /* Main Dashboard */
+    header nav ul li a:hover span {
+      display: inline; /* Show text on hover */
+    }
     main { padding: 20px; flex-grow: 1; }
     section {
       margin-bottom: 20px;
@@ -117,200 +69,108 @@
       box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     }
     h2 { color: #3f51b5; }
+    .news-item {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+      background-color: #fff;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .news-item:hover {
+      transform: scale(1.05);
+      box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+    }
+    .news-item h3 {
+      color: #3f51b5;
+    }
+    .button-container {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 10px;
+    }
     button {
-      background-color: #3f51b5; color: white;
-      padding: 10px 20px; border: none; border-radius: 5px;
-      cursor: pointer; font-size: 16px;
+      background-color: #3f51b5;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
     }
     button:hover { background-color: #303f9f; }
-
-    /* Footer */
     footer {
       text-align: center;
       padding: 10px;
       background-color: #3f51b5;
       color: white;
-      position: relative; bottom: 0; width: 100%;
-    }
-
-    /* Chatbot */
-    #chatbot {
-      position: fixed;
-      bottom: 20px; right: 20px;
-      width: 250px; height: 350px;
-      background: white; border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-      display: none;
-      padding: 10px;
-    }
-    #chatbot button { width: 100%; margin-top: 10px; }
-    #chat-button {
-      position: fixed; bottom: 20px; right: 20px;
-      background: #3f51b5; color: white;
-      padding: 10px 15px; border-radius: 50%;
-      font-size: 18px;
-    }
-
-    /* Chart Section */
-    #chart-section {
-      margin-top: 20px;
-      padding: 20px;
-      background-color: white;
-      border-radius: 8px;
-      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    }
-    #chart-container {
+      position: relative;
+      bottom: 0;
       width: 100%;
-      height: 300px;
     }
   </style>
+  <script>
+    function searchGoogle() {
+      let query = document.getElementById('search-query').value;
+      window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
+    }
+    function searchYouTube() {
+      let query = document.getElementById('search-query').value;
+      window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`, '_blank');
+    }
+    function askAI() {
+      let query = document.getElementById('search-query').value;
+      window.open(`https://chat.openai.com/chat?query=${encodeURIComponent(query)}`, '_blank');
+    }
+  </script>
 </head>
 <body>
-
-  <!-- Navigation Bar -->
   <header>
     <nav>
       <ul>
-        <li><a href="documents.html"><i class="fas fa-file-alt"></i> Documents</a></li>
-        <li><a href="video.html"><i class="fas fa-video"></i> Videos</a></li>
-        <li><a href="quizzes.html"><i class="fas fa-question-circle"></i> Quizzes</a></li>
-        <li><a href="payments.html"><i class="fas fa-credit-card"></i> Payments</a></li>
-        <li><a href="livelessons.html"><i class="fas fa-chalkboard-teacher"></i> Lessons</a></li>
+        <li><a href="documents.html"><i class="fas fa-file-alt"></i> <span>Documents</span></a></li>
+        <li><a href="video.html"><i class="fas fa-video"></i> <span>Videos</span></a></li>
+        <li><a href="quizzes.html"><i class="fas fa-question-circle"></i> <span>Quizzes</span></a></li>
+        <li><a href="payments.html"><i class="fas fa-credit-card"></i> <span>Payments</span></a></li>
+        <li><a href="livelessons.html"><i class="fas fa-chalkboard-teacher"></i> <span>Lessons</span></a></li>
       </ul>
     </nav>
   </header>
-
-  <!-- Dashboard -->
   <main>
     <section id="news-section">
       <h2>Latest News</h2>
       <div id="news-list"></div>
     </section>
-
-    <section id="add-news-section">
-      <h2>Add News</h2>
-      <form id="add-news-form">
-        <input type="text" id="news-title" placeholder="Enter title" required>
-        <textarea id="news-content" rows="4" placeholder="Enter news content" required></textarea>
-        <button type="submit">Add News</button>
-      </form>
-    </section>
-
-    <!-- Chart Section -->
-    <section id="chart-section">
-      <h2>AI-Generated Chart</h2>
-      <div id="chart-container">
-        <canvas id="chart"></canvas>
+    <section id="search-section">
+      <h2>Search for More Information</h2>
+      <input type="text" id="search-query" placeholder="Enter your question" required>
+      <div class="button-container">
+        <button onclick="searchGoogle()">Search on Google</button>
+        <button onclick="searchYouTube()">Watch on YouTube</button>
+        <button onclick="askAI()">Ask AI (ChatGPT)</button>
       </div>
     </section>
   </main>
-
-  <!-- Chatbot -->
-  <div id="chatbot">
-    <h3>AI Chatbot</h3>
-    <textarea placeholder="Ask me anything..."></textarea>
-    <button>Send</button>
-  </div>
-  <button id="chat-button"><i class="fas fa-comments"></i></button>
-
-  <!-- Footer -->
   <footer>
     <p>&copy; 2025 Thrives Archivers</p>
   </footer>
-
   <script>
-    // News Handling
     const newsItems = [
-      { title: "New Quiz Available", content: "Check out our latest quiz on Chemical Kinetic and Cells!" },
-      { title: "Live Lesson Tomorrow", content: "Note Thrives Archivers has been introduce physically Lessons only for Mulungushi University." }
+      { title: "Meeting Physically", content: "We are excited to announce that Thrives Archivers has introduced Physical Meetings for Mulungushi University!" },
+      { title: "New Quizzes", content: "We have updated two new quizzes for Biology Cells and Chemical Kinetics Introduction." }
     ];
     function displayNews() {
-      document.getElementById("news-list").innerHTML = newsItems.map((news, index) => `
+      document.getElementById("news-list").innerHTML = newsItems.map((news) => `
         <div class="news-item">
           <h3>${news.title}</h3>
           <p>${news.content}</p>
-          <button class="delete-btn" onclick="deleteNews(${index})">Delete</button>
         </div>
       `).join('');
     }
-    function deleteNews(index) {
-      newsItems.splice(index, 1);
-      displayNews();
-    }
-    document.getElementById("add-news-form").addEventListener("submit", function(event) {
-      event.preventDefault();
-      const title = document.getElementById("news-title").value;
-      const content = document.getElementById("news-content").value;
-      newsItems.unshift({ title, content });
-      displayNews();
-      document.getElementById("news-title").value = '';
-      document.getElementById("news-content").value = '';
-    });
     displayNews();
-
-    // Chatbot Toggle
-    document.getElementById("chat-button").addEventListener("click", function() {
-      const bot = document.getElementById("chatbot");
-      bot.style.display = bot.style.display === "none" ? "block" : "none";
-    });
-
-    // Chart Handling with AI API
-    async function generateChartData() {
-      const apiKey = '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';
-      const endpoint = 'https://api.openai.com/v1/completions';
-
-      const headers = {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
-      };
-
-      const body = JSON.stringify({
-        model: 'text-davinci-003',
-        prompt: "Generate a set of data points for a bar chart.",
-        max_tokens: 100,
-        temperature: 0.7,
-      });
-
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: headers,
-        body: body,
-      });
-
-      const data = await response.json();
-      const chartData = JSON.parse(data.choices[0].text.trim());  // Expecting JSON format
-
-      renderChart(chartData);
-    }
-
-    function renderChart(data) {
-      const ctx = document.getElementById('chart').getContext('2d');
-      new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: data.labels,
-          datasets: [{
-            label: 'AI Generated Data',
-            data: data.values,
-            backgroundColor: 'rgba(0, 123, 255, 0.5)',
-            borderColor: 'rgba(0, 123, 255, 1)',
-            borderWidth: 1,
-          }]
-        },
-        options: {
-          responsive: true,
-          scales: {
-            y: {
-              beginAtZero: true
-            }
-          }
-        }
-      });
-    }
-
-    // Generate Chart on page load
-    generateChartData();
   </script>
-
 </body>
 </html>
