@@ -43,10 +43,21 @@
         }
     </style>
     <script>
-        function loadDocument(url) {
-            const viewer = document.getElementById("docViewer");
-            viewer.src = url;
-            viewer.style.display = 'block';
+        function loadDocument(url, course) {
+            const passwords = {
+                physics: "atom",
+                maths: "set",
+                biology: "cell",
+                chemistry: "atom"
+            };
+            const userPassword = prompt(`Enter the password for ${course}:`);
+            if (userPassword === passwords[course]) {
+                const viewer = document.getElementById("docViewer");
+                viewer.src = url;
+                viewer.style.display = 'block';
+            } else {
+                alert("Incorrect password!");
+            }
         }
     </script>
 </head>
@@ -55,39 +66,39 @@
         <h1>Thrives Archivers Documents</h1>
         <div class="document-section">
             <h2>Physics</h2>
-            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1Jvg0B_v00KDUXTTK5_iy9zlVkssvetpf/preview')">Introduction to Physics</a>
-            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1Jw5asjR44Rw35OcaC5tMG81MuXWFTrpu/preview')">Uncertainty and Measurements</a>
-            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1K3Kg1ICdqZqb-pogiMlWRXb5zChGHATz/preview')">Temperature Convention</a>
-            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1JwVrTLxLrOomRWeasMVUXyxUcfHhNWGe/preview')">Pen Write Surprise Test 1</a>
-            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1JnztD_6ea6TmyxMO-0iJaWV9JK0_vWGD/preview')">Physics Study Hub (Thrives Tutor)</a>
-            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1JuWnxmlq1-gRm9_zL4A2qAtU9VpJ4OeT/preview')">Dimension Analysis</a>
-            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1K1liFlpkp4Kmv24Ml0ecgTYFnu7bnv9I/preview')">Projectile Motion</a>
-            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1A2W_K0qOKK8gimRN_ZhWoaeqyxlB6Quq/preview')">Deformation of a Solid</a>
-            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1A51_phW4qkgIITKAEdr3iYlx7SQIlMfK/preview')">Tutorial Sheet 1 (Deformation of a Solid)</a>
-            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1EcWkwyftm_9Yydoe1yKIKjIyWsZMtf0S/preview')">Additional Document</a>
-            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1EcWkwyftm_9Yydoe1yKIKjIyWsZMtf0S/preview')">Tutorial sheet 1 (part 2)</a>
-            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1MSLnYCzHlAXWqMbWaPBmeuhYb3vSkbhp/preview')">Simple Harmonic Motion</a>
-            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1MUuH0d8NIFZP_JB9vAsWjPqGqd6WOFTt/preview')">Motion of a Pendulum</a>
+            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1Jvg0B_v00KDUXTTK5_iy9zlVkssvetpf/preview', 'physics')">Introduction to Physics</a>
+            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1Jw5asjR44Rw35OcaC5tMG81MuXWFTrpu/preview', 'physics')">Uncertainty and Measurements</a>
+            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1K3Kg1ICdqZqb-pogiMlWRXb5zChGHATz/preview', 'physics')">Temperature Convention</a>
+            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1JwVrTLxLrOomRWeasMVUXyxUcfHhNWGe/preview', 'physics')">Pen Write Surprise Test 1</a>
+            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1JnztD_6ea6TmyxMO-0iJaWV9JK0_vWGD/preview', 'physics')">Physics Study Hub (Thrives Tutor)</a>
+            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1JuWnxmlq1-gRm9_zL4A2qAtU9VpJ4OeT/preview', 'physics')">Dimension Analysis</a>
+            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1K1liFlpkp4Kmv24Ml0ecgTYFnu7bnv9I/preview', 'physics')">Projectile Motion</a>
+            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1A2W_K0qOKK8gimRN_ZhWoaeqyxlB6Quq/preview', 'physics')">Deformation of a Solid</a>
+            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1A51_phW4qkgIITKAEdr3iYlx7SQIlMfK/preview', 'physics')">Tutorial Sheet 1 (Deformation of a Solid)</a>
+            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1EcWkwyftm_9Yydoe1yKIKjIyWsZMtf0S/preview', 'physics')">Additional Document</a>
+            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1EcWkwyftm_9Yydoe1yKIKjIyWsZMtf0S/preview', 'physics')">Tutorial sheet 1 (part 2)</a>
+            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1MSLnYCzHlAXWqMbWaPBmeuhYb3vSkbhp/preview', 'physics')">Simple Harmonic Motion</a>
+            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1MUuH0d8NIFZP_JB9vAsWjPqGqd6WOFTt/preview', 'physics')">Motion of a Pendulum</a>
         </div>
 
         <div class="document-section">
             <h2>Maths</h2>
-            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/18R_MaQlozuX04OEJi9avb3SLvbWOGu68/preview')">Trigonometry</a>
-            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/193rmbYzWE6-YQML4eLs2b9RWFysinGmB/preview')">Additional Document</a>
-            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1EVt4NVB97UjHZ7BN2fMvnWKT4-s8UNgn/preview')">Tutorial 1 (Questions 1-4)</a>
-            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1BdA_Kg6Y9wsINlUStNZEtrlOu-5FfgKP/preview')">Trigonometry By Tutor Nerd</a>
+            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/18R_MaQlozuX04OEJi9avb3SLvbWOGu68/preview', 'maths')">Trigonometry</a>
+            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/193rmbYzWE6-YQML4eLs2b9RWFysinGmB/preview', 'maths')">Additional Document</a>
+            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1EVt4NVB97UjHZ7BN2fMvnWKT4-s8UNgn/preview', 'maths')">Tutorial 1 (Questions 1-4)</a>
+            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1BdA_Kg6Y9wsINlUStNZEtrlOu-5FfgKP/preview', 'maths')">Trigonometry By Tutor Nerd</a>
         </div>
 
         <div class="document-section">
             <h2>Biology</h2>
-            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1Cf0sqjbIL28pID_Nr_KZTyAVPFBWSwe7/preview')">Cell Division Introduction</a>
-            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1Ka0endHzlg9clvGhtQtoJINO-SH_jzZS/preview')">Additional Document</a>
+            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1Cf0sqjbIL28pID_Nr_KZTyAVPFBWSwe7/preview', 'biology')">Cell Division Introduction</a>
+            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1Ka0endHzlg9clvGhtQtoJINO-SH_jzZS/preview', 'biology')">Additional Document</a>
         </div>
 
         <div class="document-section">
             <h2>Chemistry</h2>
-            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1CB6pUnTcl_tk_qUPoMDDAM9ucnJJh8hE/preview')">Chemical Kinetics</a>
-            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1Bc431Hb7kuwQ_z_IksU5PsyGsxrfz0mU/preview')">Chemical Kinetics (Rate Law)</a>
+            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1CB6pUnTcl_tk_qUPoMDDAM9ucnJJh8hE/preview', 'chemistry')">Chemical Kinetics</a>
+            <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1Bc431Hb7kuwQ_z_IksU5PsyGsxrfz0mU/preview', 'chemistry')">Chemical Kinetics (Rate Law)</a>
         </div>
 
         <iframe id="docViewer"></iframe>
