@@ -32,44 +32,6 @@
             margin-bottom: 20px;
         }
 
-        form {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
-            margin: auto;
-        }
-
-        label {
-            display: block;
-            margin: 10px 0 5px;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
-        button {
-            background-color: #007BFF;
-            color: #fff;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            display: block;
-            width: 100%;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
         table {
             width: 100%;
             border-collapse: collapse;
@@ -88,17 +50,12 @@
             color: white;
         }
 
-        .remove-btn {
-            background-color: red;
-            color: white;
-            padding: 5px 10px;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
+        .paid {
+            color: green;
         }
 
-        .remove-btn:hover {
-            background-color: darkred;
+        .not-paid {
+            color: red;
         }
     </style>
 </head>
@@ -106,43 +63,7 @@
 
     <header>
         <h1>Payment for Account Access</h1>
-        <p>Please fill out the form to register your payment.</p>
     </header>
-
-    <section id="payment-form">
-        <h2>Submit Your Payment</h2>
-        <form id="paymentForm">
-            <label for="name">Full Name:</label>
-            <input type="text" id="name" required>
-
-            <label for="paymentMethod">Payment Method:</label>
-            <select id="paymentMethod" required>
-                <option value="MTN">MTN Mobile Money</option>
-                <option value="Airtel">Airtel Mobile Money</option>
-            </select>
-
-            <label for="amount">Amount Paid (K):</label>
-            <input type="number" id="amount" required>
-
-            <label for="month">Payment Month:</label>
-            <select id="month" required>
-                <option value="January">January</option>
-                <option value="February">February</option>
-                <option value="March">March</option>
-                <option value="April">April</option>
-                <option value="May">May</option>
-                <option value="June">June</option>
-                <option value="July">July</option>
-                <option value="August">August</option>
-                <option value="September">September</option>
-                <option value="October">October</option>
-                <option value="November">November</option>
-                <option value="December">December</option>
-            </select>
-
-            <button type="button" onclick="addPayment()">Submit Payment</button>
-        </form>
-    </section>
 
     <section id="enrollment">
         <h2>Enrollment Payments</h2>
@@ -150,14 +71,48 @@
             <thead>
                 <tr>
                     <th>Name</th>
-                    <th>Payment Method</th>
+                    <th>Comment</th>
+                    <th>Courses</th>
                     <th>Amount (K)</th>
-                    <th>Month</th>
-                    <th>Action</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody id="enrollment-table">
-                <!-- Payments will be added here dynamically -->
+                <tr>
+                    <td>Precious Mchonde</td>
+                    <td>Rely on Helbs</td>
+                    <td>Physics and Chemistry</td>
+                    <td>K300</td>
+                    <td class="not-paid">Not Paid</td>
+                </tr>
+                <tr>
+                    <td>Belama Lewis</td>
+                    <td>Relies on Helbs</td>
+                    <td>Physics</td>
+                    <td>K150</td>
+                    <td class="not-paid">Not Paid</td>
+                </tr>
+                <tr>
+                    <td>Belama Lewis</td>
+                    <td>Relies on Helbs</td>
+                    <td>Physics</td>
+                    <td>K150</td>
+                    <td class="paid">Paid</td>
+                </tr>
+                <tr>
+                    <td>Madalisto</td>
+                    <td>Access to documents</td>
+                    <td>Physics</td>
+                    <td>K160</td>
+                    <td class="paid">Paid</td>
+                </tr>
+                <tr>
+                    <td>D҉r҉e҉a҉m҉C҉h҉a҉s҉e҉r҉d҉</td>
+                    <td>Relay on Helbs</td>
+                    <td>Maths, Biology, Chemistry and Physics</td>
+                    <td>K600</td>
+                    <td class="not-paid">Not Paid</td>
+                </tr>
             </tbody>
         </table>
     </section>
@@ -165,44 +120,6 @@
     <footer>
         <p>&copy; 2025 Thrives Archivers. All rights reserved.</p>
     </footer>
-
-    <script>
-        // Function to add a payment to the table
-        function addPayment() {
-            const name = document.getElementById("name").value.trim();
-            const paymentMethod = document.getElementById("paymentMethod").value;
-            const amount = document.getElementById("amount").value.trim();
-            const month = document.getElementById("month").value;
-
-            if (name === "" || amount === "") {
-                alert("Please fill in all fields.");
-                return;
-            }
-
-            // Add payment entry to the table
-            const table = document.getElementById("enrollment-table");
-            const row = document.createElement("tr");
-
-            row.innerHTML = `
-                <td>${name}</td>
-                <td>${paymentMethod}</td>
-                <td>${amount}</td>
-                <td>${month}</td>
-                <td><button class="remove-btn" onclick="removePayment(this)">Remove</button></td>
-            `;
-
-            table.appendChild(row);
-
-            // Clear form fields after submission
-            document.getElementById("paymentForm").reset();
-        }
-
-        // Function to remove a payment entry
-        function removePayment(button) {
-            const row = button.parentElement.parentElement;
-            row.remove();
-        }
-    </script>
 
 </body>
 </html>
