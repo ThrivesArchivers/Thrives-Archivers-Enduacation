@@ -319,5 +319,426 @@
 
         loadBiologyQuestion();
     </script>
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mcq 1</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background: #f6f8fa;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+    .quiz-container {
+      max-width: 520px;
+      margin: 40px auto 0 auto;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 18px 0 rgba(0,0,0,0.07);
+      padding: 32px 24px;
+    }
+    h2, h3 {
+      text-align: center;
+      color: #222;
+    }
+    .password-form input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 1rem;
+      border-radius: 5px;
+      border: 1px solid #bbb;
+      margin: 12px 0 16px 0;
+      box-sizing: border-box;
+    }
+    .password-form button {
+      width: 100%;
+      background: #2563eb;
+      color: #fff;
+      font-size: 1rem;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .password-form button:hover {
+      background: #1e40af;
+    }
+    ul.quiz-opts {
+      list-style: none;
+      padding: 0;
+      margin: 18px 0;
+    }
+    ul.quiz-opts li {
+      margin: 10px 0;
+      padding: 12px;
+      border-radius: 5px;
+      border: 1.5px solid #e5e7eb;
+      font-size: 1rem;
+      background: #f3f4f6;
+      cursor: pointer;
+      transition: background 0.2s, border 0.2s;
+      user-select: none;
+    }
+    ul.quiz-opts li.correct {
+      background: #c6f6d5;
+      border-color: #38a169;
+      color: #22543d;
+    }
+    ul.quiz-opts li.incorrect {
+      background: #fed7d7;
+      border-color: #f56565;
+      color: #742a2a;
+    }
+    ul.quiz-opts li.selected:not(.correct):not(.incorrect) {
+      background: #fffbeb;
+      border-color: #fbbf24;
+    }
+    ul.quiz-opts li:active {
+      filter: brightness(0.96);
+    }
+    .explanation {
+      margin: 16px 0;
+      padding: 12px 16px;
+      background: #f1f5f9;
+      border-left: 4px solid #2563eb;
+      border-radius: 5px;
+      color: #374151;
+      font-size: 0.96rem;
+    }
+    .next-btn {
+      display: block;
+      margin: 16px auto 0 auto;
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      padding: 10px 32px;
+      cursor: pointer;
+      transition: background 0.18s;
+    }
+    .next-btn:hover {
+      background: #1e40af;
+    }
+    .score {
+      text-align: center;
+      font-size: 1.18rem;
+      margin: 20px 0;
+      color: #333;
+    }
+    .restart-btn {
+      display: block;
+      margin: 18px auto 0 auto;
+      background: #e53e3e;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      padding: 10px 32px;
+      cursor: pointer;
+      transition: background 0.18s;
+    }
+    .restart-btn:hover {
+      background: #b91c1c;
+    }
+    @media (max-width: 600px) {
+      .quiz-container {
+        max-width: 99vw;
+        padding: 20px 6px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container" id="quizApp"></div>
+  <script>
+    // Data
+    const questions = [
+      {
+        question: "Which of these structures is the site of attachment of chromatids?",
+        options: [ "Centromere", "Aster", "Kinetochore", "Centrosome" ],
+        answer: 2,
+        explanation: "The kinetochore is a protein structure on the chromosome where the microtubules of the mitotic spindle attach."
+      },
+      {
+        question: "The stage of prophase I wherein crossing over occurs is",
+        options: [ "Zygotene", "Diplotene", "Leptotene", "Pachytene" ],
+        answer: 3,
+        explanation: "During the pachytene stage of prophase I in meiosis, crossing over between homologous chromosomes occurs."
+      },
+      {
+        question: "During replication, Okazaki fragments elongate",
+        options: [
+          "leading strand towards the replication fork",
+          "lagging strand towards the replication fork",
+          "leading strand away from the replication fork",
+          "lagging strand away from the replication fork"
+        ],
+        answer: 3,
+        explanation: "Okazaki fragments are synthesized discontinuously on the lagging strand in the direction away from the replication fork."
+      },
+      {
+        question: "Point mutation involves",
+        options: [ "Deletion", "Insertion", "Change in single base pair", "Duplication" ],
+        answer: 2,
+        explanation: "A point mutation is a type of mutation that involves a change in a single nucleotide base in the DNA sequence."
+      },
+      {
+        question: "Which of the following are coding genes?",
+        options: [ "Exon", "Intron", "Both A and B", "None of these" ],
+        answer: 0,
+        explanation: "Exons are the coding regions of a gene that are included in the final mRNA after introns are spliced out."
+      },
+      {
+        question: "Which of the following enzymes separates the two strands of DNA during replication?",
+        options: [ "Gyrase", "Topoisomerase", "Helicase", "DNA polymerase" ],
+        answer: 2,
+        explanation: "Helicase unwinds the double helix structure of DNA by breaking the hydrogen bonds between the nucleotide bases."
+      },
+      {
+        question: "What is the work of the sigma factor in transcription?",
+        options: [ "Helicase action", "Transcription initiation", "Transcription elongation", "Transcription termination" ],
+        answer: 1,
+        explanation: "The sigma factor is a protein that binds to RNA polymerase and directs it to specific promoters in the DNA, initiating transcription."
+      },
+      {
+        question: "The genetic code is degenerated. Which of the following codons represent the principle degeneracy?",
+        options: [ "UAA and UAC", "AUG and AUA", "CAU and CAC", "UUA and UUC" ],
+        answer: 2,
+        explanation: "The genetic code is degenerate, meaning multiple codons can encode the same amino acid. CAU and CAC both code for histidine."
+      },
+      {
+        question: "Site in the ribosome from which the tRNA donates amino acids to the growing polypeptide chain",
+        options: [ "P site", "O site", "T site", "A site" ],
+        answer: 3,
+        explanation: "The A site (aminoacyl site) is where the tRNA carrying the next amino acid binds during protein synthesis."
+      },
+      {
+        question: "Lac operon is an example of",
+        options: [ "Only positive regulation", "Only negative regulation", "Both positive and negative regulation", "Sometimes positive sometimes negative" ],
+        answer: 2,
+        explanation: "The lac operon is regulated both positively by the CAP-cAMP complex and negatively by the lac repressor."
+      },
+      {
+        question: "Inheritance of ABO blood group system is an example of",
+        options: [ "Dominance", "Epistasis", "Partial dominance", "Multiple allelism" ],
+        answer: 3,
+        explanation: "The ABO blood group system is controlled by multiple alleles (i, IA, and IB) of a single gene."
+      },
+      {
+        question: "A recessive trait will be observed in individuals that are what for that trait?",
+        options: [ "Diploid", "Heterozygous", "Homozygous or heterozygous", "Homozygous" ],
+        answer: 3,
+        explanation: "A recessive trait is expressed only when an individual is homozygous recessive for the trait."
+      },
+      {
+        question: "Name the event wherein the paternal and maternal chromosomes exchange their material with each other in cell division",
+        options: [ "Crossing over", "Synapsis", "Dyad forming", "Bivalent forming" ],
+        answer: 0,
+        explanation: "Crossing over is the process during meiosis where homologous chromosomes exchange segments, leading to genetic recombination."
+      },
+      {
+        question: "Haemophilia is",
+        options: [ "X-linked", "Y-linked", "Z-linked", "Autosomal" ],
+        answer: 0,
+        explanation: "Haemophilia is an X-linked recessive disorder, meaning the gene responsible is located on the X chromosome."
+      },
+      {
+        question: "Test cross determines.",
+        options: [ "Whether two traits are linked or not", "The genotype of F₂ plant", "Whether the two species will breed successfully or not", "Number of alleles in a gene" ],
+        answer: 1,
+        explanation: "A test cross is used to determine the genotype of an individual showing the dominant phenotype by crossing it with a homozygous recessive individual."
+      },
+      {
+        question: "Colour blindness is found more in males than in females because",
+        options: [
+          "The males containing the single affected X chromosome are colour blind",
+          "Heterozygous females are colour blind",
+          "Males having affected Y chromosome are colour blind",
+          "Affected X chromosome has much high affinity to Y chromosome as compared to unaffected X chromosome"
+        ],
+        answer: 0,
+        explanation: "Males have only one X chromosome, so a single defective gene on the X will result in color blindness, unlike females who need both X chromosomes affected."
+      },
+      {
+        question: "In what mode of inheritance, the F₁ progeny exhibit characteristics of both the parents?",
+        options: [ "Complete dominance", "Incomplete dominance", "Codominance", "Multiple allelism" ],
+        answer: 2,
+        explanation: "In codominance, both alleles are fully expressed in the heterozygote, so F₁ progeny show traits of both parents."
+      },
+      {
+        question: "Chromosomal inheritance was by theory of proposed",
+        options: [ "Sutton in 1902", "Boveri in 1902", "Correns in 1909", "Sutton and Boveri in 1902" ],
+        answer: 3,
+        explanation: "The chromosomal theory of inheritance was proposed by Sutton and Boveri in 1902."
+      },
+      {
+        question: "If you performed this cross and obtained 650 inflated-pod plants in the F₂ generation bred from true-breeding stock, approximately how many constricted-pod plants would you expect to have?",
+        options: [ "600", "165", "217", "468" ],
+        answer: 2,
+        explanation: "The expected ratio is 3:1 (inflated:constricted). If 650 are inflated, constricted = 650 / 3 ≈ 217."
+      },
+      {
+        question: "Which of the following is most likely to lead to a loss of gene function?",
+        options: [
+          "A missense mutation in the open reading frame",
+          "A change from T to C in the promoter region",
+          "A frame shift mutation in the coding region",
+          "A sequence changes in the three untranslated regions"
+        ],
+        answer: 2,
+        explanation: "A frameshift mutation alters the reading frame, leading to a completely different translation from the original, often resulting in a nonfunctional protein."
+      }
+    ];
+    const PASSWORD = "myGoal";
+
+    // App State
+    let state = {
+      step: "password", // "quiz", "done"
+      score: 0,
+      current: 0,
+      selected: null,
+      showExplanation: false,
+      userPassword: ""
+    };
+
+    const quizApp = document.getElementById('quizApp');
+
+    function render() {
+      quizApp.innerHTML = '';
+      // Added quiz title here
+      const title = document.createElement('h2');
+      title.textContent = 'Mcq 1';
+      quizApp.appendChild(title);
+      if (state.step === "password") {
+        renderPasswordForm();
+      } else if (state.step === "quiz") {
+        if (state.current >= questions.length) {
+          renderResult();
+        } else {
+          renderQuestion();
+        }
+      }
+    }
+
+    function renderPasswordForm() {
+      const form = document.createElement('form');
+      form.className = 'password-form';
+      form.innerHTML = `
+        <h2>Enter Quiz Password</h2>
+        <input type="password" id="quiz-password" placeholder="Password..." autocomplete="off" autofocus>
+        <button type="submit">Enter</button>
+      `;
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const pw = form.querySelector('#quiz-password').value;
+        if (pw === PASSWORD) {
+          state.step = "quiz";
+          render();
+        } else {
+          alert("Incorrect password!");
+          form.querySelector('#quiz-password').value = "";
+        }
+      });
+      quizApp.appendChild(form);
+    }
+
+    function renderQuestion() {
+      const q = questions[state.current];
+      const container = document.createElement('div');
+
+      // Title
+      const h3 = document.createElement('h3');
+      h3.textContent = `Question ${state.current + 1} of ${questions.length}`;
+      container.appendChild(h3);
+
+      // Question
+      const p = document.createElement('p');
+      p.textContent = q.question;
+      container.appendChild(p);
+
+      // Options
+      const ul = document.createElement('ul');
+      ul.className = "quiz-opts";
+      q.options.forEach((opt, idx) => {
+        const li = document.createElement('li');
+        li.textContent = `${String.fromCharCode(65 + idx)}. ${opt}`;
+        li.setAttribute('tabindex', 0);
+
+        if (state.selected !== null) {
+          if (idx === q.answer) li.classList.add('correct');
+          else if (idx === state.selected) li.classList.add('incorrect');
+        }
+        if (state.selected === idx) li.classList.add('selected');
+        li.style.cursor = state.selected === null ? "pointer" : "default";
+
+        li.addEventListener('click', () => {
+          if (state.selected === null) {
+            state.selected = idx;
+            state.showExplanation = true;
+            if (idx === q.answer) state.score++;
+            render();
+          }
+        });
+        ul.appendChild(li);
+      });
+      container.appendChild(ul);
+
+      // Explanation and Next
+      if (state.showExplanation) {
+        const exp = document.createElement('div');
+        exp.className = "explanation";
+        exp.innerHTML = `<b>Explanation:</b> ${q.explanation}`;
+        container.appendChild(exp);
+
+        const btn = document.createElement('button');
+        btn.className = 'next-btn';
+        btn.textContent = state.current < questions.length - 1 ? "Next" : "Finish";
+        btn.addEventListener('click', () => {
+          state.current++;
+          state.selected = null;
+          state.showExplanation = false;
+          render();
+        });
+        container.appendChild(btn);
+      }
+      quizApp.appendChild(container);
+    }
+
+    function renderResult() {
+      const percent = ((state.score / questions.length) * 100).toFixed(2);
+      quizApp.innerHTML = `
+        <h2>Quiz Completed!</h2>
+        <div class="score">
+          Your Score: <b>${state.score}</b> / ${questions.length} (${percent}%)
+        </div>
+      `;
+
+      // Add restart button
+      const restartBtn = document.createElement('button');
+      restartBtn.className = 'restart-btn';
+      restartBtn.textContent = "Restart Quiz";
+      restartBtn.addEventListener('click', () => {
+        state.step = "quiz";
+        state.score = 0;
+        state.current = 0;
+        state.selected = null;
+        state.showExplanation = false;
+        render();
+      });
+      quizApp.appendChild(restartBtn);
+    }
+
+    // Initial render
+    render();
+
+  </script>
+</body>
+</html>
 </body>
 </html>
