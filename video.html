@@ -1,127 +1,155 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thrives Archivers - Video Streaming</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-        }
-        h2 {
-            background: #333;
-            color: white;
-            padding: 15px;
-            margin: 0;
-        }
-        .container {
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-            padding: 20px;
-        }
-        .section {
-            width: 45%;
-            background: white;
-            padding: 15px;
-            margin: 10px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .section h3 {
-            background: #444;
-            color: white;
-            padding: 10px;
-            margin-top: 0;
-        }
-        ul {
-            list-style: none;
-            padding: 0;
-        }
-        li {
-            padding: 10px;
-            cursor: pointer;
-            background: #ddd;
-            margin: 5px 0;
-            border-radius: 5px;
-        }
-        li:hover {
-            background: #bbb;
-        }
-        .video-player {
-            margin-top: 20px;
-            width: 100%;
-            height: 300px;
-        }
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thrives Archivers - Video Streaming</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+    h2 {
+      background: #333;
+      color: white;
+      padding: 15px;
+      margin: 0;
+    }
+    .container {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      padding: 20px;
+    }
+    .section {
+      width: 45%;
+      background: white;
+      padding: 15px;
+      margin: 10px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .section h3 {
+      background: #444;
+      color: white;
+      padding: 10px;
+      margin-top: 0;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      padding: 10px;
+      cursor: pointer;
+      background: #ddd;
+      margin: 5px 0;
+      border-radius: 5px;
+    }
+    li:hover {
+      background: #bbb;
+    }
+    .video-player {
+      margin-top: 20px;
+      width: 100%;
+      height: 300px;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    .semester-title {
+      font-weight: bold;
+      margin-top: 10px;
+      color: #333;
+    }
+  </style>
 </head>
 <body>
 
-    <h2>Thrives Archivers - Video Streaming</h2>
-    
-    <div class="container">
-        <!-- Maths Section -->
-        <div class="section">
-            <h3>Maths</h3>
-            <ul>
-                <li onclick="playVideo('KB-YDjS4Y90')">Set Questions</li>
-                <li onclick="playVideo('ihl7GXCU_X4')">Introduction to Surd</li>
-                <li onclick="playVideo('UHy079K1_Yw')">Set Intervals</li>
-                <li onclick="playVideo('1_HbyR_8dWQ')">Trigonometry</li>
-                <li onclick="playVideo('SSrhsCz3Rrs')">Trigonometry by Tutor Nerd</li>
-                <li onclick="playVideo('99HB4407SFw')">Tutorial sheet 3 (Introduction to Limit)</li>
-            </ul>
-        </div>
+  <h2>Thrives Archivers - Video Streaming</h2>
 
-        <!-- Physics Section -->
-        <div class="section">
-            <h3>Physics</h3>
-            <ul>
-                <li onclick="playVideo('jIJ3HJSeDts')">Dimension Analysis</li>
-                <li onclick="playVideo('7mN5tjaZJzE?si=q0PHXLR0BKOMdlnx')">Projectile Motion Introduction</li>
-                <li onclick="playVideo('Yr8IJddj9-E')">Deformation of a Solid</li>
-                <li onclick="playVideo('6JQY8Pyh0z0')">Deformation of a Solid Tutorial Sheet 1</li>
-            </ul>
-        </div>
+  <div class="container">
 
-        <!-- Chemistry Section -->
-        <div class="section">
-            <h3>Chemistry</h3>
-            <ul>
-                <li onclick="playVideo('Wxd35Axqda0')">Introduction to Chemistry</li>
-                <li onclick="playVideo('WYx4OP6ntCA')">Percentage Yield</li>
-            </ul>
-        </div>
-
-        <!-- Biology Section -->
-        <div class="section">
-            <h3>Biology</h3>
-            <ul>
-                <li onclick="playVideo('4B7GbZhzPYM')">Drawing Eukaryotic Cell</li>
-                <li onclick="playVideo('l1TtKZyPy6E')">Drawing Prokaryotic Cell</li>
-            </ul>
-        </div>
+    <!-- Maths Section -->
+    <div class="section">
+      <h3>Maths</h3>
+      <div class="semester-title">First Semester</div>
+      <ul>
+        <li onclick="playVideoWithPassword('KB-YDjS4Y90', 'set')">Set Questions</li>
+        <li onclick="playVideoWithPassword('ihl7GXCU_X4', 'set')">Introduction to Surd</li>
+      </ul>
+      <div class="semester-title">Second Semester</div>
+      <ul>
+        <li onclick="playVideoWithPassword('UHy079K1_Yw', 'set')">Set Intervals</li>
+        <li onclick="playVideoWithPassword('1_HbyR_8dWQ', 'set')">Trigonometry</li>
+        <li onclick="playVideoWithPassword('SSrhsCz3Rrs', 'set')">Trigonometry by Tutor Nerd</li>
+        <li onclick="playVideoWithPassword('99HB4407SFw', 'set')">Tutorial Sheet 3 (Intro to Limit)</li>
+      </ul>
     </div>
 
-    <!-- Video Player -->
-    <div class="video-player">
-        <iframe id="videoFrame" src="https://www.youtube.com/embed/KB-YDjS4Y90" allowfullscreen></iframe>
+    <!-- Physics Section -->
+    <div class="section">
+      <h3>Physics</h3>
+      <div class="semester-title">First Semester</div>
+      <ul>
+        <li onclick="playVideoWithPassword('jIJ3HJSeDts', 'atom')">Dimension Analysis</li>
+        <li onclick="playVideoWithPassword('7mN5tjaZJzE', 'atom')">Projectile Motion Intro</li>
+      </ul>
+      <div class="semester-title">Second Semester</div>
+      <ul>
+        <li onclick="playVideoWithPassword('Yr8IJddj9-E', 'atom')">Deformation of a Solid</li>
+        <li onclick="playVideoWithPassword('6JQY8Pyh0z0', 'atom')">Deformation Tutorial Sheet 1</li>
+      </ul>
     </div>
 
-    <script>
-        function playVideo(videoId) {
-            document.getElementById("videoFrame").src = "https://www.youtube.com/embed/" + videoId;
-        }
-    </script>
+    <!-- Chemistry Section -->
+    <div class="section">
+      <h3>Chemistry</h3>
+      <div class="semester-title">First Semester</div>
+      <ul>
+        <li onclick="playVideoWithPassword('Wxd35Axqda0', 'matter')">Introduction to Chemistry</li>
+      </ul>
+      <div class="semester-title">Second Semester</div>
+      <ul>
+        <li onclick="playVideoWithPassword('WYx4OP6ntCA', 'matter')">Percentage Yield</li>
+      </ul>
+    </div>
+
+    <!-- Biology Section -->
+    <div class="section">
+      <h3>Biology</h3>
+      <div class="semester-title">First Semester</div>
+      <ul>
+        <li onclick="playVideoWithPassword('4B7GbZhzPYM', 'cell')">Drawing Eukaryotic Cell</li>
+      </ul>
+      <div class="semester-title">Second Semester</div>
+      <ul>
+        <li onclick="playVideoWithPassword('l1TtKZyPy6E', 'cell')">Drawing Prokaryotic Cell</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- Video Player -->
+  <div class="video-player">
+    <iframe id="videoFrame" src="https://www.youtube.com/embed/KB-YDjS4Y90" allowfullscreen></iframe>
+  </div>
+
+  <script>
+    function playVideoWithPassword(videoId, correctPassword) {
+      const input = prompt("Enter password to watch this video:");
+      if (input && input.toLowerCase() === correctPassword.toLowerCase()) {
+        document.getElementById("videoFrame").src = "https://www.youtube.com/embed/" + videoId;
+      } else {
+        alert("Incorrect password!");
+      }
+    }
+  </script>
 
 </body>
 </html>
