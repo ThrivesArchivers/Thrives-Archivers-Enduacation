@@ -67,11 +67,39 @@
       margin-top: 10px;
       color: #333;
     }
+    /* Subscribe button styles */
+    .subscribe-container {
+      margin-top: 10px;
+      margin-bottom: 30px;
+    }
+    .subscribe-btn {
+      background-color: #FF0000;
+      color: #fff;
+      padding: 12px 28px;
+      border: none;
+      border-radius: 5px;
+      font-size: 1.1em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+      text-decoration: none;
+      display: inline-block;
+      box-shadow: 0 4px 12px rgba(255,0,0,0.07);
+    }
+    .subscribe-btn:hover {
+      background-color: #cc0000;
+    }
   </style>
 </head>
 <body>
 
   <h2>Thrives Archivers - Video Streaming</h2>
+
+  <div class="subscribe-container">
+    <a class="subscribe-btn" href="https://www.youtube.com/@ThrivesArchivers?sub_confirmation=1" target="_blank">
+      📺 Subscribe to Our YouTube Channel
+    </a>
+  </div>
 
   <div class="container">
 
@@ -98,6 +126,8 @@
       <div class="semester-title">First Semester</div>
       <ul>
         <li onclick="playVideoWithPassword('jIJ3HJSeDts', 'atom')">Dimension Analysis</li>
+        <li onclick="playVideoWithPassword('5XrxQaXg0wQ', 'atom')">Dimension analysis examination question part 1</li>
+        <li onclick="playVideoWithPassword('Ib9oibTMumA', 'atom')">Dimension examination question Q2</li>
         <li onclick="playVideoWithPassword('7mN5tjaZJzE', 'atom')">Projectile Motion Intro</li>
       </ul>
       <div class="semester-title">Second Semester</div>
