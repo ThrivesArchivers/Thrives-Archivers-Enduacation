@@ -6,7 +6,6 @@
   <title>Thrives Archivers</title>
 
   <style>
-    /* Ensure background covers entire screen */
     html, body {
       margin: 0;
       padding: 0;
@@ -32,6 +31,13 @@
     header {
       text-align: center;
       padding: 20px;
+    }
+
+    header img {
+      width: 100px;
+      height: auto;
+      border-radius: 10px;
+      margin-bottom: 10px;
     }
 
     section {
@@ -75,7 +81,6 @@
       background-color: #45a049;
     }
 
-    /* Login Form */
     #login-form {
       display: none;
       position: fixed;
@@ -120,6 +125,7 @@
 <body>
   <div class="overlay">
     <header>
+      <img src="Screenshot_20250629_230140.jpg" alt="Thrives Archivers Logo" />
       <h1>Welcome to Thrives Archivers</h1>
       <p>Helping You Succeed in Natural Sciences</p>
     </header>
@@ -205,7 +211,7 @@
       const errorDiv = document.getElementById("error-message");
 
       if (username === "Thrives Archivers" && password === "myGoal") {
-        window.location.href = "dashboard.html"; // Replace with your dashboard page
+        window.location.href = "dashboard.html"; // Replace with your actual page
       } else {
         errorDiv.textContent = "Invalid username or password";
       }
