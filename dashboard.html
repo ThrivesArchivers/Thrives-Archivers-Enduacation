@@ -5,18 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard - Thrives Archivers</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
       font-family: Arial, sans-serif;
-      background-color: #f4f4f9;
-      color: #333;
-      display: flex;
-      flex-direction: column;
+      background-image: url("file_000000001d1c61f883ad028c47b91032.png");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
       min-height: 100vh;
+      color: #fff;
     }
+
     header nav {
-      background-color: #3f51b5;
+      background-color: rgba(63, 81, 181, 0.9);
       padding: 15px 0;
       display: flex;
       justify-content: center;
@@ -26,6 +34,7 @@
       top: 0;
       z-index: 1;
     }
+
     header nav ul {
       list-style-type: none;
       display: flex;
@@ -33,64 +42,92 @@
       gap: 20px;
       justify-content: center;
     }
-    header nav ul li {
-      display: inline-block;
-    }
+
     header nav ul li a {
       display: flex;
       align-items: center;
       gap: 8px;
       color: white;
       text-decoration: none;
-      font-size: 18px; /* Increased font size */
+      font-size: 18px;
       padding: 10px;
       transition: transform 0.3s ease, background-color 0.3s ease;
     }
+
     header nav ul li a i {
-      font-size: 24px; /* Increased icon size */
+      font-size: 24px;
     }
+
     header nav ul li a span {
-      display: none; /* Hide text by default */
+      display: none;
     }
+
     header nav ul li a:hover {
       background-color: #303f9f;
       border-radius: 5px;
       transform: scale(1.1);
     }
+
     header nav ul li a:hover span {
-      display: inline; /* Show text on hover */
+      display: inline;
     }
-    main { padding: 20px; flex-grow: 1; }
+
+    main {
+      padding: 20px;
+      flex-grow: 1;
+    }
+
     section {
       margin-bottom: 20px;
       padding: 20px;
-      background-color: white;
+      background-color: rgba(255, 255, 255, 0.1);
       border-radius: 8px;
-      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(8px);
     }
-    h2 { color: #3f51b5; }
+
+    h2 {
+      color: #fff;
+      margin-bottom: 10px;
+    }
+
     .news-item {
       border: 1px solid #ddd;
       border-radius: 8px;
       padding: 15px;
       margin-bottom: 20px;
-      background-color: #fff;
+      background-color: rgba(255, 255, 255, 0.15);
+      color: white;
       box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
+
     .news-item:hover {
       transform: scale(1.05);
       box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
     }
+
     .news-item h3 {
-      color: #3f51b5;
+      color: #a5c8ff;
     }
+
     .button-container {
       display: flex;
       justify-content: center;
       gap: 15px;
       margin-top: 10px;
+      flex-wrap: wrap;
     }
+
+    input[type="text"] {
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      width: 100%;
+      max-width: 400px;
+      margin-bottom: 15px;
+    }
+
     button {
       background-color: #3f51b5;
       color: white;
@@ -101,32 +138,40 @@
       font-size: 16px;
       transition: background-color 0.3s ease;
     }
-    button:hover { background-color: #303f9f; }
+
+    button:hover {
+      background-color: #303f9f;
+    }
+
     footer {
       text-align: center;
       padding: 10px;
-      background-color: #3f51b5;
+      background-color: rgba(63, 81, 181, 0.9);
       color: white;
       position: relative;
       bottom: 0;
       width: 100%;
     }
   </style>
+
   <script>
     function searchGoogle() {
       let query = document.getElementById('search-query').value;
       window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
     }
+
     function searchYouTube() {
       let query = document.getElementById('search-query').value;
       window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`, '_blank');
     }
+
     function askAI() {
       let query = document.getElementById('search-query').value;
       window.open(`https://chat.openai.com/chat?query=${encodeURIComponent(query)}`, '_blank');
     }
   </script>
 </head>
+
 <body>
   <header>
     <nav>
@@ -139,11 +184,13 @@
       </ul>
     </nav>
   </header>
+
   <main>
     <section id="news-section">
       <h2>Latest News</h2>
       <div id="news-list"></div>
     </section>
+
     <section id="search-section">
       <h2>Search for More Information</h2>
       <input type="text" id="search-query" placeholder="Enter your question" required>
@@ -154,14 +201,17 @@
       </div>
     </section>
   </main>
+
   <footer>
     <p>&copy; 2025 Thrives Archivers</p>
   </footer>
+
   <script>
     const newsItems = [
       { title: "Meeting Physically", content: "We are excited to announce that Thrives Archivers has introduced Physical Meetings for Mulungushi University!" },
       { title: "New Quizzes", content: "We have updated two new quizzes for Biology Cells and Chemical Kinetics Introduction." }
     ];
+
     function displayNews() {
       document.getElementById("news-list").innerHTML = newsItems.map((news) => `
         <div class="news-item">
@@ -170,6 +220,7 @@
         </div>
       `).join('');
     }
+
     displayNews();
   </script>
 </body>
