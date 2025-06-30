@@ -1,32 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Welcome - Thrives Archivers</title>
-  
+
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-firestore.js"></script>
-  
+
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #f4f4f4;
+      background-image: url("file_00000000931461f98dcbfa5a546cdbba.png");
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      color: white;
     }
 
     header {
-      background-color: #333;
-      color: white;
+      background-color: rgba(0, 0, 0, 0.7);
       text-align: center;
       padding: 20px;
     }
 
     section {
       padding: 20px;
+      background-color: rgba(0, 0, 0, 0.6);
+      margin: 20px;
+      border-radius: 10px;
     }
 
     button {
@@ -42,18 +48,18 @@
       background-color: #45a049;
     }
 
-    .testimonial, #testimonials, #contact-info {
-      background-color: white;
-      padding: 20px;
-      margin-top: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    .testimonial {
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      color: #fff;
     }
 
     footer {
       text-align: center;
       padding: 20px;
-      background-color: #333;
+      background-color: rgba(0, 0, 0, 0.7);
       color: white;
     }
 
@@ -71,6 +77,7 @@
     #login-form {
       display: none;
       background-color: white;
+      color: black;
       padding: 20px;
       position: fixed;
       top: 50%;
@@ -123,7 +130,6 @@
     </ul>
   </section>
 
-  <!-- Footer Section -->
   <footer>
     <p>&copy; 2025 Thrives Archivers</p>
     <div>
@@ -140,7 +146,6 @@
   </footer>
 
   <script>
-    // Firebase Configuration
     const firebaseConfig = {
       apiKey: "AlzaSyAoShd_AbP4EFi46fz-n2DFn24lyxt6BiAQ",
       authDomain: "thrives-archivers-4a821.firebaseapp.com",
@@ -150,46 +155,32 @@
       appId: "1:928343613062:web:ec4c3d0d1b2d9b1e0c1d2d"
     };
 
-    // Initialize Firebase
     const app = firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    // Show Login Form
     function showLoginForm() {
       document.getElementById('login-form').style.display = 'block';
     }
 
-    // Hide Login Form
     function hideLoginForm() {
       document.getElementById('login-form').style.display = 'none';
     }
 
-    // Login Function with specific username and password
     function validateLogin(event) {
-      event.preventDefault(); // Prevent form submission
+      event.preventDefault();
       const username = document.getElementById('username').value;
       const password = document.getElementById('password').value;
       const errorMessage = document.getElementById('error-message');
 
       if (username === 'Thrives Archivers' && password === 'myGoal') {
-        window.location.href = 'dashboard.html'; // Redirect to your dashboard
+        window.location.href = 'dashboard.html';
       } else {
         errorMessage.textContent = 'Invalid username or password';
       }
     }
-
-    // Handle form submission
-    function handleFormSubmission(event) {
-      event.preventDefault();
-      // Add your email submission logic here
-
-      // Show the success message
-      document.getElementById('success-message').style.display = 'block';
-    }
   </script>
 
-  <!-- Hidden Login Form -->
   <div id="login-form">
     <h2>Please Login</h2>
     <form id="loginForm" onsubmit="validateLogin(event)">
