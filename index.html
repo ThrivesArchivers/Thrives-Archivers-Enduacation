@@ -209,7 +209,7 @@
   </div>
   <script>
     // Use /api base for backend endpoints
-    const API_BASE = "https://thrives-archivers-enduacation.onrender.com/api";
+    const API_BASE = "/api"; // Works for both localhost and deployment
 
     // Show/hide modal background and forms
     const modalBg = document.getElementById('modal-bg');
@@ -275,7 +275,6 @@
         if (response.ok && data.success) {
           errorDiv.textContent = "";
           alert('Login successful! Redirecting to dashboard...');
-          // Redirect to dashboard page
           window.location.href = "dashboard.html";
         } else {
           errorDiv.textContent = data.message || "Invalid username or password. Try again.";
