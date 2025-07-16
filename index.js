@@ -9,7 +9,6 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// Serve static frontend (optional if deploying both together)
 app.use(express.static(path.join(__dirname, 'public'))); // Only if HTML is in /public folder
 
 const USERS_FILE = 'users.json';
@@ -23,6 +22,28 @@ function readUsers() {
 // Write users to file
 function writeUsers(users) {
     fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
+}
+
+// Ensure admin user exists with custom password
+async function ensureAdminUser() {
+    const adminUsername = "Thrives Archivers";
+    const adminPassword = "myGoal";
+    const adminEmail = "admin@thrivesarchivers.com";
+    let users = readUsers();
+    const existingAdmin = users.find(u => u.username === adminUsername);
+
+    if (!existingAdmin) {
+        const hashedPassword = await bcrypt.hash(adminPassword, 10);
+        users.push({ username: adminUsername, email: adminEmail, password: hashedPassword });
+        writeUsers(users);
+        console.log(`✅ Admin user '${adminUsername}' created with custom password.`);
+    } else {
+        // Optionally update password if already exists (uncomment if you want to always reset)
+        // const hashedPassword = await bcrypt.hash(adminPassword, 10);
+        // existingAdmin.password = hashedPassword;
+        // writeUsers(users);
+        // console.log(`✅ Admin user '${adminUsername}' password updated.`);
+    }
 }
 
 // ✅ Status check endpoint
@@ -69,7 +90,9 @@ app.post('/api/login', async (req, res) => {
     res.json({ success: true, token: username });
 });
 
-// ✅ Start the server
-app.listen(PORT, () => {
-    console.log(`✅ Backend running at http://localhost:${PORT}`);
+ensureAdminUser().then(() => {
+    // ✅ Start the server
+    app.listen(PORT, () => {
+        console.log(`✅ Backend running at http://localhost:${PORT}`);
+    });
 });
