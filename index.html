@@ -275,8 +275,8 @@
         if (response.ok && data.success) {
           errorDiv.textContent = "";
           alert('Login successful! Redirecting to dashboard...');
-          // Redirect to dashboard page (adjust as necessary)
-          window.location.href = "/dashboard.html";
+          // Redirect to dashboard page
+          window.location.href = "dashboard.html";
         } else {
           errorDiv.textContent = data.message || "Invalid username or password. Try again.";
         }
