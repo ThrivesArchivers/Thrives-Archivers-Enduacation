@@ -208,8 +208,8 @@
     </form>
   </div>
   <script>
-    // Replace with your backend API base URL
-    const API_BASE = "https://thrives-archivers-enduacation.onrender.com";
+    // Use /api base for backend endpoints
+    const API_BASE = "https://thrives-archivers-enduacation.onrender.com/api";
 
     // Show/hide modal background and forms
     const modalBg = document.getElementById('modal-bg');
@@ -272,7 +272,7 @@
           body: JSON.stringify({ username, password })
         });
         const data = await response.json();
-        if (response.ok) {
+        if (response.ok && data.success) {
           errorDiv.textContent = "";
           alert('Login successful! Redirecting to dashboard...');
           // Redirect to dashboard page (adjust as necessary)
@@ -315,7 +315,7 @@
           body: JSON.stringify({ username, email, password })
         });
         const data = await response.json();
-        if (response.ok) {
+        if (response.ok && data.success) {
           errorDiv.style.color = "green";
           errorDiv.textContent = "Signup successful! Please login.";
           setTimeout(() => {
@@ -325,9 +325,11 @@
             errorDiv.textContent = "";
           }, 1500);
         } else {
+          errorDiv.style.color = "red";
           errorDiv.textContent = data.message || "Signup failed. Try a different username.";
         }
       } catch (err) {
+        errorDiv.style.color = "red";
         errorDiv.textContent = "Network error. Please try again.";
       }
     }
