@@ -164,12 +164,14 @@
         <li>Email: <a href="mailto:thrivesarchivers@gmail.com">thrivesarchivers@gmail.com</a></li>
       </ul>
     </section>
+    <!-- 
     <section>
       <h2>Admin Login Info</h2>
       <p><strong>Admin Username:</strong> Thrives Archivers</p>
       <p><strong>Admin Password:</strong> myGoal</p>
       <small style="color: #ffb700;">(For admin access only. Please keep this information secure.)</small>
     </section>
+    -->
     <footer>
       <p>&copy; 2025 Thrives Archivers</p>
       <div>
@@ -214,8 +216,8 @@
     </form>
   </div>
   <script>
-    // Use /api base for backend endpoints
-    const API_BASE = "/api"; // Works for both localhost and deployment
+    // Use Render backend for API calls
+    const API_BASE = "https://thrives-archivers-enduacation.onrender.com/api";
 
     // Show/hide modal background and forms
     const modalBg = document.getElementById('modal-bg');
@@ -271,7 +273,7 @@
       const errorDiv = document.getElementById('error-message');
       errorDiv.textContent = "";
 
-      // Custom Admin Login (client-side check)
+      // Custom Admin Login (client-side check, hidden logic)
       if (username === "Thrives Archivers" && password === "myGoal") {
         errorDiv.textContent = "";
         alert('Admin login successful! Redirecting to admin dashboard...');
@@ -346,6 +348,6 @@
         errorDiv.textContent = "Network error. Please try again.";
       }
     }
-  </script>
+  </script> 
 </body>
 </html>
