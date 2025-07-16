@@ -164,6 +164,12 @@
         <li>Email: <a href="mailto:thrivesarchivers@gmail.com">thrivesarchivers@gmail.com</a></li>
       </ul>
     </section>
+    <section>
+      <h2>Admin Login Info</h2>
+      <p><strong>Admin Username:</strong> Thrives Archivers</p>
+      <p><strong>Admin Password:</strong> myGoal</p>
+      <small style="color: #ffb700;">(For admin access only. Please keep this information secure.)</small>
+    </section>
     <footer>
       <p>&copy; 2025 Thrives Archivers</p>
       <div>
@@ -264,6 +270,14 @@
       const password = document.getElementById('password').value;
       const errorDiv = document.getElementById('error-message');
       errorDiv.textContent = "";
+
+      // Custom Admin Login (client-side check)
+      if (username === "Thrives Archivers" && password === "myGoal") {
+        errorDiv.textContent = "";
+        alert('Admin login successful! Redirecting to admin dashboard...');
+        window.location.href = "admin-dashboard.html"; // You may want to create this page
+        return;
+      }
 
       try {
         const response = await fetch(`${API_BASE}/login`, {
