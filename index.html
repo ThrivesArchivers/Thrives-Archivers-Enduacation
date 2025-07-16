@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Thrives Archivers</title>
-
   <style>
     html, body {
       margin: 0;
@@ -18,8 +17,8 @@
       background-position: center;
       background-attachment: fixed;
       color: white;
+      overflow-x: hidden;
     }
-
     .overlay {
       background-color: rgba(0, 0, 0, 0.6);
       min-height: 100%;
@@ -27,19 +26,16 @@
       padding: 30px;
       box-sizing: border-box;
     }
-
     header {
       text-align: center;
       padding: 20px;
     }
-
     header img {
       width: 100px;
       height: auto;
       border-radius: 10px;
       margin-bottom: 10px;
     }
-
     section {
       background-color: rgba(255, 255, 255, 0.1);
       margin: 20px auto;
@@ -47,14 +43,12 @@
       padding: 20px;
       border-radius: 10px;
     }
-
     .testimonial {
       margin-bottom: 15px;
       padding: 10px;
       background-color: rgba(255, 255, 255, 0.15);
       border-radius: 8px;
     }
-
     footer {
       text-align: center;
       padding: 20px;
@@ -62,12 +56,10 @@
       color: white;
       margin-top: 40px;
     }
-
     .social-icon {
       width: 30px;
       margin: 0 10px;
     }
-
     button {
       background-color: #4CAF50;
       color: white;
@@ -75,13 +67,23 @@
       padding: 10px 20px;
       cursor: pointer;
       border-radius: 5px;
+      margin-right: 10px;
+      font-size: 1rem;
     }
-
     button:hover {
       background-color: #45a049;
     }
-
-    #login-form {
+    .modal-bg {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0,0,0,0.5);
+      z-index: 998;
+    }
+    #login-form, #signup-form {
       display: none;
       position: fixed;
       top: 50%;
@@ -91,37 +93,42 @@
       color: black;
       padding: 20px;
       border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      box-shadow: 0 0 15px rgba(0,0,0,0.4);
       z-index: 999;
       width: 90%;
       max-width: 400px;
+      box-sizing: border-box;
     }
-
-    #login-form input {
+    #login-form input, #signup-form input {
       padding: 8px;
-      margin: 5px 0;
+      margin: 8px 0;
       width: 100%;
       border-radius: 4px;
       border: 1px solid #ccc;
       box-sizing: border-box;
+      font-size: 1rem;
     }
-
-    #login-form .error {
+    #login-form .error, #signup-error-message {
       color: red;
       margin-top: 5px;
+      min-height: 20px;
+      font-size: 0.9rem;
     }
-
-    #close-btn {
+    #login-form .success, #signup-success-message {
+      color: green;
+      margin-top: 5px;
+      font-size: 0.9rem;
+    }
+    #close-btn, #signup-close-btn {
       background-color: red;
       margin-top: 10px;
+      width: 100%;
     }
-
     a {
       color: #ffffff;
     }
   </style>
 </head>
-
 <body>
   <div class="overlay">
     <header>
@@ -129,12 +136,11 @@
       <h1>Welcome to Thrives Archivers</h1>
       <p>Helping You Succeed in Natural Sciences</p>
     </header>
-
     <section>
       <p>The purpose of Thrives Archivers is to provide simplified Natural Science materials to help students excel in their studies without difficulty.</p>
       <button onclick="showLoginForm()">Login to Access Dashboard</button>
+      <button onclick="showSignupForm()">Create Account</button>
     </section>
-
     <section>
       <h2>What Our Students Are Saying</h2>
       <div class="testimonial">
@@ -150,7 +156,6 @@
         <p>"I can easily find notes and content that makes studying a lot easier."</p>
       </div>
     </section>
-
     <section>
       <h2>Contact Us</h2>
       <p>If you have any questions, feel free to contact us:</p>
@@ -159,7 +164,6 @@
         <li>Email: <a href="mailto:thrivesarchivers@gmail.com">thrivesarchivers@gmail.com</a></li>
       </ul>
     </section>
-
     <footer>
       <p>&copy; 2025 Thrives Archivers</p>
       <div>
@@ -175,45 +179,156 @@
       </div>
     </footer>
   </div>
-
+  <!-- Modal background (click outside to close) -->
+  <div id="modal-bg" class="modal-bg" onclick="hideAllModals()"></div>
   <!-- Login Form -->
   <div id="login-form">
     <h2>Login</h2>
     <form onsubmit="validateLogin(event)">
       <label for="username">Username:</label>
-      <input type="text" id="username" required />
-
+      <input type="text" id="username" autocomplete="username" required />
       <label for="password">Password:</label>
-      <input type="password" id="password" required />
-
+      <input type="password" id="password" autocomplete="current-password" required />
       <button type="submit">Login</button>
       <button id="close-btn" type="button" onclick="hideLoginForm()">Close</button>
-
       <div id="error-message" class="error"></div>
     </form>
   </div>
-
-  <!-- JavaScript -->
+  <!-- Signup Form -->
+  <div id="signup-form">
+    <h2>Create Account</h2>
+    <form onsubmit="handleSignup(event)">
+      <input type="text" id="signup-username" placeholder="Username" autocomplete="username" required />
+      <input type="email" id="signup-email" placeholder="Email" autocomplete="email" required />
+      <input type="password" id="signup-password" placeholder="Password" autocomplete="new-password" required />
+      <input type="password" id="signup-confirm-password" placeholder="Confirm Password" autocomplete="new-password" required />
+      <button type="submit">Sign Up</button>
+      <button id="signup-close-btn" type="button" onclick="hideSignupForm()">Close</button>
+      <div id="signup-error-message"></div>
+    </form>
+  </div>
   <script>
+    // Replace with your backend API base URL
+    const API_BASE = "https://thrives-archivers-enduacation.onrender.com";
+
+    // Show/hide modal background and forms
+    const modalBg = document.getElementById('modal-bg');
+
     function showLoginForm() {
-      document.getElementById("login-form").style.display = "block";
+      modalBg.style.display = 'block';
+      document.getElementById('login-form').style.display = 'block';
+      document.getElementById('signup-form').style.display = 'none';
     }
 
     function hideLoginForm() {
-      document.getElementById("login-form").style.display = "none";
-      document.getElementById("error-message").textContent = "";
+      modalBg.style.display = 'none';
+      document.getElementById('login-form').style.display = 'none';
+      document.getElementById('error-message').textContent = "";
+      clearLoginInputs();
     }
 
-    function validateLogin(event) {
-      event.preventDefault();
-      const username = document.getElementById("username").value.trim();
-      const password = document.getElementById("password").value.trim();
-      const errorDiv = document.getElementById("error-message");
+    function showSignupForm() {
+      modalBg.style.display = 'block';
+      document.getElementById('signup-form').style.display = 'block';
+      document.getElementById('login-form').style.display = 'none';
+    }
 
-      if (username === "Thrives Archivers" && password === "myGoal") {
-        window.location.href = "dashboard.html"; // Replace with your actual page
-      } else {
-        errorDiv.textContent = "Invalid username or password";
+    function hideSignupForm() {
+      modalBg.style.display = 'none';
+      document.getElementById('signup-form').style.display = 'none';
+      document.getElementById('signup-error-message').textContent = "";
+      clearSignupInputs();
+    }
+
+    function hideAllModals() {
+      hideLoginForm();
+      hideSignupForm();
+    }
+
+    function clearLoginInputs() {
+      document.getElementById('username').value = '';
+      document.getElementById('password').value = '';
+    }
+
+    function clearSignupInputs() {
+      document.getElementById('signup-username').value = '';
+      document.getElementById('signup-email').value = '';
+      document.getElementById('signup-password').value = '';
+      document.getElementById('signup-confirm-password').value = '';
+    }
+
+    // LOGIN
+    async function validateLogin(event) {
+      event.preventDefault();
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const errorDiv = document.getElementById('error-message');
+      errorDiv.textContent = "";
+
+      try {
+        const response = await fetch(`${API_BASE}/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password })
+        });
+        const data = await response.json();
+        if (response.ok) {
+          errorDiv.textContent = "";
+          alert('Login successful! Redirecting to dashboard...');
+          // Redirect to dashboard page (adjust as necessary)
+          window.location.href = "/dashboard.html";
+        } else {
+          errorDiv.textContent = data.message || "Invalid username or password. Try again.";
+        }
+      } catch (err) {
+        errorDiv.textContent = "Network error. Please try again.";
+      }
+    }
+
+    // SIGNUP
+    async function handleSignup(event) {
+      event.preventDefault();
+      const username = document.getElementById('signup-username').value.trim();
+      const email = document.getElementById('signup-email').value.trim();
+      const password = document.getElementById('signup-password').value;
+      const confirmPassword = document.getElementById('signup-confirm-password').value;
+      const errorDiv = document.getElementById('signup-error-message');
+      errorDiv.textContent = "";
+
+      if (!username || !email || !password || !confirmPassword) {
+        errorDiv.textContent = "All fields are required.";
+        return;
+      }
+      if (password.length < 4) {
+        errorDiv.textContent = "Password must be at least 4 characters.";
+        return;
+      }
+      if (password !== confirmPassword) {
+        errorDiv.textContent = "Passwords do not match.";
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE}/signup`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, email, password })
+        });
+        const data = await response.json();
+        if (response.ok) {
+          errorDiv.style.color = "green";
+          errorDiv.textContent = "Signup successful! Please login.";
+          setTimeout(() => {
+            hideSignupForm();
+            showLoginForm();
+            errorDiv.style.color = "red";
+            errorDiv.textContent = "";
+          }, 1500);
+        } else {
+          errorDiv.textContent = data.message || "Signup failed. Try a different username.";
+        }
+      } catch (err) {
+        errorDiv.textContent = "Network error. Please try again.";
       }
     }
   </script>
