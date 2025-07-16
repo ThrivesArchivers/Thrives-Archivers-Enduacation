@@ -274,10 +274,11 @@
       errorDiv.textContent = "";
 
       // Custom Admin Login (client-side check, hidden logic)
+      // Now both admin and normal users go to dashboard.html
       if (username === "Thrives Archivers" && password === "myGoal") {
         errorDiv.textContent = "";
-        alert('Admin login successful! Redirecting to admin dashboard...');
-        window.location.href = "admin-dashboard.html"; // You may want to create this page
+        alert('Admin login successful! Redirecting to dashboard...');
+        window.location.href = "dashboard.html";
         return;
       }
 
@@ -348,6 +349,6 @@
         errorDiv.textContent = "Network error. Please try again.";
       }
     }
-  </script> 
+  </script>
 </body>
 </html>
