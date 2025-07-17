@@ -1,199 +1,200 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Thrives Archivers - Video Streaming</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      text-align: center;
-      margin: 0;
-      padding: 0;
-    }
-    h2 {
-      background: #333;
-      color: white;
-      padding: 15px;
-      margin: 0;
-    }
-    .container {
-      display: flex;
-      justify-content: space-around;
-      flex-wrap: wrap;
-      padding: 20px;
-    }
-    .section {
-      width: 45%;
-      background: white;
-      padding: 15px;
-      margin: 10px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-    .section h3 {
-      background: #444;
-      color: white;
-      padding: 10px;
-      margin-top: 0;
-    }
-    ul {
-      list-style: none;
-      padding: 0;
-    }
-    li {
-      padding: 10px;
-      cursor: pointer;
-      background: #ddd;
-      margin: 5px 0;
-      border-radius: 5px;
-    }
-    li:hover {
-      background: #bbb;
-    }
-    .video-player {
-      margin-top: 20px;
-      width: 100%;
-      height: 300px;
-    }
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-    .semester-title {
-      font-weight: bold;
-      margin-top: 10px;
-      color: #333;
-    }
-    /* Subscribe button styles */
-    .subscribe-container {
-      margin-top: 10px;
-      margin-bottom: 30px;
-    }
-    .subscribe-btn {
-      background-color: #FF0000;
-      color: #fff;
-      padding: 12px 28px;
-      border: none;
-      border-radius: 5px;
-      font-size: 1.1em;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.2s;
-      text-decoration: none;
-      display: inline-block;
-      box-shadow: 0 4px 12px rgba(255,0,0,0.07);
-    }
-    .subscribe-btn:hover {
-      background-color: #cc0000;
-    }
-  </style>
-</head>
-<body>
+<html lang="en">  
+<head>  
+  <meta charset="UTF-8">  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+  <title>Thrives Archivers - Video Streaming</title>  
+  <style>  
+    body {  
+      font-family: Arial, sans-serif;  
+      background-color: #f4f4f4;  
+      text-align: center;  
+      margin: 0;  
+      padding: 0;  
+    }  
+    h2 {  
+      background: #333;  
+      color: white;  
+      padding: 15px;  
+      margin: 0;  
+    }  
+    .container {  
+      display: flex;  
+      justify-content: space-around;  
+      flex-wrap: wrap;  
+      padding: 20px;  
+    }  
+    .section {  
+      width: 45%;  
+      background: white;  
+      padding: 15px;  
+      margin: 10px;  
+      border-radius: 8px;  
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);  
+    }  
+    .section h3 {  
+      background: #444;  
+      color: white;  
+      padding: 10px;  
+      margin-top: 0;  
+    }  
+    ul {  
+      list-style: none;  
+      padding: 0;  
+    }  
+    li {  
+      padding: 10px;  
+      cursor: pointer;  
+      background: #ddd;  
+      margin: 5px 0;  
+      border-radius: 5px;  
+    }  
+    li:hover {  
+      background: #bbb;  
+    }  
+    .video-player {  
+      margin-top: 20px;  
+      width: 100%;  
+      height: 300px;  
+    }  
+    iframe {  
+      width: 100%;  
+      height: 100%;  
+      border: none;  
+    }  
+    .semester-title {  
+      font-weight: bold;  
+      margin-top: 10px;  
+      color: #333;  
+    }  
+    .subscribe-container {  
+      margin-top: 10px;  
+      margin-bottom: 30px;  
+    }  
+    .subscribe-btn {  
+      background-color: #FF0000;  
+      color: #fff;  
+      padding: 12px 28px;  
+      border: none;  
+      border-radius: 5px;  
+      font-size: 1.1em;  
+      font-weight: bold;  
+      cursor: pointer;  
+      transition: background 0.2s;  
+      text-decoration: none;  
+      display: inline-block;  
+      box-shadow: 0 4px 12px rgba(255,0,0,0.07);  
+    }  
+    .subscribe-btn:hover {  
+      background-color: #cc0000;  
+    }  
+  </style>  
+</head>  
+<body>  
+  <h2>Thrives Archivers - Video Streaming</h2>  
 
-  <h2>Thrives Archivers - Video Streaming</h2>
+  <div class="subscribe-container">  
+    <a class="subscribe-btn" href="https://www.youtube.com/@ThrivesArchivers?sub_confirmation=1" target="_blank">  
+      📺 Subscribe to Our YouTube Channel  
+    </a>  
+  </div>  
 
-  <div class="subscribe-container">
-    <a class="subscribe-btn" href="https://www.youtube.com/@ThrivesArchivers?sub_confirmation=1" target="_blank">
-      📺 Subscribe to Our YouTube Channel
-    </a>
-  </div>
+  <div class="container">  
 
-  <div class="container">
+    <!-- Maths Section -->  
+    <div class="section">  
+      <h3>Maths</h3>  
+      <div class="semester-title">First Semester</div>  
+      <ul>  
+        <li onclick="playVideoWithPassword('KB-YDjS4Y90', 'set')">Set Questions</li>  
+        <li onclick="playVideoWithPassword('ihl7GXCU_X4', 'set')">Introduction to Surd</li>  
+      </ul>  
+      <div class="semester-title">Second Semester</div>  
+      <ul>  
+        <li onclick="playVideoWithPassword('UHy079K1_Yw', 'set')">Set Intervals</li>  
+        <li onclick="playVideoWithPassword('1_HbyR_8dWQ', 'set')">Trigonometry</li>  
+        <li onclick="playVideoWithPassword('SSrhsCz3Rrs', 'set')">Trigonometry by Tutor Nerd</li>  
+        <li onclick="playVideoWithPassword('99HB4407SFw', 'set')">Tutorial Sheet 3 (Intro to Limit)</li>  
+      </ul>  
+    </div>  
 
-    <!-- Maths Section -->
-    <div class="section">
-      <h3>Maths</h3>
-      <div class="semester-title">First Semester</div>
-      <ul>
-        <li onclick="playVideoWithPassword('KB-YDjS4Y90', 'set')">Set Questions</li>
-        <li onclick="playVideoWithPassword('ihl7GXCU_X4', 'set')">Introduction to Surd</li>
-      </ul>
-      <div class="semester-title">Second Semester</div>
-      <ul>
-        <li onclick="playVideoWithPassword('UHy079K1_Yw', 'set')">Set Intervals</li>
-        <li onclick="playVideoWithPassword('1_HbyR_8dWQ', 'set')">Trigonometry</li>
-        <li onclick="playVideoWithPassword('SSrhsCz3Rrs', 'set')">Trigonometry by Tutor Nerd</li>
-        <li onclick="playVideoWithPassword('99HB4407SFw', 'set')">Tutorial Sheet 3 (Intro to Limit)</li>
-      </ul>
-    </div>
+    <!-- Physics Section -->  
+    <div class="section">  
+      <h3>Physics</h3>  
+      <div class="semester-title">First Semester</div>  
+      <ul>  
+        <li onclick="playVideoWithPassword('jIJ3HJSeDts', 'atom')">Dimension Analysis</li>  
+        <li onclick="playVideoWithPassword('5XrxQaXg0wQ', 'atom')">Dimension analysis examination question part 1</li>  
+        <li onclick="playVideoWithPassword('Ib9oibTMumA', 'atom')">Dimension examination question Q2</li>  
+        <li onclick="playVideoWithPassword('uIiJPBsnG6M', 'atom')">Motion in one Dimension</li>  
+        <li onclick="playVideoWithPassword('cnI2kIo-Kw4', 'atom')">motion in one dimension qs 1</li>  
+        <li onclick="playVideoWithPassword('DgIptvClJkk', 'atom')">motion in one dimension qs 2</li>  
+        <li onclick="playVideoWithPassword('EsG8jUpavkA', 'atom')">Vectors Full Topic</li>  
+        <li onclick="playVideoWithPassword('UOF8BD0CIWs', 'atom')">Projectile Motion Full Topic</li>  
+        <li onclick="playVideoWithPassword('O0fYTdYBgo4', 'atom')">Relative velocity Made Easy</li>  
+        <li onclick="playVideoWithPassword('dOPbF0NN_E4', 'atom')">Introduction to Forces</li>  
+        <li onclick="playVideoWithPassword('4RfU4sYlutY', 'atom')">Tension on two ropes</li>  
+        <li onclick="playVideoWithPassword('VhOw6Dg69gg', 'atom')">Tension first and second case</li>  
+        <li onclick="playVideoWithPassword('3FP_xuIiFPs', 'atom')">work energy and power</li>  
+        <li onclick="playVideoWithPassword('MzNGHa0JmJ4', 'atom')">MOMENTUM INTRODUCTION</li>  
+      </ul>  
+      <div class="semester-title">Second Semester</div>  
+      <ul>  
+        <li onclick="playVideoWithPassword('Yr8IJddj9-E', 'atom')">Deformation of a Solid</li>  
+        <li onclick="playVideoWithPassword('6JQY8Pyh0z0', 'atom')">Deformation Tutorial Sheet 1</li>  
+      </ul>  
+    </div>  
 
-    <!-- Physics Section -->
-    <div class="section">
-      <h3>Physics</h3>
-      <div class="semester-title">First Semester</div>
-      <ul>
-        <li onclick="playVideoWithPassword('jIJ3HJSeDts', 'atom')">Dimension Analysis</li>
-        <li onclick="playVideoWithPassword('5XrxQaXg0wQ', 'atom')">Dimension analysis examination question part 1</li>
-        <li onclick="playVideoWithPassword('Ib9oibTMumA', 'atom')">Dimension examination question Q2</li>
-        <li onclick="playVideoWithPassword('uIiJPBsnG6M', 'atom')">Motion in one Dimension</li>
-        <!-- New videos inserted here -->
-        <li onclick="playVideoWithPassword('cnI2kIo-Kw4', 'atom')">motion in one dimension qs 1</li>
-        <li onclick="playVideoWithPassword('DgIptvClJkk', 'atom')">motion in one dimension qs 2</li>
-        
-<li onclick="playVideoWithPassword('EsG8jUpavkA', 'atom')">Vectors Full Topic</li>
-        <li onclick="playVideoWithPassword('UOF8BD0CIWs', 'atom')">Projectile Motion Full Topic</li>
-        <li onclick="playVideoWithPassword('O0fYTdYBgo4', 'atom')">Relative velocity Made Easy</li>
-        <!-- Added new video: Introduction to Forces -->
-        <li onclick="playVideoWithPassword('dOPbF0NN_E4', 'atom')">Introduction to Forces</li>
-        <li onclick="playVideoWithPassword('4RfU4sYlutY', 'atom')">Tension on two ropes</li>
-        <li onclick="playVideoWithPassword('VhOw6Dg69gg', 'atom')">Tension first and second case</li>
-        <!-- Newly added video below -->
-        <li onclick="playVideoWithPassword('3FP_xuIiFPs', 'atom')">work energy and power</li>
-        <li onclick="playVideoWithPassword('MzNGHa0JmJ4', 'atom')">MOMENTUM INTRODUCTION</li>
-      </ul>
-      <div class="semester-title">Second Semester</div>
-      <ul>
-        <li onclick="playVideoWithPassword('Yr8IJddj9-E', 'atom')">Deformation of a Solid</li>
-        <li onclick="playVideoWithPassword('6JQY8Pyh0z0', 'atom')">Deformation Tutorial Sheet 1</li>
-      </ul>
-    </div>
+    <!-- Chemistry Section -->  
+    <div class="section">  
+      <h3>Chemistry</h3>  
+      <div class="semester-title">First Semester</div>  
+      <ul>  
+        <li onclick="playVideoWithPassword('Wxd35Axqda0', 'matter')">Introduction to Chemistry</li>  
+      </ul>  
+      <div class="semester-title">Second Semester</div>  
+      <ul>  
+        <li onclick="playVideoWithPassword('WYx4OP6ntCA', 'matter')">Percentage Yield</li>  
+      </ul>  
+    </div>  
 
-    <!-- Chemistry Section -->
-    <div class="section">
-      <h3>Chemistry</h3>
-      <div class="semester-title">First Semester</div>
-      <ul>
-        <li onclick="playVideoWithPassword('Wxd35Axqda0', 'matter')">Introduction to Chemistry</li>
-      </ul>
-      <div class="semester-title">Second Semester</div>
-      <ul>
-        <li onclick="playVideoWithPassword('WYx4OP6ntCA', 'matter')">Percentage Yield</li>
-      </ul>
-    </div>
+    <!-- Biology Section -->  
+    <div class="section">  
+      <h3>Biology</h3>  
+      <div class="semester-title">First Semester</div>  
+      <ul>  
+        <li onclick="playVideoWithPassword('4B7GbZhzPYM', 'cell')">Drawing Eukaryotic Cell</li>  
+      </ul>  
+      <div class="semester-title">Second Semester</div>  
+      <ul>  
+        <li onclick="playVideoWithPassword('l1TtKZyPy6E', 'cell')">Drawing Prokaryotic Cell</li>  
+      </ul>  
+    </div>  
+  </div>  
 
-    <!-- Biology Section -->
-    <div class="section">
-      <h3>Biology</h3>
-      <div class="semester-title">First Semester</div>
-      <ul>
-        <li onclick="playVideoWithPassword('4B7GbZhzPYM', 'cell')">Drawing Eukaryotic Cell</li>
-      </ul>
-      <div class="semester-title">Second Semester</div>
-      <ul>
-        <li onclick="playVideoWithPassword('l1TtKZyPy6E', 'cell')">Drawing Prokaryotic Cell</li>
-      </ul>
-    </div>
+  <!-- Video Player -->  
+  <div class="video-player">  
+    <iframe id="videoFrame" src="https://www.youtube.com/embed/KB-YDjS4Y90" allowfullscreen></iframe>  
+  </div>  
 
-  </div>
-
-  <!-- Video Player -->
-  <div class="video-player">
-    <iframe id="videoFrame" src="https://www.youtube.com/embed/KB-YDjS4Y90" allowfullscreen></iframe>
-  </div>
-
-  <script>
+  <script>  
     function playVideoWithPassword(videoId, correctPassword) {
       const input = prompt("Enter password to watch this video:");
-      if (input && input.toLowerCase() === correctPassword.toLowerCase()) {
+
+      // Allow multiple passwords for each section
+      const acceptedPasswords = {
+        atom: ['atom', '1234'],     // Physics
+        set: ['set'],               // Maths
+        matter: ['matter'],         // Chemistry
+        cell: ['cell']              // Biology
+      };
+
+      if (input && acceptedPasswords[correctPassword]?.includes(input.toLowerCase())) {
         document.getElementById("videoFrame").src = "https://www.youtube.com/embed/" + videoId;
       } else {
         alert("Incorrect password!");
       }
     }
-  </script>
-
-</body>
+  </script>  
+</body>  
 </html>
