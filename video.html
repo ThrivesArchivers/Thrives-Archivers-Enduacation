@@ -183,10 +183,10 @@
 
       // Allow multiple passwords for each section
       const acceptedPasswords = {
-        atom: ['atom', '1234'],     // Physics
-        set: ['set'],               // Maths
-        matter: ['matter'],         // Chemistry
-        cell: ['cell']              // Biology
+        atom: ['atom', '1234','mu'],     // Physics
+        set: ['set','mu'],               // Maths
+        matter: ['matter','mu'],         // Chemistry
+        cell: ['cell','mu']              // Biology
       };
 
       if (input && acceptedPasswords[correctPassword]?.includes(input.toLowerCase())) {
