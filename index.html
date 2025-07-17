@@ -1,354 +1,84 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Thrives Archivers</title>
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      font-family: Arial, sans-serif;
-      background-image: url("file_00000000ef4461f69719503b570d9544.png");
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-position: center;
-      background-attachment: fixed;
-      color: white;
-      overflow-x: hidden;
-    }
-    .overlay {
-      background-color: rgba(0, 0, 0, 0.6);
-      min-height: 100%;
-      width: 100%;
-      padding: 30px;
-      box-sizing: border-box;
-    }
-    header {
-      text-align: center;
-      padding: 20px;
-    }
-    header img {
-      width: 100px;
-      height: auto;
-      border-radius: 10px;
-      margin-bottom: 10px;
-    }
-    section {
-      background-color: rgba(255, 255, 255, 0.1);
-      margin: 20px auto;
-      max-width: 800px;
-      padding: 20px;
-      border-radius: 10px;
-    }
-    .testimonial {
-      margin-bottom: 15px;
-      padding: 10px;
-      background-color: rgba(255, 255, 255, 0.15);
-      border-radius: 8px;
-    }
-    footer {
-      text-align: center;
-      padding: 20px;
-      background-color: rgba(0, 0, 0, 0.7);
-      color: white;
-      margin-top: 40px;
-    }
-    .social-icon {
-      width: 30px;
-      margin: 0 10px;
-    }
-    button {
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      cursor: pointer;
-      border-radius: 5px;
-      margin-right: 10px;
-      font-size: 1rem;
-    }
-    button:hover {
-      background-color: #45a049;
-    }
-    .modal-bg {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background-color: rgba(0,0,0,0.5);
-      z-index: 998;
-    }
-    #login-form, #signup-form {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: white;
-      color: black;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.4);
-      z-index: 999;
-      width: 90%;
-      max-width: 400px;
-      box-sizing: border-box;
-    }
-    #login-form input, #signup-form input {
-      padding: 8px;
-      margin: 8px 0;
-      width: 100%;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-      box-sizing: border-box;
-      font-size: 1rem;
-    }
-    #login-form .error, #signup-error-message {
-      color: red;
-      margin-top: 5px;
-      min-height: 20px;
-      font-size: 0.9rem;
-    }
-    #login-form .success, #signup-success-message {
-      color: green;
-      margin-top: 5px;
-      font-size: 0.9rem;
-    }
-    #close-btn, #signup-close-btn {
-      background-color: red;
-      margin-top: 10px;
-      width: 100%;
-    }
-    a {
-      color: #ffffff;
-    }
-  </style>
-</head>
-<body>
-  <div class="overlay">
-    <header>
-      <img src="Screenshot_20250629_230140.jpg" alt="Thrives Archivers Logo" />
-      <h1>Welcome to Thrives Archivers</h1>
-      <p>Helping You Succeed in Natural Sciences</p>
-    </header>
-    <section>
-      <p>The purpose of Thrives Archivers is to provide simplified Natural Science materials to help students excel in their studies without difficulty.</p>
-      <button onclick="showLoginForm()">Login to Access Dashboard</button>
-      <button onclick="showSignupForm()">Create Account</button>
-    </section>
-    <section>
-      <h2>What Our Students Are Saying</h2>
-      <div class="testimonial">
-        <h3>John Chilabwe (Mulungushi University)</h3>
-        <p>"Thrives Archivers has provided me with the best resources to understand my subjects better!"</p>
-      </div>
-      <div class="testimonial">
-        <h3>Elizabeth Mwewa (CBU)</h3>
-        <p>"The lessons are well-structured and have helped me stay on track with my studies."</p>
-      </div>
-      <div class="testimonial">
-        <h3>Lewis Mwape (Mukuba University)</h3>
-        <p>"I can easily find notes and content that makes studying a lot easier."</p>
-      </div>
-    </section>
-    <section>
-      <h2>Contact Us</h2>
-      <p>If you have any questions, feel free to contact us:</p>
-      <ul>
-        <li>WhatsApp: <a href="https://wa.me/260762514399" target="_blank">0762514399</a></li>
-        <li>Email: <a href="mailto:thrivesarchivers@gmail.com">thrivesarchivers@gmail.com</a></li>
-      </ul>
-    </section>
-    <!-- 
-    <section>
-      <h2>Admin Login Info</h2>
-      <p><strong>Admin Username:</strong> Thrives Archivers</p>
-      <p><strong>Admin Password:</strong> myGoal</p>
-      <small style="color: #ffb700;">(For admin access only. Please keep this information secure.)</small>
-    </section>
-    -->
-    <footer>
-      <p>&copy; 2025 Thrives Archivers</p>
-      <div>
-        <a href="https://youtube.com/@thrivesarchivers" target="_blank">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/4/42/YouTube_icon_%282013-2017%29.png" alt="YouTube" class="social-icon">
-        </a>
-        <a href="https://www.facebook.com/profile.php?id=61565387636780" target="_blank">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook" class="social-icon">
-        </a>
-        <a href="https://chat.whatsapp.com/CFyiOb2RIjPE7svjERiPcz" target="_blank">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" class="social-icon">
-        </a>
-      </div>
-    </footer>
-  </div>
-  <!-- Modal background (click outside to close) -->
-  <div id="modal-bg" class="modal-bg" onclick="hideAllModals()"></div>
-  <!-- Login Form -->
-  <div id="login-form">
-    <h2>Login</h2>
-    <form onsubmit="validateLogin(event)">
-      <label for="username">Username:</label>
-      <input type="text" id="username" autocomplete="username" required />
-      <label for="password">Password:</label>
-      <input type="password" id="password" autocomplete="current-password" required />
-      <button type="submit">Login</button>
-      <button id="close-btn" type="button" onclick="hideLoginForm()">Close</button>
-      <div id="error-message" class="error"></div>
-    </form>
-  </div>
-  <!-- Signup Form -->
-  <div id="signup-form">
-    <h2>Create Account</h2>
-    <form onsubmit="handleSignup(event)">
-      <input type="text" id="signup-username" placeholder="Username" autocomplete="username" required />
-      <input type="email" id="signup-email" placeholder="Email" autocomplete="email" required />
-      <input type="password" id="signup-password" placeholder="Password" autocomplete="new-password" required />
-      <input type="password" id="signup-confirm-password" placeholder="Confirm Password" autocomplete="new-password" required />
-      <button type="submit">Sign Up</button>
-      <button id="signup-close-btn" type="button" onclick="hideSignupForm()">Close</button>
-      <div id="signup-error-message"></div>
-    </form>
-  </div>
-  <script>
-    // Use Render backend for API calls
-    const API_BASE = "https://thrives-archivers-enduacation.onrender.com/api";
+const express = require('express');
+const cors = require('cors');
+const fs = require('fs').promises;
+const bcrypt = require('bcrypt');
+const path = require('path');
+const app = express();
+const PORT = process.env.PORT || 5000;
 
-    // Show/hide modal background and forms
-    const modalBg = document.getElementById('modal-bg');
+const USERS_FILE = 'users.json';
 
-    function showLoginForm() {
-      modalBg.style.display = 'block';
-      document.getElementById('login-form').style.display = 'block';
-      document.getElementById('signup-form').style.display = 'none';
+app.use(cors());
+app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
+
+async function readUsers() {
+    try {
+        const data = await fs.readFile(USERS_FILE, 'utf-8');
+        return JSON.parse(data);
+    } catch (err) {
+        return [];
+    }
+}
+
+async function writeUsers(users) {
+    await fs.writeFile(USERS_FILE, JSON.stringify(users, null, 2));
+}
+
+async function ensureAdminUser() {
+    const adminUsername = "Thrives Archivers";
+    const adminPassword = "myGoal";
+    const adminEmail = "admin@thrivesarchivers.com";
+
+    let users = await readUsers();
+    const existingAdmin = users.find(u => u.username === adminUsername);
+
+    if (!existingAdmin) {
+        const hashedPassword = await bcrypt.hash(adminPassword, 10);
+        users.push({ username: adminUsername, email: adminEmail, password: hashedPassword });
+        await writeUsers(users);
+        console.log(`✅ Admin user '${adminUsername}' created.`);
+    }
+}
+
+app.get('/api/status', (req, res) => {
+    res.json({ status: 'Control Panel API is running!' });
+});
+
+app.post('/api/signup', async (req, res) => {
+    const { username, email, password } = req.body;
+
+    if (!username || !email || !password) {
+        return res.status(400).json({ success: false, message: 'All fields required.' });
     }
 
-    function hideLoginForm() {
-      modalBg.style.display = 'none';
-      document.getElementById('login-form').style.display = 'none';
-      document.getElementById('error-message').textContent = "";
-      clearLoginInputs();
+    const users = await readUsers();
+    if (users.find(u => u.username === username)) {
+        return res.status(409).json({ success: false, message: 'Username taken.' });
     }
 
-    function showSignupForm() {
-      modalBg.style.display = 'block';
-      document.getElementById('signup-form').style.display = 'block';
-      document.getElementById('login-form').style.display = 'none';
-    }
+    const hashedPassword = await bcrypt.hash(password, 10);
+    users.push({ username, email, password: hashedPassword });
+    await writeUsers(users);
 
-    function hideSignupForm() {
-      modalBg.style.display = 'none';
-      document.getElementById('signup-form').style.display = 'none';
-      document.getElementById('signup-error-message').textContent = "";
-      clearSignupInputs();
-    }
+    res.status(201).json({ success: true, message: 'User registered.' });
+});
 
-    function hideAllModals() {
-      hideLoginForm();
-      hideSignupForm();
-    }
+app.post('/api/login', async (req, res) => {
+    const { username, password } = req.body;
+    const users = await readUsers();
+    const user = users.find(u => u.username === username);
 
-    function clearLoginInputs() {
-      document.getElementById('username').value = '';
-      document.getElementById('password').value = '';
-    }
+    if (!user) return res.status(401).json({ success: false, message: 'Invalid username.' });
 
-    function clearSignupInputs() {
-      document.getElementById('signup-username').value = '';
-      document.getElementById('signup-email').value = '';
-      document.getElementById('signup-password').value = '';
-      document.getElementById('signup-confirm-password').value = '';
-    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(401).json({ success: false, message: 'Wrong password.' });
 
-    // LOGIN
-    async function validateLogin(event) {
-      event.preventDefault();
-      const username = document.getElementById('username').value.trim();
-      const password = document.getElementById('password').value;
-      const errorDiv = document.getElementById('error-message');
-      errorDiv.textContent = "";
+    res.json({ success: true, token: username });
+});
 
-      // Custom Admin Login (client-side check, hidden logic)
-      // Now both admin and normal users go to dashboard.html
-      if (username === "Thrives Archivers" && password === "myGoal") {
-        errorDiv.textContent = "";
-        alert('Admin login successful! Redirecting to dashboard...');
-        window.location.href = "dashboard.html";
-        return;
-      }
-
-      try {
-        const response = await fetch(`${API_BASE}/login`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, password })
-        });
-        const data = await response.json();
-        if (response.ok && data.success) {
-          errorDiv.textContent = "";
-          alert('Login successful! Redirecting to dashboard...');
-          window.location.href = "dashboard.html";
-        } else {
-          errorDiv.textContent = data.message || "Invalid username or password. Try again.";
-        }
-      } catch (err) {
-        errorDiv.textContent = "Network error. Please try again.";
-      }
-    }
-
-    // SIGNUP
-    async function handleSignup(event) {
-      event.preventDefault();
-      const username = document.getElementById('signup-username').value.trim();
-      const email = document.getElementById('signup-email').value.trim();
-      const password = document.getElementById('signup-password').value;
-      const confirmPassword = document.getElementById('signup-confirm-password').value;
-      const errorDiv = document.getElementById('signup-error-message');
-      errorDiv.textContent = "";
-
-      if (!username || !email || !password || !confirmPassword) {
-        errorDiv.textContent = "All fields are required.";
-        return;
-      }
-      if (password.length < 4) {
-        errorDiv.textContent = "Password must be at least 4 characters.";
-        return;
-      }
-      if (password !== confirmPassword) {
-        errorDiv.textContent = "Passwords do not match.";
-        return;
-      }
-
-      try {
-        const response = await fetch(`${API_BASE}/signup`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, email, password })
-        });
-        const data = await response.json();
-        if (response.ok && data.success) {
-          errorDiv.style.color = "green";
-          errorDiv.textContent = "Signup successful! Please login.";
-          setTimeout(() => {
-            hideSignupForm();
-            showLoginForm();
-            errorDiv.style.color = "red";
-            errorDiv.textContent = "";
-          }, 1500);
-        } else {
-          errorDiv.style.color = "red";
-          errorDiv.textContent = data.message || "Signup failed. Try a different username.";
-        }
-      } catch (err) {
-        errorDiv.style.color = "red";
-        errorDiv.textContent = "Network error. Please try again.";
-      }
-    }
-  </script>
-</body>
-</html>
+ensureAdminUser().then(() => {
+    app.listen(PORT, () => {
+        console.log(`✅ Server running at http://localhost:${PORT}`);
+    });
+});
