@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Welcome - Thrives Archivers</title>
   <style>
     html, body {
@@ -13,14 +13,12 @@
       color: #fff;
       overflow-x: hidden;
     }
-
     canvas {
       position: fixed;
       top: 0;
       left: 0;
       z-index: 0;
     }
-
     .container {
       position: relative;
       z-index: 1;
@@ -28,16 +26,13 @@
       margin: auto;
       padding: 2rem;
     }
-
     h1, h2, h3 {
       color: #4cc9f0;
     }
-
     .header {
       text-align: center;
       margin-bottom: 30px;
     }
-
     .form-box {
       display: flex;
       flex-direction: column;
@@ -47,61 +42,41 @@
       max-width: 350px;
       margin: 20px auto;
     }
-
-    input {
+    input, button {
       padding: 10px;
       margin-top: 10px;
       border: none;
       border-radius: 5px;
       width: 100%;
     }
-
     button {
-      margin-top: 15px;
-      padding: 10px;
       background: #4cc9f0;
-      border: none;
-      border-radius: 5px;
       cursor: pointer;
       color: #000;
       font-weight: bold;
     }
-
     .message {
       margin-top: 10px;
       font-weight: bold;
       text-align: center;
     }
-
-    .success {
-      color: #00ff88;
+    .success { color: #00ff88; }
+    .error { color: #ff5555; }
+    .toggle-link {
+      color: #4cc9f0;
+      text-align: center;
+      cursor: pointer;
+      margin-top: 10px;
+      text-decoration: underline;
     }
-
-    .error {
-      color: #ff5555;
+    .section, footer, .testimonial, .social a {
+      margin-top: 20px;
     }
-
-    .section {
-      margin-top: 50px;
-    }
-
     .testimonial {
       background: rgba(255, 255, 255, 0.05);
       padding: 15px;
       border-radius: 10px;
-      margin: 10px 0;
     }
-
-    .contact, .social {
-      margin-top: 20px;
-    }
-
-    .social a {
-      color: #4cc9f0;
-      margin-right: 15px;
-      text-decoration: none;
-    }
-
     footer {
       text-align: center;
       margin-top: 50px;
@@ -111,195 +86,242 @@
 </head>
 <body>
 <canvas id="canvas"></canvas>
-
 <div class="container">
   <div class="header">
     <h1>Welcome to Thrives Archivers</h1>
     <p>Discover Resources to Help You Succeed!</p>
   </div>
 
+  <!-- Login Form -->
   <div class="form-box" id="loginForm">
     <h2>Login</h2>
-    <input type="text" placeholder="Username" id="loginEmail" />
+    <input type="email" placeholder="Email" id="loginEmail" />
     <input type="password" placeholder="Password" id="loginPassword" />
-    <button onclick="localLogin()">Log In</button>
+    <button onclick="login()">Log In</button>
     <div id="loginMessage" class="message"></div>
+    <div class="toggle-link" onclick="toggleForms()">Don't have an account? Click here to create</div>
   </div>
 
+  <!-- Sign Up Form -->
+  <div class="form-box" id="signupForm" style="display: none;">
+    <h2>Sign Up</h2>
+    <input type="email" placeholder="Email" id="signupEmail" />
+    <input type="password" placeholder="Password" id="signupPassword" />
+    <button onclick="signUp()">Create Account</button>
+    <div id="signupMessage" class="message"></div>
+    <div class="toggle-link" onclick="toggleForms()">Already have an account? Log in</div>
+  </div>
+
+  <!-- Sections -->
   <div class="section">
     <h2>🎯 Our Purpose</h2>
-    <p>
-      The purpose of Thrives Archivers is to provide simplified Natural Science materials to help students excel in their studies, without the difficulty.
-      Our platform offers easy-to-understand resources and tools that make learning engaging and effective.
-    </p>
+    <p>Thrives Archivers provides simplified Natural Science materials to help students excel in their studies.</p>
   </div>
-
   <div class="section">
     <h2>💬 What Our Students Are Saying</h2>
     <div class="testimonial">
       <h3>John Chilabwe (Mulungushi University)</h3>
-      <p>"Thrives Archivers has provided me with the best resources to understand my subjects better!"</p>
+      <p>"Thrives Archivers helped me understand subjects better!"</p>
     </div>
     <div class="testimonial">
       <h3>Elizabeth Mwewa (CBU)</h3>
-      <p>"The lessons are well-structured and have helped me stay on track with my studies."</p>
-    </div>
-    <div class="testimonial">
-      <h3>Lewis Mwape (Mukuba University)</h3>
-      <p>"I can easily find notes and content that makes studying a lot easier."</p>
+      <p>"Well-structured lessons helped me stay on track."</p>
     </div>
   </div>
-
-  <div class="section contact">
+  <div class="section">
     <h2>📞 Contact Us</h2>
     <p>- WhatsApp: <a href="https://wa.me/260762514399" target="_blank">0762514399</a></p>
     <p>- Email: <a href="mailto:thrivesarchivers@gmail.com">thrivesarchivers@gmail.com</a></p>
   </div>
-
   <div class="section social">
     <h2>🌐 Connect With Us</h2>
-    <a href="https://youtube.com/@thrivesarchivers?si=79Gs79_wjWXXwNQT" target="_blank">YouTube</a>
+    <a href="https://youtube.com/@thrivesarchivers" target="_blank">YouTube</a>
     <a href="https://www.facebook.com/profile.php?id=61565387636780" target="_blank">Facebook</a>
     <a href="https://chat.whatsapp.com/CFyiOb2RIjPE7svjERiPcz" target="_blank">WhatsApp Group</a>
   </div>
 
-  <footer>
-    © 2025 Thrives Archivers
-  </footer>
+  <footer>© 2025 Thrives Archivers</footer>
 </div>
 
-<!-- Local Login Script -->
-<script>
-function localLogin() {
-  const email = document.getElementById("loginEmail").value.trim();
-  const password = document.getElementById("loginPassword").value.trim();
-  const msg = document.getElementById("loginMessage");
+<!-- Supabase Auth Script -->
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-  if (email === "Thrives Archivers" && password === "myGoal") {
-    msg.textContent = "Login successful!";
-    msg.className = "message success";
-    setTimeout(() => {
-      window.location.href = "dashboard.html";
-    }, 1500);
-  } else {
-    msg.textContent = "Incorrect username or password.";
-    msg.className = "message error";
-  }
-}
-</script>
+  const supabaseUrl = 'https://odwiqajuubcgrrqipyju.supabase.co'
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1dWJjZ3JycWlweWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzA4MjEsImV4cCI6MjA2ODg0NjgyMX0.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A'
+  const supabase = createClient(supabaseUrl, supabaseKey)
 
-<!-- Background Particle Animation -->
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const canvas = document.getElementById('canvas');
-  const ctx = canvas.getContext('2d');
+  window.signUp = async function () {
+    const email = document.getElementById("signupEmail").value.trim()
+    const password = document.getElementById("signupPassword").value.trim()
+    const msg = document.getElementById("signupMessage")
 
-  function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
+    const { data, error } = await supabase.auth.signUp({ email, password })
 
-  window.addEventListener('resize', () => {
-    resizeCanvas();
-    initParticles();
-  });
-
-  const config = {
-    particleCount: 100,
-    maxDistance: 150,
-    mouseRadius: 100,
-    colors: [
-      {main: '#4cc9f0', secondary: '#4361ee'},
-      {main: '#f72585', secondary: '#b5179e'},
-      {main: '#4adc66', secondary: '#2a9d3e'}
-    ],
-    currentColor: 0,
-    isRunning: true
-  };
-
-  let particles = [];
-  let mouse = { x: null, y: null };
-
-  function initParticles() {
-    particles = [];
-    for (let i = 0; i < config.particleCount; i++) {
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        size: Math.random() * 3 + 1,
-        speedX: (Math.random() - 0.5) * 0.5,
-        speedY: (Math.random() - 0.5) * 0.5,
-        originalX: Math.random() * canvas.width,
-        originalY: Math.random() * canvas.height
-      });
+    if (error) {
+      msg.textContent = "Signup failed: " + error.message
+      msg.className = "message error"
+    } else {
+      msg.textContent = "✅ Your account has been successfully created!"
+      msg.className = "message success"
+      setTimeout(() => {
+        toggleForms()
+      }, 2000)
     }
   }
 
-  function drawParticles() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const color = config.colors[config.currentColor];
-    const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-    gradient.addColorStop(0, color.main);
-    gradient.addColorStop(1, color.secondary);
+  window.login = async function () {
+    const email = document.getElementById("loginEmail").value.trim()
+    const password = document.getElementById("loginPassword").value.trim()
+    const msg = document.getElementById("loginMessage")
 
-    for (let i = 0; i < particles.length; i++) {
-      for (let j = i + 1; j < particles.length; j++) {
-        const dx = particles[i].x - particles[j].x;
-        const dy = particles[i].y - particles[j].y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance < config.maxDistance) {
-          ctx.strokeStyle = `rgba(255, 255, 255, ${1 - distance/config.maxDistance})`;
-          ctx.lineWidth = 0.5;
-          ctx.beginPath();
-          ctx.moveTo(particles[i].x, particles[i].y);
-          ctx.lineTo(particles[j].x, particles[j].y);
-          ctx.stroke();
-        }
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+
+    if (error) {
+      msg.textContent = "Login failed: " + error.message
+      msg.className = "message error"
+    } else {
+      msg.textContent = "✅ Login successful!"
+      msg.className = "message success"
+      setTimeout(() => {
+        window.location.href = "dashboard.html"
+      }, 1500)
+    }
+  }
+
+  window.toggleForms = function () {
+    const login = document.getElementById("loginForm")
+    const signup = document.getElementById("signupForm")
+    login.style.display = login.style.display === "none" ? "block" : "none"
+    signup.style.display = signup.style.display === "none" ? "block" : "none"
+    document.getElementById("loginMessage").textContent = ""
+    document.getElementById("signupMessage").textContent = ""
+  }
+</script>
+
+<!-- Canvas Background Animation -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const canvas = document.getElementById('canvas')
+    const ctx = canvas.getContext('2d')
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth
+      canvas.height = window.innerHeight
+    }
+
+    window.addEventListener('resize', () => {
+      resizeCanvas()
+      initParticles()
+    })
+
+    const config = {
+      particleCount: 100,
+      maxDistance: 150,
+      mouseRadius: 100,
+      colors: [
+        { main: '#4cc9f0', secondary: '#4361ee' },
+        { main: '#f72585', secondary: '#b5179e' },
+        { main: '#4adc66', secondary: '#2a9d3e' }
+      ],
+      currentColor: 0,
+      isRunning: true
+    }
+
+    let particles = []
+    let mouse = { x: null, y: null }
+
+    function initParticles() {
+      particles = []
+      for (let i = 0; i < config.particleCount; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          size: Math.random() * 3 + 1,
+          speedX: (Math.random() - 0.5) * 0.5,
+          speedY: (Math.random() - 0.5) * 0.5,
+          originalX: Math.random() * canvas.width,
+          originalY: Math.random() * canvas.height
+        })
       }
     }
 
-    particles.forEach(p => {
-      ctx.fillStyle = gradient;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-      ctx.fill();
-    });
-  }
+    function drawParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      const color = config.colors[config.currentColor]
+      const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height)
+      gradient.addColorStop(0, color.main)
+      gradient.addColorStop(1, color.secondary)
 
-  function updateParticles() {
-    particles.forEach(p => {
-      p.x += (p.originalX - p.x) * 0.01 + p.speedX;
-      p.y += (p.originalY - p.y) * 0.01 + p.speedY;
-
-      if (mouse.x && mouse.y) {
-        const dx = mouse.x - p.x;
-        const dy = mouse.y - p.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < config.mouseRadius) {
-          const angle = Math.atan2(dy, dx);
-          const force = (config.mouseRadius - dist) / config.mouseRadius;
-          p.x -= Math.cos(angle) * force * 5;
-          p.y -= Math.sin(angle) * force * 5;
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x
+          const dy = particles[i].y - particles[j].y
+          const distance = Math.sqrt(dx * dx + dy * dy)
+          if (distance < config.maxDistance) {
+            ctx.strokeStyle = `rgba(255, 255, 255, ${1 - distance/config.maxDistance})`
+            ctx.lineWidth = 0.5
+            ctx.beginPath()
+            ctx.moveTo(particles[i].x, particles[i].y)
+            ctx.lineTo(particles[j].x, particles[j].y)
+            ctx.stroke()
+          }
         }
       }
 
-      if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
-      if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
-    });
-  }
-
-  function animate() {
-    if (config.isRunning) {
-      updateParticles();
-      drawParticles();
+      particles.forEach(p => {
+        ctx.fillStyle = gradient
+        ctx.beginPath()
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
+        ctx.fill()
+      })
     }
-    requestAnimationFrame(animate);
-  }
 
-  resizeCanvas();
-  initParticles();
-  animate();
-});
+    function updateParticles() {
+      particles.forEach(p => {
+        p.x += (p.originalX - p.x) * 0.01 + p.speedX
+        p.y += (p.originalY - p.y) * 0.01 + p.speedY
+
+        if (mouse.x && mouse.y) {
+          const dx = mouse.x - p.x
+          const dy = mouse.y - p.y
+          const dist = Math.sqrt(dx * dx + dy * dy)
+          if (dist < config.mouseRadius) {
+            const angle = Math.atan2(dy, dx)
+            const force = (config.mouseRadius - dist) / config.mouseRadius
+            p.x -= Math.cos(angle) * force * 5
+            p.y -= Math.sin(angle) * force * 5
+          }
+        }
+
+        if (p.x < 0 || p.x > canvas.width) p.speedX *= -1
+        if (p.y < 0 || p.y > canvas.height) p.speedY *= -1
+      })
+    }
+
+    canvas.addEventListener('mousemove', (e) => {
+      mouse.x = e.clientX
+      mouse.y = e.clientY
+    })
+
+    canvas.addEventListener('mouseleave', () => {
+      mouse.x = null
+      mouse.y = null
+    })
+
+    function animate() {
+      if (config.isRunning) {
+        updateParticles()
+        drawParticles()
+      }
+      requestAnimationFrame(animate)
+    }
+
+    resizeCanvas()
+    initParticles()
+    animate()
+  })
 </script>
+
 </body>
 </html>
