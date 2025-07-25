@@ -1,125 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment for Account Access</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            color: #333;
-            margin: 20px;
-        }
-        
-        header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        
-        h1 {
-            color: #007BFF;
-        }
-        
-        h2 {
-            color: #555;
-            margin-bottom: 20px;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 30px;
-            background: #fff;
-        }
-        
-        th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: center;
-        }
-        
-        th {
-            background-color: #007BFF;
-            color: white;
-        }
-        
-        .paid {
-            color: green;
-        }
-        
-        .not-paid {
-            color: red;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Site Under Maintenance</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0d0d0d;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      text-align: center;
+      flex-direction: column;
+      animation: fadeIn 2s ease-in-out;
+    }
+
+    h1 {
+      font-size: 3em;
+      margin-bottom: 0.3em;
+      animation: bounce 2s infinite;
+    }
+
+    p {
+      font-size: 1.2em;
+      color: #ccc;
+      animation: fadeIn 3s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+  </style>
 </head>
 <body>
-
-    <header>
-        <h1>Payment for Account Access</h1>
-    </header>
-
-    <section id="enrollment">
-        <h2>Enrollment Payments</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Comment</th>
-                    <th>Courses</th>
-                    <th>Amount (K)</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody id="enrollment-table">
-                <tr>
-                    <td>Precious Mchonde</td>
-                    <td>Rely on Helbs</td>
-                    <td>Physics and Chemistry</td>
-                    <td>K300</td>
-                    <td class="not-paid">Not Paid</td>
-                </tr>
-                <tr>
-                    <td>Belama Lewis</td>
-                    <td>Relies on Helbs</td>
-                    <td>Physics</td>
-                    <td>K150</td>
-                    <td class="not-paid">Not Paid</td>
-               </tr>
-                <tr>
-                    <td>Madalisto</td>
-                    <td>Access to documents</td>
-                    <td>Physics</td>
-                    <td>K160</td>
-                    <td class="paid">Paid</td>
-                </tr>
-                <tr>
-                    <td>D҉r҉e҉a҉m҉C҉h҉a҉s҉e҉r҉d҉</td>
-                    <td>Relay on Helbs</td>
-                    <td>Maths, Biology, Chemistry and Physics</td>
-                    <td>K600</td>
-                    <td class="not-paid">Not Paid</td>
-                </tr>
-                <tr>
-                    <td>Trina🌹🎊💘</td>
-                    <td>Enroll all courses</td>
-                    <td>All courses</td>
-                    <td>K150</td>
-                    <td class="not-paid">Remaining balance K450</td>
-                </tr>
-            </tbody>
-        </table>
-    </section>
-
-    <footer>
-        <p>&copy; 2025 Thrives Archivers. All rights reserved.</p>
-    </footer>
-
+  <h1>🔧 Still Under Maintenance</h1>
+  <p>We're working hard to bring everything online. Please check back soon.</p>
 </body>
 </html>
