@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard - Thrives Archivers</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      padding: 30px;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    form {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 400px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      background: #0b63ce;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #094ba3;
+    }
+  </style>
+</head>
+<body>
+  <h1>📋 Admin Dashboard - Thrives Archivers</h1>
+  <form id="subscription-form">
+    <label>User Email:</label>
+    <input type="email" id="email" required />
+
+    <label>Start Date:</label>
+    <input type="date" id="start_date" required />
+
+    <label>End Date:</label>
+    <input type="date" id="end_date" required />
+
+    <label>Course:</label>
+    <select id="course" required>
+      <option value="">Select Course</option>
+      <option value="Mathematics">Mathematics</option>
+      <option value="Biology">Biology</option>
+      <option value="Chemistry">Chemistry</option>
+      <option value="Physics">Physics</option>
+    </select>
+
+    <button type="submit">Create Subscription</button>
+  </form>
+
+  <script>
+    const supabaseUrl = 'https://odwiqajuubcgrrqipyju.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'; // Truncated for security
+    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+    document.getElementById('subscription-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById('email').value;
+      const start_date = document.getElementById('start_date').value;
+      const end_date = document.getElementById('end_date').value;
+      const course = document.getElementById('course').value;
+
+      // 🔍 Find user by email
+      const { data: users, error: userError } = await supabase
+        .from('users') // Make sure 'users' table exists and stores email
+        .select('id')
+        .eq('email', email);
+
+      if (userError || users.length === 0) {
+        alert("❌ User not found!");
+        return;
+      }
+
+      const user_id = users[0].id;
+
+      // ✅ Insert into subscriptions table
+      const { error: insertError } = await supabase
+        .from('subscriptions')
+        .insert([
+          {
+            user_id,
+            start_date,
+            end_date,
+            course,
+          }
+        ]);
+
+      if (insertError) {
+        alert("❌ Failed to create subscription: " + insertError.message);
+      } else {
+        alert("✅ Subscription created successfully!");
+        document.getElementById('subscription-form').reset();
+      }
+    });
+  </script>
+</body>
+</html>
