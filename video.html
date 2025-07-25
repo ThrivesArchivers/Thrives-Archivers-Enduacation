@@ -181,23 +181,26 @@
   </div>  
 
   <script>  
-    function playVideoWithPassword(videoId, correctPassword) {
-      const input = prompt("Enter password to watch this video:");
+  function playVideoWithPassword(videoId, correctPassword) {
+    const input = prompt("Enter password to watch this video:");
 
-      // Allow multiple passwords for each section
-      const acceptedPasswords = {
-        atom: ['atom', '1234','mu','malalo','joyce','ND585eov'],     // Physics
-        set: ['set','mu','ND585eov,],               // Maths
-        matter: ['matter','mu','ND585eov'],         // Chemistry
-        cell: ['cell','mu','ND585eov']              // Biology
-      };
+    // Define accepted passwords per section
+    const acceptedPasswords = {
+      atom: ['atom', '1234', 'mu', 'malalo', 'joyce', 'ND585eov'],     // Physics
+      set: ['set', 'mu', 'ND585eov'],                                  // Maths
+      matter: ['matter', 'mu', 'ND585eov'],                            // Chemistry
+      cell: ['cell', 'mu', 'ND585eov']                                 // Biology
+    };
 
-      if (input && acceptedPasswords[correctPassword]?.includes(input.toLowerCase())) {
-        document.getElementById("videoFrame").src = "https://www.youtube.com/embed/" + videoId;
-      } else {
-        alert("Incorrect password!");
-      }
+    // Global override password
+    const globalPassword = 'ND585eov';
+
+    if (input && (input.toLowerCase() === globalPassword.toLowerCase() || acceptedPasswords[correctPassword]?.includes(input.toLowerCase()))) {
+      document.getElementById("videoFrame").src = "https://www.youtube.com/embed/" + videoId;
+    } else {
+      alert("Incorrect password!");
     }
-  </script>  
+  }
+</script>  
 </body>  
 </html>
