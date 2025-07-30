@@ -45,18 +45,18 @@
   <script>
     function loadDocument(url, course) {
       const acceptedPasswords = {
-        physics: ['atom', '1234', 'mu','malalo','joyce'],
+        physics: ['atom', '1234', 'mu', 'malalo', 'joyce', 'chisha'],
         maths: ['set', 'mu'],
         biology: ['cell', 'mu'],
         chemistry: ['atom', 'mu']
       };
 
       const userPassword = prompt(`Enter the password for ${course}:`);
+      const lowerUserPassword = userPassword?.toLowerCase();
 
-      if (
-        userPassword &&
-        acceptedPasswords[course]?.includes(userPassword.toLowerCase())
-      ) {
+      const validPasswords = acceptedPasswords[course]?.map(p => p.toLowerCase()) || [];
+
+      if (lowerUserPassword && validPasswords.includes(lowerUserPassword)) {
         const viewer = document.getElementById("docViewer");
         viewer.src = url;
         viewer.style.display = "block";
@@ -83,7 +83,6 @@
       <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1A2W_K0qOKK8gimRN_ZhWoaeqyxlB6Quq/preview', 'physics')">Deformation of a Solid (updated)</a>
       <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1A51_phW4qkgIITKAEdr3iYlx7SQIlMfK/preview', 'physics')">Tutorial Sheet 1 (Deformation of a Solid)</a>
       <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1EcWkwyftm_9Yydoe1yKIKjIyWsZMtf0S/preview', 'physics')">Additional Document</a>
-      <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1EcWkwyftm_9Yydoe1yKIKjIyWsZMtf0S/preview', 'physics')">Tutorial sheet 1 (part 2)</a>
       <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1MSLnYCzHlAXWqMbWaPBmeuhYb3vSkbhp/preview', 'physics')">Simple Harmonic Motion (updated)</a>
       <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1MUuH0d8NIFZP_JB9vAsWjPqGqd6WOFTt/preview', 'physics')">Motion of a Pendulum</a>
       <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1Q6Cmsa_kTBXWhVykqTuVt48mYgzcFbai/preview', 'physics')">Wave Motion</a>
@@ -108,7 +107,6 @@
       <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1Ka0endHzlg9clvGhtQtoJINO-SH_jzZS/preview', 'biology')">Additional Document</a>
       <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1VTGfTwrbokjKQ9721dhKUnSkretfihmk/preview', 'biology')">Lecture 1 Biology (Surprise Quiz)</a>
       <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1VUlJXOuUtoPoekPpMi_nbB87YERUsRpY/preview', 'biology')">Lecture 2 Meiosis (MCQ Questions)</a>
-      <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1VUlJXOuUtoPoekPpMi_nbB87YERUsRpY/preview', 'biology')">Lecture 3 DNA Replication in Prokaryotic (MCQ)</a>
       <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1VZiQZu4BD9WboJP2ZQxq0h-93fATah1c/preview', 'biology')">Lecture 4 DNA Synthesis (Replication)</a>
       <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1Ve7WzJ7kqjlKzxq5Y9V4OAGjW3NQ2hkh/preview', 'biology')">Lecture 5 (Transcription and Translation)</a>
       <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1Vi52NxLL-Nm5DXzh4HHcnBr8TlTUTdso/preview', 'biology')">Lecture 6 Translation (Protein Synthesis)</a>
@@ -123,7 +121,7 @@
       <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1CB6pUnTcl_tk_qUPoMDDAM9ucnJJh8hE/preview', 'chemistry')">Chemical Kinetics</a>
       <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1Bc431Hb7kuwQ_z_IksU5PsyGsxrfz0mU/preview', 'chemistry')">Chemical Kinetics (Rate Law)</a>
       <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1cQS-QnAayXtB0olOoKdkQoHfORk73dwB/preview', 'chemistry')">Chemistry Exam Study Hub</a>
-       <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1dDxSjYSCyl-1BLsV_0bdF-_vVIQ3BDNO/preview', 'chemistry')">Le Chatelier's Principle Made Easy</a>
+      <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1dDxSjYSCyl-1BLsV_0bdF-_vVIQ3BDNO/preview', 'chemistry')">Le Chatelier's Principle Made Easy</a>
       <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1chMovDp9UiomFMEueyNe_rBcWe61UVGR/preview', 'chemistry')">Acid-Base Equilibrium, Buffers and Solubility</a>
       <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1ciZNRtpLmUCGDBz-snKzub0IpGnyWmWh/preview', 'chemistry')">Organic Chemistry Basic Introduction</a>
     </div>
