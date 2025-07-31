@@ -111,6 +111,7 @@
         <li onclick="playVideoWithPassword('KB-YDjS4Y90', 'set')">Set Questions</li>  
         <li onclick="playVideoWithPassword('ihl7GXCU_X4', 'set')">Introduction to Surd</li>  
         <li onclick="playVideoWithPassword('a3FIzcDINts', 'set')">MATHS EXAM PREPA (Lesson 1)</li>  
+        <li onclick="playVideoWithPassword('d3_q925hATU', 'set')">Binomial Made Easy</li>  
       </ul>  
       <div class="semester-title">Second Semester</div>  
       <ul>  
@@ -197,7 +198,6 @@
 
       const globalPassword = 'ND585eov';
 
-      // Check passwords case-insensitively
       const isAllowed = input &&
         (input.toLowerCase() === globalPassword.toLowerCase() ||
          acceptedPasswords[section]?.map(p => p.toLowerCase()).includes(input.toLowerCase()));
