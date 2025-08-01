@@ -1,160 +1,235 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Medicine Study Group – Quiz One</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Medicine Quiz – Osteology</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f4f4f4;
+      background-color: #eef2f7;
+      margin: 20px;
       padding: 20px;
-    }
-    .quiz-container {
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      max-width: 700px;
+      max-width: 900px;
       margin: auto;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h1, h2 {
+      color: #222;
     }
     .question {
-      margin-bottom: 20px;
+      background: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px #ccc;
+      margin-bottom: 15px;
     }
-    .options button {
+    .options label {
       display: block;
-      margin: 5px 0;
-      padding: 10px;
-      width: 100%;
-      border: none;
-      border-radius: 5px;
+      margin: 6px 0;
       cursor: pointer;
+    }
+    .explanation {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #444;
     }
     .correct {
-      background-color: #d4edda;
-    }
-    .wrong {
-      background-color: #f8d7da;
-    }
-    .score {
-      font-size: 20px;
+      color: green;
       font-weight: bold;
-      margin-top: 20px;
     }
-    .restart-btn {
+    .incorrect {
+      color: red;
+    }
+    #submit-btn {
       background-color: #007bff;
       color: white;
-      padding: 10px 15px;
       border: none;
+      padding: 12px 20px;
+      font-size: 16px;
       border-radius: 5px;
       cursor: pointer;
       margin-top: 20px;
+    }
+    #result {
+      font-size: 20px;
+      margin-top: 20px;
+      font-weight: bold;
+      color: #333;
     }
   </style>
 </head>
 <body>
-  <div class="quiz-container" id="quizApp"></div>
+
+  <h1>📝 Medicine Study Group – Quiz Two</h1>
+  <h2>🦴 Osteology of the Upper Limb – MCQs</h2>
+
+  <form id="quizForm"></form>
+
+  <button id="submit-btn" onclick="calculateScore()">Submit Quiz</button>
+  <div id="result"></div>
+
   <script>
     const questions = [
-      { question: "Where was anatomy first formally studied?", options: ["Greece", "Egypt", "India", "China"], answer: 1 },
-      { question: "Who is known as the Father of Medicine?", options: ["Aristotle", "Hippocrates", "Galen", "Vesalius"], answer: 1 },
-      { question: "What did Aristotle define 'anatome' as?", options: ["Healing", "Cutting up", "Observing", "Drawing"], answer: 1 },
-      { question: "What material were the earliest descriptions of anatomy written on?", options: ["Stone", "Papyrus", "Cloth", "Parchment"], answer: 1 },
-      { question: "Who built the anatomical theatre in Padua?", options: ["Harvey", "Vesalius", "Fabricius", "Hippocrates"], answer: 2 },
-      { question: "Who discovered the circulation of blood?", options: ["Fabricius", "Harvey", "Galen", "Aristotle"], answer: 1 },
-      { question: "What year was Harvey's book on blood circulation published?", options: ["1628", "1594", "1514", "1832"], answer: 0 },
-      { question: "What law helped legalize body donations in Britain?", options: ["Medical Act", "Anatomy Act", "Surgical Law", "Donor Act"], answer: 1 },
-      { question: "How many main approaches are there to studying anatomy?", options: ["2", "3", "4", "5"], answer: 1 },
-      { question: "Which approach focuses on body parts by region?", options: ["Systemic", "Topographic", "Clinical", "Regional"], answer: 3 },
-
-      { question: "Which system includes skin and sweat glands?", options: ["Skeletal", "Integumentary", "Muscular", "Endocrine"], answer: 1 },
-      { question: "Which system includes bones and cartilage?", options: ["Muscular", "Skeletal", "Nervous", "Digestive"], answer: 1 },
-      { question: "Which system consists of joints and ligaments?", options: ["Muscular", "Skeletal", "Articular", "Endocrine"], answer: 2 },
-      { question: "What does the muscular system do?", options: ["Support", "Protection", "Movement", "Absorption"], answer: 2 },
-      { question: "Which system includes the brain and spinal cord?", options: ["Circulatory", "Endocrine", "Nervous", "Digestive"], answer: 2 },
-
-      { question: "Which plane divides the body into left and right halves?", options: ["Frontal", "Transverse", "Median", "Oblique"], answer: 2 },
-      { question: "What movement decreases the angle between bones?", options: ["Extension", "Rotation", "Flexion", "Abduction"], answer: 2 },
-      { question: "Which movement moves a limb away from the midline?", options: ["Adduction", "Flexion", "Extension", "Abduction"], answer: 3 },
-      { question: "What is pronation of the hand?", options: ["Palm up", "Palm down", "Fist", "Hand closed"], answer: 1 },
-      { question: "What is the meaning of circumduction?", options: ["Twisting motion", "Straightening", "Circular movement", "Flexing"], answer: 2 }
+      {
+        q: "Which of the following bones is part of the pectoral girdle?",
+        options: ["Humerus", "Radius", "Clavicle", "Ulna"],
+        answer: 2,
+        explanation: "Clavicle is one of the two bones forming the pectoral girdle."
+      },
+      {
+        q: "How many bones make up the upper limb in total (on one side)?",
+        options: ["26", "30", "33", "24"],
+        answer: 1,
+        explanation: "There are 30 bones in each upper limb."
+      },
+      {
+        q: "Which bone articulates with the glenoid cavity of the scapula?",
+        options: ["Clavicle", "Radius", "Humerus", "Ulna"],
+        answer: 2,
+        explanation: "The humerus fits into the glenoid cavity of the scapula."
+      },
+      {
+        q: "What type of bone is the scapula?",
+        options: ["Long bone", "Flat bone", "Irregular bone", "Short bone"],
+        answer: 1,
+        explanation: "Scapula is a flat bone that provides surface for muscle attachment."
+      },
+      {
+        q: "The olecranon process is part of which bone?",
+        options: ["Radius", "Humerus", "Scapula", "Ulna"],
+        answer: 3,
+        explanation: "The olecranon process is on the posterior part of the ulna."
+      },
+      {
+        q: "Which bone is commonly fractured during a fall on the shoulder?",
+        options: ["Ulna", "Radius", "Clavicle", "Scapula"],
+        answer: 2,
+        explanation: "The clavicle is commonly fractured when falling on the shoulder."
+      },
+      {
+        q: "Which of the following bones is the lateral bone of the forearm?",
+        options: ["Radius", "Ulna", "Humerus", "Scapula"],
+        answer: 0,
+        explanation: "Radius is the lateral bone of the forearm."
+      },
+      {
+        q: "How many carpal bones are found in one hand?",
+        options: ["6", "8", "10", "12"],
+        answer: 1,
+        explanation: "There are 8 carpal bones arranged in two rows."
+      },
+      {
+        q: "Which bone contains the deltoid tuberosity?",
+        options: ["Radius", "Humerus", "Scapula", "Ulna"],
+        answer: 1,
+        explanation: "Deltoid tuberosity is a roughened area on the humerus."
+      },
+      {
+        q: "The head of the radius articulates with which part of the humerus?",
+        options: ["Olecranon fossa", "Capitulum", "Trochlea", "Coronoid fossa"],
+        answer: 1,
+        explanation: "The head of the radius articulates with the capitulum."
+      },
+      {
+        q: "What is the name of the socket in the scapula that receives the head of the humerus?",
+        options: ["Acromion", "Glenoid cavity", "Coracoid process", "Spine"],
+        answer: 1,
+        explanation: "The glenoid cavity articulates with the head of the humerus."
+      },
+      {
+        q: "How many metacarpal bones are there in one hand?",
+        options: ["4", "5", "6", "7"],
+        answer: 1,
+        explanation: "There are 5 metacarpals in each hand."
+      },
+      {
+        q: "The trochlea of the humerus articulates with which bone?",
+        options: ["Radius", "Scapula", "Ulna", "Clavicle"],
+        answer: 2,
+        explanation: "The trochlea articulates with the ulna."
+      },
+      {
+        q: "Which carpal bone is most commonly fractured?",
+        options: ["Lunate", "Scaphoid", "Hamate", "Pisiform"],
+        answer: 1,
+        explanation: "Scaphoid is the most commonly fractured carpal bone."
+      },
+      {
+        q: "What type of joint is the shoulder joint?",
+        options: ["Hinge joint", "Ball and socket joint", "Pivot joint", "Saddle joint"],
+        answer: 1,
+        explanation: "Shoulder joint is a ball and socket joint for wide range of motion."
+      },
+      {
+        q: "The anatomical neck of the humerus lies between:",
+        options: ["Head and shaft", "Head and greater tubercle", "Head and glenoid cavity", "Greater and lesser tubercles"],
+        answer: 1,
+        explanation: "The anatomical neck is between the head and the greater tubercle."
+      },
+      {
+        q: "Which of these bones forms the elbow joint with the humerus?",
+        options: ["Radius and Ulna", "Scapula and Clavicle", "Radius and Scapula", "Clavicle and Ulna"],
+        answer: 0,
+        explanation: "Both radius and ulna form the elbow joint with humerus."
+      },
+      {
+        q: "The styloid process is found on:",
+        options: ["Humerus", "Scapula", "Radius and Ulna", "Clavicle"],
+        answer: 2,
+        explanation: "Styloid process is found on both radius and ulna."
+      },
+      {
+        q: "The medial epicondyle is found on which bone?",
+        options: ["Radius", "Humerus", "Ulna", "Scapula"],
+        answer: 1,
+        explanation: "Medial epicondyle is a bony projection on the humerus."
+      },
+      {
+        q: "Which process of the scapula projects anteriorly?",
+        options: ["Spine", "Acromion", "Glenoid", "Coracoid"],
+        answer: 3,
+        explanation: "The coracoid process projects anteriorly from the scapula."
+      }
     ];
 
-    const state = { step: "quiz", current: 0, score: 0, selected: null };
-    const quizApp = document.getElementById("quizApp");
+    const form = document.getElementById("quizForm");
 
-    function render() {
-      quizApp.innerHTML = "";
-      if (state.step === "quiz") {
-        renderQuestion();
-      } else if (state.step === "result") {
-        renderResult();
+    questions.forEach((q, index) => {
+      const div = document.createElement("div");
+      div.className = "question";
+      div.innerHTML = `<p><strong>${index + 1}. ${q.q}</strong></p>` +
+        q.options.map((opt, i) =>
+          `<label>
+            <input type="radio" name="q${index}" value="${i}" onchange="showExplanation(${index}, ${i})"> ${opt}
+          </label>`
+        ).join("") +
+        `<div id="explanation${index}" class="explanation"></div>`;
+      form.appendChild(div);
+    });
+
+    function showExplanation(qIndex, selected) {
+      const explainDiv = document.getElementById("explanation" + qIndex);
+      const correct = questions[qIndex].answer;
+      const explain = questions[qIndex].explanation;
+      if (selected === correct) {
+        explainDiv.innerHTML = `<span class='correct'>Correct!</span><br>${explain}`;
+      } else {
+        explainDiv.innerHTML = `<span class='incorrect'>Incorrect.</span><br>${explain}`;
       }
     }
 
-    function renderQuestion() {
-      const q = questions[state.current];
-      const container = document.createElement("div");
-      container.className = "question";
-      const questionEl = document.createElement("h3");
-      questionEl.textContent = q.question;
-      container.appendChild(questionEl);
-
-      const optionsEl = document.createElement("div");
-      optionsEl.className = "options";
-      q.options.forEach((opt, idx) => {
-        const btn = document.createElement("button");
-        btn.textContent = opt;
-        btn.addEventListener("click", () => {
-          state.selected = idx;
-          if (idx === q.answer) {
-            btn.classList.add("correct");
-            state.score++;
-          } else {
-            btn.classList.add("wrong");
-            const correctBtn = optionsEl.children[q.answer];
-            correctBtn.classList.add("correct");
-          }
-          Array.from(optionsEl.children).forEach(b => b.disabled = true);
-          setTimeout(() => {
-            state.current++;
-            state.selected = null;
-            if (state.current >= questions.length) {
-              state.step = "result";
-            }
-            render();
-          }, 1500);
-        });
-        optionsEl.appendChild(btn);
+    function calculateScore() {
+      let score = 0;
+      questions.forEach((q, i) => {
+        const selected = document.querySelector(`input[name='q${i}']:checked`);
+        if (selected && parseInt(selected.value) === q.answer) {
+          score++;
+        }
       });
-
-      container.appendChild(optionsEl);
-      quizApp.appendChild(container);
+      const percent = ((score / questions.length) * 100).toFixed(2);
+      document.getElementById("result").innerText = `You scored ${score}/20 (${percent}%)`;
     }
-
-    function renderResult() {
-      const percent = ((state.score / questions.length) * 100).toFixed(2);
-      quizApp.innerHTML = `
-        <h2>Quiz Completed!</h2>
-        <div class="score">Your Score: <b>${state.score}</b> / ${questions.length} (${percent}%)</div>
-        <p>Discuss the solution in <strong>Thrives Archives Medicine Study Group</strong>.</p>
-        <p><strong>This is Medicine Study Group's Quiz One.</strong></p>
-      `;
-      const restartBtn = document.createElement("button");
-      restartBtn.className = "restart-btn";
-      restartBtn.textContent = "Restart Quiz";
-      restartBtn.addEventListener("click", () => {
-        state.step = "quiz";
-        state.score = 0;
-        state.current = 0;
-        state.selected = null;
-        render();
-      });
-      quizApp.appendChild(restartBtn);
-    }
-
-    render();
   </script>
+
 </body>
 </html>
-
