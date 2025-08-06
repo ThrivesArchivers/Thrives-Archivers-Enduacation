@@ -57,11 +57,12 @@
   <script>
     function loadDocument(url, course) {
       const acceptedPasswords = {
-        physics: ['atom', '1234', 'mu', 'malalo', 'joyce', 'chisha'],
-        maths: ['set', 'mu'],
-        biology: ['cell', 'mu'],
-        chemistry: ['atom', 'mu']
-      };
+  physics: ['atom', '1234', 'mu', 'malalo', 'joyce', 'chisha'],
+  maths: ['set', 'mu'],
+  biology: ['cell', 'mu'],
+  chemistry: ['atom', 'mu'],
+  anatomy: ['born']  // ✅ Added this line
+};
 
       const userPassword = prompt(`Enter the password for ${course}:`);
       const lowerUserPassword = userPassword?.toLowerCase();
@@ -168,6 +169,25 @@
         <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1ciZNRtpLmUCGDBz-snKzub0IpGnyWmWh/preview', 'chemistry')">Organic Chemistry Basic Introduction</a>
       </div>
     </div>
+    <!-- Anatomy Section -->
+<div class="document-section">
+  <h2>Anatomy</h2>
+
+  <div class="semester">
+    <h3>Term One</h3>
+    <a href="#" onclick="loadDocument('https://drive.google.com/file/d/TERM1_DOCUMENT_ID/preview', 'anatomy')">Introduction to Anatomy</a>
+  </div>
+
+  <div class="semester">
+    <h3>Term Two</h3>
+    <a href="#" onclick="loadDocument('https://drive.google.com/file/d/TERM2_DOCUMENT_ID/preview', 'anatomy')">Anatomy Mid-Term</a>
+  </div>
+
+  <div class="semester">
+    <h3>Term Three</h3>
+    <a href="#" onclick="loadDocument('https://drive.google.com/file/d/TERM3_DOCUMENT_ID/preview', 'anatomy')">Anatomy Final Review</a>
+  </div>
+</div>
 
     <iframe id="docViewer"></iframe>
   </div>
