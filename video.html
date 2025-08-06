@@ -1,4 +1,4 @@
-      <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">  
 <head>  
   <meta charset="UTF-8">  
@@ -184,6 +184,23 @@
       </ul>  
     </div>  
 
+    <!-- Anatomy Section -->  
+    <div class="section">  
+      <h3>Anatomy</h3>  
+      <div class="semester-title">Term One</div>  
+      <ul>  
+        <li onclick="playVideoWithPassword('z4SLEMUT2iU', 'anatomy')">Introduction</li>  
+      </ul>  
+      <div class="semester-title">Term Two</div>  
+      <ul>  
+        <li onclick="playVideoWithPassword('z4SLEMUT2iU', 'anatomy')">Introduction 2</li>  
+      </ul>  
+      <div class="semester-title">Term Three</div>  
+      <ul>  
+        <li onclick="playVideoWithPassword('z4SLEMUT2iU', 'anatomy')">Introduction 3</li>  
+      </ul>  
+    </div>  
+
   </div>  
 
   <!-- Video Player -->  
@@ -196,10 +213,11 @@
       const input = prompt("Enter password to access this video:");
 
       const acceptedPasswords = {
-        atom: ['atom', '1234', 'mu', 'malalo', 'joyce', 'ND585eov', 'Chisha'], // Physics
-        set: ['set', 'mu', 'ND585eov'],                                        // Maths
-        matter: ['matter', 'mu', 'ND585eov'],                                  // Chemistry
-        cell: ['cell', 'mu', 'ND585eov']                                       // Biology
+        atom: ['atom', '1234', 'mu', 'malalo', 'joyce', 'ND585eov', 'Chisha'],
+        set: ['set', 'mu', 'ND585eov'],
+        matter: ['matter', 'mu', 'ND585eov'],
+        cell: ['cell', 'mu', 'ND585eov'],
+        anatomy: ['born']
       };
 
       const globalPassword = 'ND585eov';
@@ -217,5 +235,3 @@
   </script>  
 </body>  
 </html>
-
-
