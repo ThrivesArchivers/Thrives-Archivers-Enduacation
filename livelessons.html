@@ -96,7 +96,11 @@ body, html { margin:0; padding:0; height:100%; font-family: Arial, sans-serif; b
   </div>
 </div>
 
+<!-- Zego UI Kit -->
 <script src="https://unpkg.com/@zegocloud/zego-uikit-prebuilt/zego-uikit-prebuilt.js"></script>
+<!-- JWT library for frontend token generation -->
+<script src="https://cdn.jsdelivr.net/npm/jwt-simple@0.5.6/build/jwt-simple.min.js"></script>
+
 <script>
 // Generate default room if none provided
 function generateRoomID() { return "ROOM_" + Math.floor(Math.random()*9000 + 1000); }
@@ -107,8 +111,18 @@ document.getElementById("joinRoomBtn").addEventListener("click", ()=>{
     const userID = Math.floor(Math.random()*10000)+"";
     const userName = "User"+userID;
 
-    // For GitHub pages, you can only use test token generation
-    const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(493142362, "6b5c2593ac4f7d593cecc5759987da2c", roomID, userID, userName);
+    // ----- REAL AppID & ServerSecret in browser (unsafe, only for testing/demo) -----
+    const APP_ID = 640674593;
+    const SERVER_SECRET = "6f39a058fb6e2d48d71c5fffd2a9d24a";
+    const payload = {
+        app_id: APP_ID,
+        user_id: userID,
+        room_id: roomID,
+        user_name: userName,
+        exp: Math.floor(Date.now() / 1000) + 3600
+    };
+    const kitToken = window.jwt.encode(payload, SERVER_SECRET);
+
     const zp = ZegoUIKitPrebuilt.create(kitToken);
 
     document.getElementById("meetingContainer").style.display="flex";
@@ -157,7 +171,10 @@ document.getElementById("joinRoomBtn").addEventListener("click", ()=>{
         const x=e.clientX-rect.left; const y=e.clientY-rect.top;
         ctx.strokeStyle=(tool==='eraser')?'#000':color;
         ctx.lineWidth=brushSize;
-        ctx.beginPath(); ctx.moveTo(startX,startY); ctx.lineTo(x,y); ctx.stroke();
+        ctx.beginPath();
+ctx.moveTo(startX,startY); 
+        ctx.lineTo(x,y); 
+        ctx.stroke();
         if(userID===hostID){
             zp.sendMessage(JSON.stringify({type:"whiteboardUpdate", tool, color, brushSize, x1:startX, y1:startY, x2:x, y2:y}));
         }
@@ -171,11 +188,21 @@ document.getElementById("joinRoomBtn").addEventListener("click", ()=>{
     const chatInputEl = document.getElementById("chatText");
     const sendChatBtn = document.getElementById("sendChat");
 
-    function addChat(msg){ const div=document.createElement("div"); div.className="chatMsg"; div.textContent=msg; chatMessagesEl.appendChild(div); chatMessagesEl.scrollTop=chatMessagesEl.scrollHeight; }
+    function addChat(msg){ 
+        const div=document.createElement("div"); 
+        div.className="chatMsg"; 
+        div.textContent=msg; 
+        chatMessagesEl.appendChild(div); 
+        chatMessagesEl.scrollTop=chatMessagesEl.scrollHeight; 
+    }
 
     sendChatBtn.addEventListener("click",()=>{
       const text=chatInputEl.value.trim();
-      if(text){ zp.sendMessage(JSON.stringify({type:"chat", text, userName})); addChat("Me: "+text); chatInputEl.value=""; }
+      if(text){ 
+        zp.sendMessage(JSON.stringify({type:"chat", text, userName})); 
+        addChat("Me: "+text); 
+        chatInputEl.value=""; 
+      }
     });
     chatInputEl.addEventListener("keypress",(e)=>{ if(e.key==="Enter"){ sendChatBtn.click(); } });
 
@@ -185,7 +212,9 @@ document.getElementById("joinRoomBtn").addEventListener("click", ()=>{
       participantsPanel.innerHTML="";
       userList.forEach(user=>{
         participants[user.userID] = user;
-        const box=document.createElement("div"); box.className="participantBox"; box.id="p_"+user.userID;
+        const box=document.createElement("div"); 
+        box.className="participantBox"; 
+        box.id="p_"+user.userID;
         box.textContent=user.userName + (user.userID===hostID?' (Host)':'');
         participantsPanel.appendChild(box);
       });
@@ -207,8 +236,13 @@ document.getElementById("joinRoomBtn").addEventListener("click", ()=>{
     recordBtn.addEventListener("click", ()=>{ 
         if(userID!==hostID) return; 
         isRecording = !isRecording;
-        if(isRecording){ recordBtn.textContent="Stop Recording"; zp.startCloudRecording({recordAudio:true, recordVideo:true}); }
-        else{ recordBtn.textContent="Start Recording"; zp.stopCloudRecording(); }
+        if(isRecording){ 
+            recordBtn.textContent="Stop Recording"; 
+            zp.startCloudRecording({recordAudio:true, recordVideo:true}); 
+        } else { 
+            recordBtn.textContent="Start Recording"; 
+            zp.stopCloudRecording(); 
+        }
     });
 
     // Slide Presentation
@@ -222,12 +256,24 @@ document.getElementById("joinRoomBtn").addEventListener("click", ()=>{
     slideUpload.addEventListener("change", (e)=>{
         if(userID !== hostID) return;
         slides = Array.from(e.target.files).map(file => URL.createObjectURL(file));
-        currentSlideIndex = 0; showSlide(currentSlideIndex); broadcastSlide(currentSlideIndex);
+        currentSlideIndex = 0; 
+        showSlide(currentSlideIndex); 
+        broadcastSlide(currentSlideIndex);
     });
 
-    function showSlide(index){ if(slides.length === 0) return; currentSlideImg.src = slides[index]; slideCounter.textContent = `${index+1} / ${slides.length}`; }
-    prevSlideBtn.addEventListener("click", ()=>{ if(userID!==hostID) return; if(currentSlideIndex>0){currentSlideIndex--; showSlide(currentSlideIndex); broadcastSlide(currentSlideIndex); }});
-    nextSlideBtn.addEventListener("click", ()=>{ if(userID!==hostID) return; if(currentSlideIndex<slides.length-1){currentSlideIndex++; showSlide(currentSlideIndex); broadcastSlide(currentSlideIndex); }});
+    function showSlide(index){ 
+        if(slides.length === 0) return; 
+        currentSlideImg.src = slides[index]; 
+        slideCounter.textContent = `${index+1} / ${slides.length}`; 
+    }
+    prevSlideBtn.addEventListener("click", ()=>{ 
+        if(userID!==hostID) return; 
+        if(currentSlideIndex>0){currentSlideIndex--; showSlide(currentSlideIndex); broadcastSlide(currentSlideIndex);} 
+    });
+    nextSlideBtn.addEventListener("click", ()=>{ 
+        if(userID!==hostID) return; 
+        if(currentSlideIndex<slides.length-1){currentSlideIndex++; showSlide(currentSlideIndex); broadcastSlide(currentSlideIndex);} 
+    });
     function broadcastSlide(index){ if(userID===hostID){ zp.sendMessage(JSON.stringify({ type:"slideChange", index })); }}
 
     // Join room
