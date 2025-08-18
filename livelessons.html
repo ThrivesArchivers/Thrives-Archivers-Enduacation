@@ -26,8 +26,6 @@ body, html { margin:0; padding:0; height:100%; font-family: Arial, sans-serif; b
 #roomSelection { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); display:flex; gap:10px; align-items:center; }
 #slidePanel { margin-top:10px; }
 #slidePanel img { width:100%; max-height:400px; display:block; margin-top:5px; border:1px solid #444; }
-
-/* Responsive adjustments */
 @media only screen and (max-width: 768px) {
   #toolbar { top:auto; bottom:10px; left:50%; transform:translateX(-50%); width:90%; padding:5px; }
   #controls { top:auto; bottom:150px; right:10px; flex-direction:row; flex-wrap:wrap; gap:3px; }
@@ -96,11 +94,7 @@ body, html { margin:0; padding:0; height:100%; font-family: Arial, sans-serif; b
   </div>
 </div>
 
-<!-- Zego UI Kit -->
 <script src="https://unpkg.com/@zegocloud/zego-uikit-prebuilt/zego-uikit-prebuilt.js"></script>
-<!-- JWT library for frontend token generation -->
-<script src="https://cdn.jsdelivr.net/npm/jwt-simple@0.5.6/build/jwt-simple.min.js"></script>
-
 <script>
 // Generate default room if none provided
 function generateRoomID() { return "ROOM_" + Math.floor(Math.random()*9000 + 1000); }
@@ -111,20 +105,18 @@ document.getElementById("joinRoomBtn").addEventListener("click", ()=>{
     const userID = Math.floor(Math.random()*10000)+"";
     const userName = "User"+userID;
 
-    // ----- REAL AppID & ServerSecret in browser (unsafe, only for testing/demo) -----
-    const APP_ID = 640674593;
-    const SERVER_SECRET = "6f39a058fb6e2d48d71c5fffd2a9d24a";
-    const payload = {
-        app_id: APP_ID,
-        user_id: userID,
-        room_id: roomID,
-        user_name: userName,
-        exp: Math.floor(Date.now() / 1000) + 3600
-    };
-    const kitToken = window.jwt.encode(payload, SERVER_SECRET);
+    // Fetch real token from backend
+    fetch(`https://YOUR_BACKEND_URL/getToken?roomID=${roomID}&userID=${userID}&userName=${userName}`)
+      .then(res => res.json())
+      .then(data => {
+          const zp = ZegoUIKitPrebuilt.create(data.token);
+          startMeeting(zp, data.userID, data.userName);
+      })
+      .catch(err => alert("Failed to get token. Check your backend!"));
 
-    const zp = ZegoUIKitPrebuilt.create(kitToken);
+});
 
+function startMeeting(zp, userID, userName){
     document.getElementById("meetingContainer").style.display="flex";
     document.getElementById("roomSelection").style.display="none";
 
@@ -135,7 +127,6 @@ document.getElementById("joinRoomBtn").addEventListener("click", ()=>{
 
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
-
     function resizeCanvas(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight - 200; }
     window.addEventListener("resize", resizeCanvas);
     resizeCanvas();
@@ -158,7 +149,6 @@ document.getElementById("joinRoomBtn").addEventListener("click", ()=>{
     clearBtn.addEventListener('click',()=>{ctx.clearRect(0,0,canvas.width,canvas.height); zp.sendMessage(JSON.stringify({type:"clear"}));});
     downloadBtn.addEventListener('click',()=>{ const link=document.createElement('a'); link.download="whiteboard.png"; link.href=canvas.toDataURL(); link.click();});
 
-    // Drawing events
     canvas.addEventListener('mousedown', e=>{
         if(!canDraw && userID!==hostID) return;
         drawing=true;
@@ -171,10 +161,7 @@ document.getElementById("joinRoomBtn").addEventListener("click", ()=>{
         const x=e.clientX-rect.left; const y=e.clientY-rect.top;
         ctx.strokeStyle=(tool==='eraser')?'#000':color;
         ctx.lineWidth=brushSize;
-        ctx.beginPath();
-ctx.moveTo(startX,startY); 
-        ctx.lineTo(x,y); 
-        ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(startX,startY); ctx.lineTo(x,y); ctx.stroke();
         if(userID===hostID){
             zp.sendMessage(JSON.stringify({type:"whiteboardUpdate", tool, color, brushSize, x1:startX, y1:startY, x2:x, y2:y}));
         }
@@ -183,44 +170,27 @@ ctx.moveTo(startX,startY);
     canvas.addEventListener('mouseup', e=>{ drawing=false; });
     canvas.addEventListener('mouseout', e=>{ drawing=false; });
 
-    // Chat
     const chatMessagesEl = document.getElementById("chatMessages");
     const chatInputEl = document.getElementById("chatText");
     const sendChatBtn = document.getElementById("sendChat");
-
-    function addChat(msg){ 
-        const div=document.createElement("div"); 
-        div.className="chatMsg"; 
-        div.textContent=msg; 
-        chatMessagesEl.appendChild(div); 
-        chatMessagesEl.scrollTop=chatMessagesEl.scrollHeight; 
-    }
-
+    function addChat(msg){ const div=document.createElement("div"); div.className="chatMsg"; div.textContent=msg; chatMessagesEl.appendChild(div); chatMessagesEl.scrollTop=chatMessagesEl.scrollHeight; }
     sendChatBtn.addEventListener("click",()=>{
       const text=chatInputEl.value.trim();
-      if(text){ 
-        zp.sendMessage(JSON.stringify({type:"chat", text, userName})); 
-        addChat("Me: "+text); 
-        chatInputEl.value=""; 
-      }
+      if(text){ zp.sendMessage(JSON.stringify({type:"chat", text, userName})); addChat("Me: "+text); chatInputEl.value=""; }
     });
     chatInputEl.addEventListener("keypress",(e)=>{ if(e.key==="Enter"){ sendChatBtn.click(); } });
 
-    // Participants panel
     const participantsPanel = document.getElementById("participantsPanel");
     function updateParticipants(userList){
       participantsPanel.innerHTML="";
       userList.forEach(user=>{
         participants[user.userID] = user;
-        const box=document.createElement("div"); 
-        box.className="participantBox"; 
-        box.id="p_"+user.userID;
+        const box=document.createElement("div"); box.className="participantBox"; box.id="p_"+user.userID;
         box.textContent=user.userName + (user.userID===hostID?' (Host)':'');
         participantsPanel.appendChild(box);
       });
     }
 
-    // Host controls
     const allowDrawBtn = document.getElementById("allowDraw");
     allowDrawBtn.addEventListener("click",()=>{
       if(userID!==hostID) return;
@@ -232,14 +202,16 @@ ctx.moveTo(startX,startY);
     const muteAllBtn = document.getElementById("muteAll");
     muteAllBtn.addEventListener("click",()=>{ if(userID!==hostID) return; zp.muteAllMicrophones(); });
 
-    const recordBtn = document.getElementById("recordBtn");
+    const recordBtn = document.getElementById("record
+const recordBtn = document.getElementById("recordBtn");
     recordBtn.addEventListener("click", ()=>{ 
         if(userID!==hostID) return; 
         isRecording = !isRecording;
         if(isRecording){ 
             recordBtn.textContent="Stop Recording"; 
             zp.startCloudRecording({recordAudio:true, recordVideo:true}); 
-        } else { 
+        }
+        else{ 
             recordBtn.textContent="Start Recording"; 
             zp.stopCloudRecording(); 
         }
@@ -266,15 +238,20 @@ ctx.moveTo(startX,startY);
         currentSlideImg.src = slides[index]; 
         slideCounter.textContent = `${index+1} / ${slides.length}`; 
     }
-    prevSlideBtn.addEventListener("click", ()=>{ 
+
+    prevSlideBtn.addEventListener("click", ()=>{
         if(userID!==hostID) return; 
-        if(currentSlideIndex>0){currentSlideIndex--; showSlide(currentSlideIndex); broadcastSlide(currentSlideIndex);} 
+        if(currentSlideIndex>0){ currentSlideIndex--; showSlide(currentSlideIndex); broadcastSlide(currentSlideIndex); }
     });
-    nextSlideBtn.addEventListener("click", ()=>{ 
+
+    nextSlideBtn.addEventListener("click", ()=>{
         if(userID!==hostID) return; 
-        if(currentSlideIndex<slides.length-1){currentSlideIndex++; showSlide(currentSlideIndex); broadcastSlide(currentSlideIndex);} 
+        if(currentSlideIndex<slides.length-1){ currentSlideIndex++; showSlide(currentSlideIndex); broadcastSlide(currentSlideIndex); }
     });
-    function broadcastSlide(index){ if(userID===hostID){ zp.sendMessage(JSON.stringify({ type:"slideChange", index })); }}
+
+    function broadcastSlide(index){ 
+        if(userID===hostID){ zp.sendMessage(JSON.stringify({ type:"slideChange", index })); }
+    }
 
     // Join room
     zp.joinRoom({
@@ -285,21 +262,29 @@ ctx.moveTo(startX,startY);
       onMessageReceived:(msg)=>{
         let message;
         try{ message = JSON.parse(msg.message); } catch(e){ return; }
-        if(message.type==="whiteboardUpdate" && userID!==hostID){
-            ctx.strokeStyle=(message.tool==='eraser')?'#000':message.color;
-            ctx.lineWidth = message.brushSize;
-            ctx.beginPath();
-            ctx.moveTo(message.x1,message.y1);
-            ctx.lineTo(message.x2,message.y2);
-            ctx.stroke();
-        } else if(message.type==="clear"){ ctx.clearRect(0,0,canvas.width,canvas.height); }
-        else if(message.type==="chat"){ addChat(message.userName+": "+message.text); }
-        else if(message.type==="drawPermission"){ canDraw=message.allowed; }
-        else if(message.type==="slideChange" && userID!==hostID){ currentSlideIndex=message.index; showSlide(currentSlideIndex); }
+
+        switch(message.type){
+            case "whiteboardUpdate":
+                if(userID!==hostID){
+                    ctx.strokeStyle=(message.tool==='eraser')?'#000':message.color;
+                    ctx.lineWidth = message.brushSize;
+                    ctx.beginPath();
+                    ctx.moveTo(message.x1,message.y1);
+                    ctx.lineTo(message.x2,message.y2);
+                    ctx.stroke();
+                }
+                break;
+            case "clear": ctx.clearRect(0,0,canvas.width,canvas.height); break;
+            case "chat": addChat(message.userName+": "+message.text); break;
+            case "drawPermission": canDraw=message.allowed; break;
+            case "slideChange":
+                if(userID!==hostID){ currentSlideIndex=message.index; showSlide(currentSlideIndex); }
+                break;
+        }
       }
     });
 
-});
+}
 </script>
 </body>
 </html>
