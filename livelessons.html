@@ -3,219 +3,256 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Meeting Room - Thrives Archivers</title>
+<title>Host-Controlled Meeting</title>
 <style>
-body,html{margin:0;padding:0;height:100%;font-family:Arial,sans-serif;background:#000;color:white;overflow:hidden;}
-#meetingContainer{display:flex;flex-direction:column;height:100%;width:100%;position:relative;}
-#whiteboardContainer{flex:1;position:relative;background:#111;display:none;}
-#canvas{display:block;width:100%;height:100%;touch-action:none;}
-#toolbar{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:#222;padding:10px;border-radius:8px;z-index:20;display:flex;flex-direction:column;gap:5px;}
-#participantsPanel{position:absolute;bottom:0;left:0;right:0;height:120px;background:rgba(0,0,0,0.6);display:flex;overflow-x:auto;padding:5px;gap:5px;z-index:15;}
-.participantBox{width:100px;height:100px;background:rgba(255,255,255,0.1);border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:0.8rem;}
-#controls{position:absolute;top:10px;right:10px;z-index:20;display:flex;flex-direction:column;gap:5px;}
-.btn{padding:5px 10px;border:none;border-radius:6px;cursor:pointer;background:#333;color:white;}
-.btn:hover{background:#555;}
-#chatBox{position:absolute;right:10px;top:200px;width:250px;max-height:400px;background:rgba(0,0,0,0.6);border-radius:8px;display:flex;flex-direction:column;}
-#chatMessages{flex:1;overflow-y:auto;padding:5px;}
-.chatMsg{margin:2px 0;padding:2px 4px;border-radius:4px;background:rgba(255,255,255,0.1);font-size:0.8rem;}
-#chatInput{display:flex;gap:5px;padding:5px;}
-#chatInput input{flex:1;padding:4px;border-radius:4px;border:none;}
-#chatInput button{padding:4px 6px;border-radius:4px;border:none;background:#444;color:white;cursor:pointer;}
-#zegoContainer{position:absolute;top:0;left:0;width:200px;height:150px;z-index:25;}
+body, html { margin:0; padding:0; height:100%; font-family: Arial, sans-serif; background:#000; color:white; overflow:hidden; }
+#meetingContainer { display:flex; flex-direction:column; height:100%; width:100%; position:relative; }
+#whiteboardContainer { flex:1; position:relative; background:#111; }
+#canvas { display:block; width:100%; height:100%; touch-action:none; }
+#toolbar { position:absolute; top:10px; left:50%; transform:translateX(-50%); background:#222; padding:10px; border-radius:8px; z-index:20; display:flex; flex-direction:column; gap:5px; }
+#toolbar.hidden { display:none; }
+#toolbar input, #toolbar select, #toolbar button { margin:2px; }
+#participantsPanel { position:absolute; bottom:0; left:0; right:0; height:120px; background:rgba(0,0,0,0.6); display:flex; overflow-x:auto; padding:5px; gap:5px; z-index:15; }
+.participantBox { width:100px; height:100px; background:rgba(255,255,255,0.1); border-radius:6px; display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:0.8rem; color:white; }
+#controls { position:absolute; top:10px; right:10px; z-index:20; display:flex; flex-direction:column; gap:5px; }
+.btn { padding:5px 10px; border:none; border-radius:6px; cursor:pointer; background:#333; color:white; }
+.btn:hover { background:#555; }
+#chatBox { position:absolute; right:10px; top:200px; width:250px; max-height:400px; background:rgba(0,0,0,0.6); border-radius:8px; display:flex; flex-direction:column; }
+#chatMessages { flex:1; overflow-y:auto; padding:5px; }
+#chatMessages .chatMsg { margin:2px 0; padding:2px 4px; border-radius:4px; background:rgba(255,255,255,0.1); font-size:0.8rem; }
+#chatInput { display:flex; gap:5px; padding:5px; }
+#chatInput input { flex:1; padding:4px; border-radius:4px; border:none; }
+#chatInput button { padding:4px 6px; border-radius:4px; border:none; background:#444; color:white; cursor:pointer; }
+#roomSelection { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); display:flex; gap:10px; align-items:center; }
+#slidePanel { margin-top:10px; }
+#slidePanel img { width:100%; max-height:400px; display:block; margin-top:5px; border:1px solid #444; }
+
+/* Responsive adjustments */
+@media only screen and (max-width: 768px) {
+  #toolbar { top:auto; bottom:10px; left:50%; transform:translateX(-50%); width:90%; padding:5px; }
+  #controls { top:auto; bottom:150px; right:10px; flex-direction:row; flex-wrap:wrap; gap:3px; }
+  #participantsPanel { height:80px; padding:3px; }
+  .participantBox { width:60px; height:60px; font-size:0.7rem; }
+  #chatBox { width:80%; right:10%; top:auto; bottom:50px; max-height:200px; }
+  #slidePanel img { max-height:200px; }
+  #canvas { width:100%; height:calc(100vh - 200px); }
+}
 </style>
 </head>
 <body>
 
-<div id="meetingContainer">
-  <!-- Whiteboard -->
+<div id="roomSelection">
+  <label for="roomInput">Enter Room ID:</label>
+  <input type="text" id="roomInput" placeholder="ROOM_1234">
+  <button id="joinRoomBtn">Join Room</button>
+</div>
+
+<div id="meetingContainer" style="display:none;">
   <div id="whiteboardContainer">
     <canvas id="canvas"></canvas>
     <div id="toolbar">
       <select id="tool">
         <option value="pen">Pen</option>
         <option value="eraser">Eraser</option>
+        <option value="text">Text</option>
+        <option value="rectangle">Rectangle</option>
+        <option value="circle">Circle</option>
       </select>
       <input type="color" id="color" value="#ffffff">
       <input type="number" id="brushSize" value="5" min="1" max="50">
-      <button id="clearBoard">Clear</button>
-      <button id="downloadBoard">Download</button>
+      <input type="text" id="textInput" placeholder="Text" style="display:none;">
+      <div>
+        <button id="clearBoard">Clear</button>
+        <button id="downloadBoard">Download</button>
+        <button id="toggleToolbar">Hide Toolbar</button>
+      </div>
+
+      <div id="slidePanel">
+        <input type="file" id="slideUpload" accept="image/*" multiple>
+        <div>
+          <button id="prevSlide">Previous Slide</button>
+          <button id="nextSlide">Next Slide</button>
+          <span id="slideCounter">0 / 0</span>
+        </div>
+        <img id="currentSlide" src="">
+      </div>
+    </div>
+
+    <div id="participantsPanel"></div>
+
+    <div id="controls">
+      <button class="btn" id="allowDraw">Allow Participants Draw</button>
+      <button class="btn" id="muteAll">Mute All</button>
+      <button class="btn" id="recordBtn">Start Recording</button>
+    </div>
+
+    <div id="chatBox">
+      <div id="chatMessages"></div>
+      <div id="chatInput">
+        <input type="text" id="chatText" placeholder="Type message">
+        <button id="sendChat">Send</button>
+      </div>
     </div>
   </div>
-
-  <!-- Controls -->
-  <div id="controls">
-    <button class="btn" id="toggleWhiteboard">Open Whiteboard</button>
-    <button class="btn" id="muteAll">Mute All</button>
-  </div>
-
-  <!-- Participants Panel -->
-  <div id="participantsPanel"></div>
-
-  <!-- Chat -->
-  <div id="chatBox">
-    <div id="chatMessages"></div>
-    <div id="chatInput">
-      <input type="text" id="chatText" placeholder="Type message">
-      <button id="sendChat">Send</button>
-    </div>
-  </div>
-
-  <!-- Zego Video -->
-  <div id="zegoContainer"></div>
 </div>
 
 <script src="https://unpkg.com/@zegocloud/zego-uikit-prebuilt/zego-uikit-prebuilt.js"></script>
 <script>
-const appID = 493142362;
-const serverSecret = "6b5c2593ac4f7d593cecc5759987da2c"; // dev only
-const roomID = "THRIVES_ROOM_1";
-const userID = Math.floor(Math.random()*10000)+"";
-const userName = "User"+userID;
+// Generate default room if none provided
+function generateRoomID() { return "ROOM_" + Math.floor(Math.random()*9000 + 1000); }
 
-const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, userID, userName);
-const zp = ZegoUIKitPrebuilt.create(kitToken);
+document.getElementById("joinRoomBtn").addEventListener("click", ()=>{
+    const inputRoom = document.getElementById("roomInput").value.trim();
+    const roomID = inputRoom || generateRoomID();
+    const userID = Math.floor(Math.random()*10000)+"";
+    const userName = "User"+userID;
 
-let hostID = userID; // first user = host
-let isHost = true; 
-let whiteboardOpen = false;
-let canDraw = false; // permission for non-host
+    // For GitHub pages, you can only use test token generation
+    const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(493142362, "6b5c2593ac4f7d593cecc5759987da2c", roomID, userID, userName);
+    const zp = ZegoUIKitPrebuilt.create(kitToken);
 
-// Whiteboard
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-let drawing=false, tool='pen', color='#fff', brushSize=5, startX=0, startY=0;
+    document.getElementById("meetingContainer").style.display="flex";
+    document.getElementById("roomSelection").style.display="none";
 
-function drawLine(x1,y1,x2,y2,color,size,mode="pen"){
-  ctx.strokeStyle=(mode==='eraser')?'#111':color;
-  ctx.lineWidth=size;
-  ctx.beginPath();
-  ctx.moveTo(x1,y1);
-  ctx.lineTo(x2,y2);
-  ctx.stroke();
-}
+    let hostID = userID;
+    let participants = {};
+    let canDraw = false;
+    let isRecording = false;
 
-// Send Whiteboard Event
-function sendWhiteboardEvent(event,data){
-  zp.sendMessage(JSON.stringify({type:"WB",event,data}));
-}
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
 
-// Host Drawing
-canvas.addEventListener("mousedown",e=>{
-  if(!whiteboardOpen) return;
-  if(!isHost && !canDraw) return;
-  drawing=true;
-  const rect=canvas.getBoundingClientRect();
-  startX=e.clientX-rect.left; startY=e.clientY-rect.top;
-});
-canvas.addEventListener("mousemove",e=>{
-  if(!drawing) return;
-  const rect=canvas.getBoundingClientRect();
-  const x=e.clientX-rect.left,y=e.clientY-rect.top;
-  drawLine(startX,startY,x,y,color,brushSize,tool);
-  if(isHost || canDraw) sendWhiteboardEvent("drawLine",{x1:startX,y1:startY,x2:x,y2:y,color,brushSize,tool});
-  startX=x; startY=y;
-});
-canvas.addEventListener("mouseup",()=>drawing=false);
-canvas.addEventListener("mouseout",()=>drawing=false);
+    function resizeCanvas(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight - 200; }
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
 
-if(isHost){
-  document.getElementById("clearBoard").addEventListener("click",()=>{
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    sendWhiteboardEvent("clear",{});
-  });
-}
+    let drawing=false, tool='pen', color='#fff', brushSize=5, startX=0, startY=0;
 
-// Handle Whiteboard Events
-function handleWhiteboardEvent(payload){
-  switch(payload.event){
-    case "drawLine":
-      let d=payload.data;
-      drawLine(d.x1,d.y1,d.x2,d.y2,d.color,d.brushSize,d.tool);
-      break;
-    case "clear":
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      break;
-    case "toggleWB":
-      whiteboardOpen=payload.data.open;
-      document.getElementById("whiteboardContainer").style.display=whiteboardOpen?"block":"none";
-      if(!isHost){ document.getElementById("toolbar").style.display="none"; }
-      break;
-  }
-}
+    const toolSelect = document.getElementById('tool');
+    const colorPicker = document.getElementById('color');
+    const brushInput = document.getElementById('brushSize');
+    const textInput = document.getElementById('textInput');
+    const toolbarDiv = document.getElementById('toolbar');
+    const toggleToolbarBtn = document.getElementById('toggleToolbar');
+    const clearBtn = document.getElementById('clearBoard');
+    const downloadBtn = document.getElementById('downloadBoard');
 
-// Toggle Whiteboard
-document.getElementById("toggleWhiteboard").addEventListener("click",()=>{
-  if(!isHost) return;
-  whiteboardOpen=!whiteboardOpen;
-  document.getElementById("whiteboardContainer").style.display=whiteboardOpen?"block":"none";
-  document.getElementById("toolbar").style.display=whiteboardOpen?"block":"none";
-  sendWhiteboardEvent("toggleWB",{open:whiteboardOpen});
-  document.getElementById("toggleWhiteboard").textContent=whiteboardOpen?"Close Whiteboard":"Open Whiteboard";
-});
+    toolSelect.addEventListener('change',()=>{tool=toolSelect.value;textInput.style.display=(tool==='text')?'block':'none';});
+    colorPicker.addEventListener('input',()=>{color=colorPicker.value;});
+    brushInput.addEventListener('input',()=>{brushSize=brushInput.value;});
+    toggleToolbarBtn.addEventListener('click',()=>{toolbarDiv.classList.toggle('hidden'); toggleToolbarBtn.textContent=(toolbarDiv.classList.contains('hidden'))?'Show Toolbar':'Hide Toolbar';});
+    clearBtn.addEventListener('click',()=>{ctx.clearRect(0,0,canvas.width,canvas.height); zp.sendMessage(JSON.stringify({type:"clear"}));});
+    downloadBtn.addEventListener('click',()=>{ const link=document.createElement('a'); link.download="whiteboard.png"; link.href=canvas.toDataURL(); link.click();});
 
-// Chat
-const chatMessagesEl=document.getElementById("chatMessages");
-document.getElementById("sendChat").addEventListener("click",()=>{
-  const txt=document.getElementById("chatText").value.trim();
-  if(txt){ 
-    zp.sendMessage(JSON.stringify({type:"CHAT",user:userName,message:txt})); 
-    chatMessagesEl.innerHTML+=`<div class="chatMsg">Me: ${txt}</div>`; 
-    document.getElementById("chatText").value=""; 
-    chatMessagesEl.scrollTop=chatMessagesEl.scrollHeight;
-  }
-});
-document.getElementById("chatText").addEventListener("keypress",(e)=>{
-  if(e.key==="Enter"){document.getElementById("sendChat").click();}
-});
-
-// Participants Panel
-let participants={};
-function updateParticipants(userList){
-  const panel=document.getElementById("participantsPanel");
-  panel.innerHTML="";
-  userList.forEach(user=>{
-    participants[user.userID]=user;
-    const box=document.createElement("div");
-    box.className="participantBox";
-    box.id="p_"+user.userID;
-    box.textContent=user.userName + (user.userID===hostID?' (Host)':'');
-    
-    if(isHost && user.userID!==hostID){
-      const btn=document.createElement("button");
-      btn.textContent="Allow Draw";
-      btn.style.fontSize="0.7rem"; btn.style.marginTop="2px";
-      btn.onclick=()=>{ zp.sendMessage(JSON.stringify({type:"DRAW_PERMISSION",userID:user.userID,allow:true})); };
-      box.appendChild(btn);
-    }
-    panel.appendChild(box);
-  });
-}
-
-// Zego Join
-zp.joinRoom({
-  container: document.getElementById("zegoContainer"),
-  scenario:{mode:ZegoUIKitPrebuilt.VideoConference},
-  sharedLinks:[{name:"Meeting Link",url:window.location.href}],
-  onUserUpdate:(userList)=>{ updateParticipants(userList); },
-  onMessageReceived:(msg)=>{
-    try{
-      const payload=JSON.parse(msg.message);
-      if(payload.type==="WB") handleWhiteboardEvent(payload);
-      else if(payload.type==="DRAW_PERMISSION"){
-        if(payload.userID===userID){
-          canDraw=payload.allow;
-          alert(canDraw ? "You can now draw!" : "Draw permission revoked!");
+    // Drawing events
+    canvas.addEventListener('mousedown', e=>{
+        if(!canDraw && userID!==hostID) return;
+        drawing=true;
+        const rect=canvas.getBoundingClientRect();
+        startX=(e.clientX-rect.left); startY=(e.clientY-rect.top);
+    });
+    canvas.addEventListener('mousemove', e=>{
+        if(!drawing) return;
+        const rect=canvas.getBoundingClientRect();
+        const x=e.clientX-rect.left; const y=e.clientY-rect.top;
+        ctx.strokeStyle=(tool==='eraser')?'#000':color;
+        ctx.lineWidth=brushSize;
+        ctx.beginPath(); ctx.moveTo(startX,startY); ctx.lineTo(x,y); ctx.stroke();
+        if(userID===hostID){
+            zp.sendMessage(JSON.stringify({type:"whiteboardUpdate", tool, color, brushSize, x1:startX, y1:startY, x2:x, y2:y}));
         }
-      } else if(payload.type==="CHAT"){
-        chatMessagesEl.innerHTML+=`<div class="chatMsg">${payload.user}: ${payload.message}</div>`;
-        chatMessagesEl.scrollTop=chatMessagesEl.scrollHeight;
-      }
-    } catch(e){
-      console.log("Received non-JSON message:", msg.message);
+        startX=x; startY=y;
+    });
+    canvas.addEventListener('mouseup', e=>{ drawing=false; });
+    canvas.addEventListener('mouseout', e=>{ drawing=false; });
+
+    // Chat
+    const chatMessagesEl = document.getElementById("chatMessages");
+    const chatInputEl = document.getElementById("chatText");
+    const sendChatBtn = document.getElementById("sendChat");
+
+    function addChat(msg){ const div=document.createElement("div"); div.className="chatMsg"; div.textContent=msg; chatMessagesEl.appendChild(div); chatMessagesEl.scrollTop=chatMessagesEl.scrollHeight; }
+
+    sendChatBtn.addEventListener("click",()=>{
+      const text=chatInputEl.value.trim();
+      if(text){ zp.sendMessage(JSON.stringify({type:"chat", text, userName})); addChat("Me: "+text); chatInputEl.value=""; }
+    });
+    chatInputEl.addEventListener("keypress",(e)=>{ if(e.key==="Enter"){ sendChatBtn.click(); } });
+
+    // Participants panel
+    const participantsPanel = document.getElementById("participantsPanel");
+    function updateParticipants(userList){
+      participantsPanel.innerHTML="";
+      userList.forEach(user=>{
+        participants[user.userID] = user;
+        const box=document.createElement("div"); box.className="participantBox"; box.id="p_"+user.userID;
+        box.textContent=user.userName + (user.userID===hostID?' (Host)':'');
+        participantsPanel.appendChild(box);
+      });
     }
-  }
+
+    // Host controls
+    const allowDrawBtn = document.getElementById("allowDraw");
+    allowDrawBtn.addEventListener("click",()=>{
+      if(userID!==hostID) return;
+      canDraw = !canDraw;
+      zp.sendMessage(JSON.stringify({type:"drawPermission", allowed:canDraw}));
+      allowDrawBtn.textContent = canDraw ? "Block Participants Draw" : "Allow Participants Draw";
+    });
+
+    const muteAllBtn = document.getElementById("muteAll");
+    muteAllBtn.addEventListener("click",()=>{ if(userID!==hostID) return; zp.muteAllMicrophones(); });
+
+    const recordBtn = document.getElementById("recordBtn");
+    recordBtn.addEventListener("click", ()=>{ 
+        if(userID!==hostID) return; 
+        isRecording = !isRecording;
+        if(isRecording){ recordBtn.textContent="Stop Recording"; zp.startCloudRecording({recordAudio:true, recordVideo:true}); }
+        else{ recordBtn.textContent="Start Recording"; zp.stopCloudRecording(); }
+    });
+
+    // Slide Presentation
+    let slides = [], currentSlideIndex = 0;
+    const slideUpload = document.getElementById("slideUpload");
+    const prevSlideBtn = document.getElementById("prevSlide");
+    const nextSlideBtn = document.getElementById("nextSlide");
+    const currentSlideImg = document.getElementById("currentSlide");
+    const slideCounter = document.getElementById("slideCounter");
+
+    slideUpload.addEventListener("change", (e)=>{
+        if(userID !== hostID) return;
+        slides = Array.from(e.target.files).map(file => URL.createObjectURL(file));
+        currentSlideIndex = 0; showSlide(currentSlideIndex); broadcastSlide(currentSlideIndex);
+    });
+
+    function showSlide(index){ if(slides.length === 0) return; currentSlideImg.src = slides[index]; slideCounter.textContent = `${index+1} / ${slides.length}`; }
+    prevSlideBtn.addEventListener("click", ()=>{ if(userID!==hostID) return; if(currentSlideIndex>0){currentSlideIndex--; showSlide(currentSlideIndex); broadcastSlide(currentSlideIndex); }});
+    nextSlideBtn.addEventListener("click", ()=>{ if(userID!==hostID) return; if(currentSlideIndex<slides.length-1){currentSlideIndex++; showSlide(currentSlideIndex); broadcastSlide(currentSlideIndex); }});
+    function broadcastSlide(index){ if(userID===hostID){ zp.sendMessage(JSON.stringify({ type:"slideChange", index })); }}
+
+    // Join room
+    zp.joinRoom({
+      container: document.getElementById("whiteboardContainer"),
+      scenario: { mode: ZegoUIKitPrebuilt.VideoConference },
+      sharedLinks:[{name:"Meeting Link", url:window.location.href}],
+      onUserUpdate:(userList)=>{ updateParticipants(userList); },
+      onMessageReceived:(msg)=>{
+        let message;
+        try{ message = JSON.parse(msg.message); } catch(e){ return; }
+        if(message.type==="whiteboardUpdate" && userID!==hostID){
+            ctx.strokeStyle=(message.tool==='eraser')?'#000':message.color;
+            ctx.lineWidth = message.brushSize;
+            ctx.beginPath();
+            ctx.moveTo(message.x1,message.y1);
+            ctx.lineTo(message.x2,message.y2);
+            ctx.stroke();
+        } else if(message.type==="clear"){ ctx.clearRect(0,0,canvas.width,canvas.height); }
+        else if(message.type==="chat"){ addChat(message.userName+": "+message.text); }
+        else if(message.type==="drawPermission"){ canDraw=message.allowed; }
+        else if(message.type==="slideChange" && userID!==hostID){ currentSlideIndex=message.index; showSlide(currentSlideIndex); }
+      }
+    });
+
 });
 </script>
 </body>
