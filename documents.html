@@ -57,33 +57,26 @@
   <script>
     function loadDocument(url, course) {
       const acceptedPasswords = {
-  physics: ['atom', '1234', 'joyce', 'chisha'],
-  maths: ['set'],
-  biology: ['cell'],
-  chemistry: ['atom'],
-  <script>
-  function loadDocument(url, course) {
-    const acceptedPasswords = {
-      physics: ['atom', '1234', 'joyce', 'chisha', 'Kalasia'], // ✅ Added Kalasia
-      maths: ['set'],
-      biology: ['cell'],
-      chemistry: ['atom'],
-      anatomy: ['born']
-    };
+        physics: ['atom', '1234', 'joyce', 'chisha', 'Kalasia'], // ✅ Added Kalasia
+        maths: ['set'],
+        biology: ['cell'],
+        chemistry: ['atom'],
+        anatomy: ['born']
+      };
 
-    const userPassword = prompt(`Enter the password for ${course}:`);
-    const lowerUserPassword = userPassword?.toLowerCase();
-    const validPasswords = acceptedPasswords[course]?.map(p => p.toLowerCase()) || [];
+      const userPassword = prompt(`Enter the password for ${course}:`);
+      const lowerUserPassword = userPassword?.toLowerCase();
+      const validPasswords = acceptedPasswords[course]?.map(p => p.toLowerCase()) || [];
 
-    if (lowerUserPassword && validPasswords.includes(lowerUserPassword)) {
-      const viewer = document.getElementById("docViewer");
-      viewer.src = url;
-      viewer.style.display = "block";
-    } else {
-      alert("Incorrect password!");
+      if (lowerUserPassword && validPasswords.includes(lowerUserPassword)) {
+        const viewer = document.getElementById("docViewer");
+        viewer.src = url;
+        viewer.style.display = "block";
+      } else {
+        alert("Incorrect password!");
+      }
     }
-  }
-</script>
+  </script>
 </head>
 <body>
   <div class="container">
@@ -101,7 +94,7 @@
         <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1JwVrTLxLrOomRWeasMVUXyxUcfHhNWGe/preview', 'physics')">Pen Write Surprise Test 1</a>
         <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1JuWnxmlq1-gRm9_zL4A2qAtU9VpJ4OeT/preview', 'physics')">Dimension Analysis</a>
         <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1K1liFlpkp4Kmv24Ml0ecgTYFnu7bnv9I/preview', 'physics')">Projectile Motion</a>
-                <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1JnztD_6ea6TmyxMO-0iJaWV9JK0_vWGD/preview', 'physics')">Physics Study Hub (Thrives Tutor)</a>
+        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1JnztD_6ea6TmyxMO-0iJaWV9JK0_vWGD/preview', 'physics')">Physics Study Hub (Thrives Tutor)</a>
       </div>
 
       <div class="semester">
@@ -141,12 +134,12 @@
 
       <div class="semester">
         <h3>Semester One</h3>
-          <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1cVkAi1eFuW1Vpc-zTXjgQrsC8-7TeCrJ/preview', 'biology')">Biology Exam Study</a>
-      <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1eBaxxmCcQRxKtK8IqQm5QuLEck4yZitW/preview', 'biology')">Biology Revision Guide</a>
-   </div>
-        <div class="semester">
+        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1cVkAi1eFuW1Vpc-zTXjgQrsC8-7TeCrJ/preview', 'biology')">Biology Exam Study</a>
+        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1eBaxxmCcQRxKtK8IqQm5QuLEck4yZitW/preview', 'biology')">Biology Revision Guide</a>
+      </div>
+      <div class="semester">
         <h3>Semester Two</h3>
-          <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1Cf0sqjbIL28pID_Nr_KZTyAVPFBWSwe7/preview', 'biology')">Cell Division Introduction</a>
+        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1Cf0sqjbIL28pID_Nr_KZTyAVPFBWSwe7/preview', 'biology')">Cell Division Introduction</a>
         <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1Ka0endHzlg9clvGhtQtoJINO-SH_jzZS/preview', 'biology')">Additional Document</a>
         <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1VTGfTwrbokjKQ9721dhKUnSkretfihmk/preview', 'biology')">Lecture 1 Biology (Surprise Quiz)</a>
         <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1VUlJXOuUtoPoekPpMi_nbB87YERUsRpY/preview', 'biology')">Lecture 2 Meiosis (MCQ Questions)</a>
@@ -169,39 +162,35 @@
 
       <div class="semester">
         <h3>Semester Two</h3>
-         <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1CB6pUnTcl_tk_qUPoMDDAM9ucnJJh8hE/preview', 'chemistry')">Chemical Kinetics</a>
+        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1CB6pUnTcl_tk_qUPoMDDAM9ucnJJh8hE/preview', 'chemistry')">Chemical Kinetics</a>
         <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1Bc431Hb7kuwQ_z_IksU5PsyGsxrfz0mU/preview', 'chemistry')">Chemical Kinetics (Rate Law)</a>
         <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1dDxSjYSCyl-1BLsV_0bdF-_vVIQ3BDNO/preview', 'chemistry')">Le Chatelier's Principle Made Easy</a>
         <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1chMovDp9UiomFMEueyNe_rBcWe61UVGR/preview', 'chemistry')">Acid-Base Equilibrium, Buffers and Solubility</a>
         <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1ciZNRtpLmUCGDBz-snKzub0IpGnyWmWh/preview', 'chemistry')">Organic Chemistry Basic Introduction</a>
       </div>
     </div>
+
     <!-- Anatomy Section -->
-<div class="document-section">
-  <h2>Anatomy</h2>
+    <div class="document-section">
+      <h2>Anatomy</h2>
 
-  <div class="semester">
-    <h3>Term One</h3>
-    <a href="#" onclick="loadDocument('https://drive.google.com/file/d/TERM1_DOCUMENT_ID/preview', 'anatomy')">Introduction to Anatomy</a>
-  </div>
+      <div class="semester">
+        <h3>Term One</h3>
+        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/TERM1_DOCUMENT_ID/preview', 'anatomy')">Introduction to Anatomy</a>
+      </div>
 
-  <div class="semester">
-    <h3>Term Two</h3>
-    <a href="#" onclick="loadDocument('https://drive.google.com/file/d/TERM2_DOCUMENT_ID/preview', 'anatomy')">Anatomy Mid-Term</a>
-  </div>
+      <div class="semester">
+        <h3>Term Two</h3>
+        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/TERM2_DOCUMENT_ID/preview', 'anatomy')">Anatomy Mid-Term</a>
+      </div>
 
-  <div class="semester">
-    <h3>Term Three</h3>
-    <a href="#" onclick="loadDocument('https://drive.google.com/file/d/TERM3_DOCUMENT_ID/preview', 'anatomy')">Anatomy Final Review</a>
-  </div>
-</div>
+      <div class="semester">
+        <h3>Term Three</h3>
+        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/TERM3_DOCUMENT_ID/preview', 'anatomy')">Anatomy Final Review</a>
+      </div>
+    </div>
 
     <iframe id="docViewer"></iframe>
   </div>
 </body>
 </html>
-
-
-
-
-
