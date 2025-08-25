@@ -61,22 +61,29 @@
   maths: ['set'],
   biology: ['cell'],
   chemistry: ['atom'],
-  anatomy: ['born']  // ✅ Added this line
-};
+  <script>
+  function loadDocument(url, course) {
+    const acceptedPasswords = {
+      physics: ['atom', '1234', 'joyce', 'chisha', 'Kalasia'], // ✅ Added Kalasia
+      maths: ['set'],
+      biology: ['cell'],
+      chemistry: ['atom'],
+      anatomy: ['born']
+    };
 
-      const userPassword = prompt(`Enter the password for ${course}:`);
-      const lowerUserPassword = userPassword?.toLowerCase();
-      const validPasswords = acceptedPasswords[course]?.map(p => p.toLowerCase()) || [];
+    const userPassword = prompt(`Enter the password for ${course}:`);
+    const lowerUserPassword = userPassword?.toLowerCase();
+    const validPasswords = acceptedPasswords[course]?.map(p => p.toLowerCase()) || [];
 
-      if (lowerUserPassword && validPasswords.includes(lowerUserPassword)) {
-        const viewer = document.getElementById("docViewer");
-        viewer.src = url;
-        viewer.style.display = "block";
-      } else {
-        alert("Incorrect password!");
-      }
+    if (lowerUserPassword && validPasswords.includes(lowerUserPassword)) {
+      const viewer = document.getElementById("docViewer");
+      viewer.src = url;
+      viewer.style.display = "block";
+    } else {
+      alert("Incorrect password!");
     }
-  </script>
+  }
+</script>
 </head>
 <body>
   <div class="container">
@@ -193,6 +200,7 @@
   </div>
 </body>
 </html>
+
 
 
 
