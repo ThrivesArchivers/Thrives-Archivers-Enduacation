@@ -191,28 +191,29 @@
   </div>  
 
   <script>  
-    function playVideoWithPassword(videoId, section) {
-      const input = prompt("Enter password to access this video:");
+  function playVideoWithPassword(videoId, section) {
+    const input = prompt("Enter password to access this video:");
 
-      const acceptedPasswords = {
-        atom: ['atom', '1234', 'joyce', 'ND585eov', 'Chisha', 'yes'],
-        set: ['set', 'ND585eov', 'yes'],
-        matter: ['matter', 'ND585eov', 'yes'],
-        cell: ['cell', 'ND585eov', 'yes'],
-      };
+    const acceptedPasswords = {
+      atom: ['atom', '1234', 'joyce', 'ND585eov', 'Chisha', 'yes', 'Kalasia'], // ✅ Added Kalasia for Physics
+      set: ['set', 'ND585eov', 'yes'],
+      matter: ['matter', 'ND585eov', 'yes'],
+      cell: ['cell', 'ND585eov', 'yes'],
+    };
 
-      const globalPassword = 'ND585eov';
+    const globalPassword = 'ND585eov';
 
-      const isAllowed = input &&
-        (input.toLowerCase() === globalPassword.toLowerCase() ||
-         acceptedPasswords[section]?.map(p => p.toLowerCase()).includes(input.toLowerCase()));
+    const isAllowed = input &&
+      (input.toLowerCase() === globalPassword.toLowerCase() ||
+       acceptedPasswords[section]?.map(p => p.toLowerCase()).includes(input.toLowerCase()));
 
-      if (isAllowed) {
-        document.getElementById("videoFrame").src = `https://www.youtube.com/embed/${videoId}`;
-      } else {
-        alert("Incorrect password!");
-      }
+    if (isAllowed) {
+      document.getElementById("videoFrame").src = `https://www.youtube.com/embed/${videoId}`;
+    } else {
+      alert("Incorrect password!");
     }
-  </script>  
+  }
+</script>
 </body>  
 </html>
+
