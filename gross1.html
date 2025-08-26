@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bones of Upper Limb - 30 MCQs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 20px;
+      background: url('https://i.pinimg.com/736x/b4/0a/cb/b40acb75b0a81cd8ddfb9c06929edbc4.jpg') center/cover no-repeat;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      color: #222;
+    }
+    .container {
+      background: rgba(255,255,255,0.97);
+      border-radius: 12px;
+      padding: 32px 28px 22px 28px;
+      max-width: 600px;
+      box-shadow: 0 2px 16px 0 rgba(0,0,0,0.15);
+      margin: 40px 0 30px 0;
+      width: 100%;
+    }
+    h1 { text-align: center; color: #3772FF; margin-bottom: 8px; }
+    .question-count { text-align: right; font-size: 15px; font-weight: 500; margin-bottom: 18px; color: #666; }
+    .question { font-size: 1.16rem; font-weight: 600; margin-bottom: 18px; color: #222; }
+    .options { display: flex; flex-direction: column; gap: 12px; margin-bottom: 18px; }
+    .option-btn {
+      padding: 12px 18px;
+      border: 2px solid #cfd7ff;
+      border-radius: 9px;
+      background: #f5f7ff;
+      color: #2B2B2B;
+      font-size: 1rem;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.25s, border-color 0.2s, color 0.2s;
+      outline: none;
+    }
+    .option-btn.correct { background: #a9f5b6!important; border-color: #33ce5e!important; color: #17612a!important; }
+    .option-btn.wrong { background: #ffb6b6!important; border-color: #ed4747!important; color: #a00000!important; }
+    .explanation {
+      margin-top: 10px;
+      background: #e4f3fd;
+      border-left: 4px solid #3772FF;
+      border-radius: 0 8px 8px 0;
+      padding: 10px 16px;
+      font-size: 1rem;
+      animation: fadein 0.5s;
+    }
+    @keyframes fadein { from { opacity: 0; transform: translateY(12px);} to { opacity: 1; transform: translateY(0);} }
+    .btn-next {
+      background: linear-gradient(90deg, #3772FF 70%, #F038FF 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 26px;
+      margin-top: 16px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .result-section { text-align: center; padding: 32px 0 10px 0; }
+    .result-score { font-size: 2.2rem; font-weight: bold; color: #33ce5e; margin-bottom: 14px; }
+    .result-percent { font-size: 1.45rem; color: #3772FF; margin-bottom: 10px; }
+    .result-message { font-size: 1.15rem; color: #333; margin-bottom: 18px; }
+    .btn-restart {
+      background: linear-gradient(90deg, #F038FF 70%, #3772FF 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 9px 21px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="quiz-container">
+    <h1>Bones of Upper Limb - 30 MCQs</h1>
+    <div class="question-count" id="question-count"></div>
+    <div class="question" id="question"></div>
+    <div class="options" id="options"></div>
+    <div id="explanation"></div>
+    <button class="btn-next" id="next-btn" style="display:none;">Next</button>
+  </div>
+  <div class="container result-section" id="result-section" style="display:none;">
+    <div class="result-score" id="result-score"></div>
+    <div class="result-percent" id="result-percent"></div>
+    <div class="result-message" id="result-message"></div>
+    <button class="btn-restart" id="restart-btn">Restart Quiz</button>
+  </div>
+  <script>
+    // ---- All 30 Questions ----
+    let questions = [
+      {question:"The medial 2/3 of the clavicle is convex anteriorly, while the lateral 1/3 is concave anteriorly. This curvature mainly:",options:["Increases strength","Protects subclavian vein","Allows brachial plexus passage","Facilitates scapular movement"],answer:3,explanation:"The S-shaped curvature increases resilience and facilitates scapular movement."},
+      {question:"The most common site of clavicular fracture is:",options:["Lateral third","Medial third","Junction of middle and lateral third","Junction of middle and medial third"],answer:2,explanation:"The junction of middle and lateral third is the weakest point."},
+      {question:"Which structure lies directly posterior to the middle third of clavicle?",options:["Subclavian artery","Axillary vein","Brachial plexus trunks","Internal jugular vein"],answer:0,explanation:"The subclavian artery lies posterior to clavicle and may be injured."},
+      {question:"The suprascapular notch transmits the:",options:["Suprascapular artery","Suprascapular vein","Suprascapular nerve","Axillary nerve"],answer:2,explanation:"The suprascapular nerve passes through the notch."},
+      {question:"The glenoid cavity is deepened by:",options:["Coracoacromial ligament","Glenoid labrum","Acromion process","Coracoid process"],answer:1,explanation:"The glenoid labrum deepens the cavity."},
+      {question:"A fracture of surgical neck of humerus endangers:",options:["Radial nerve","Axillary nerve","Suprascapular nerve","Musculocutaneous nerve"],answer:1,explanation:"Axillary nerve and posterior circumflex humeral artery pass through quadrangular space."},
+      {question:"The radial groove of humerus contains:",options:["Radial nerve & profunda brachii","Axillary nerve & posterior circumflex humeral artery","Ulnar nerve & superior ulnar collateral artery","Median nerve & brachial artery"],answer:0,explanation:"Radial nerve and profunda brachii artery run in the groove."},
+      {question:"The medial epicondyle is the common origin of:",options:["Wrist extensors","Radial nerve","Wrist flexors","Articulates with ulna"],answer:2,explanation:"Flexor muscles originate from medial epicondyle."},
+      {question:"Which fracture is most associated with ulnar nerve injury?",options:["Mid-shaft humerus","Surgical neck fracture","Supracondylar fracture","Medial epicondyle fracture"],answer:3,explanation:"Ulnar nerve runs behind medial epicondyle."},
+      {question:"Fracture of shaft of humerus commonly damages:",options:["Radial nerve","Axillary nerve","Median nerve","Ulnar nerve"],answer:0,explanation:"Radial nerve runs in radial groove."},
+      {question:"The head of radius articulates with:",options:["Trochlea","Capitulum","Coronoid fossa","Olecranon fossa"],answer:1,explanation:"Head of radius articulates with capitulum."},
+      {question:"The olecranon process belongs to:",options:["Humerus","Radius","Ulna","Scapula"],answer:2,explanation:"Olecranon is a projection of ulna."},
+      {question:"A fracture of mid-shaft ulna + dislocation of radial head is:",options:["Monteggia fracture","Galeazzi fracture","Colles fracture","Smith’s fracture"],answer:0,explanation:"Monteggia fracture = ulnar fracture + radial head dislocation."},
+      {question:"Colles’ fracture refers to:",options:["Fracture neck of radius","Distal radius with dorsal displacement","Fracture ulna with anterior displacement","Fracture of scaphoid"],answer:1,explanation:"Colles’ = distal radius fracture with dorsal displacement."},
+      {question:"Which bone forms lateral boundary of wrist joint?",options:["Ulna","Radius","Pisiform","Lunate"],answer:1,explanation:"Radius forms lateral part of wrist joint."},
+      {question:"Most commonly fractured carpal bone:",options:["Scaphoid","Lunate","Pisiform","Hamate"],answer:0,explanation:"Scaphoid is most commonly fractured carpal bone."},
+      {question:"Avascular necrosis risk after fracture of:",options:["Lunate","Pisiform","Scaphoid","Capitate"],answer:2,explanation:"Scaphoid has retrograde blood supply."},
+      {question:"Carpal bone in anatomical snuffbox floor:",options:["Scaphoid","Trapezium","Lunate","Capitate"],answer:0,explanation:"Scaphoid forms the floor."},
+      {question:"Carpal bones articulating with radius at wrist:",options:["Hamate & Capitate","Scaphoid & Lunate","Pisiform & Triquetrum","Trapezium & Trapezoid"],answer:1,explanation:"Scaphoid and lunate articulate with radius."},
+      {question:"The hook of hamate gives attachment to:",options:["Flexor retinaculum","Palmar aponeurosis","Biceps tendon","Extensor retinaculum"],answer:0,explanation:"Flexor retinaculum attaches to hook of hamate."},
+      {question:"Wrist drop after mid-shaft humerus fracture is due to injury of:",options:["Median nerve","Radial nerve","Ulnar nerve","Axillary nerve"],answer:1,explanation:"Radial nerve injury → wrist drop."},
+      {question:"Student’s elbow is inflammation of:",options:["Subdeltoid bursa","Subacromial bursa","Olecranon bursa","Radioulnar bursa"],answer:2,explanation:"Olecranon bursitis due to prolonged leaning."},
+      {question:"Fall on outstretched hand → dorsal displacement distal radius:",options:["Smith’s fracture","Colles’ fracture","Barton’s fracture","Monteggia fracture"],answer:1,explanation:"Colles’ fracture."},
+      {question:"Nerve at risk in fracture of surgical neck of humerus:",options:["Ulnar","Radial","Axillary","Median"],answer:2,explanation:"Axillary nerve."},
+      {question:"Dislocation of lunate can compress:",options:["Ulnar nerve","Radial nerve","Median nerve","Musculocutaneous"],answer:2,explanation:"Lunate dislocation compresses median nerve."},
+      {question:"The pisiform lies anterior to which bone?",options:["Triquetrum","Scaphoid","Lunate","Trapezoid"],answer:0,explanation:"Pisiform lies anterior to triquetrum."},
+      {question:"The coronoid process of ulna fits into which humeral fossa?",options:["Olecranon fossa","Radial fossa","Coronoid fossa","Intertubercular sulcus"],answer:2,explanation:"Coronoid process fits coronoid fossa in flexion."},
+      {question:"Artery most endangered in supracondylar fracture in children:",options:["Radial artery","Brachial artery","Ulnar artery","Subclavian artery"],answer:1,explanation:"Brachial artery lies anterior to distal humerus."},
+      {question:"The lateral epicondyle is origin of:",options:["Flexor muscles","Extensor muscles","Supinator only","Thenar muscles"],answer:1,explanation:"Extensors arise from lateral epicondyle."},
+      {question:"The TFCC stabilizes articulation between:",options:["Radius & Lunate","Radius & Scaphoid","Distal radius & ulna","Ulna & Pisiform"],answer:2,explanation:"TFCC stabilizes distal radioulnar joint."}
+    ];
+
+    // Shuffle helper
+    function shuffleArray(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function shuffleOptions(q) {
+      const opts = q.options.map((opt, i) => ({text: opt, idx: i}));
+      shuffleArray(opts);
+      q.options = opts.map(o => o.text);
+      q.answer = opts.findIndex(o => o.idx === q.answer);
+      return q;
+    }
+
+    let currentQuestion = 0, score = 0, selected = false;
+
+    function prepareQuiz() {
+      questions = shuffleArray(questions.map(q => shuffleOptions({...q})));
+    }
+
+    function showQuestion(idx) {
+      const q = questions[idx];
+      document.getElementById('question-count').innerText = `Question ${idx + 1} of ${questions.length}`;
+      document.getElementById('question').innerText = q.question;
+      const optionsDiv = document.getElementById('options');
+      optionsDiv.innerHTML = '';
+      document.getElementById('explanation').innerHTML = '';
+      document.getElementById('next-btn').style.display = 'none';
+      selected = false;
+      q.options.forEach((opt, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerText = opt;
+        btn.onclick = () => selectOption(i, btn);
+        optionsDiv.appendChild(btn);
+      });
+    }
+
+    function selectOption(selectedIdx) {
+      if (selected) return;
+      selected = true;
+      const q = questions[currentQuestion];
+      const optionsBtns = document.querySelectorAll('.option-btn');
+      optionsBtns.forEach((ob, i) => {
+        if (i === q.answer) ob.classList.add('correct');
+        if (i === selectedIdx && i !== q.answer) ob.classList.add('wrong');
+      });
+      if (selectedIdx === q.answer) score++;
+      document.getElementById('explanation').innerHTML = `<div class="explanation">${q.explanation}</div>`;
+      document.getElementById('next-btn').style.display = 'inline-block';
+    }
+
+    function showResult() {
+      document.getElementById('quiz-container').style.display = 'none';
+      document.getElementById('result-section').style.display = 'block';
+      document.getElementById('result-score').innerText = `Score: ${score} / ${questions.length}`;
+      const percent = Math.round((score / questions.length) * 100);
+      document.getElementById('result-percent').innerText = `(${percent}%)`;
+      let message = "Great job!";
+      if (percent < 50) message = "Keep practicing!";
+      else if (percent < 80) message = "Good effort!";
+      document.getElementById('result-message').innerText = message;
+    }
+
+    document.getElementById('next-btn').onclick = () => {
+      if (currentQuestion < questions.length - 1) {
+        currentQuestion++;
+        showQuestion(currentQuestion);
+      } else showResult();
+    };
+
+    document.getElementById('restart-btn').onclick = () => {
+      currentQuestion = 0; score = 0;
+      document.getElementById('quiz-container').style.display = 'block';
+      document.getElementById('result-section').style.display = 'none';
+      prepareQuiz(); showQuestion(currentQuestion);
+    };
+
+    // Initialize quiz
+    prepareQuiz();
+    showQuestion(currentQuestion);
+  </script>
+</body>
+</html>
