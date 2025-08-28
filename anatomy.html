@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -17,16 +17,11 @@
   .course-card li { margin-bottom: 12px; display: flex; flex-direction: column; gap: 5px; }
   .icon { font-size: 18px; }
   
-  /* Document links normal text style */
-  .doc-link {
-    text-decoration: none;
-    color: #007BFF;
-    font-weight: normal;
-    cursor: pointer;
-  }
+  /* Document links */
+  .doc-link { text-decoration: none; color: #007BFF; cursor: pointer; }
   .doc-link:hover { text-decoration: underline; }
 
-  /* Neutral buttons for videos/quizzes (password-protected) */
+  /* Buttons */
   .take-quiz-btn {
     display: inline-block;
     margin-top: 4px;
@@ -40,7 +35,6 @@
   }
   .take-quiz-btn:hover { background-color: #d5d5d5; }
 
-  /* Colorful free-access Anatomy Quiz button */
   .free-quiz-btn {
     display: inline-block;
     margin-top: 10px;
@@ -57,7 +51,6 @@
   }
   .free-quiz-btn:hover { transform: scale(1.05); }
 
-  /* WhatsApp button with moving chat icon */
   .whatsapp-button {
     display: inline-block;
     margin-top: 10px;
@@ -68,7 +61,6 @@
     font-size: 16px;
     font-weight: bold;
     text-decoration: none;
-    border: none;
     position: relative;
   }
   .whatsapp-button .chat-icon {
@@ -81,9 +73,9 @@
     100% { transform: translateY(-5px); }
   }
 
-  /* Modal Styles */
-  .modal { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.8); }
-  .modal-content { background-color: #fff; margin: 5% auto; padding: 0; width: 90%; max-width: 800px; border-radius: 10px; overflow: hidden; position: relative; }
+  /* Modal */
+  .modal { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); }
+  .modal-content { background-color: #fff; margin: 5% auto; width: 90%; max-width: 800px; border-radius: 10px; overflow: hidden; position: relative; }
   .modal-content iframe { width: 100%; height: 500px; border: none; }
   .close-btn { position: absolute; top: 5px; right: 10px; font-size: 24px; color: #333; cursor: pointer; font-weight: bold; }
 </style>
@@ -105,33 +97,33 @@
       <ul>
         <li>
           <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1feP6JSyE5gFOlGPnLEIch3_xhJgqQyMY/preview')">📄 Ostorogy of Upper Limbs</a>
-          <a class="take-quiz-btn" onclick="accessContent('https://www.youtube.com/embed/vIeuD0pQNr8?si=O6GTaxmEKofYe1RR')">🎥 Recommended Video</a>
-          <a class="take-quiz-btn" onclick="accessContent('Gross1.html')">📝 Take a Quiz</a>
+          <a class="take-quiz-btn" onclick="accessContent('https://www.youtube.com/embed/vIeuD0pQNr8?si=O6GTaxmEKofYe1RR')">🎥 Video</a>
+          <a class="take-quiz-btn" onclick="accessContent('Gross1.html')">📝 Quiz</a>
         </li>
         <li>
           <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1fgBndheNWEsawjXN8DZ_OQmkmwY5mSLz/preview')">📄 Pectoral Region</a>
-          <a class="take-quiz-btn" onclick="accessContent('https://www.youtube.com/embed/P-kMR5eNoHE?si=tvvGTmEL47p0XDHl')">🎥 Recommended Video</a>
-          <a class="take-quiz-btn" onclick="accessContent('gross2.html')">📝 Take a Quiz</a>
+          <a class="take-quiz-btn" onclick="accessContent('https://www.youtube.com/embed/P-kMR5eNoHE?si=tvvGTmEL47p0XDHl')">🎥 Video</a>
+          <a class="take-quiz-btn" onclick="accessContent('gross2.html')">📝 Quiz</a>
         </li>
         <li>
           <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1ftAMb2P5UFYJLYgx1vVnqmHGP3kTjzQx/preview')">📄 ARM, CUBITAL FOSSA & ELBOW JOINT</a>
-          <a class="take-quiz-btn" onclick="accessContent('https://www.youtube.com/embed/RFehGNZPhpA?si=lYtVl-w9Sp3VOKtz')">🎥 Recommended Video</a>
-          <a class="take-quiz-btn" onclick="accessContent('Gross3.html')">📝 Take a Quiz</a>
+          <a class="take-quiz-btn" onclick="accessContent('https://www.youtube.com/embed/RFehGNZPhpA?si=lYtVl-w9Sp3VOKtz')">🎥 Video</a>
+          <a class="take-quiz-btn" onclick="accessContent('Gross3.html')">📝 Quiz</a>
         </li>
         <li>
           <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1ftJgS45NG_tMbpTP1vVnqmHGP3kTjzQx/preview')">📄 Anatomy of a Shoulder</a>
-          <a class="take-quiz-btn" onclick="accessContent('https://www.youtube.com/embed/7QI_owVSwKY?si=w11gETTdWuSiHQTm')">🎥 Recommended Video</a>
-          <a class="take-quiz-btn" onclick="accessContent('gross4.html')">📝 Take a Quiz</a>
+          <a class="take-quiz-btn" onclick="accessContent('https://www.youtube.com/embed/7QI_owVSwKY?si=w11gETTdWuSiHQTm')">🎥 Video</a>
+          <a class="take-quiz-btn" onclick="accessContent('gross4.html')">📝 Quiz</a>
         </li>
         <li>
           <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1fvvjvjMNQY2CnJjk4SlrH5Ha9cOK2LjR/preview')">📄 Forearm Easy Notes</a>
-          <a class="take-quiz-btn" onclick="accessContent('https://www.youtube.com/embed/9WL_Ds8konc?si=ZUJJg_xLL1ewZNXk')">🎥 Recommended Video</a>
-          <a class="take-quiz-btn" onclick="accessContent('Gross5.html')">📝 Take a Quiz</a>
+          <a class="take-quiz-btn" onclick="accessContent('https://www.youtube.com/embed/9WL_Ds8konc?si=ZUJJg_xLL1ewZNXk')">🎥 Video</a>
+          <a class="take-quiz-btn" onclick="accessContent('Gross5.html')">📝 Quiz</a>
         </li>
         <li>
           <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1fzbshqzmDM2Rtb8gmT2MsEXJIUV6RxeH/preview')">📄 Anatomy of a Hand</a>
-          <a class="take-quiz-btn" onclick="accessContent('https://www.youtube.com/embed/zyl6eoU-3Rg?si=F8LrmHKYG1OyXV1q')">🎥 Recommended Video</a>
-          <a class="take-quiz-btn" onclick="accessContent('Gross6.html')">📝 Take a Quiz</a>
+          <a class="take-quiz-btn" onclick="accessContent('https://www.youtube.com/embed/zyl6eoU-3Rg?si=F8LrmHKYG1OyXV1q')">🎥 Video</a>
+          <a class="take-quiz-btn" onclick="accessContent('Gross6.html')">📝 Quiz</a>
         </li>
       </ul>
       
@@ -148,17 +140,13 @@
 
   </div>
 
-  <!-- Colorful free-access Anatomy Quiz button -->
   <a class="free-quiz-btn" href="anatomyquize.html" target="_blank">Go to Anatomy Quiz</a>
-
-  <!-- WhatsApp button with moving chat icon -->
   <a class="whatsapp-button" href="https://wa.me/260973178100" target="_blank">
     Chat with Me on WhatsApp <span class="chat-icon">💬</span>
   </a>
-
 </div>
 
-<!-- Modal Viewer -->
+<!-- Modal -->
 <div id="modal" class="modal">
   <div class="modal-content">
     <span class="close-btn" onclick="closeModal()">&times;</span>
@@ -167,23 +155,28 @@
 </div>
 
 <script>
-function accessContent(link) {
-  const password = prompt("This content is protected. Please pay K100 to access. Inbox 0762514399.\nIf already registered, enter your password:");
-  if(password === "thrives100"){
-    document.getElementById('viewerFrame').src = link;
-    document.getElementById('modal').style.display = 'block';
-  } else {
-    alert("Incorrect password or you have not registered.");
+  // ✅ All valid passwords in one place (you can add/remove anytime)
+  const validPasswords = ["thrives100", "mbewe", "student2025", "archiversKey"];
+
+  function accessContent(link) {
+    const password = prompt("This content is protected. Please pay K100 to access. Inbox 0762514399.\nIf already registered, enter your password:");
+    if (validPasswords.includes(password)) {
+      document.getElementById('viewerFrame').src = link;
+      document.getElementById('modal').style.display = 'block';
+    } else {
+      alert("Incorrect password or you have not registered.");
+    }
   }
-}
-function closeModal() {
-  document.getElementById('modal').style.display = 'none';
-  document.getElementById('viewerFrame').src = '';
-}
-window.onclick = function(event) {
-  const modal = document.getElementById('modal');
-  if(event.target == modal){ closeModal(); }
-}
+
+  function closeModal() {
+    document.getElementById('modal').style.display = 'none';
+    document.getElementById('viewerFrame').src = '';
+  }
+
+  window.onclick = function(event) {
+    const modal = document.getElementById('modal');
+    if (event.target == modal) { closeModal(); }
+  }
 </script>
 
 </body>
