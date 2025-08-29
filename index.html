@@ -69,13 +69,29 @@
       margin-top: 10px;
       text-decoration: underline;
     }
-    .section, footer, .testimonial, .social a {
+    .section, footer, .social a {
       margin-top: 20px;
     }
     .testimonial {
-      background: rgba(255, 255, 255, 0.05);
-      padding: 15px;
-      border-radius: 10px;
+      background: rgba(76, 201, 240, 0.1);
+      padding: 20px;
+      border-radius: 12px;
+      border-left: 5px solid #4cc9f0;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      margin-bottom: 20px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .testimonial:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+    }
+    .testimonial h3 {
+      color: #4cc9f0;
+      margin-bottom: 8px;
+    }
+    .testimonial p {
+      color: #fff;
+      line-height: 1.5;
     }
     footer {
       text-align: center;
@@ -135,6 +151,7 @@
     <h2>🎯 Our Purpose</h2>
     <p>Thrives Archivers provides simplified Natural Science materials to help students excel in their studies.</p>
   </div>
+
   <div class="section">
     <h2>💬 What Our Students Are Saying</h2>
     <div class="testimonial">
@@ -147,15 +164,20 @@
     </div>
     <div class="testimonial">
       <h3>Chimwemwe Waps (Mukuba University)</h3>
-      <p>"No problem, you are my sir 😄. I hope to meet you in person one day because you have helped me a lot. We’ll go out even 🤗.
-         Just know, among the list of people who appreciate you, I am one of them 🙌. This video is my top favourite — it made me start liking Biology and the topic itself."</p>
+      <p>"No problem, you are my sir 😄. I hope to meet you in person one day because you have helped me a lot. We’ll go out even 🤗. Just know, among the list of people who appreciate you, I am one of them 🙌. This video is my top favourite — it made me start liking Biology and the topic itself."</p>
+    </div>
+    <div class="testimonial">
+      <h3>Rachel Nkonde (Mulungushi University)</h3>
+      <p>"Your documents are very good, MennahKapele. You're really helping me and other people. May everyone continue being genuine in thriving with others, not just for business, but to see everyone doing it. God bless you! I just hope Physics is coming out today."</p>
     </div>
   </div>
+
   <div class="section">
     <h2>📞 Contact Us</h2>
     <p>- WhatsApp: <a href="https://wa.me/260762514399" target="_blank">0762514399</a></p>
     <p>- Email: <a href="mailto:thrivesarchivers@gmail.com">thrivesarchivers@gmail.com</a></p>
   </div>
+
   <div class="section social">
     <h2>🌐 Connect With Us</h2>
     <a href="https://youtube.com/@thrivesarchivers" target="_blank">YouTube</a>
@@ -171,10 +193,9 @@
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
   const supabaseUrl = 'https://odwiqajuubcgrrqipyju.supabase.co'
-  const supabaseKey = 'YOUR_PUBLIC_SUPABASE_KEY'
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1dWJjZ3JycWlweWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzA4MjEsImV4cCI6MjA2ODg0NjgyMX0.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A'
   const supabase = createClient(supabaseUrl, supabaseKey)
 
-  // ✅ Sign up
   window.signUp = async function () {
     const email = document.getElementById("signupEmail").value.trim()
     const password = document.getElementById("signupPassword").value.trim()
@@ -192,13 +213,11 @@
     }
   }
 
-  // ✅ Login
   window.login = async function () {
     const email = document.getElementById("loginEmail").value.trim()
     const password = document.getElementById("loginPassword").value.trim()
     const msg = document.getElementById("loginMessage")
 
-    // Admin bypass
     if(email === 'thrivesarchivers@gmail.com' && password === 'kappss0802') {
       msg.textContent = "✅ Admin login successful!"
       msg.className = "message success"
@@ -218,7 +237,6 @@
     }
   }
 
-  // ✅ Toggle login & signup
   window.toggleForms = function () {
     document.getElementById("loginForm").style.display =
       document.getElementById("loginForm").style.display === "none" ? "block" : "none"
@@ -230,7 +248,6 @@
     document.getElementById("signupMessage").textContent = ""
   }
 
-  // ✅ Show reset form
   window.showResetForm = function () {
     document.getElementById("loginForm").style.display = "none"
     document.getElementById("signupForm").style.display = "none"
@@ -246,13 +263,12 @@
     document.getElementById("newPasswordForm").style.display = "none"
   }
 
-  // ✅ Request password reset
   window.requestPasswordReset = async function () {
     const email = document.getElementById("resetEmail").value.trim()
     const msg = document.getElementById("resetMessage")
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: window.location.href // same page redirect
+      redirectTo: window.location.href
     })
 
     if (error) {
@@ -264,7 +280,6 @@
     }
   }
 
-  // ✅ Update password after reset
   window.updatePassword = async function () {
     const newPassword = document.getElementById("newPassword").value.trim()
     const msg = document.getElementById("newPassMessage")
@@ -281,7 +296,6 @@
     }
   }
 
-  // ✅ Detect if coming from reset email
   supabase.auth.onAuthStateChange((event) => {
     if (event === "PASSWORD_RECOVERY") {
       document.getElementById("loginForm").style.display = "none"
@@ -298,44 +312,17 @@
     const canvas = document.getElementById('canvas')
     const ctx = canvas.getContext('2d')
 
-    function resizeCanvas() {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
-    }
+    function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight }
+    window.addEventListener('resize', () => { resizeCanvas(); initParticles() })
 
-    window.addEventListener('resize', () => {
-      resizeCanvas()
-      initParticles()
-    })
-
-    const config = {
-      particleCount: 100,
-      maxDistance: 150,
-      mouseRadius: 100,
-      colors: [
-        { main: '#4cc9f0', secondary: '#4361ee' },
-        { main: '#f72585', secondary: '#b5179e' },
-        { main: '#4adc66', secondary: '#2a9d3e' }
-      ],
-      currentColor: 0,
-      isRunning: true
-    }
-
+    const config = { particleCount: 100, maxDistance: 150, mouseRadius: 100, colors: [{ main: '#4cc9f0', secondary: '#4361ee' }, { main: '#f72585', secondary: '#b5179e' }, { main: '#4adc66', secondary: '#2a9d3e' }], currentColor: 0, isRunning: true }
     let particles = []
     let mouse = { x: null, y: null }
 
     function initParticles() {
       particles = []
       for (let i = 0; i < config.particleCount; i++) {
-        particles.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          size: Math.random() * 3 + 1,
-          speedX: (Math.random() - 0.5) * 0.5,
-          speedY: (Math.random() - 0.5) * 0.5,
-          originalX: Math.random() * canvas.width,
-          originalY: Math.random() * canvas.height
-        })
+        particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*3+1, speedX: (Math.random()-0.5)*0.5, speedY: (Math.random()-0.5)*0.5, originalX: Math.random()*canvas.width, originalY: Math.random()*canvas.height })
       }
     }
 
@@ -346,69 +333,33 @@
       gradient.addColorStop(0, color.main)
       gradient.addColorStop(1, color.secondary)
 
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x
-          const dy = particles[i].y - particles[j].y
-          const distance = Math.sqrt(dx * dx + dy * dy)
-          if (distance < config.maxDistance) {
-            ctx.strokeStyle = `rgba(255, 255, 255, ${1 - distance / config.maxDistance})`
-            ctx.lineWidth = 0.5
-            ctx.beginPath()
-            ctx.moveTo(particles[i].x, particles[i].y)
-            ctx.lineTo(particles[j].x, particles[j].y)
-            ctx.stroke()
-          }
+      for (let i=0;i<particles.length;i++){
+        for (let j=i+1;j<particles.length;j++){
+          const dx=particles[i].x-particles[j].x, dy=particles[i].y-particles[j].y, distance=Math.sqrt(dx*dx+dy*dy)
+          if(distance<config.maxDistance){ctx.strokeStyle=`rgba(255,255,255,${1-distance/config.maxDistance})`;ctx.lineWidth=0.5;ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.stroke()}
         }
       }
 
-      particles.forEach(p => {
-        ctx.fillStyle = gradient
-        ctx.beginPath()
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
-        ctx.fill()
-      })
+      particles.forEach(p=>{ctx.fillStyle=gradient;ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fill()})
     }
 
     function updateParticles() {
-      particles.forEach(p => {
-        p.x += (p.originalX - p.x) * 0.01 + p.speedX
-        p.y += (p.originalY - p.y) * 0.01 + p.speedY
-
-        if (mouse.x && mouse.y) {
-          const dx = mouse.x - p.x
-          const dy = mouse.y - p.y
-          const dist = Math.sqrt(dx * dx + dy * dy)
-          if (dist < config.mouseRadius) {
-            const angle = Math.atan2(dy, dx)
-            const force = (config.mouseRadius - dist) / config.mouseRadius
-            p.x -= Math.cos(angle) * force * 5
-            p.y -= Math.sin(angle) * force * 5
-          }
+      particles.forEach(p=>{
+        p.x+=(p.originalX-p.x)*0.01+p.speedX
+        p.y+=(p.originalY-p.y)*0.01+p.speedY
+        if(mouse.x && mouse.y){
+          const dx=mouse.x-p.x, dy=mouse.y-p.y, dist=Math.sqrt(dx*dx+dy*dy)
+          if(dist<config.mouseRadius){const angle=Math.atan2(dy,dx), force=(config.mouseRadius-dist)/config.mouseRadius; p.x-=Math.cos(angle)*force*5; p.y-=Math.sin(angle)*force*5}
         }
-
-        if (p.x < 0 || p.x > canvas.width) p.speedX *= -1
-        if (p.y < 0 || p.y > canvas.height) p.speedY *= -1
+        if(p.x<0||p.x>canvas.width)p.speedX*=-1
+        if(p.y<0||p.y>canvas.height)p.speedY*=-1
       })
     }
 
-    canvas.addEventListener('mousemove', e => {
-      mouse.x = e.clientX
-      mouse.y = e.clientY
-    })
+    canvas.addEventListener('mousemove', e => { mouse.x=e.clientX; mouse.y=e.clientY })
+    canvas.addEventListener('mouseleave', ()=>{ mouse.x=null; mouse.y=null })
 
-    canvas.addEventListener('mouseleave', () => {
-      mouse.x = null
-      mouse.y = null
-    })
-
-    function animate() {
-      if (config.isRunning) {
-        updateParticles()
-        drawParticles()
-      }
-      requestAnimationFrame(animate)
-    }
+    function animate(){ if(config.isRunning){updateParticles();drawParticles()} requestAnimationFrame(animate) }
 
     resizeCanvas()
     initParticles()
