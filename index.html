@@ -139,10 +139,6 @@
   <div class="section">
     <h2>💬 What Our Students Are Saying</h2>
     <div class="testimonial">
-      <h3>Rachel Nkonde (Mulungushi University)</h3>
-      <p>"Your documents are very good, MennahKapele. You're really helping me and other people may continue being genuine in thriving with others not just for business but to see everyone doing it. God bless you! I just hope Physics is coming out today."</p>
-    </div>
-    <div class="testimonial">
       <h3>John Chilabwe (Mulungushi University)</h3>
       <p>"Thrives Archivers helped me understand subjects better!"</p>
     </div>
@@ -153,6 +149,10 @@
     <div class="testimonial">
       <h3>Chimwemwe Waps (Mukuba University)</h3>
       <p>"No problem, you are my sir 😄. I hope to meet you in person one day because you have helped me a lot. We’ll go out even 🤗. Just know, among the list of people who appreciate you, I am one of them 🙌. This video is my top favourite — it made me start liking Biology and the topic itself."</p>
+    </div>
+    <div class="testimonial">
+      <h3>Rachel Nkonde (Mulungushi University)</h3>
+      <p>"Your documents are very good MennahKapele. You're really helping me and other people may continue being genuine in thriving with others not just for business but to see everyone doing it. God bless you! I just hope physics is coming out today."</p>
     </div>
   </div>
 
@@ -180,14 +180,11 @@
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1dWJjZ3JycWlweWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzA4MjEsImV4cCI6MjA2ODg0NjgyMX0.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A'
   const supabase = createClient(supabaseUrl, supabaseKey)
 
-  // Sign up
   window.signUp = async function () {
     const email = document.getElementById("signupEmail").value.trim()
     const password = document.getElementById("signupPassword").value.trim()
     const msg = document.getElementById("signupMessage")
-
     const { error } = await supabase.auth.signUp({ email, password })
-
     if (error) {
       msg.textContent = "Signup failed: " + error.message
       msg.className = "message error"
@@ -198,7 +195,6 @@
     }
   }
 
-  // Login
   window.login = async function () {
     const email = document.getElementById("loginEmail").value.trim()
     const password = document.getElementById("loginPassword").value.trim()
@@ -212,7 +208,6 @@
     }
 
     const { error } = await supabase.auth.signInWithPassword({ email, password })
-
     if (error) {
       msg.textContent = "Login failed: " + error.message
       msg.className = "message error"
@@ -223,7 +218,6 @@
     }
   }
 
-  // Toggle forms
   window.toggleForms = function () {
     document.getElementById("loginForm").style.display =
       document.getElementById("loginForm").style.display === "none" ? "block" : "none"
@@ -235,7 +229,6 @@
     document.getElementById("signupMessage").textContent = ""
   }
 
-  // Show reset form
   window.showResetForm = function () {
     document.getElementById("loginForm").style.display = "none"
     document.getElementById("signupForm").style.display = "none"
@@ -251,15 +244,12 @@
     document.getElementById("newPasswordForm").style.display = "none"
   }
 
-  // Request password reset
   window.requestPasswordReset = async function () {
     const email = document.getElementById("resetEmail").value.trim()
     const msg = document.getElementById("resetMessage")
-
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: window.location.href
+      redirectTo: 'https://thrivesarchivers.github.io/Thrives-Archivers-Enduacation/'
     })
-
     if (error) {
       msg.textContent = "❌ " + error.message
       msg.className = "message error"
@@ -269,13 +259,10 @@
     }
   }
 
-  // Update password
   window.updatePassword = async function () {
     const newPassword = document.getElementById("newPassword").value.trim()
     const msg = document.getElementById("newPassMessage")
-
     const { error } = await supabase.auth.updateUser({ password: newPassword })
-
     if (error) {
       msg.textContent = "❌ " + error.message
       msg.className = "message error"
@@ -286,9 +273,19 @@
     }
   }
 
-  // Detect if coming from reset email
   supabase.auth.onAuthStateChange((event) => {
     if (event === "PASSWORD_RECOVERY") {
+      document.getElementById("loginForm").style.display = "none"
+      document.getElementById("signupForm").style.display = "none"
+      document.getElementById("resetForm").style.display = "none"
+      document.getElementById("newPasswordForm").style.display = "block"
+    }
+  })
+
+  // ✅ Detect password recovery via URL hash for GitHub Pages
+  document.addEventListener("DOMContentLoaded", () => {
+    const hash = window.location.hash
+    if (hash.includes("access_token") && hash.includes("type=recovery")) {
       document.getElementById("loginForm").style.display = "none"
       document.getElementById("signupForm").style.display = "none"
       document.getElementById("resetForm").style.display = "none"
