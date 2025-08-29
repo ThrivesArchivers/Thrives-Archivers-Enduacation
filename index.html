@@ -100,6 +100,7 @@
     <button onclick="login()">Log In</button>
     <div id="loginMessage" class="message"></div>
     <div class="toggle-link" onclick="toggleForms()">Don't have an account? Click here to create</div>
+    <div class="toggle-link" onclick="showResetForm()">Forgot Password?</div>
   </div>
 
   <!-- Sign Up Form -->
@@ -110,6 +111,23 @@
     <button onclick="signUp()">Create Account</button>
     <div id="signupMessage" class="message"></div>
     <div class="toggle-link" onclick="toggleForms()">Already have an account? Log in</div>
+  </div>
+
+  <!-- Password Reset Form -->
+  <div class="form-box" id="resetForm" style="display: none;">
+    <h2>Reset Password</h2>
+    <input type="email" placeholder="Enter your email" id="resetEmail" />
+    <button onclick="requestPasswordReset()">Send Reset Link</button>
+    <div id="resetMessage" class="message"></div>
+    <div class="toggle-link" onclick="backToLogin()">Back to Login</div>
+  </div>
+
+  <!-- New Password Form -->
+  <div class="form-box" id="newPasswordForm" style="display: none;">
+    <h2>Set New Password</h2>
+    <input type="password" placeholder="New Password" id="newPassword" />
+    <button onclick="updatePassword()">Update Password</button>
+    <div id="newPassMessage" class="message"></div>
   </div>
 
   <!-- Sections -->
@@ -131,6 +149,7 @@
       <h3>Chimwemwe Waps (Mukuba University)</h3>
       <p>"No problem, you are my sir 😄. I hope to meet you in person one day because you have helped me a lot. We’ll go out even 🤗.
          Just know, among the list of people who appreciate you, I am one of them 🙌. This video is my top favourite — it made me start liking Biology and the topic itself."</p>
+    </div>
   </div>
   <div class="section">
     <h2>📞 Contact Us</h2>
@@ -152,44 +171,42 @@
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
   const supabaseUrl = 'https://odwiqajuubcgrrqipyju.supabase.co'
-  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1dWJjZ3JycWlweWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzA4MjEsImV4cCI6MjA2ODg0NjgyMX0.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A'
+  const supabaseKey = 'YOUR_PUBLIC_SUPABASE_KEY'
   const supabase = createClient(supabaseUrl, supabaseKey)
 
+  // ✅ Sign up
   window.signUp = async function () {
     const email = document.getElementById("signupEmail").value.trim()
     const password = document.getElementById("signupPassword").value.trim()
     const msg = document.getElementById("signupMessage")
 
-    const { data, error } = await supabase.auth.signUp({ email, password })
+    const { error } = await supabase.auth.signUp({ email, password })
 
     if (error) {
       msg.textContent = "Signup failed: " + error.message
       msg.className = "message error"
     } else {
-      msg.textContent = "✅ Your account has been successfully created!"
+      msg.textContent = "✅ Account created! Check your email to confirm."
       msg.className = "message success"
-      setTimeout(() => {
-        toggleForms()
-      }, 2000)
+      setTimeout(() => { toggleForms() }, 2000)
     }
   }
 
+  // ✅ Login
   window.login = async function () {
     const email = document.getElementById("loginEmail").value.trim()
     const password = document.getElementById("loginPassword").value.trim()
     const msg = document.getElementById("loginMessage")
 
-    // Admin bypass login
+    // Admin bypass
     if(email === 'thrivesarchivers@gmail.com' && password === 'kappss0802') {
       msg.textContent = "✅ Admin login successful!"
       msg.className = "message success"
-      setTimeout(() => {
-        window.location.href = "admindashboard.html"
-      }, 1500)
+      setTimeout(() => { window.location.href = "admindashboard.html" }, 1500)
       return
     }
 
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
 
     if (error) {
       msg.textContent = "Login failed: " + error.message
@@ -197,20 +214,82 @@
     } else {
       msg.textContent = "✅ Login successful!"
       msg.className = "message success"
-      setTimeout(() => {
-        window.location.href = "dashboard.html"
-      }, 1500)
+      setTimeout(() => { window.location.href = "dashboard.html" }, 1500)
     }
   }
 
+  // ✅ Toggle login & signup
   window.toggleForms = function () {
-    const login = document.getElementById("loginForm")
-    const signup = document.getElementById("signupForm")
-    login.style.display = login.style.display === "none" ? "block" : "none"
-    signup.style.display = signup.style.display === "none" ? "block" : "none"
+    document.getElementById("loginForm").style.display =
+      document.getElementById("loginForm").style.display === "none" ? "block" : "none"
+    document.getElementById("signupForm").style.display =
+      document.getElementById("signupForm").style.display === "none" ? "block" : "none"
+    document.getElementById("resetForm").style.display = "none"
+    document.getElementById("newPasswordForm").style.display = "none"
     document.getElementById("loginMessage").textContent = ""
     document.getElementById("signupMessage").textContent = ""
   }
+
+  // ✅ Show reset form
+  window.showResetForm = function () {
+    document.getElementById("loginForm").style.display = "none"
+    document.getElementById("signupForm").style.display = "none"
+    document.getElementById("resetForm").style.display = "block"
+    document.getElementById("newPasswordForm").style.display = "none"
+    document.getElementById("resetMessage").textContent = ""
+  }
+
+  window.backToLogin = function () {
+    document.getElementById("loginForm").style.display = "block"
+    document.getElementById("signupForm").style.display = "none"
+    document.getElementById("resetForm").style.display = "none"
+    document.getElementById("newPasswordForm").style.display = "none"
+  }
+
+  // ✅ Request password reset
+  window.requestPasswordReset = async function () {
+    const email = document.getElementById("resetEmail").value.trim()
+    const msg = document.getElementById("resetMessage")
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.href // same page redirect
+    })
+
+    if (error) {
+      msg.textContent = "❌ " + error.message
+      msg.className = "message error"
+    } else {
+      msg.textContent = "✅ Reset link sent! Check your email."
+      msg.className = "message success"
+    }
+  }
+
+  // ✅ Update password after reset
+  window.updatePassword = async function () {
+    const newPassword = document.getElementById("newPassword").value.trim()
+    const msg = document.getElementById("newPassMessage")
+
+    const { error } = await supabase.auth.updateUser({ password: newPassword })
+
+    if (error) {
+      msg.textContent = "❌ " + error.message
+      msg.className = "message error"
+    } else {
+      msg.textContent = "✅ Password updated! You can log in now."
+      msg.className = "message success"
+      setTimeout(() => { backToLogin() }, 2000)
+    }
+  }
+
+  // ✅ Detect if coming from reset email
+  supabase.auth.onAuthStateChange((event) => {
+    if (event === "PASSWORD_RECOVERY") {
+      document.getElementById("loginForm").style.display = "none"
+      document.getElementById("signupForm").style.display = "none"
+      document.getElementById("resetForm").style.display = "none"
+      document.getElementById("newPasswordForm").style.display = "block"
+    }
+  })
 </script>
 
 <!-- Canvas Background Animation -->
@@ -336,10 +415,5 @@
     animate()
   })
 </script>
-
 </body>
 </html>
-
-
-
-
