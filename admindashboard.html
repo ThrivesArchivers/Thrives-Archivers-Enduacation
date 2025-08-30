@@ -78,11 +78,11 @@ const existingVideosDiv = document.getElementById('existingVideos')
 // ------------------- Admin Login -------------------
 adminLoginBtn.onclick = () => {
   const input = prompt("Enter admin password:")
-  const adminPassword = "Admin123!" // change this in production!
+  const adminPassword = "Admin123!" // change in production
   if(input === adminPassword) {
     adminPanel.style.display = 'block'
     alert("Welcome Admin!")
-    fetchVideos() // load videos after admin login
+    fetchVideos()
   } else {
     alert("Incorrect password!")
   }
@@ -91,7 +91,7 @@ adminLoginBtn.onclick = () => {
 // ------------------- Fetch & Render Videos -------------------
 async function fetchVideos() {
   const { data, error } = await supabase
-    .from('Videos')
+    .from('Videos') // Matches your table name
     .select('*')
     .order('section')
     .order('semester')
@@ -127,7 +127,7 @@ function renderVideos(data) {
       videos.forEach(v => {
         const li = document.createElement('li')
         li.textContent = v.title
-        li.onclick = () => playVideoWithPassword(v.video_id, v.password_list)
+        li.onclick = () => playVideoWithPassword(v['video id'], v['password list'])
         ul.appendChild(li)
       })
       sectionDiv.appendChild(ul)
@@ -142,8 +142,10 @@ function playVideoWithPassword(videoId, passwordStr) {
   const passwords = passwordStr.split(',').map(p => p.trim().toLowerCase())
   const input = prompt("Enter video password:")?.trim().toLowerCase()
   if(input && passwords.includes(input)) {
-    // YouTube embed with autoplay, modest branding, and no related videos
-    videoFrame.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`
+    videoFrame.src = ''
+    setTimeout(() => {
+      videoFrame.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`
+    }, 50)
   } else {
     alert("Incorrect password!")
   }
@@ -160,7 +162,7 @@ addVideoForm.onsubmit = async (e) => {
   const order = parseInt(document.getElementById('videoOrder').value)
 
   const { error } = await supabase.from('Videos')
-    .insert([{title, video_id, password_list, section, semester, order}])
+    .insert([{title, 'video id': video_id, 'password list': password_list, section, semester, order}])
   if(error) return console.error(error)
   addVideoForm.reset()
   fetchVideos()
@@ -181,7 +183,6 @@ function renderExistingVideos(data) {
     existingVideosDiv.appendChild(div)
   })
 
-  // Delete buttons
   document.querySelectorAll('.delete-btn').forEach(btn => {
     btn.onclick = async () => {
       const id = btn.getAttribute('data-id')
