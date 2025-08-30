@@ -78,7 +78,7 @@ const existingVideosDiv = document.getElementById('existingVideos')
 // ------------------- Admin Login -------------------
 adminLoginBtn.onclick = () => {
   const input = prompt("Enter admin password:")
-  const adminPassword = "Admin123!" // change this
+  const adminPassword = "Admin123!" // change this in production!
   if(input === adminPassword) {
     adminPanel.style.display = 'block'
     alert("Welcome Admin!")
@@ -91,7 +91,7 @@ adminLoginBtn.onclick = () => {
 // ------------------- Fetch & Render Videos -------------------
 async function fetchVideos() {
   const { data, error } = await supabase
-    .from('Videos') // <-- updated table name
+    .from('Videos')
     .select('*')
     .order('section')
     .order('semester')
@@ -139,10 +139,11 @@ function renderVideos(data) {
 
 // ------------------- Play Video -------------------
 function playVideoWithPassword(videoId, passwordStr) {
-  const passwords = passwordStr.split(',').map(p => p.toLowerCase())
-  const input = prompt("Enter video password:")?.toLowerCase()
+  const passwords = passwordStr.split(',').map(p => p.trim().toLowerCase())
+  const input = prompt("Enter video password:")?.trim().toLowerCase()
   if(input && passwords.includes(input)) {
-    videoFrame.src = `https://www.youtube.com/embed/${videoId}`
+    // YouTube embed with autoplay, modest branding, and no related videos
+    videoFrame.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`
   } else {
     alert("Incorrect password!")
   }
@@ -158,7 +159,7 @@ addVideoForm.onsubmit = async (e) => {
   const semester = document.getElementById('videoSemester').value
   const order = parseInt(document.getElementById('videoOrder').value)
 
-  const { error } = await supabase.from('Videos') // <-- updated table name
+  const { error } = await supabase.from('Videos')
     .insert([{title, video_id, password_list, section, semester, order}])
   if(error) return console.error(error)
   addVideoForm.reset()
@@ -184,7 +185,7 @@ function renderExistingVideos(data) {
   document.querySelectorAll('.delete-btn').forEach(btn => {
     btn.onclick = async () => {
       const id = btn.getAttribute('data-id')
-      const { error } = await supabase.from('Videos') // <-- updated table name
+      const { error } = await supabase.from('Videos')
         .delete()
         .eq('id', id)
       if(error) return console.error(error)
