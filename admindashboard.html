@@ -91,7 +91,7 @@ adminLoginBtn.onclick = () => {
 // ------------------- Fetch & Render Videos -------------------
 async function fetchVideos() {
   const { data, error } = await supabase
-    .from('videos')
+    .from('Videos') // <-- updated table name
     .select('*')
     .order('section')
     .order('semester')
@@ -158,7 +158,8 @@ addVideoForm.onsubmit = async (e) => {
   const semester = document.getElementById('videoSemester').value
   const order = parseInt(document.getElementById('videoOrder').value)
 
-  const { error } = await supabase.from('videos').insert([{title, video_id, password_list, section, semester, order}])
+  const { error } = await supabase.from('Videos') // <-- updated table name
+    .insert([{title, video_id, password_list, section, semester, order}])
   if(error) return console.error(error)
   addVideoForm.reset()
   fetchVideos()
@@ -183,7 +184,9 @@ function renderExistingVideos(data) {
   document.querySelectorAll('.delete-btn').forEach(btn => {
     btn.onclick = async () => {
       const id = btn.getAttribute('data-id')
-      const { error } = await supabase.from('videos').delete().eq('id', id)
+      const { error } = await supabase.from('Videos') // <-- updated table name
+        .delete()
+        .eq('id', id)
       if(error) return console.error(error)
       fetchVideos()
     }
