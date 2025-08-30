@@ -1,123 +1,198 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin Dashboard - Thrives Archivers</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
-      padding: 30px;
-    }
-    h1 {
-      text-align: center;
-      color: #333;
-    }
-    form {
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      max-width: 400px;
-      margin: auto;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    label {
-      display: block;
-      margin-top: 10px;
-    }
-    input, select {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-    button {
-      margin-top: 20px;
-      width: 100%;
-      background: #0b63ce;
-      color: white;
-      padding: 10px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #094ba3;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thrives Archivers - Video Streaming</title>
+<style>
+body { font-family: Arial, sans-serif; background:#f4f4f4; margin:0; text-align:center; }
+h2 { background:#333; color:white; padding:15px; margin:0; }
+.container { display:flex; flex-wrap:wrap; justify-content:space-around; padding:20px; }
+.section { width:45%; background:white; padding:15px; margin:10px; border-radius:8px; box-shadow:0 0 10px rgba(0,0,0,0.1); }
+.section h3 { margin-top:0; background:#444; color:white; padding:10px; }
+ul { list-style:none; padding:0; }
+li { padding:10px; margin:5px 0; background:#ddd; border-radius:5px; cursor:pointer; }
+li:hover { background:#bbb; }
+.video-player { margin:20px auto; width:90%; height:300px; }
+iframe { width:100%; height:100%; border:none; }
+.semester-title { font-weight:bold; margin-top:10px; color:#333; }
+.admin-panel { background:#fff; padding:15px; margin:20px auto; width:90%; border-radius:8px; box-shadow:0 0 10px rgba(0,0,0,0.2); display:none; text-align:left; }
+.admin-panel h3 { margin-top:0; }
+.admin-panel input, .admin-panel select { width:100%; margin:5px 0; padding:8px; }
+.admin-panel button { margin-top:10px; padding:10px 15px; cursor:pointer; background:#1976d2; color:white; border:none; border-radius:5px; }
+.admin-panel button:hover { background:#125ea3; }
+.delete-btn { background:red; margin-top:5px; color:white; padding:5px 10px; border:none; border-radius:5px; cursor:pointer; }
+</style>
 </head>
 <body>
-  <h1>📋 Admin Dashboard - Thrives Archivers</h1>
-  <form id="subscription-form">
-    <label>User Email:</label>
-    <input type="email" id="email" required />
 
-    <label>Start Date:</label>
-    <input type="date" id="start_date" required />
+<h2>Thrives Archivers - Video Streaming</h2>
 
-    <label>End Date:</label>
-    <input type="date" id="end_date" required />
+<button id="adminLoginBtn">Admin Login</button>
 
-    <label>Course:</label>
-    <select id="course" required>
-      <option value="">Select Course</option>
-      <option value="Mathematics">Mathematics</option>
-      <option value="Biology">Biology</option>
-      <option value="Chemistry">Chemistry</option>
+<div class="container" id="container"></div>
+
+<div class="video-player">
+  <iframe id="videoFrame" src="" allowfullscreen></iframe>
+</div>
+
+<!-- Admin Panel -->
+<div class="admin-panel" id="adminPanel">
+  <h3>Admin Panel - Manage Videos</h3>
+  <form id="addVideoForm">
+    <input type="text" id="videoTitle" placeholder="Video Title" required>
+    <input type="text" id="videoID" placeholder="YouTube Video ID" required>
+    <input type="text" id="passwordList" placeholder="Passwords (comma separated)" required>
+    <select id="videoSection" required>
+      <option value="">Select Section</option>
+      <option value="Maths">Maths</option>
       <option value="Physics">Physics</option>
+      <option value="Chemistry">Chemistry</option>
+      <option value="Biology">Biology</option>
     </select>
-
-    <button type="submit">Create Subscription</button>
+    <select id="videoSemester" required>
+      <option value="">Select Semester</option>
+      <option value="First Semester">First Semester</option>
+      <option value="Second Semester">Second Semester</option>
+    </select>
+    <input type="number" id="videoOrder" placeholder="Order (number)" required>
+    <button type="submit">Add Video</button>
   </form>
+  <div id="existingVideos"></div>
+</div>
 
-  <script>
-    const supabaseUrl = 'https://odwiqajuubcgrrqipyju.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'; // Truncated for security
-    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-    document.getElementById('subscription-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
+const supabaseUrl = 'https://odwiqajuubcgrrqipyju.supabase.co'
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1dWJjZ3JycWlweWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzA4MjEsImV4cCI6MjA2ODg0NjgyMX0.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A'
+const supabase = createClient(supabaseUrl, supabaseKey)
 
-      const email = document.getElementById('email').value;
-      const start_date = document.getElementById('start_date').value;
-      const end_date = document.getElementById('end_date').value;
-      const course = document.getElementById('course').value;
+const container = document.getElementById('container')
+const videoFrame = document.getElementById('videoFrame')
+const adminPanel = document.getElementById('adminPanel')
+const adminLoginBtn = document.getElementById('adminLoginBtn')
+const addVideoForm = document.getElementById('addVideoForm')
+const existingVideosDiv = document.getElementById('existingVideos')
 
-      // 🔍 Find user by email
-      const { data: users, error: userError } = await supabase
-        .from('users') // Make sure 'users' table exists and stores email
-        .select('id')
-        .eq('email', email);
+// ------------------- Admin Login -------------------
+adminLoginBtn.onclick = () => {
+  const input = prompt("Enter admin password:")
+  const adminPassword = "Admin123!" // change this
+  if(input === adminPassword) {
+    adminPanel.style.display = 'block'
+    alert("Welcome Admin!")
+    fetchVideos() // load videos after admin login
+  } else {
+    alert("Incorrect password!")
+  }
+}
 
-      if (userError || users.length === 0) {
-        alert("❌ User not found!");
-        return;
-      }
+// ------------------- Fetch & Render Videos -------------------
+async function fetchVideos() {
+  const { data, error } = await supabase
+    .from('videos')
+    .select('*')
+    .order('section')
+    .order('semester')
+    .order('order')
+  if(error) return console.error(error)
+  renderVideos(data)
+  if(adminPanel.style.display === 'block') renderExistingVideos(data)
+}
 
-      const user_id = users[0].id;
+function renderVideos(data) {
+  container.innerHTML = ''
+  const sections = {}
+  data.forEach(v => {
+    if(!sections[v.section]) sections[v.section] = {}
+    if(!sections[v.section][v.semester]) sections[v.section][v.semester] = []
+    sections[v.section][v.semester].push(v)
+  })
 
-      // ✅ Insert into subscriptions table
-      const { error: insertError } = await supabase
-        .from('subscriptions')
-        .insert([
-          {
-            user_id,
-            start_date,
-            end_date,
-            course,
-          }
-        ]);
+  for(const [sectionName, semesters] of Object.entries(sections)) {
+    const sectionDiv = document.createElement('div')
+    sectionDiv.className = 'section'
+    const h3 = document.createElement('h3')
+    h3.textContent = sectionName
+    sectionDiv.appendChild(h3)
 
-      if (insertError) {
-        alert("❌ Failed to create subscription: " + insertError.message);
-      } else {
-        alert("✅ Subscription created successfully!");
-        document.getElementById('subscription-form').reset();
-      }
-    });
-  </script>
+    for(const [semester, videos] of Object.entries(semesters)) {
+      const semTitle = document.createElement('div')
+      semTitle.className = 'semester-title'
+      semTitle.textContent = semester
+      sectionDiv.appendChild(semTitle)
+
+      const ul = document.createElement('ul')
+      videos.forEach(v => {
+        const li = document.createElement('li')
+        li.textContent = v.title
+        li.onclick = () => playVideoWithPassword(v.video_id, v.password_list)
+        ul.appendChild(li)
+      })
+      sectionDiv.appendChild(ul)
+    }
+
+    container.appendChild(sectionDiv)
+  }
+}
+
+// ------------------- Play Video -------------------
+function playVideoWithPassword(videoId, passwordStr) {
+  const passwords = passwordStr.split(',').map(p => p.toLowerCase())
+  const input = prompt("Enter video password:")?.toLowerCase()
+  if(input && passwords.includes(input)) {
+    videoFrame.src = `https://www.youtube.com/embed/${videoId}`
+  } else {
+    alert("Incorrect password!")
+  }
+}
+
+// ------------------- Admin Panel Functions -------------------
+addVideoForm.onsubmit = async (e) => {
+  e.preventDefault()
+  const title = document.getElementById('videoTitle').value
+  const video_id = document.getElementById('videoID').value
+  const password_list = document.getElementById('passwordList').value
+  const section = document.getElementById('videoSection').value
+  const semester = document.getElementById('videoSemester').value
+  const order = parseInt(document.getElementById('videoOrder').value)
+
+  const { error } = await supabase.from('videos').insert([{title, video_id, password_list, section, semester, order}])
+  if(error) return console.error(error)
+  addVideoForm.reset()
+  fetchVideos()
+}
+
+// Render existing videos for admin edit/delete
+function renderExistingVideos(data) {
+  existingVideosDiv.innerHTML = '<h4>Existing Videos:</h4>'
+  data.forEach(v => {
+    const div = document.createElement('div')
+    div.style.borderBottom = "1px solid #ccc"
+    div.style.marginBottom = "5px"
+    div.style.paddingBottom = "5px"
+    div.innerHTML = `
+      ${v.title} (${v.section} - ${v.semester})
+      <button class="delete-btn" data-id="${v.id}">Delete</button>
+    `
+    existingVideosDiv.appendChild(div)
+  })
+
+  // Delete buttons
+  document.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.onclick = async () => {
+      const id = btn.getAttribute('data-id')
+      const { error } = await supabase.from('videos').delete().eq('id', id)
+      if(error) return console.error(error)
+      fetchVideos()
+    }
+  })
+}
+
+// Initial fetch
+fetchVideos()
+</script>
+
 </body>
 </html>
