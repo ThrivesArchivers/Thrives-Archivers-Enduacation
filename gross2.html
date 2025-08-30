@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pectoral Region — Anatomy Quiz (30 MCQs)</title>
+  <style>
+    :root{
+      --bg1:#0f1724;
+      --bg2:#07102a;
+      --card:#0b1220;
+      --accent:#60a5fa;
+      --correct:#16a34a;
+      --wrong:#ef4444;
+      --text:#e6eef8;
+      --muted:#9fb0cf;
+    }
+    html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;}
+    body{
+      background: radial-gradient(1200px 600px at 10% 20%, rgba(96,165,250,0.06), transparent),
+                  radial-gradient(1000px 500px at 90% 80%, rgba(96,165,250,0.03), transparent),
+                  linear-gradient(180deg,var(--bg1),var(--bg2));
+      color:var(--text);
+      -webkit-font-smoothing:antialiased;
+      display:flex;align-items:center;justify-content:center;padding:32px;
+    }
+
+    .bg-motion{
+      position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0;
+    }
+    .orb{
+      position:absolute;border-radius:50%;filter:blur(60px);opacity:0.12;
+      animation: drift 20s linear infinite;
+    }
+    .orb.o1{width:480px;height:480px;left:-10%;top:-20%;background:linear-gradient(90deg, rgba(96,165,250,0.9), rgba(96,165,250,0.3)); animation-duration:28s;}
+    .orb.o2{width:360px;height:360px;right:-10%;bottom:-15%;background:linear-gradient(90deg, rgba(99,102,241,0.85), rgba(99,102,241,0.25)); animation-duration:36s;}
+    @keyframes drift{
+      0%{transform:translateY(0) translateX(0) scale(1);}
+      50%{transform:translateY(40px) translateX(-40px) scale(1.05);}
+      100%{transform:translateY(0) translateX(0) scale(1);}
+    }
+
+    .container{
+      position:relative;z-index:1;max-width:900px;width:100%;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:14px;padding:28px;box-shadow:0 10px 40px rgba(2,6,23,0.7);border:1px solid rgba(255,255,255,0.03);
+    }
+
+    header{display:flex;align-items:center;gap:16px;margin-bottom:18px;}
+    header .logo{
+      width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#6366f1);display:flex;align-items:center;justify-content:center;font-weight:700;color:#032;box-shadow:0 6px 18px rgba(2,6,23,0.6);
+    }
+    header h1{font-size:20px;margin:0}
+    header p{margin:0;color:var(--muted);font-size:13px}
+
+    #quiz-container{padding:10px 6px 0 6px;}
+    .meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;color:var(--muted);}
+    #question-count{font-weight:600}
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:12px;padding:18px;border:1px solid rgba(255,255,255,0.02);
+    }
+
+    #question{font-size:18px;margin:0 0 12px 0;color:var(--text)}
+    #options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .option-btn{
+      background:transparent;border:1px solid rgba(255,255,255,0.06);padding:12px;border-radius:8px;color:var(--text);
+      text-align:left;cursor:pointer;font-weight:600;transition:all .18s;box-shadow:0 4px 16px rgba(2,6,23,0.5);
+    }
+    .option-btn:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(2,6,23,0.6)}
+    .option-btn.correct{background:linear-gradient(90deg, rgba(22,163,74,0.12), rgba(22,163,74,0.06));border-color:rgba(22,163,74,0.28);box-shadow:0 8px 30px rgba(16,185,129,0.06);outline:3px solid rgba(22,163,74,0.06)}
+    .option-btn.wrong{background:linear-gradient(90deg, rgba(239,68,68,0.08), rgba(239,68,68,0.03));border-color:rgba(239,68,68,0.18);outline:3px solid rgba(239,68,68,0.03)}
+
+    .controls{display:flex;justify-content:space-between;align-items:center;margin-top:14px;gap:12px}
+    #next-btn, #restart-btn{display:inline-block;padding:10px 14px;border-radius:8px;border:none;cursor:pointer;font-weight:700}
+    #next-btn{background:var(--accent);color:#042c4f;border:1px solid rgba(255,255,255,0.06);display:none}
+    #restart-btn{background:transparent;color:var(--accent);border:1px solid rgba(255,255,255,0.04)}
+
+    .explanation{margin-top:12px;padding:12px;border-radius:8px;background:rgba(255,255,255,0.01);border:1px solid rgba(255,255,255,0.02);color:var(--muted);font-size:14px}
+
+    #result-section{display:none;padding:18px;text-align:center}
+    #result-score{font-size:22px;font-weight:800;margin-bottom:6px}
+    #result-percent{font-size:18px;color:var(--muted);margin-bottom:10px;display:block}
+    #result-message{font-size:16px;color:var(--muted)}
+    .small{font-size:13px;color:var(--muted);margin-top:10px}
+
+    @media (max-width:700px){
+      #options{grid-template-columns:1fr}
+      header{gap:12px}
+    }
+  </style>
+</head>
+<body>
+  <!-- Canvas Particle Background -->
+  <canvas id="bg-particles" class="bg-motion" aria-hidden="true"></canvas>
+  <!-- Optional: keep the orbs for extra style -->
+  <div class="bg-motion" aria-hidden="true">
+    <div class="orb o1"></div>
+    <div class="orb o2"></div>
+  </div>
+
+  <div class="container" role="main">
+    <header>
+      <div class="logo">QA</div>
+      <div>
+        <h1>Pectoral Region — Advanced Anatomy Quiz</h1>
+        <p>30 difficult MCQs • Immediate answer & explanation • Shuffled questions & options</p>
+      </div>
+    </header>
+
+    <div id="quiz-container">
+      <div class="meta">
+        <div id="question-count">Question 1 of 30</div>
+        <div id="score-display" style="color:var(--muted)">Score: 0</div>
+      </div>
+
+      <div class="card">
+        <div id="question">Loading question…</div>
+        <div id="options" aria-live="polite"></div>
+        <div id="explanation" aria-live="polite"></div>
+
+        <div class="controls">
+          <div>
+            <button id="next-btn">Next →</button>
+            <button id="restart-btn" style="display:inline-block">Restart</button>
+          </div>
+          <div class="small">Tip: select an option to reveal the correct answer & explanation.</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="result-section" class="card" role="region" aria-label="Results">
+      <div id="result-score">Score: 0 / 30</div>
+      <div id="result-percent">(0%)</div>
+      <div id="result-message">Great job!</div>
+      <div class="small">You can restart the quiz to reshuffle questions and options.</div>
+      <div style="margin-top:12px">
+        <button id="restart-btn-2" style="padding:10px 14px;border-radius:8px;background:var(--accent);border:none;color:#042c4f;font-weight:800;cursor:pointer">Restart Quiz</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Particle Animation Script -->
+  <script>
+    // === PARTICLE CANVAS ANIMATION ===
+    const canvas = document.getElementById('bg-particles');
+    const ctx = canvas.getContext('2d');
+    let width = window.innerWidth, height = window.innerHeight;
+    function resize() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    // Particle config
+    const PARTICLE_COUNT = 46;
+    const COLORS = ['#60a5fa', '#6366f1', '#a21caf', '#f59e42', '#16a34a'];
+    const particles = [];
+    for(let i=0;i<PARTICLE_COUNT;i++) {
+      const r = 1.8 + Math.random() * 2.5;
+      particles.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.8,
+        vy: (Math.random() - 0.5) * 0.8,
+        r,
+        c: COLORS[Math.floor(Math.random()*COLORS.length)],
+        a: 0.15 + Math.random() * 0.20,
+        tick: Math.random() * 1000
+      });
+    }
+
+    function drawParticles() {
+      ctx.clearRect(0,0,width,height);
+      for(const p of particles) {
+        // Gentle float
+        p.x += p.vx;
+        p.y += p.vy;
+        p.tick += 0.012;
+        // Sine wave to add party "motion"
+        p.x += Math.sin(p.tick) * 0.22;
+        p.y += Math.cos(p.tick) * 0.18;
+        // Bounce off edges
+        if(p.x < 0 || p.x > width) p.vx *= -1;
+        if(p.y < 0 || p.y > height) p.vy *= -1;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r + Math.sin(p.tick)*0.7, 0, Math.PI*2);
+        ctx.fillStyle = p.c;
+        ctx.globalAlpha = p.a;
+        ctx.shadowColor = p.c;
+        ctx.shadowBlur = 12;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+        ctx.shadowBlur = 0;
+      }
+      requestAnimationFrame(drawParticles);
+    }
+    drawParticles();
+    // === END PARTICLE CANVAS ===
+  </script>
+
+  <!-- Quiz Script -->
+  <script>
+    // 30 anatomy questions (sample, replace with full as needed)
+    let questions = [
+      { question: "Q1. The pectoralis major muscle is innervated by:", options: ["Lateral pectoral nerve", "Medial pectoral nerve", "Both lateral and medial pectoral nerves", "Long thoracic nerve"], answer: 2, explanation: "Both lateral and medial pectoral nerves supply pectoralis major." },
+      { question: "Q2. The main action of pectoralis major is:", options: ["Abduction of arm", "Adduction and medial rotation of arm", "Extension of forearm", "Flexion of forearm"], answer: 1, explanation: "Pectoralis major adducts and medially rotates the arm." },
+      { question: "Q3. The pectoralis minor muscle is attached to:", options: ["Clavicle", "Ribs 3–5", "Humerus", "Scapula spine"], answer: 1, explanation: "Pectoralis minor arises from ribs 3–5." },
+      { question: "Q4. Which structure lies deep to the pectoralis minor?", options: ["Axillary artery", "Cephalic vein", "Basilic vein", "Median nerve"], answer: 0, explanation: "Axillary artery lies deep to pectoralis minor." },
+      { question: "Q5. The clavipectoral fascia encloses which muscle?", options: ["Pectoralis major", "Pectoralis minor", "Subclavius", "Serratus anterior"], answer: 2, explanation: "Clavipectoral fascia encloses subclavius and pectoralis minor." },
+      { question: "Q6. The deltopectoral groove contains:", options: ["Axillary nerve", "Cephalic vein", "Thoracodorsal nerve", "Radial artery"], answer: 1, explanation: "Cephalic vein is found in the deltopectoral groove." },
+      { question: "Q7. Which muscle forms the anterior wall of the axilla?", options: ["Pectoralis major", "Latissimus dorsi", "Serratus anterior", "Teres major"], answer: 0, explanation: "Pectoralis major forms the anterior wall of the axilla." },
+      { question: "Q8. The medial pectoral nerve pierces which muscle?", options: ["Pectoralis major", "Pectoralis minor", "Subclavius", "Deltoid"], answer: 1, explanation: "It pierces pectoralis minor to reach pectoralis major." },
+      { question: "Q9. The lateral border of pectoralis major forms:", options: ["Anterior axillary fold", "Posterior axillary fold", "Medial axillary wall", "Base of axilla"], answer: 0, explanation: "Anterior axillary fold is formed by pectoralis major." },
+      { question: "Q10. The thoracoacromial artery is a branch of:", options: ["Axillary artery", "Subclavian artery", "Brachial artery", "Radial artery"], answer: 0, explanation: "Thoracoacromial artery is a branch of axillary artery." },
+      { question: "Q11. Which vein runs in the deltopectoral triangle?", options: ["Cephalic vein", "Basilic vein", "Axillary vein", "Median cubital vein"], answer: 0, explanation: "Cephalic vein runs in the deltopectoral triangle." },
+      { question: "Q12. The nerve supply to serratus anterior is:", options: ["Long thoracic nerve", "Medial pectoral nerve", "Lateral pectoral nerve", "Axillary nerve"], answer: 0, explanation: "Long thoracic nerve supplies serratus anterior." },
+      { question: "Q13. The base of axilla is formed by:", options: ["Skin and fascia", "Clavicle", "Scapula", "Subscapularis"], answer: 0, explanation: "The base is formed by skin and fascia." },
+      { question: "Q14. Which muscle is not part of the pectoral region?", options: ["Pectoralis major", "Pectoralis minor", "Subclavius", "Deltoid"], answer: 3, explanation: "Deltoid is a shoulder muscle, not pectoral region." },
+      { question: "Q15. The lateral thoracic artery supplies:", options: ["Latissimus dorsi", "Pectoralis minor", "Serratus anterior", "All of the above"], answer: 3, explanation: "Lateral thoracic artery supplies all these muscles." },
+      { question: "Q16. The medial wall of axilla is formed by:", options: ["Pectoralis major", "Latissimus dorsi", "Serratus anterior", "Teres major"], answer: 2, explanation: "Serratus anterior forms the medial wall of axilla." },
+      { question: "Q17. Which muscle depresses the scapula?", options: ["Pectoralis minor", "Pectoralis major", "Latissimus dorsi", "Subclavius"], answer: 0, explanation: "Pectoralis minor depresses the scapula." },
+      { question: "Q18. The cephalic vein drains into:", options: ["Axillary vein", "Subclavian vein", "Basilic vein", "Brachial vein"], answer: 0, explanation: "Cephalic vein drains into axillary vein." },
+      { question: "Q19. The axillary artery becomes brachial artery at:", options: ["Lower border of teres major", "Upper border of teres major", "Lower border of pectoralis major", "Neck of humerus"], answer: 0, explanation: "At the lower border of teres major." },
+      { question: "Q20. The main lymph drainage of breast is to:", options: ["Axillary nodes", "Parasternal nodes", "Supraclavicular nodes", "Infraclavicular nodes"], answer: 0, explanation: "Most lymph from breast drains to axillary nodes." },
+      { question: "Q21. Which nerve is at risk during breast surgery?", options: ["Long thoracic nerve", "Radial nerve", "Median nerve", "Musculocutaneous nerve"], answer: 0, explanation: "Long thoracic nerve is at risk, leading to winged scapula if injured." },
+      { question: "Q22. The pectoral branch of thoracoacromial artery supplies:", options: ["Pectoralis major", "Deltoid", "Teres major", "Latissimus dorsi"], answer: 0, explanation: "It supplies pectoralis major." },
+      { question: "Q23. The nerve to subclavius arises from:", options: ["Upper trunk", "Lower trunk", "Medial cord", "Posterior cord"], answer: 0, explanation: "Nerve to subclavius arises from upper trunk of brachial plexus." },
+      { question: "Q24. The apex of axilla is bounded by all EXCEPT:", options: ["Clavicle","Scapula","First rib","Pectoralis major"], answer: 3, explanation: "Pectoralis major forms the anterior axillary fold but not the apex; apex is formed by clavicle, first rib, scapula." },
+      { question: "Q25. Which artery passes anterior to pectoralis minor?", options: ["Lateral thoracic","Thoracoacromial","Subscapular","Superior thoracic"], answer: 1, explanation: "Thoracoacromial artery passes anterior to pectoralis minor." },
+      { question: "Q26. The costocoracoid membrane is part of:", options: ["Clavipectoral fascia","Pectoral fascia","Endothoracic fascia","Axillary sheath"], answer: 0, explanation: "The costocoracoid membrane is the thickened part of clavipectoral fascia." },
+      { question: "Q27. Which nerve provides sensory fibers to skin over pectoralis major?", options: ["Lateral pectoral nerve","Medial pectoral nerve","Intercostal nerves","Long thoracic nerve"], answer: 2, explanation: "Intercostal nerves supply the overlying skin." },
+      { question: "Q28. The pectoral branch of thoracoacromial artery mainly supplies:", options: ["Pectoralis major","Pectoralis minor","Subclavius","Serratus anterior"], answer: 0, explanation: "It supplies pectoralis major primarily." },
+      { question: "Q29. The deltopectoral triangle contains:", options: ["Cephalic vein","Thoracoacromial artery","Both","None"], answer: 2, explanation: "Both cephalic vein and thoracoacromial artery pass through it." },
+      { question: "Q30. Medial cord of brachial plexus gives rise to:", options: ["Medial pectoral nerve","Lateral pectoral nerve","Thoracodorsal nerve","Long thoracic nerve"], answer: 0, explanation: "Medial cord gives medial pectoral nerve (C8-T1)." }
+    ];
+
+    // Shuffle helper
+    function shuffleArray(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function shuffleOptions(q) {  
+      const opts = q.options.map((opt, i) => ({text: opt, idx: i}));  
+      shuffleArray(opts);  
+      q.options = opts.map(o => o.text);  
+      q.answer = opts.findIndex(o => o.idx === q.answer);  
+      return q;  
+    }  
+
+    let currentQuestion = 0, score = 0, selected = false;  
+
+    function prepareQuiz() {  
+      questions = shuffleArray(questions.map(q => shuffleOptions({...q})));  
+    }  
+
+    function showQuestion(idx) {  
+      const q = questions[idx];  
+      document.getElementById('question-count').innerText = `Question ${idx + 1} of ${questions.length}`;  
+      document.getElementById('question').innerText = q.question;  
+      const optionsDiv = document.getElementById('options');  
+      optionsDiv.innerHTML = '';  
+      document.getElementById('explanation').innerHTML = '';  
+      document.getElementById('next-btn').style.display = 'none';  
+      document.getElementById('score-display').innerText = `Score: ${score}`;
+      selected = false;  
+      q.options.forEach((opt, i) => {  
+        const btn = document.createElement('button');  
+        btn.className = 'option-btn';  
+        btn.innerText = opt;  
+        btn.onclick = () => selectOption(i, btn);  
+        optionsDiv.appendChild(btn);  
+      });  
+    }  
+
+    function selectOption(selectedIdx) {  
+      if (selected) return;  
+      selected = true;  
+      const q = questions[currentQuestion];  
+      const optionsBtns = document.querySelectorAll('.option-btn');  
+      optionsBtns.forEach((ob, i) => {  
+        if (i === q.answer) ob.classList.add('correct');  
+        if (i === selectedIdx && i !== q.answer) ob.classList.add('wrong');  
+        ob.disabled = true;
+      });  
+      if (selectedIdx === q.answer) score++;  
+      document.getElementById('score-display').innerText = `Score: ${score}`;
+      document.getElementById('explanation').innerHTML = `<div class="explanation">${q.explanation}</div>`;  
+      document.getElementById('next-btn').style.display = 'inline-block';  
+    }  
+
+    function showResult() {  
+      document.getElementById('quiz-container').style.display = 'none';  
+      document.getElementById('result-section').style.display = 'block';  
+      document.getElementById('result-score').innerText = `Score: ${score} / ${questions.length}`;  
+      const percent = Math.round((score / questions.length) * 100);  
+      document.getElementById('result-percent').innerText = `(${percent}%)`;  
+      let message = "Great job!";  
+      if (percent < 50) message = "Keep practicing!";  
+      else if (percent < 80) message = "Good effort!";  
+      else if (percent >= 80 && percent < 100) message = "Excellent!";
+      else if (percent === 100) message = "Perfect score! Outstanding!";
+      document.getElementById('result-message').innerText = message;  
+    }  
+
+    document.getElementById('next-btn').onclick = () => {  
+      if (currentQuestion < questions.length - 1) {  
+        currentQuestion++;  
+        showQuestion(currentQuestion);  
+      } else showResult();  
+    };  
+
+    document.getElementById('restart-btn').onclick = () => {  
+      currentQuestion = 0; score = 0;  
+      document.getElementById('quiz-container').style.display = 'block';  
+      document.getElementById('result-section').style.display = 'none';  
+      prepareQuiz(); showQuestion(currentQuestion);  
+    };  
+    document.getElementById('restart-btn-2').onclick = () => {  
+      currentQuestion = 0; score = 0;  
+      document.getElementById('quiz-container').style.display = 'block';  
+      document.getElementById('result-section').style.display = 'none';  
+      prepareQuiz(); showQuestion(currentQuestion);  
+    };  
+
+    // Initialize quiz  
+    prepareQuiz();  
+    showQuestion(currentQuestion);
+  </script>
+</body>
+  </html>
