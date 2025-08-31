@@ -5,19 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Thrives Archivers - Video Streaming</title>
 <style>
-body { font-family: Arial, sans-serif; background:#f4f4f4; margin:0; text-align:center; }
-h2 { background:#333; color:white; padding:15px; margin:0; }
-.container { display:flex; flex-wrap:wrap; justify-content:space-around; padding:20px; }
-.section { width:45%; background:white; padding:15px; margin:10px; border-radius:8px; box-shadow:0 0 10px rgba(0,0,0,0.1); }
-.section h3 { margin-top:0; background:#444; color:white; padding:10px; }
-ul { list-style:none; padding:0; }
-li { padding:10px; margin:5px 0; background:#ddd; border-radius:5px; cursor:pointer; }
-li:hover { background:#bbb; }
-.video-player { margin:20px auto; width:90%; height:300px; }
+body { font-family: Arial, sans-serif; background:#f4f4f4; margin:0; }
+h2 { background:#333; color:white; padding:15px; margin:0; text-align:center; }
+.status-bar { margin:10px auto; padding:10px; font-weight:bold; text-align:center; }
+.container { display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap:20px; padding:20px; }
+.section { background:white; padding:15px; border-radius:10px; box-shadow:0 0 15px rgba(0,0,0,0.1); }
+.section h3 { margin-top:0; background:#1976d2; color:white; padding:10px; border-radius:5px; }
+.semester-title { font-weight:bold; margin-top:10px; color:#333; font-size:14px; }
+.video-card { background:#eee; padding:10px; margin:8px 0; border-radius:5px; cursor:pointer; transition:0.3s; }
+.video-card:hover { background:#ddd; }
+.video-player { margin:20px auto; width:90%; max-width:800px; height:450px; border-radius:10px; overflow:hidden; box-shadow:0 0 15px rgba(0,0,0,0.2); }
 iframe { width:100%; height:100%; border:none; }
-.semester-title { font-weight:bold; margin-top:10px; color:#333; }
-.status-bar { margin:10px auto 0; padding:10px; font-weight:bold; }
-.admin-panel { background:#fff; padding:15px; margin:20px auto; width:90%; border-radius:8px; box-shadow:0 0 10px rgba(0,0,0,0.2); display:none; text-align:left; }
+.admin-panel { background:#fff; padding:20px; margin:20px auto; width:90%; border-radius:10px; box-shadow:0 0 15px rgba(0,0,0,0.2); display:none; }
 .admin-panel h3 { margin-top:0; }
 .admin-panel input, .admin-panel select { width:100%; margin:5px 0; padding:8px; }
 .admin-panel button { margin-top:10px; padding:10px 15px; cursor:pointer; background:#1976d2; color:white; border:none; border-radius:5px; }
@@ -27,7 +26,7 @@ iframe { width:100%; height:100%; border:none; }
 .modal-bg { background:rgba(0,0,0,0.3); }
 .login-modal { z-index:1001; left:50%; top:50%; transform:translate(-50%,-50%); background:#fff; padding:30px; border-radius:10px; width:90%; max-width:350px; box-shadow:0 2px 20px #2224; }
 .login-modal input { margin:10px 0; width:100%; padding:10px; }
-.login-modal button { padding:8px 15px; }
+.login-modal button { padding:8px 15px; margin-top:5px; }
 </style>
 </head>
 <body>
@@ -41,10 +40,11 @@ iframe { width:100%; height:100%; border:none; }
   <input type="email" id="loginEmail" placeholder="Your Email" required>
   <input type="password" id="loginPassword" placeholder="Your Password" required>
   <button id="loginBtn">Login</button>
-  <button style="margin-top:6px;background:#888;" id="closeModalBtn">Cancel</button>
+  <button style="background:#888;" id="closeModalBtn">Cancel</button>
 </div>
 
 <div class="container" id="container"></div>
+
 <div class="video-player">
   <iframe id="videoFrame" src="" allowfullscreen></iframe>
 </div>
@@ -81,9 +81,9 @@ iframe { width:100%; height:100%; border:none; }
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
 const supabaseUrl = 'https://odwiqajuubcgrrqipyju.supabase.co'
+// Replace with your Supabase anon/public key
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1dWJjZ3JycWlweWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzA4MjEsImV4cCI6MjA2ODg0NjgyMX0.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A'
 const supabase = createClient(supabaseUrl, supabaseKey)
-
 const container = document.getElementById('container')
 const videoFrame = document.getElementById('videoFrame')
 const adminPanel = document.getElementById('adminPanel')
@@ -102,159 +102,9 @@ let currentUser = null
 let currentSubscription = null
 let allVideos = []
 
-// ----- Login Modal Logic -----
-function showLoginModal() { modalBg.style.display = 'block'; loginModal.style.display = 'block'; }
-function hideLoginModal() { modalBg.style.display = 'none'; loginModal.style.display = 'none'; }
-closeModalBtn.onclick = hideLoginModal
-modalBg.onclick = hideLoginModal
-
-// Try auto-login
-async function tryAutoLogin() {
-  const email = localStorage.getItem('user_email')
-  if(email) await loginUser(email)
-}
-
-window.showLoginModal = showLoginModal // Expose to global for onclick in HTML
-
-window.logout = function() {
-  localStorage.removeItem('user_email')
-  currentUser = null
-  currentSubscription = null
-  statusBar.innerHTML = 'You are not logged in. <button onclick="showLoginModal()">Login</button>'
-  fetchVideos()
-}
-
-if(!localStorage.getItem('user_email')) {
-  statusBar.innerHTML = 'You are not logged in. <button onclick="showLoginModal()">Login</button>'
-} else {
-  tryAutoLogin()
-}
-
-loginBtn.onclick = async () => {
-  const email = loginEmail.value.trim().toLowerCase()
-  if(!email) return alert('Enter your email.')
-  await loginUser(email)
-  hideLoginModal()
-}
-
-async function loginUser(email) {
-  const { data } = await supabase.from('subscriptions').select('*').eq('email', email).single()
-  currentUser = email
-  currentSubscription = data || null
-  localStorage.setItem('user_email', email)
-
-  if(currentSubscription) {
-      statusBar.innerHTML = `<span style="color:green">Logged in as: ${email} <b>[PAID]</b></span> <button onclick="logout()">Logout</button>`
-  } else {
-      statusBar.innerHTML = `<span style="color:orange">Logged in as: ${email} <b>[NOT PAID]</b></span> <button onclick="logout()">Logout</button>`
-  }
-
-  // Show admin panel only for admin email
-  if(email === 'thrivesarchivers@gmail.com') {
-      adminPanel.style.display = 'block';
-      fetchSubscriptions()
-  } else {
-      adminPanel.style.display = 'none';
-  }
-
-  fetchVideos()
-}
-
-// ----- Fetch & Render Videos -----
-async function fetchVideos() {
-  const { data, error } = await supabase
-    .from('Video')
-    .select('*')
-    .order('section')
-    .order('semester')
-    .order('order')
-  if(error) return console.error(error)
-  allVideos = data
-  renderVideos(data)
-  if(currentUser === 'thrivesarchivers@gmail.com') renderExistingVideos(data)
-}
-
-function renderVideos(data) {
-  container.innerHTML = ''
-  const sections = {}
-  data.forEach(v => {
-    if(!sections[v.section]) sections[v.section] = {}
-    if(!sections[v.section][v.semester]) sections[v.section][v.semester] = []
-    sections[v.section][v.semester].push(v)
-  })
-
-  for(const [sectionName, semesters] of Object.entries(sections)) {
-    const sectionDiv = document.createElement('div')
-    sectionDiv.className = 'section'
-    const h3 = document.createElement('h3')
-    h3.textContent = sectionName
-    sectionDiv.appendChild(h3)
-
-    for(const [semester, videos] of Object.entries(semesters)) {
-      const semTitle = document.createElement('div')
-      semTitle.className = 'semester-title'
-      semTitle.textContent = semester
-      sectionDiv.appendChild(semTitle)
-
-      const ul = document.createElement('ul')
-      videos.forEach(v => {
-        const li = document.createElement('li')
-        li.textContent = v.title
-        li.onclick = () => playVideoWithAccessControl(v)
-        ul.appendChild(li)
-      })
-      sectionDiv.appendChild(ul)
-    }
-    container.appendChild(sectionDiv)
-  }
-}
-
-// ----- Video Access -----
-function playVideoWithAccessControl(video) {
-  if(currentUser && currentSubscription && isPaidForVideo(video)) {
-    playVideo(video['video id'])
-  } else {
-    playVideoWithPassword(video['video id'], video['password list'])
-  }
-}
-
-function isPaidForVideo(video) {
-  if(!currentSubscription) return false
-  if(!currentSubscription.courses || currentSubscription.courses.trim() === '') return true
-  const allowed = currentSubscription.courses.split(',').map(x=>x.trim().toLowerCase())
-  return allowed.includes(video.title.toLowerCase()) || allowed.includes(video.section.toLowerCase())
-}
-
-function playVideo(videoId) {
-  videoFrame.src = ''
-  setTimeout(() => {
-    videoFrame.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`
-  }, 50)
-}
-
-function playVideoWithPassword(videoId, passwordStr) {
-  const passwords = passwordStr.split(',').map(p => p.trim().toLowerCase())
-  const input = prompt("Enter video password:")?.trim().toLowerCase()
-  if(input && passwords.includes(input)) {
-    playVideo(videoId)
-  } else {
-    alert("Incorrect password!")
-  }
-}
-
-// ----- Admin Functions -----
-addVideoForm.onsubmit = async (e) => {
-  e.preventDefault()
-  const title = document.getElementById('videoTitle').value
-  const video_id = document.getElementById('videoID').value
-  const password_list = document.getElementById('passwordList').value
-  const section = document.getElementById('videoSection').value
-  const semester = document.getElementById('videoSemester').value
-  const order = parseInt(document.getElementById('videoOrder').value)
-
-  const { error } = await supabase.from('Video')
-    .insert([{title, 'video id': video_id, 'password list': password_list, section, semester, order}])
-  if(error) return console.error(error)
+//} = await supabase.from('Videos')
+    .insert([{ title, 'video id': video_id, 'password list': password_list, section, semester, order }])
+  if (error) return console.error(error)
   addVideoForm.reset()
   fetchVideos()
 }
@@ -276,10 +126,8 @@ function renderExistingVideos(data) {
   document.querySelectorAll('.delete-btn').forEach(btn => {
     btn.onclick = async () => {
       const id = btn.getAttribute('data-id')
-      const { error } = await supabase.from('Video')
-        .delete()
-        .eq('id', id)
-      if(error) return console.error(error)
+      const { error } = await supabase.from('Videos').delete().eq('id', id)
+      if (error) return console.error(error)
       fetchVideos()
     }
   })
@@ -287,8 +135,8 @@ function renderExistingVideos(data) {
 
 // ---------- Subscriptions Admin ----------
 async function fetchSubscriptions() {
-  const { data, error } = await supabase.from('subscriptions').select('*')
-  if(error) return (subscriptionsAdmin.innerHTML = "Failed to fetch subscriptions.")
+  const { data, error } = await supabase.from('subscription').select('*')
+  if (error) return (subscriptionsAdmin.innerHTML = "Failed to fetch subscriptions.")
   renderSubscriptionsAdmin(data)
 }
 
@@ -331,10 +179,10 @@ function renderSubscriptionsAdmin(data) {
     const courses = document.getElementById('subCourses').value
 
     // Upsert subscription
-    const { error } = await supabase.from('subscriptions').upsert([{
+    const { error } = await supabase.from('subscription').upsert([{
       email, 'start date': start, duration, 'end date': end, courses
     }])
-    if(error) return alert("Error:" + error.message)
+    if (error) return alert("Error:" + error.message)
     fetchSubscriptions()
     alert("Subscription saved/updated!")
   }
@@ -354,7 +202,7 @@ window.editSub = function(email) {
 // Delete subscription
 window.deleteSub = async function(email) {
   if(confirm("Delete subscription for " + email + "?")) {
-    const { error } = await supabase.from('subscriptions').delete().eq('email', email)
+    const { error } = await supabase.from('subscription').delete().eq('email', email)
     if(error) return alert("Error: "+error.message)
     fetchSubscriptions()
   }
