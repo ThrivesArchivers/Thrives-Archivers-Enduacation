@@ -80,10 +80,12 @@ iframe { width:100%; height:100%; border:none; }
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
+// --- SUPABASE CONFIG ---
 const supabaseUrl = 'https://odwiqajuubcgrrqipyju.supabase.co'
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1dWJjZ3JycWlweWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzA4MjEsImV4cCI6MjA2ODg0NjgyMX0.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A'
+const supabaseKey = 'YOUR_SUPABASE_ANON_KEY'  // <-- Replace with your anon/public key from Supabase
 const supabase = createClient(supabaseUrl, supabaseKey)
 
+// --- ELEMENTS ---
 const container = document.getElementById('container')
 const videoFrame = document.getElementById('videoFrame')
 const adminPanel = document.getElementById('adminPanel')
@@ -101,7 +103,7 @@ const subscriptionsAdmin = document.getElementById('subscriptionsAdmin')
 let currentUser = null
 let allVideos = []
 
-// --- AUTH LOGIC ---
+// --- AUTH ---
 function showLoginModal() {
   loginModal.style.display = 'block'
   modalBg.style.display = 'block'
@@ -117,58 +119,48 @@ loginBtn.onclick = async function() {
   const password = loginPassword.value.trim()
   if(!email || !password) return alert('Please enter email and password.')
 
-  // Supabase sign-in (use signUp if user not exists)
-  let { data, error } = await supabase.auth.signInWithPassword({ email, password })
-  if (error) {
-    return alert('Login failed: ' + error.message)
-  }
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+  if (error) return alert('Login failed: ' + error.message)
+
   currentUser = data.user
-  statusBar.textContent = `Logged in as ${email}`
+  if(!currentUser) return alert('User login failed.')
+
+  statusBar.textContent = `Logged in as ${currentUser.email}`
   hideLoginModal()
 
-  // Show admin panel if admin
-  if(email === "thrivesarchivers@gmail.com") {
+  if(currentUser.email === "thrivesarchivers@gmail.com") {
     adminPanel.style.display = 'block'
     fetchSubscriptions()
   } else {
     adminPanel.style.display = 'none'
   }
+
   fetchVideos()
 }
 
-// Optional: Show login on page load, or auto-login if already authenticated
-window.addEventListener('DOMContentLoaded', async ()=>{
-  // Check if already logged in
+// Auto-login
+window.addEventListener('DOMContentLoaded', async () => {
   const { data: { session } } = await supabase.auth.getSession()
   if(session && session.user) {
     currentUser = session.user
     statusBar.textContent = `Logged in as ${currentUser.email}`
-    if(currentUser.email === "thrivesarchivers@gmail.com") {
-      adminPanel.style.display = 'block'
-      fetchSubscriptions()
-    }
+    if(currentUser.email === "thrivesarchivers@gmail.com") adminPanel.style.display = 'block'
     fetchVideos()
   } else {
     showLoginModal()
   }
 })
 
-// --- VIDEO LOGIC ---
+// --- VIDEOS ---
 async function fetchVideos() {
   const { data, error } = await supabase.from('Videos').select('*').order('order', { ascending: true })
-  if (error) {
-    container.innerHTML = "<b>Failed to load videos.</b>"
-    return
-  }
+  if (error) { container.innerHTML = "<b>Failed to load videos.</b>"; return }
   allVideos = data
   renderVideos(data)
-  if(currentUser && currentUser.email === "thrivesarchivers@gmail.com") {
-    renderExistingVideos(data)
-  }
+  if(currentUser && currentUser.email === "thrivesarchivers@gmail.com") renderExistingVideos(data)
 }
 
 function renderVideos(videos) {
-  // Group by section and semester
   let grouped = {}
   videos.forEach(v => {
     let sec = v.section || 'Other'
@@ -200,11 +192,10 @@ function renderVideos(videos) {
 }
 
 function playVideo(videoId) {
-  // Play YouTube video in iframe
   videoFrame.src = `https://www.youtube.com/embed/${videoId}`
 }
 
-// --- ADMIN VIDEO MANAGEMENT (existing renderExistingVideos is OK) ---
+// --- ADMIN VIDEO MANAGEMENT ---
 function renderExistingVideos(data) {
   existingVideosDiv.innerHTML = '<h4>Existing Videos:</h4>'
   data.forEach(v => {
@@ -212,10 +203,7 @@ function renderExistingVideos(data) {
     div.style.borderBottom = "1px solid #ccc"
     div.style.marginBottom = "5px"
     div.style.paddingBottom = "5px"
-    div.innerHTML = `
-      ${v.title} (${v.section} - ${v.semester})
-      <button class="delete-btn" data-id="${v.id}">Delete</button>
-    `
+    div.innerHTML = `${v.title} (${v.section} - ${v.semester}) <button class="delete-btn" data-id="${v.id}">Delete</button>`
     existingVideosDiv.appendChild(div)
   })
   document.querySelectorAll('.delete-btn').forEach(btn => {
@@ -245,18 +233,17 @@ addVideoForm.onsubmit = async (e) => {
   fetchVideos()
 }
 
-// --- ADMIN SUBSCRIPTION MANAGEMENT ---
-// (unchanged: you can keep your fetchSubscriptions, renderSubscriptionsAdmin, editSub, deleteSub functions)
-
+// --- SUBSCRIPTIONS MANAGEMENT ---
 async function fetchSubscriptions() {
   const { data, error } = await supabase.from('subscription').select('*')
   if (error) return (subscriptionsAdmin.innerHTML = "Failed to fetch subscriptions.")
   renderSubscriptionsAdmin(data)
 }
+
 function renderSubscriptionsAdmin(data) {
   subscriptionsAdmin.innerHTML = `<h4>All Subscriptions</h4>
     <table border="1" style="width:100%;border-collapse:collapse;">
-      <tr><th>Email</th><th>Start</th><th>Duration</th><th>End</th><th>Courses</th><th>Action</th></tr>
+      <tr><th>Email</th><th>Start</th><th>Duration (months)</th><th>End</th><th>Courses</th><th>Action</th></tr>
       ${data.map(sub=>`
        <tr>
          <td>${sub.email}</td>
@@ -268,48 +255,69 @@ function renderSubscriptionsAdmin(data) {
            <button onclick="editSub('${sub.email}')">Edit</button>
            <button style="background:red;" onclick="deleteSub('${sub.email}')">Delete</button>
          </td>
-       </tr>
-      `).join('')}
+       </tr>`).join('')}
     </table>
     <h4>Add/Update Subscription</h4>
     <form id="addSubForm">
-      <input type="email" id="subEmail" placeholder="Email" required>
-      <input type="date" id="subStart" placeholder="Start Date">
-      <input type="number" id="subDuration" placeholder="Duration (days)">
-      <input type="date" id="subEnd" placeholder="End Date">
+      <input type="email" id="subEmail"placeholder="Email" required>
+      <input type="date" id="subStart" placeholder="Start Date" required>
+      <select id="subDuration" required>
+        <option value="">Select Duration</option>
+        <option value="1">1 Month</option>
+        <option value="3">3 Months</option>
+        <option value="5">5 Months</option>
+      </select>
       <input type="text" id="subCourses" placeholder="Courses (comma separated, blank for ALL)">
       <button type="submit">Save Subscription</button>
     </form>
-  `
+  `;
+
+  // Handle Add/Update Subscription
   document.getElementById('addSubForm').onsubmit = async (e) => {
-    e.preventDefault()
-    const email = document.getElementById('subEmail').value.trim().toLowerCase()
-    const start = document.getElementById('subStart').value
-    const duration = document.getElementById('subDuration').value
-    const end = document.getElementById('subEnd').value
-    const courses = document.getElementById('subCourses').value
+    e.preventDefault();
+    const email = document.getElementById('subEmail').value.trim().toLowerCase();
+    const start = document.getElementById('subStart').value;
+    const duration = parseInt(document.getElementById('subDuration').value);
+    if(!email || !start || !duration) return alert('Fill all required fields.');
+
+    // Calculate end date
+    const startDate = new Date(start);
+    const endDate = new Date(startDate.setMonth(startDate.getMonth() + duration));
+    const endStr = endDate.toISOString().split('T')[0]; // YYYY-MM-DD
+    const courses = document.getElementById('subCourses').value.trim();
+
     const { error } = await supabase.from('subscription').upsert([{
-      email, 'start date': start, duration, 'end date': end, courses
-    }])
-    if (error) return alert("Error:" + error.message)
-    fetchSubscriptions()
-    alert("Subscription saved/updated!")
+      email,
+      'start date': start,
+      duration,
+      'end date': endStr,
+      courses
+    }]);
+    if (error) return alert("Error: " + error.message);
+
+    fetchSubscriptions();
+    alert("Subscription saved/updated!");
+    document.getElementById('addSubForm').reset();
   }
 }
+
+// Edit existing subscription
 window.editSub = function(email) {
-  const row = Array.from(subscriptionsAdmin.querySelectorAll('tr')).find(tr=>tr.children[0]?.textContent===email)
-  if(!row) return
-  document.getElementById('subEmail').value = row.children[0].textContent
-  document.getElementById('subStart').value = row.children[1].textContent
-  document.getElementById('subDuration').value = row.children[2].textContent
-  document.getElementById('subEnd').value = row.children[3].textContent
-  document.getElementById('subCourses').value = row.children[4].textContent==="All" ? "" : row.children[4].textContent
+  const row = Array.from(subscriptionsAdmin.querySelectorAll('tr'))
+    .find(tr => tr.children[0]?.textContent === email);
+  if(!row) return;
+  document.getElementById('subEmail').value = row.children[0].textContent;
+  document.getElementById('subStart').value = row.children[1].textContent;
+  document.getElementById('subDuration').value = row.children[2].textContent;
+  document.getElementById('subCourses').value = row.children[4].textContent === "All" ? "" : row.children[4].textContent;
 }
+
+// Delete subscription
 window.deleteSub = async function(email) {
   if(confirm("Delete subscription for " + email + "?")) {
-    const { error } = await supabase.from('subscription').delete().eq('email', email)
-    if(error) return alert("Error: "+error.message)
-    fetchSubscriptions()
+    const { error } = await supabase.from('subscription').delete().eq('email', email);
+    if(error) return alert("Error: "+error.message);
+    fetchSubscriptions();
   }
 }
 </script>
