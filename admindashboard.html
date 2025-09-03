@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Thrives Archivers - Video Streaming</title>
 <style>
+/* ... (existing styles unchanged) ... */
 body { font-family: Arial, sans-serif; background:#f4f4f4; margin:0; }
 h2 { background:#333; color:white; padding:15px; margin:0; text-align:center; }
 .status-bar { margin:10px auto; padding:10px; font-weight:bold; text-align:center; }
@@ -103,6 +104,24 @@ const subscriptionsAdmin = document.getElementById('subscriptionsAdmin')
 let currentUser = null
 let allVideos = []
 
+// --- ENSURE SUBSCRIPTION FOR USER ---
+async function ensureSubscription(email) {
+  // Check if user already has a subscription
+  const { data, error } = await supabase.from('subscription').select('email').eq('email', email).single();
+  if (!data && !error) {
+    const today = new Date();
+    const end = new Date(today);
+    end.setMonth(end.getMonth() + 1); // Default 1 month
+    await supabase.from('subscription').insert([{
+      email,
+      'start date': today.toISOString().split('T')[0],
+      duration: 1,
+      'end date': end.toISOString().split('T')[0],
+      courses: ''
+    }]);
+  }
+}
+
 // --- AUTH ---
 function showLoginModal() {
   loginModal.style.display = 'block'
@@ -125,6 +144,9 @@ loginBtn.onclick = async function() {
   currentUser = data.user
   if(!currentUser) return alert('User login failed.')
 
+  // -- Automatically add user's email to subscription if not already there
+  await ensureSubscription(currentUser.email);
+
   statusBar.textContent = `Logged in as ${currentUser.email}`
   hideLoginModal()
 
@@ -143,6 +165,9 @@ window.addEventListener('DOMContentLoaded', async () => {
   const { data: { session } } = await supabase.auth.getSession()
   if(session && session.user) {
     currentUser = session.user
+    // -- Automatically add user's email to subscription if not already there
+    await ensureSubscription(currentUser.email);
+
     statusBar.textContent = `Logged in as ${currentUser.email}`
     if(currentUser.email === "thrivesarchivers@gmail.com") adminPanel.style.display = 'block'
     fetchVideos()
