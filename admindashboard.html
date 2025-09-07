@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Thrives Archivers - Video Streaming</title>
 <style>
-/* ... (existing styles unchanged) ... */
 body { font-family: Arial, sans-serif; background:#f4f4f4; margin:0; }
 h2 { background:#333; color:white; padding:15px; margin:0; text-align:center; }
 .status-bar { margin:10px auto; padding:10px; font-weight:bold; text-align:center; }
@@ -106,12 +105,11 @@ let allVideos = []
 
 // --- ENSURE SUBSCRIPTION FOR USER ---
 async function ensureSubscription(email) {
-  // Check if user already has a subscription
   const { data, error } = await supabase.from('subscription').select('email').eq('email', email).single();
   if (!data && !error) {
     const today = new Date();
     const end = new Date(today);
-    end.setMonth(end.getMonth() + 1); // Default 1 month
+    end.setMonth(end.getMonth() + 1);
     await supabase.from('subscription').insert([{
       email,
       'start date': today.toISOString().split('T')[0],
@@ -169,7 +167,10 @@ window.addEventListener('DOMContentLoaded', async () => {
     await ensureSubscription(currentUser.email);
 
     statusBar.textContent = `Logged in as ${currentUser.email}`
-    if(currentUser.email === "thrivesarchivers@gmail.com") adminPanel.style.display = 'block'
+    if(currentUser.email === "thrivesarchivers@gmail.com") {
+      adminPanel.style.display = 'block'
+      fetchSubscriptions()
+    }
     fetchVideos()
   } else {
     showLoginModal()
@@ -277,8 +278,8 @@ function renderSubscriptionsAdmin(data) {
          <td>${sub['end date']||''}</td>
          <td>${sub.courses||'All'}</td>
          <td>
-           <button onclick="editSub('${sub.email}')">Edit</button>
-           <button style="background:red;" onclick="deleteSub('${sub.email}')">Delete</button>
+           <button onclick="window.editSub('${sub.email}')">Edit</button>
+           <button style="background:red;" onclick="window.deleteSub('${sub.email}')">Delete</button>
          </td>
        </tr>`).join('')}
     </table>
@@ -307,8 +308,9 @@ function renderSubscriptionsAdmin(data) {
 
     // Calculate end date
     const startDate = new Date(start);
-    const endDate = new Date(startDate.setMonth(startDate.getMonth() + duration));
-    const endStr = endDate.toISOString().split('T')[0]; // YYYY-MM-DD
+    const endDate = new Date(startDate);
+    endDate.setMonth(endDate.getMonth() + duration);
+    const endStr = endDate.toISOString().split('T')[0];
     const courses = document.getElementById('subCourses').value.trim();
 
     const { error } = await supabase.from('subscription').upsert([{
