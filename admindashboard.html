@@ -6,7 +6,7 @@
 <title>Thrives Archivers - Video Streaming</title>
 <style>
   :root{
-    --brand:#1976d2;--ink:#333;--bg:#f4f4f4;--card:#fff;--muted:#777;--danger:#e53935;
+    --brand:#1976d2;--ink:#333;--bg:#f4f4f4;--card:#fff;--muted:#777;--danger:#e53935;--youtube:#FF0000;
   }
   *{box-sizing:border-box}
   body{font-family:Arial,Helvetica,sans-serif;background:var(--bg);margin:0}
@@ -41,10 +41,69 @@
   .login-modal{z-index:1001;left:50%;top:50%;transform:translate(-50%,-50%);background:#fff;padding:26px;border-radius:12px;width:92%;max-width:380px;box-shadow:0 2px 18px #2224}
   .login-modal h3{margin:0 0 10px 0}
   .hint{font-size:12px;color:var(--muted)}
+  /* --- YouTube Banner --- */
+  .youtube-banner{
+    margin:24px auto 0 auto;
+    text-align:center;
+    padding:24px 10px 16px 10px;
+    background:linear-gradient(90deg,#fff 80%,#ffeaea 100%);
+    border-radius:16px;
+    max-width:600px;
+    box-shadow:0 2px 16px #f002;
+    border:2px solid var(--youtube);
+    position:relative;
+  }
+  .youtube-banner .yt-icon{
+    font-size:44px;
+    vertical-align:middle;
+    color:var(--youtube);
+    margin-right:16px;
+    text-shadow:0 2px 8px #f002;
+    display:inline-block;
+    transform:translateY(5px);
+  }
+  .youtube-banner a{
+    color:var(--youtube);
+    font-size:28px;
+    font-weight:bold;
+    text-decoration:none;
+    background:linear-gradient(90deg,#fff 60%,#ffeaea 100%);
+    padding:6px 16px;
+    border-radius:8px;
+    box-shadow:0 0 12px #f002;
+    border:2px solid var(--youtube);
+    transition:.2s;
+    margin-left:8px;
+    margin-right:8px;
+    display:inline-block;
+  }
+  .youtube-banner a:hover{
+    background:var(--youtube);
+    color:#fff;
+    text-shadow:0 2px 8px #800;
+  }
+  .youtube-banner .sub-text{
+    display:block;
+    color:var(--youtube);
+    font-size:22px;
+    font-weight:bold;
+    margin-top:10px;
+    letter-spacing:1px;
+    text-shadow:0 2px 10px #f002;
+  }
 </style>
 </head>
 <body>
   <h2>Thrives Archivers - Video Streaming</h2>
+  
+  <!-- YouTube Channel Banner -->
+  <div class="youtube-banner">
+    <span class="yt-icon">▶️</span>
+    <span class="sub-text">Subscribe to our YouTube channel</span>
+    <a href="https://youtube.com/@thrivesarchivers?si=S092LRlM1g2mWTll" target="_blank" rel="noopener">
+      @thrivesarchivers
+    </a>
+  </div>
 
   <div class="topbar">
     <div class="left">Welcome, <span id="displayName">Guest</span></div>
