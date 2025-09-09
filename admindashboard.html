@@ -41,7 +41,6 @@
   .login-modal{z-index:1001;left:50%;top:50%;transform:translate(-50%,-50%);background:#fff;padding:26px;border-radius:12px;width:92%;max-width:380px;box-shadow:0 2px 18px #2224}
   .login-modal h3{margin:0 0 10px 0}
   .hint{font-size:12px;color:var(--muted)}
-  /* --- YouTube Banner --- */
   .youtube-banner{
     margin:24px auto 0 auto;
     text-align:center;
@@ -244,10 +243,9 @@ function canAccessVideo(video){
   if(!currentUser) return false
   if(currentUser.email === ADMIN_EMAIL) return true
   if(!subscription) return false
-  const courses = subscription.courses?.trim()
-  if(!courses) return true // blank means ALL courses
-  const allowed = new Set(normalizeCourses(courses).map(s=>s.toLowerCase()))
-  return allowed.has((video.section||'').toLowerCase())
+  const courses = normalizeCourses(subscription.courses)
+  if(courses.length===0) return true // blank means ALL courses
+  return courses.map(s=>s.toLowerCase()).includes((video.section||'').toLowerCase())
 }
 function passwordsFor(video){
   return (video['password list']||'').split(',').map(s=>s.trim()).filter(Boolean)
@@ -367,159 +365,65 @@ async function handleVideoClick(video, unlocked){
     playVideoById(video['video id'])
     return
   }
-  // Not subscribed for this section — ask for password
   const pw = prompt('You are not subscribed to this course. Enter password to watch:')
   if(pw===null) return
   const passwords = passwordsFor(video).map(s=>s.toLowerCase())
-  if(passwords.includes(pw.trim().toLowerCase())){
+  if(passwords.includes(pw.trim().toLowerCase
+if(passwords.includes(pw.trim().toLowerCase())){
     playVideoById(video['video id'])
   } else {
-    alert('Incorrect password or access denied.')
+    alert('Incorrect password. Access denied.')
   }
 }
 
-// --- ADMIN: Video management ---
-function renderExistingVideos(data){
-  existingVideosDiv.innerHTML = '<h4>Existing Videos</h4>'
-  data.forEach(v=>{
-    const row = document.createElement('div')
-    row.style.borderBottom = '1px solid #eee'
-    row.style.padding = '6px 0'
-    row.innerHTML = `${v.title} (${v.section} — ${v.semester}) <button class="btn danger" data-id="${v.id}">Delete</button>`
-    existingVideosDiv.appendChild(row)
-  })
-  existingVideosDiv.querySelectorAll('button[data-id]').forEach(btn=>{
-    btn.onclick = async ()=>{
-      const id = btn.getAttribute('data-id')
-      if(!confirm('Delete this video?')) return
-      const { error } = await supabase.from('Videos').delete().eq('id', id)
-      if(error){ alert(error.message); return }
-      fetchVideos()
-    }
-  })
-}
-
+// --- ADMIN PANEL: Manage Videos ---
 addVideoForm.onsubmit = async (e)=>{
   e.preventDefault()
-  if(!currentUser || currentUser.email !== ADMIN_EMAIL) return alert('Admins only.')
   const title = document.getElementById('videoTitle').value.trim()
-  const video_id = document.getElementById('videoID').value.trim()
-  const password_list = document.getElementById('passwordList').value.trim()
+  const videoId = document.getElementById('videoID').value.trim()
+  const passwordList = document.getElementById('passwordList').value.trim()
   const section = document.getElementById('videoSection').value
   const semester = document.getElementById('videoSemester').value
-  const order = parseInt(document.getElementById('videoOrder').value)
-  if(!title || !video_id || !section || !semester || Number.isNaN(order)) return alert('Fill all fields.')
+  const order = parseInt(document.getElementById('videoOrder').value,10) || 0
 
-  const { error } = await supabase.from('Videos').insert([{ 
-    title,
-    'video id': video_id,
-    'password list': password_list,
-    section,
-    semester,
-    order
+  const { data, error } = await supabase.from('Videos').insert([{
+    title, "video id": videoId, "password list": passwordList,
+    section, semester, order
   }])
-  if(error){ alert(error.message); return }
+  if(error){ alert('Error adding video: '+error.message); return }
+  alert('Video added successfully!')
   addVideoForm.reset()
-  fetchVideos()
+  await fetchVideos()
 }
 
-// --- ADMIN: Subscriptions management ---
+// Render existing videos for admin
+function renderExistingVideos(videos){
+  existingVideosDiv.innerHTML = '<h4>Existing Videos</h4>'
+  if(videos.length===0){ existingVideosDiv.innerHTML += '<p>No videos added yet.</p>'; return }
+  let html = '<table><tr><th>Title</th><th>Section</th><th>Semester</th><th>Order</th></tr>'
+  videos.forEach(v=>{
+    html += `<tr><td>${v.title}</td><td>${v.section||''}</td><td>${v.semester||''}</td><td>${v.order||''}</td></tr>`
+  })
+  html += '</table>'
+  existingVideosDiv.innerHTML += html
+}
+
+// --- ADMIN PANEL: Manage Subscriptions ---
 async function fetchSubscriptions(){
-  const { data, error } = await supabase
-    .from('subscription')
-    .select('email, "start date", duration, "end date", courses')
-    .order('email', { ascending: true })
-  if(error){ subscriptionsAdmin.innerHTML = 'Failed to fetch subscriptions.'; console.error(error); return }
-  renderSubscriptionsAdmin(data||[])
-}
-
-function renderSubscriptionsAdmin(data){
-  subscriptionsAdmin.innerHTML = `
-    <h4>All Subscriptions</h4>
-    <table>
-      <tr><th>Email</th><th>Start</th><th>Duration (months)</th><th>End</th><th>Courses</th><th>Action</th></tr>
-      ${data.map(sub=>`
-        <tr>
-          <td>${sub.email}</td>
-          <td>${sub['start date']||''}</td>
-          <td>${sub.duration||''}</td>
-          <td>${sub['end date']||''}</td>
-          <td>${sub.courses||''}</td>
-          <td>
-            <button class="btn ghost" data-edit="${sub.email}">Edit</button>
-            <button class="btn danger" data-del="${sub.email}">Delete</button>
-          </td>
-        </tr>`).join('')}
-    </table>
-    <h4 style="margin-top:14px">Add / Update Subscription</h4>
-    <form id="addSubForm">
-      <div class="grid">
-        <div><label>Email</label><input type="email" id="subEmail" placeholder="Email" required /></div>
-        <div><label>Start Date</label><input type="date" id="subStart" required /></div>
-        <div>
-          <label>Duration</label>
-          <select id="subDuration" required>
-            <option value="">Select Duration</option>
-            <option value="1">1 Month</option>
-            <option value="3">3 Months</option>
-            <option value="5">5 Months</option>
-          </select>
-        </div>
-        <div><label>Courses (comma separated; blank = ALL)</label><input type="text" id="subCourses" placeholder="e.g., Maths, Biology" /></div>
-      </div>
-      <div style="margin-top:10px"><button class="btn" type="submit">Save Subscription</button></div>
-    </form>
-  `
-
-  // row buttons
-  subscriptionsAdmin.querySelectorAll('button[data-edit]').forEach(btn=>{
-    btn.onclick = ()=>{
-      const email = btn.getAttribute('data-edit')
-      const tr = btn.closest('tr')
-      document.getElementById('subEmail').value = email
-      document.getElementById('subStart').value = tr.children[1].textContent
-      document.getElementById('subDuration').value = tr.children[2].textContent
-      document.getElementById('subCourses').value = tr.children[4].textContent
-    }
+  const { data, error } = await supabase.from('subscription').select('*')
+  if(error){ subscriptionsAdmin.innerHTML = 'Failed to load subscriptions.'; return }
+  if(data.length===0){ subscriptionsAdmin.innerHTML = '<p>No subscriptions yet.</p>'; return }
+  let html = '<table><tr><th>Email</th><th>Start Date</th><th>End Date</th><th>Courses</th></tr>'
+  data.forEach(s=>{
+    html += `<tr>
+      <td>${s.email}</td>
+      <td>${s['start date']||''}</td>
+      <td>${s['end date']||''}</td>
+      <td>${normalizeCourses(s.courses).join(', ')}</td>
+    </tr>`
   })
-  subscriptionsAdmin.querySelectorAll('button[data-del]').forEach(btn=>{
-    btn.onclick = async ()=>{
-      const email = btn.getAttribute('data-del')
-      if(!confirm('Delete subscription for '+email+'?')) return
-      const { error } = await supabase.from('subscription').delete().eq('email', email)
-      if(error){ alert('Error: '+error.message); return }
-      fetchSubscriptions()
-    }
-  })
-
-  // form submit
-  const addForm = document.getElementById('addSubForm')
-  addForm.onsubmit = async (e)=>{
-    e.preventDefault()
-    const email = document.getElementById('subEmail').value.trim().toLowerCase()
-    const start = document.getElementById('subStart').value
-    const duration = parseInt(document.getElementById('subDuration').value)
-    const courses = document.getElementById('subCourses').value.trim()
-    if(!email || !start || Number.isNaN(duration)) return alert('Fill required fields.')
-
-    // compute end
-    const startDate = new Date(start)
-    const endDate = new Date(startDate)
-    endDate.setMonth(endDate.getMonth()+duration)
-    const endStr = endDate.toISOString().split('T')[0]
-
-    const { error } = await supabase.from('subscription').upsert([{ 
-      email,
-      'start date': start,
-      duration,
-      'end date': endStr,
-      courses
-    }])
-    if(error){ alert('Error: '+error.message); return }
-
-    alert('Subscription saved/updated!')
-    fetchSubscriptions()
-  }
+  html += '</table>'
+  subscriptionsAdmin.innerHTML = html
 }
 </script>
 </body>
