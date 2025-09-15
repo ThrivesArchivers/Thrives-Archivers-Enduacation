@@ -88,6 +88,10 @@
           <option>Term Three</option>
         </select>
       </div>
+      <div>
+        <label>Order</label>
+        <input type="number" id="docOrder" placeholder="Enter order number (1,2,3...)" required />
+      </div>
     </div>
     <div style="margin-top:10px"><button class="btn" type="submit">Add Document</button></div>
   </form>
@@ -137,7 +141,7 @@ function formatStatus(){
 
 // Fetch all documents
 async function fetchDocs(){
-  const { data } = await supabase.from('documents').select('*').order('id')
+  const { data } = await supabase.from('documents').select('*').order('order', { ascending: true })
   allDocs = data || []
   renderDocs(allDocs)
 }
@@ -231,6 +235,7 @@ document.getElementById('addDocForm').onsubmit = async (e)=>{
     password_list: document.getElementById('docPasswords').value,
     section: document.getElementById('docSection').value,
     semester: document.getElementById('docSemester').value,
+    order: parseInt(document.getElementById('docOrder').value, 10),
     user_id: currentUser.id
   }
   const { error } = await supabase.from('documents').insert([doc])
