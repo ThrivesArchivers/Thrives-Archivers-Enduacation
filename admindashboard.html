@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Thrives Archivers - Documents Dashboard</title>
 <style>
   :root{
@@ -31,6 +31,7 @@
   table{width:100%;border-collapse:collapse;margin-top:10px}
   th,td{border:1px solid #ddd;padding:8px;text-align:left}
   th{background:#fafafa}
+  #loginForm{margin:20px auto;max-width:400px;background:#fff;padding:20px;border-radius:12px;box-shadow:0 0 15px rgba(0,0,0,.1)}
 </style>
 </head>
 <body>
@@ -47,8 +48,15 @@
 
 <div id="statusBar" style="text-align:center;padding:10px;font-weight:bold"></div>
 
-<div class="container" id="container"></div>
+<!-- Login form -->
+<div id="loginForm" style="display:none">
+  <h3>Login</h3>
+  <input type="email" id="loginEmail" placeholder="Enter your email" required><br><br>
+  <input type="password" id="loginPassword" placeholder="Enter password" required><br><br>
+  <button class="btn" id="loginBtn">Login</button>
+</div>
 
+<div class="container" id="container"></div>
 <iframe id="docViewer"></iframe>
 
 <!-- Admin Panel -->
@@ -84,28 +92,11 @@
     </div>
     <div style="margin-top:10px"><button class="btn" type="submit">Add Document</button></div>
   </form>
-
-  <div id="existingDocs" style="margin-top:16px"></div>
-  <hr style="margin:20px 0" />
-
-  <h3>Subscriptions Management</h3>
-  <form id="addSubForm">
-    <div class="grid">
-      <div><label>Email</label><input type="email" id="subEmail" required /></div>
-      <div><label>Start Date</label><input type="date" id="subStart" required /></div>
-      <div><label>Duration (Months)</label><input type="number" id="subDuration" required /></div>
-      <div><label>Courses (comma separated)</label><input type="text" id="subCourses" /></div>
-    </div>
-    <div style="margin-top:10px"><button class="btn" type="submit">Add/Update Subscription</button></div>
-  </form>
-
-  <div id="subscriptionsAdmin" style="margin-top:16px"></div>
 </div>
 
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-// Supabase setup
 const supabaseUrl = 'https://odwiqajuubcgrrqipyju.supabase.co'
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1dWJjZ3JycWlweWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzA4MjEsImV4cCI6MjA2ODg0NjgyMX0.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A'
 const supabase = createClient(supabaseUrl, supabaseKey)
@@ -115,50 +106,44 @@ const ADMIN_EMAIL = 'thrivesarchivers@gmail.com'
 const container = document.getElementById('container')
 const docViewer = document.getElementById('docViewer')
 const adminPanel = document.getElementById('adminPanel')
-const addDocForm = document.getElementById('addDocForm')
-const existingDocs = document.getElementById('existingDocs')
-const statusBar = document.getElementById('statusBar')
-const loginTopBtn = document.getElementById('loginTopBtn')
-const logoutBtn = document.getElementById('logoutBtn')
 const displayNameEl = document.getElementById('displayName')
 const subInfo = document.getElementById('subInfo')
-const subscriptionsAdmin = document.getElementById('subscriptionsAdmin')
-const addSubForm = document.getElementById('addSubForm')
-
+const loginFormDiv = document.getElementById('loginForm')
+const loginTopBtn = document.getElementById('loginTopBtn')
+const logoutBtn = document.getElementById('logoutBtn')
+const loginBtn = document.getElementById('loginBtn')
+const loginEmail = document.getElementById('loginEmail')
+const loginPassword = document.getElementById('loginPassword')
 let currentUser = null
 let subscription = null
 let allDocs = []
 
-// Format user and subscription status
+// Format dashboard for logged in user
 function formatStatus(){
   if(!currentUser){ 
-    statusBar.textContent='Please login'
-    subInfo.textContent='Not logged in'
     displayNameEl.textContent='Guest'
+    subInfo.textContent='Not logged in'
     adminPanel.style.display='none'
-    return 
+    loginFormDiv.style.display='none'
+    loginTopBtn.style.display='inline-block'
+    logoutBtn.style.display='none'
+    return
   }
   displayNameEl.textContent=currentUser.email
-  subInfo.textContent=subscription? `Subscribed: ${subscription.courses||'All'}` : 'No subscription'
+  subInfo.textContent=subscription? `Subscribed: ${subscription.courses || 'All'}, From ${subscription['start date']} To ${subscription['end date']}` : 'No subscription'
   if(currentUser.email === ADMIN_EMAIL) adminPanel.style.display='block'
-}
-
-// Fetch subscription for current user
-async function fetchSubscriptionForUser(email){
-  const { data } = await supabase.from('subscription').select('*').eq('email', email).single()
-  subscription = data || null
-  formatStatus()
+  loginTopBtn.style.display='none'
+  logoutBtn.style.display='inline-block'
 }
 
 // Fetch all documents
 async function fetchDocs(){
-  const { data, error } = await supabase.from('documents').select('*').order('id')
-  if(error){ container.innerHTML='<b>Failed to load documents.</b>'; return }
+  const { data } = await supabase.from('documents').select('*').order('id')
   allDocs = data || []
   renderDocs(allDocs)
 }
 
-// Render documents on dashboard
+// Render documents
 function renderDocs(docs){
   const grouped = {}
   docs.forEach(d=>{
@@ -176,7 +161,7 @@ function renderDocs(docs){
       semDiv.innerHTML=`<div class="semester-title">${sem}</div>`
       grouped[section][sem].forEach(d=>{
         const card = document.createElement('div'); card.className='doc-card'
-        const unlocked = currentUser?.email===ADMIN_EMAIL || !d['password list']
+        const unlocked = currentUser?.email===ADMIN_EMAIL || subscription
         card.innerHTML=`<span>${d.title}</span><span>${unlocked?'📄':'🔒'}</span>`
         card.onclick=()=> handleDocClick(d, unlocked)
         semDiv.appendChild(card)
@@ -196,61 +181,35 @@ function handleDocClick(doc, unlocked){
   else alert('Incorrect password!')
 }
 
-// Login/logout handlers
-loginTopBtn.onclick = async ()=>{
-  const { data, error } = await supabase.auth.signInWithOtp({ email: prompt('Enter email:') })
-  if(error) return alert(error.message)
-  alert('Check your email for login link.')
-}
+// Login button shows login form
+loginTopBtn.onclick = ()=>{ loginFormDiv.style.display='block' }
+
+// Logout
 logoutBtn.onclick = async ()=>{
-  await supabase.auth.signOut()
-  currentUser=null
-  subscription=null
+  currentUser = null
+  subscription = null
+  docViewer.src=''
   formatStatus()
 }
 
-// Track auth state
-supabase.auth.onAuthStateChange(async (event, session)=>{
-  currentUser = session?.user || null
-  if(currentUser) await fetchSubscriptionForUser(currentUser.email)
-  formatStatus()
-})
+// Login function using Supabase auth
+loginBtn.onclick = async ()=>{
+  const email = loginEmail.value.trim()
+  const password = loginPassword.value.trim()
+  if(!email || !password) return alert('Enter email and password')
 
-// Add document
-addDocForm.onsubmit = async e=>{
-  e.preventDefault()
-  if(currentUser.email !== ADMIN_EMAIL) return alert('Not allowed')
-  const title = document.getElementById('docTitle').value
-  const url = document.getElementById('docURL').value
-  const passwords = document.getElementById('docPasswords').value
-  const section = document.getElementById('docSection').value
-  const semester = document.getElementById('docSemester').value
-  const { error } = await supabase.from('documents').insert([{title,url,'password list':passwords,section,semester}])
-  if(error) return alert(error.message)
-  addDocForm.reset()
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+  if(error){ alert(error.message); return }
+  currentUser = data.user
+
+  // fetch subscription info
+  const { data: subData } = await supabase.from('subscription').select('*').eq('email', email).single()
+  subscription = subData || null
+
+  loginFormDiv.style.display='none'
+  formatStatus()
   fetchDocs()
 }
-
-// Add/update subscription
-addSubForm.onsubmit = async e=>{
-  e.preventDefault()
-  const email = document.getElementById('subEmail').value.trim().toLowerCase()
-  const start = document.getElementById('subStart').value
-  const duration = parseInt(document.getElementById('subDuration').value)
-  const courses = document.getElementById('subCourses').value.trim()
-  if(!email || !start || isNaN(duration)) return alert('Fill all fields')
-  const startDate = new Date(start)
-  const endDate = new Date(startDate)
-  endDate.setMonth(endDate.getMonth() + duration)
-  const endDateStr = endDate.toISOString().split('T')[0]
-  const { error } = await supabase.from('subscription').upsert([{email,"start date":start,duration,"end date":endDateStr,courses}],{onConflict:['email']})
-  if(error) return alert(error.message)
-  addSubForm.reset()
-  fetchSubscriptionForUser(email)
-}
-
-// Initial fetch
-fetchDocs()
 </script>
 </body>
 </html>
