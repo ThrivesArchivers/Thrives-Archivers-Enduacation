@@ -36,7 +36,6 @@
 </head>
 <body>
 <h2>Thrives Archivers - Documents</h2>
-
 <div class="topbar">
   <div class="left">Welcome, <span id="displayName">Guest</span></div>
   <div class="right">
@@ -45,7 +44,6 @@
     <button class="btn ghost" id="logoutBtn" style="display:none">Logout</button>
   </div>
 </div>
-
 <div id="statusBar" style="text-align:center;padding:10px;font-weight:bold"></div>
 
 <!-- Login form -->
@@ -57,6 +55,7 @@
 </div>
 
 <div class="container" id="container"></div>
+
 <iframe id="docViewer"></iframe>
 
 <!-- Admin Panel -->
@@ -98,7 +97,7 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
 const supabaseUrl = 'https://odwiqajuubcgrrqipyju.supabase.co'
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1dWJjZ3JycWlweWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzA4MjEsImV4cCI6MjA2ODg0NjgyMX0.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A'
+const supabaseKey ='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1dWJjZ3JycWlweWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzA4MjEsImV4cCI6MjA2ODg0NjgyMX0.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A' // replace with service key if needed
 const supabase = createClient(supabaseUrl, supabaseKey)
 
 const ADMIN_EMAIL = 'thrivesarchivers@gmail.com'
@@ -120,7 +119,7 @@ let allDocs = []
 
 // Format dashboard for logged in user
 function formatStatus(){
-  if(!currentUser){ 
+  if(!currentUser){
     displayNameEl.textContent='Guest'
     subInfo.textContent='Not logged in'
     adminPanel.style.display='none'
@@ -173,7 +172,7 @@ function renderDocs(docs){
 }
 
 // Handle document click
-function passwordsFor(doc){ return (doc['password list']||'').split(',').map(s=>s.trim().toLowerCase()) }
+function passwordsFor(doc){ return (doc.password_list||'').split(',').map(s=>s.trim().toLowerCase()) }
 function handleDocClick(doc, unlocked){
   if(unlocked){ docViewer.src=doc.url; return }
   const pw = prompt('Enter password:'); if(!pw) return
@@ -209,6 +208,38 @@ loginBtn.onclick = async ()=>{
   loginFormDiv.style.display='none'
   formatStatus()
   fetchDocs()
+}
+
+// On load, try restoring session
+supabase.auth.getSession().then(({ data })=>{
+  if(data?.session?.user){
+    currentUser = data.session.user
+    formatStatus()
+    fetchDocs()
+  } else {
+    fetchDocs() // guest view
+  }
+})
+
+// Add document (Admin only)
+document.getElementById('addDocForm').onsubmit = async (e)=>{
+  e.preventDefault()
+  if(currentUser?.email !== ADMIN_EMAIL) return alert('Only admin can add documents')
+  const doc = {
+    title: document.getElementById('docTitle').value,
+    url: document.getElementById('docURL').value,
+    password_list: document.getElementById('docPasswords').value,
+    section: document.getElementById('docSection').value,
+    semester: document.getElementById('docSemester').value,
+    user_id: currentUser.id
+  }
+  const { error } = await supabase.from('documents').insert([doc])
+  if(error){ alert(error.message) }
+  else{
+    alert('Document added!')
+    fetchDocs()
+    e.target.reset()
+  }
 }
 </script>
 </body>
