@@ -1,199 +1,251 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Thrives Archivers Documents</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      padding: 20px;
-      background-color: #f4f4f4;
-    }
-    .container {
-      max-width: 900px;
-      margin: auto;
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    }
-    .document-section {
-      margin-bottom: 30px;
-      padding: 20px;
-      background-color: #e8f4fd;
-      border: 1px solid #007BFF;
-      border-radius: 10px;
-    }
-    .document-section h2 {
-      color: #007BFF;
-    }
-    .semester {
-      margin-top: 15px;
-      padding: 10px;
-      border-left: 4px solid #007BFF;
-      background-color: #ffffff;
-      border-radius: 5px;
-    }
-    .semester h3 {
-      margin-top: 0;
-      color: #0056b3;
-    }
-    a {
-      display: block;
-      margin: 4px 0;
-      text-decoration: none;
-      color: blue;
-    }
-    iframe {
-      width: 100%;
-      height: 500px;
-      border: none;
-      display: none;
-      margin-top: 20px;
-    }
-  </style>
-  <script>
-    function loadDocument(url, course) {
-      const acceptedPasswords = {
-        physics: ['atom', '1234', 'joyce', 'chisha', 'grace', 'yes', 'Zulu', 'Maina'],
-        maths: ['set', 'yes', 'Maina'],
-        biology: ['cell', 'FAITH'],
-        chemistry: ['atom', 'yes', 'Maina'],
-        anatomy: ['born']
-      };
-
-      const userPassword = prompt(`Enter the password for ${course}:`);
-      const lowerUserPassword = userPassword?.toLowerCase();
-      const validPasswords = acceptedPasswords[course]?.map(p => p.toLowerCase()) || [];
-
-      if (lowerUserPassword && validPasswords.includes(lowerUserPassword)) {
-        const viewer = document.getElementById("docViewer");
-        viewer.src = url;
-        viewer.style.display = "block";
-      } else {
-        alert("Incorrect password!");
-      }
-    }
-  </script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thrives Archivers - Documents Dashboard</title>
+<style>
+  :root{
+    --brand:#1976d2; --bg:#f4f4f4; --card:#fff; --danger:#e53935; --muted:#777;
+  }
+  body{font-family:Arial,sans-serif;background:var(--bg);margin:0;padding:0}
+  h2{background:#333;color:#fff;text-align:center;padding:15px;margin:0}
+  .topbar{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;background:#222;color:#fff}
+  .topbar .left{font-weight:bold}
+  .topbar .right{display:flex;gap:8px;align-items:center}
+  .pill{background:#111;padding:6px 10px;border-radius:999px;font-size:12px;border:1px solid #444}
+  .btn{cursor:pointer;background:var(--brand);color:#fff;border:none;border-radius:6px;padding:8px 12px}
+  .btn.ghost{background:#444}
+  .btn.danger{background:var(--danger)}
+  .container{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;padding:20px}
+  .section{background:var(--card);padding:15px;border-radius:12px;box-shadow:0 0 15px rgba(0,0,0,.08)}
+  .section h3{margin-top:0;background:var(--brand);color:#fff;padding:10px;border-radius:6px}
+  .semester-title{font-weight:bold;margin-top:10px;color:#333;font-size:14px}
+  .doc-card{background:#f1f1f1;padding:10px;margin:8px 0;border-radius:8px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+  .doc-card:hover{background:#e6e6e6}
+  iframe{width:100%;height:500px;border:none;margin-top:10px;border-radius:12px;box-shadow:0 0 15px rgba(0,0,0,.2)}
+  .admin-panel{background:#fff;padding:20px;margin:20px auto;width:92%;max-width:1000px;border-radius:12px;box-shadow:0 0 15px rgba(0,0,0,.15);display:none}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+  input, select{width:100%;padding:10px;border:1px solid #ccc;border-radius:8px}
+  label{font-size:12px;color:var(--muted)}
+  table{width:100%;border-collapse:collapse;margin-top:10px}
+  th,td{border:1px solid #ddd;padding:8px;text-align:left}
+  th{background:#fafafa}
+  #loginForm{margin:20px auto;max-width:400px;background:#fff;padding:20px;border-radius:12px;box-shadow:0 0 15px rgba(0,0,0,.1)}
+</style>
 </head>
 <body>
-  <div class="container">
-    <h1>Thrives Archivers Documents</h1>
-
-    <!-- Physics Section -->
-    <div class="document-section">
-      <h2>Physics</h2>
-
-      <div class="semester">
-        <h3>Semester One</h3>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1Jvg0B_v00KDUXTTK5_iy9zlVkssvetpf/preview', 'physics')">Introduction to Physics</a>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1Jw5asjR44Rw35OcaC5tMG81MuXWFTrpu/preview', 'physics')">Uncertainty and Measurements</a>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1K3Kg1ICdqZqb-pogiMlWRXb5zChGHATz/preview', 'physics')">Temperature Convention</a>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1JwVrTLxLrOomRWeasMVUXyxUcfHhNWGe/preview', 'physics')">Pen Write Surprise Test 1</a>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1JuWnxmlq1-gRm9_zL4A2qAtU9VpJ4OeT/preview', 'physics')">Dimension Analysis</a>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1K1liFlpkp4Kmv24Ml0ecgTYFnu7bnv9I/preview', 'physics')">Projectile Motion</a>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1JnztD_6ea6TmyxMO-0iJaWV9JK0_vWGD/preview', 'physics')">Physics Study Hub (Thrives Tutor)</a>
-      </div>
-
-      <div class="semester">
-        <h3>Semester Two</h3>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1A2W_K0qOKK8gimRN_ZhWoaeqyxlB6Quq/preview', 'physics')">Deformation of a Solid (updated)</a>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1A51_phW4qkgIITKAEdr3iYlx7SQIlMfK/preview', 'physics')">Tutorial Sheet 1 (Deformation of a Solid)</a>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1EcWkwyftm_9Yydoe1yKIKjIyWsZMtf0S/preview', 'physics')">Additional Document</a>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1MSLnYCzHlAXWqMbWaPBmeuhYb3vSkbhp/preview', 'physics')">Simple Harmonic Motion (updated)</a>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1MUuH0d8NIFZP_JB9vAsWjPqGqd6WOFTt/preview', 'physics')">Motion of a Pendulum</a>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1Q6Cmsa_kTBXWhVykqTuVt48mYgzcFbai/preview', 'physics')">Wave Motion</a>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1QeZo3A6FoBgY43uELnd-0O58CQzyGZyQ/preview', 'physics')">Sound Wave</a>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1QfXrEvo1o1sDdaMgW0MdhSThThFEQOzR/preview', 'physics')">Electric Field and Forces</a>
-      </div>
-    </div>
-
-    <!-- Maths Section -->
-    <div class="document-section">
-      <h2>Maths</h2>
-
-      <div class="semester">
-        <h3>Semester One</h3>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1cbaLA-4jPd49CiTFPZE0owUtZw8WFjve/preview', 'maths')">Exam Preparation (Sets,set intervals,surd and polynomial)</a>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/18R_MaQlozuX04OEJi9avb3SLvbWOGu68/preview', 'maths')">Trigonometry</a>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/193rmbYzWE6-YQML4eLs2b9RWFysinGmB/preview', 'maths')">Additional Document</a>
-      </div>
-
-      <div class="semester">
-        <h3>Semester Two</h3>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1EVt4NVB97UjHZ7BN2fMvnWKT4-s8UNgn/preview', 'maths')">Tutorial 1 (Questions 1-4)</a>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1BdA_Kg6Y9wsINlUStNZEtrlOu-5FfgKP/preview', 'maths')">Trigonometry By Tutor Nerd</a>
-      </div>
-    </div>
-
-    <!-- Biology Section -->
-    <div class="document-section">
-      <h2>Biology</h2>
-
-      <div class="semester">
-        <h3>Semester One</h3>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1j9ked0-pB4AdmLnLPjiGVEEOG6b-3Rmg/preview', 'biology')">Lecture 1 MCQs (Compounds and Molecules)</a>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1j8bkcO2Q_xwLq-0MVfl0gp87SFj9amkX/preview', 'biology')">Lecture 2 MCQs (Water Chemistry and Functional Groups)</a>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1cVkAi1eFuW1Vpc-zTXjgQrsC8-7TeCrJ/preview', 'biology')">Biology Exam Study</a>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1eBaxxmCcQRxKtK8IqQm5QuLEck4yZitW/preview', 'biology')">Biology Revision Guide</a>
-      </div>
-
-      <div class="semester">
-        <h3>Semester Two</h3>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1Cf0sqjbIL28pID_Nr_KZTyAVPFBWSwe7/preview', 'biology')">Cell Division Introduction</a>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1Ka0endHzlg9clvGhtQtoJINO-SH_jzZS/preview', 'biology')">Additional Document</a>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1VTGfTwrbokjKQ9721dhKUnSkretfihmk/preview', 'biology')">Lecture 1 Biology (Surprise Quiz)</a>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1VUlJXOuUtoPoekPpMi_nbB87YERUsRpY/preview', 'biology')">Lecture 2 Meiosis (MCQ Questions)</a>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1VZiQZu4BD9WboJP2ZQxq0h-93fATah1c/preview', 'biology')">Lecture 4 DNA Synthesis</a>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1Ve7WzJ7kqjlKzxq5Y9V4OAGjW3NQ2hkh/preview', 'biology')">Lecture 5 Transcription and Translation</a>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1Vi52NxLL-Nm5DXzh4HHcnBr8TlTUTdso/preview', 'biology')">Lecture 6 Translation</a>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1ViKhjLFTZwHHRz9RWooWi7ljmHV8cotX/preview', 'biology')">Lecture 7 Gene Regulation</a>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1VlqobdIf8Nv6UiTnzC8-8rG2zUPkgStJ/preview', 'biology')">Lecture 8 Gene Regulation</a>
-      </div>
-    </div>
-
-    <!-- Chemistry Section -->
-    <div class="document-section">
-      <h2>Chemistry</h2>
-
-      <div class="semester">
-        <h3>Semester One</h3>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1cQS-QnAayXtB0olOoKdkQoHfORk73dwB/preview', 'chemistry')">Chemistry Exam Study Hub</a>
-      </div>
-
-      <div class="semester">
-        <h3>Semester Two</h3>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1CB6pUnTcl_tk_qUPoMDDAM9ucnJJh8hE/preview', 'chemistry')">Chemical Kinetics</a>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1Bc431Hb7kuwQ_z_IksU5PsyGsxrfz0mU/preview', 'chemistry')">Chemical Kinetics (Rate Law)</a>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1dDxSjYSCyl-1BLsV_0bdF-_vVIQ3BDNO/preview', 'chemistry')">Le Chatelier's Principle Made Easy</a>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1chMovDp9UiomFMEueyNe_rBcWe61UVGR/preview', 'chemistry')">Acid-Base Equilibrium, Buffers and Solubility</a>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/1ciZNRtpLmUCGDBz-snKzub0IpGnyWmWh/preview', 'chemistry')">Organic Chemistry Basic Introduction</a>
-      </div>
-    </div>
-
-    <!-- Anatomy Section -->
-    <div class="document-section">
-      <h2>Anatomy</h2>
-
-      <div class="semester">
-        <h3>Term One</h3>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/TERM1_DOCUMENT_ID/preview', 'anatomy')">Introduction to Anatomy</a>
-      </div>
-
-      <div class="semester">
-        <h3>Term Two</h3>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/TERM2_DOCUMENT_ID/preview', 'anatomy')">Anatomy Mid-Term</a>
-      </div>
-
-      <div class="semester">
-        <h3>Term Three</h3>
-        <a href="#" onclick="loadDocument('https://drive.google.com/file/d/TERM3_DOCUMENT_ID/preview', 'anatomy')">Anatomy Final Review</a>
-      </div>
-    </div>
-
-    <iframe id="docViewer"></iframe>
+<h2>Thrives Archivers - Documents</h2>
+<div class="topbar">
+  <div class="left">Welcome, <span id="displayName">Guest</span></div>
+  <div class="right">
+    <span class="pill" id="subInfo">Not logged in</span>
+    <button class="btn" id="loginTopBtn">Login</button>
+    <button class="btn ghost" id="logoutBtn" style="display:none">Logout</button>
   </div>
+</div>
+<div id="statusBar" style="text-align:center;padding:10px;font-weight:bold"></div>
+
+<!-- Login form -->
+<div id="loginForm" style="display:none">
+  <h3>Login</h3>
+  <input type="email" id="loginEmail" placeholder="Enter your email" required><br><br>
+  <input type="password" id="loginPassword" placeholder="Enter password" required><br><br>
+  <button class="btn" id="loginBtn">Login</button>
+</div>
+
+<div class="container" id="container"></div>
+
+<iframe id="docViewer"></iframe>
+
+<!-- Admin Panel -->
+<div class="admin-panel" id="adminPanel">
+  <h3>Admin Panel — Manage Documents & Subscriptions</h3>
+  <form id="addDocForm">
+    <div class="grid">
+      <div><label>Title</label><input type="text" id="docTitle" placeholder="Document Title" required /></div>
+      <div><label>Document URL (Google Drive Preview Link)</label><input type="text" id="docURL" placeholder="https://drive.google.com/..." required /></div>
+      <div><label>Passwords (comma separated)</label><input type="text" id="docPasswords" placeholder="abc123, xyz789" /></div>
+      <div>
+        <label>Section</label>
+        <select id="docSection" required>
+          <option value="">Select Section</option>
+          <option>Maths</option>
+          <option>Physics</option>
+          <option>Chemistry</option>
+          <option>Biology</option>
+          <option>Anatomy</option>
+        </select>
+      </div>
+      <div>
+        <label>Semester / Term</label>
+        <select id="docSemester" required>
+          <option value="">Select</option>
+          <option>Semester One</option>
+          <option>Semester Two</option>
+          <option>Term One</option>
+          <option>Term Two</option>
+          <option>Term Three</option>
+        </select>
+      </div>
+      <div>
+        <label>Order</label>
+        <input type="number" id="docOrder" placeholder="Enter order number (1,2,3...)" required />
+      </div>
+    </div>
+    <div style="margin-top:10px"><button class="btn" type="submit">Add Document</button></div>
+  </form>
+</div>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+const supabaseUrl = 'https://odwiqajuubcgrrqipyju.supabase.co'
+const supabaseKey ='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1dWJjZ3JycWlweWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzA4MjEsImV4cCI6MjA2ODg0NjgyMX0.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A' // replace with service key if needed
+const supabase = createClient(supabaseUrl, supabaseKey)
+
+const ADMIN_EMAIL = 'thrivesarchivers@gmail.com'
+
+const container = document.getElementById('container')
+const docViewer = document.getElementById('docViewer')
+const adminPanel = document.getElementById('adminPanel')
+const displayNameEl = document.getElementById('displayName')
+const subInfo = document.getElementById('subInfo')
+const loginFormDiv = document.getElementById('loginForm')
+const loginTopBtn = document.getElementById('loginTopBtn')
+const logoutBtn = document.getElementById('logoutBtn')
+const loginBtn = document.getElementById('loginBtn')
+const loginEmail = document.getElementById('loginEmail')
+const loginPassword = document.getElementById('loginPassword')
+let currentUser = null
+let subscription = null
+let allDocs = []
+
+// Format dashboard for logged in user
+function formatStatus(){
+  if(!currentUser){
+    displayNameEl.textContent='Guest'
+    subInfo.textContent='Not logged in'
+    adminPanel.style.display='none'
+    loginFormDiv.style.display='none'
+    loginTopBtn.style.display='inline-block'
+    logoutBtn.style.display='none'
+    return
+  }
+  displayNameEl.textContent=currentUser.email
+  subInfo.textContent=subscription? `Subscribed: ${subscription.courses || 'All'}, From ${subscription['start date']} To ${subscription['end date']}` : 'No subscription'
+  if(currentUser.email === ADMIN_EMAIL) adminPanel.style.display='block'
+  loginTopBtn.style.display='none'
+  logoutBtn.style.display='inline-block'
+}
+
+// Fetch all documents
+async function fetchDocs(){
+  const { data } = await supabase.from('documents').select('*').order('order', { ascending: true })
+  allDocs = data || []
+  renderDocs(allDocs)
+}
+
+// Render documents
+function renderDocs(docs){
+  const grouped = {}
+  docs.forEach(d=>{
+    const sec = d.section || 'Other', sem = d.semester || 'Other'
+    grouped[sec] = grouped[sec]||{}
+    grouped[sec][sem] = grouped[sec][sem]||[]
+    grouped[sec][sem].push(d)
+  })
+  container.innerHTML = ''
+  Object.keys(grouped).sort().forEach(section=>{
+    const secDiv = document.createElement('div'); secDiv.className='section'
+    secDiv.innerHTML = `<h3>${section}</h3>`
+    Object.keys(grouped[section]).sort().forEach(sem=>{
+      const semDiv = document.createElement('div')
+      semDiv.innerHTML=`<div class="semester-title">${sem}</div>`
+      grouped[section][sem].forEach(d=>{
+        const card = document.createElement('div'); card.className='doc-card'
+        const unlocked = currentUser?.email===ADMIN_EMAIL || subscription
+        card.innerHTML=`<span>${d.title}</span><span>${unlocked?'📄':'🔒'}</span>`
+        card.onclick=()=> handleDocClick(d, unlocked)
+        semDiv.appendChild(card)
+      })
+      secDiv.appendChild(semDiv)
+    })
+    container.appendChild(secDiv)
+  })
+}
+
+// Handle document click
+function passwordsFor(doc){ return (doc.password_list||'').split(',').map(s=>s.trim().toLowerCase()) }
+function handleDocClick(doc, unlocked){
+  if(unlocked){ docViewer.src=doc.url; return }
+  const pw = prompt('Enter password:'); if(!pw) return
+  if(passwordsFor(doc).includes(pw.toLowerCase())) docViewer.src=doc.url
+  else alert('Incorrect password!')
+}
+
+// Login button shows login form
+loginTopBtn.onclick = ()=>{ loginFormDiv.style.display='block' }
+
+// Logout
+logoutBtn.onclick = async ()=>{
+  currentUser = null
+  subscription = null
+  docViewer.src=''
+  formatStatus()
+}
+
+// Login function using Supabase auth
+loginBtn.onclick = async ()=>{
+  const email = loginEmail.value.trim()
+  const password = loginPassword.value.trim()
+  if(!email || !password) return alert('Enter email and password')
+
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+  if(error){ alert(error.message); return }
+  currentUser = data.user
+
+  // fetch subscription info
+  const { data: subData } = await supabase.from('subscription').select('*').eq('email', email).single()
+  subscription = subData || null
+
+  loginFormDiv.style.display='none'
+  formatStatus()
+  fetchDocs()
+}
+
+// On load, try restoring session
+supabase.auth.getSession().then(({ data })=>{
+  if(data?.session?.user){
+    currentUser = data.session.user
+    formatStatus()
+    fetchDocs()
+  } else {
+    fetchDocs() // guest view
+  }
+})
+
+// Add document (Admin only)
+document.getElementById('addDocForm').onsubmit = async (e)=>{
+  e.preventDefault()
+  if(currentUser?.email !== ADMIN_EMAIL) return alert('Only admin can add documents')
+  const doc = {
+    title: document.getElementById('docTitle').value,
+    url: document.getElementById('docURL').value,
+    password_list: document.getElementById('docPasswords').value,
+    section: document.getElementById('docSection').value,
+    semester: document.getElementById('docSemester').value,
+    order: parseInt(document.getElementById('docOrder').value, 10),
+    user_id: currentUser.id
+  }
+  const { error } = await supabase.from('documents').insert([doc])
+  if(error){ alert(error.message) }
+  else{
+    alert('Document added!')
+    fetchDocs()
+    e.target.reset()
+  }
+}
+</script>
 </body>
 </html>
