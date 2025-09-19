@@ -1,110 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Thrives Archivers - Video Streaming</title>
-<style>
-  :root{
-    --brand:#1976d2;--ink:#333;--bg:#f4f4f4;--card:#fff;--muted:#777;--danger:#e53935;--youtube:#FF0000;
-  }
-  *{box-sizing:border-box}
-  body{font-family:Arial,Helvetica,sans-serif;background:var(--bg);margin:0}
-  h2{background:#333;color:#fff;padding:15px;margin:0;text-align:center}
-  .topbar{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:10px 16px;background:#222;color:#fff}
-  .topbar .left{font-weight:bold}
-  .topbar .right{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-  .pill{background:#111;padding:6px 10px;border-radius:999px;font-size:12px;border:1px solid #444}
-  .btn{cursor:pointer;background:var(--brand);color:#fff;border:none;border-radius:6px;padding:8px 12px}
-  .btn.ghost{background:#444}
-  .btn.danger{background:var(--danger)}
-  .status-bar{margin:10px auto;padding:10px;font-weight:bold;text-align:center}
-  .container{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;padding:20px}
-  .section{background:#fff;padding:15px;border-radius:12px;box-shadow:0 0 15px rgba(0,0,0,.08)}
-  .section h3{margin-top:0;background:var(--brand);color:#fff;padding:10px;border-radius:6px}
-  .semester-title{font-weight:bold;margin-top:10px;color:#333;font-size:14px}
-  .video-card{background:#f1f1f1;padding:10px;margin:8px 0;border-radius:8px;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:space-between;gap:8px}
-  .video-card:hover{background:#e6e6e6}
-  .lock{font-size:18px}
-  .video-player{margin:20px auto;width:92%;max-width:960px;height:540px;border-radius:12px;overflow:hidden;box-shadow:0 0 15px rgba(0,0,0,.2);background:#000}
-  iframe{width:100%;height:100%;border:none}
-  .admin-panel{background:#fff;padding:20px;margin:20px auto;width:92%;max-width:1000px;border-radius:12px;box-shadow:0 0 15px rgba(0,0,0,.15);display:none}
-  .admin-panel h3{margin-top:0}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
-  input, select{width:100%;padding:10px;border:1px solid #ccc;border-radius:8px}
-  label{font-size:12px;color:var(--muted)}
-  table{width:100%;border-collapse:collapse;margin-top:10px}
-  th,td{border:1px solid #ddd;padding:8px;text-align:left}
-  th{background:#fafafa}
-  .login-modal,.modal-bg{display:none;position:fixed;left:0;top:0;width:100vw;height:100vh;z-index:1000}
-  .modal-bg{background:rgba(0,0,0,.35)}
-  .login-modal{z-index:1001;left:50%;top:50%;transform:translate(-50%,-50%);background:#fff;padding:26px;border-radius:12px;width:92%;max-width:380px;box-shadow:0 2px 18px #2224}
-  .login-modal h3{margin:0 0 10px 0}
-  .hint{font-size:12px;color:var(--muted)}
-  /* --- YouTube Banner --- */
-  .youtube-banner{
-    margin:24px auto 0 auto;
-    text-align:center;
-    padding:24px 10px 16px 10px;
-    background:linear-gradient(90deg,#fff 80%,#ffeaea 100%);
-    border-radius:16px;
-    max-width:600px;
-    box-shadow:0 2px 16px #f002;
-    border:2px solid var(--youtube);
-    position:relative;
-  }
-  .youtube-banner .yt-icon{
-    font-size:44px;
-    vertical-align:middle;
-    color:var(--youtube);
-    margin-right:16px;
-    text-shadow:0 2px 8px #f002;
-    display:inline-block;
-    transform:translateY(5px);
-  }
-  .youtube-banner a{
-    color:var(--youtube);
-    font-size:28px;
-    font-weight:bold;
-    text-decoration:none;
-    background:linear-gradient(90deg,#fff 60%,#ffeaea 100%);
-    padding:6px 16px;
-    border-radius:8px;
-    box-shadow:0 0 12px #f002;
-    border:2px solid var(--youtube);
-    transition:.2s;
-    margin-left:8px;
-    margin-right:8px;
-    display:inline-block;
-  }
-  .youtube-banner a:hover{
-    background:var(--youtube);
-    color:#fff;
-    text-shadow:0 2px 8px #800;
-  }
-  .youtube-banner .sub-text{
-    display:block;
-    color:var(--youtube);
-    font-size:22px;
-    font-weight:bold;
-    margin-top:10px;
-    letter-spacing:1px;
-    text-shadow:0 2px 10px #f002;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thrives Archivers - Videos</title>
+  <style>
+    :root{
+      --brand:#1976d2;--ink:#333;--bg:#f4f4f4;--card:#fff;--muted:#777;--danger:#e53935;--youtube:#FF0000;
+    }
+    *{box-sizing:border-box}
+    body{font-family:Arial,Helvetica,sans-serif;background:var(--bg);margin:0}
+    h2{background:#333;color:#fff;padding:15px;margin:0;text-align:center}
+    .topbar{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:10px 16px;background:#222;color:#fff}
+    .topbar .left{font-weight:bold}
+    .topbar .right{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+    .pill{background:#111;padding:6px 10px;border-radius:999px;font-size:12px;border:1px solid #444}
+    .btn{cursor:pointer;background:var(--brand);color:#fff;border:none;border-radius:6px;padding:8px 12px}
+    .btn.ghost{background:#444}
+    .btn.danger{background:var(--danger)}
+    .status-bar{margin:10px auto;padding:10px;font-weight:bold;text-align:center}
+    .container{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;padding:20px}
+    .section{background:#fff;padding:15px;border-radius:12px;box-shadow:0 0 15px rgba(0,0,0,.08)}
+    .section h3{margin-top:0;background:var(--brand);color:#fff;padding:10px;border-radius:6px}
+    .semester-title{font-weight:bold;margin-top:10px;color:#333;font-size:14px}
+    .video-card{background:#f1f1f1;padding:10px;margin:8px 0;border-radius:8px;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .video-card:hover{background:#e6e6e6}
+    .video-player{margin:20px auto;width:92%;max-width:960px;height:540px;border-radius:12px;overflow:hidden;box-shadow:0 0 15px rgba(0,0,0,.2);background:#000}
+    iframe{width:100%;height:100%;border:none}
+    .login-modal,.modal-bg{display:none;position:fixed;left:0;top:0;width:100vw;height:100vh;z-index:1000}
+    .modal-bg{background:rgba(0,0,0,.35)}
+    .login-modal{z-index:1001;left:50%;top:50%;transform:translate(-50%,-50%);background:#fff;padding:26px;border-radius:12px;width:92%;max-width:380px;box-shadow:0 2px 18px #2224}
+    .login-modal h3{margin:0 0 10px 0}
+    .hint{font-size:12px;color:var(--muted)}
+    .youtube-download-icon { margin-left:8px;}
+  </style>
 </head>
 <body>
-  <h2>Thrives Archivers - Video Streaming</h2>
-  
-  <!-- YouTube Channel Banner -->
-  <div class="youtube-banner">
-    <span class="yt-icon">▶️</span>
-    <span class="sub-text">Subscribe to our YouTube channel</span>
-    <a href="https://youtube.com/@thrivesarchivers?si=S092LRlM1g2mWTll" target="_blank" rel="noopener">
-      @thrivesarchivers
-    </a>
-  </div>
-
+  <h2>Thrives Archivers - Videos</h2>
   <div class="topbar">
     <div class="left">Welcome, <span id="displayName">Guest</span></div>
     <div class="right">
@@ -113,9 +45,7 @@
       <button class="btn ghost" id="logoutBtn" style="display:none">Logout</button>
     </div>
   </div>
-
   <div class="status-bar" id="statusBar"></div>
-
   <!-- Login Modal -->
   <div class="modal-bg" id="modalBg"></div>
   <div class="login-modal" id="loginModal">
@@ -128,51 +58,10 @@
       <button class="btn ghost" id="closeModalBtn">Cancel</button>
     </div>
   </div>
-
   <div class="container" id="container"></div>
-
   <div class="video-player">
     <iframe id="videoFrame" src="" allowfullscreen></iframe>
   </div>
-
-  <!-- Admin Panel -->
-  <div class="admin-panel" id="adminPanel">
-    <h3>Admin Panel — Manage Videos & Access</h3>
-    <form id="addVideoForm">
-      <div class="grid">
-        <div><label>Title</label><input type="text" id="videoTitle" placeholder="Video Title" required /></div>
-        <div><label>YouTube Video ID</label><input type="text" id="videoID" placeholder="dQw4w9WgXcQ" required /></div>
-        <div><label>Passwords (comma separated)</label><input type="text" id="passwordList" placeholder="abc123, xyz789" required /></div>
-        <div>
-          <label>Section</label>
-          <select id="videoSection" required>
-            <option value="">Select Section</option>
-            <option>Maths</option>
-            <option>Physics</option>
-            <option>Chemistry</option>
-            <option>Biology</option>
-          </select>
-        </div>
-        <div>
-          <label>Semester</label>
-          <select id="videoSemester" required>
-            <option value="">Select Semester</option>
-            <option>First Semester</option>
-            <option>Second Semester</option>
-          </select>
-        </div>
-        <div><label>Order (number)</label><input type="number" id="videoOrder" placeholder="1" required /></div>
-      </div>
-      <div style="margin-top:10px"><button class="btn" type="submit">Add Video</button></div>
-    </form>
-
-    <div id="existingVideos" style="margin-top:16px"></div>
-    <hr style="margin:20px 0" />
-
-    <h3>Subscriptions Controls</h3>
-    <div id="subscriptionsAdmin"></div>
-  </div>
-
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
@@ -187,9 +76,6 @@ const ADMIN_EMAIL = 'thrivesarchivers@gmail.com'
 // --- ELEMENTS ---
 const container = document.getElementById('container')
 const videoFrame = document.getElementById('videoFrame')
-const adminPanel = document.getElementById('adminPanel')
-const addVideoForm = document.getElementById('addVideoForm')
-const existingVideosDiv = document.getElementById('existingVideos')
 const statusBar = document.getElementById('statusBar')
 const loginModal = document.getElementById('loginModal')
 const modalBg = document.getElementById('modalBg')
@@ -201,7 +87,6 @@ const loginTopBtn = document.getElementById('loginTopBtn')
 const logoutBtn = document.getElementById('logoutBtn')
 const displayNameEl = document.getElementById('displayName')
 const subInfo = document.getElementById('subInfo')
-const subscriptionsAdmin = document.getElementById('subscriptionsAdmin')
 
 // --- STATE ---
 let currentUser = null
@@ -260,7 +145,6 @@ logoutBtn.onclick = async ()=>{
   await supabase.auth.signOut()
   currentUser = null
   subscription = null
-  adminPanel.style.display = 'none'
   logoutBtn.style.display = 'none'
   loginTopBtn.style.display = 'inline-block'
   formatStatus()
@@ -278,7 +162,6 @@ loginBtn.onclick = async ()=>{
   hideLoginModal()
   logoutBtn.style.display = 'inline-block'
   loginTopBtn.style.display = 'none'
-  if(currentUser.email === ADMIN_EMAIL){ adminPanel.style.display = 'block'; fetchSubscriptions() }
   await fetchSubscriptionForUser(currentUser.email)
   formatStatus()
   await fetchVideos()
@@ -290,7 +173,6 @@ window.addEventListener('DOMContentLoaded', async ()=>{
     currentUser = session.user
     logoutBtn.style.display = 'inline-block'
     loginTopBtn.style.display = 'none'
-    if(currentUser.email === ADMIN_EMAIL){ adminPanel.style.display = 'block'; fetchSubscriptions() }
     await fetchSubscriptionForUser(currentUser.email)
     formatStatus()
   } else {
@@ -312,8 +194,22 @@ async function fetchSubscriptionForUser(email){
   subscription = data || null
 }
 
+// --- FETCH VIDEOS ---
+async function fetchVideos() {
+  const { data, error } = await supabase
+    .from('Videos')
+    .select('*')
+    .order('order', { ascending: true });
+  if (error) {
+    console.error('Error fetching videos:', error);
+    statusBar.textContent = 'Failed to load videos.';
+    return;
+  }
+  allVideos = data || [];
+  renderVideos(allVideos);
+}
+
 // --- VIDEOS ---
-// (REPLACED renderVideos)
 function renderVideos(videos){
   const grouped = {}
   videos.forEach(v=>{
@@ -341,14 +237,61 @@ function renderVideos(videos){
           <span style="display:flex; align-items:center; gap:6px;">
             ${unlocked 
               ? `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24">
-                   <path fill="#FF0000" d="M23.5 6.2s-.2-1.6-.8-2.3c-.7-.8-1.5-.8-1.9-.9C17.6 2.7 12 2.7 12 2.7h-.1s-5.6 0-8.8.3c-.4.1-1.2.1-1.9.9-.6.7-.8 2.3-.8 2.3S0 8.2 0 10.3v1.4c0 2.1.4 4.1.4 4.1s.2 1.6.8 2.3c.7.8 1.7.8 2.1.9 1.5.1 6.7.3 8.7.3s8.8-.1 8.8-.1h.1s5.6 0 8.8-.3c.4-.1 1.2-.1 1.9-.9.6-.7.8-2.3.8-2.3s.4-2 .4-4.1v-1.4c0-2.1-.4-4.1-.4-4.1z"/>
+                   <path fill="#FF0000" d="M23.5 6.2s-.2-1.6-.8-2.3c-.7-.8-1.5-.8-1.9-.9C17.6 2.7 12 2.7 12 2.7h-.1s-5.6 0-8.8.3c-.4.1-1.2.1-1.9.9-.6.7-.8 2.3-.8 2.3S0 8.2 0 10.3v1.4c0 2.1.4 4.1.4 4.1[...]
                    <path fill="#FFF" d="M9.8 15.6V8.4l6.4 3.6z"/>
                  </svg>`
               : '🔒'}
             ${video.title}
           </span>
+          <button class="youtube-download-icon download-btn"
+                  style="background:none; border:none; padding:0; cursor:pointer;"
+                  title="Download from YouTube">
+            <canvas width="32" height="32" class="yt-canvas"></canvas>
+            <span style="font-size:12px; color:#FF0000; font-weight:bold;">Download</span>
+          </button>
         `
         card.onclick = ()=> handleVideoClick(video, unlocked)
+        // Draw YouTube canvas icon for each button
+        const ytCanvas = card.querySelector('.yt-canvas');
+        if (ytCanvas) {
+          const ctx = ytCanvas.getContext('2d');
+          // Draw red rounded rectangle
+          ctx.beginPath();
+          const x = 2, y = 7, width = 28, height = 18, radius = 6;
+          ctx.moveTo(x + radius, y);
+          ctx.lineTo(x + width - radius, y);
+          ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+          ctx.lineTo(x + width, y + height - radius);
+          ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+          ctx.lineTo(x + radius, y + height);
+          ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+          ctx.lineTo(x, y + radius);
+          ctx.quadraticCurveTo(x, y, x + radius, y);
+          ctx.closePath();
+          ctx.fillStyle = "#FF0000";
+          ctx.fill();
+          // Draw white play triangle
+          ctx.beginPath();
+          ctx.moveTo(13, 12); // top
+          ctx.lineTo(13, 22); // bottom
+          ctx.lineTo(22, 17); // right
+          ctx.closePath();
+          ctx.fillStyle = "#FFFFFF";
+          ctx.fill();
+        }
+        // Download button logic:
+        const dlBtn = card.querySelector('.download-btn')
+        if(dlBtn){
+          dlBtn.onclick = (e)=>{
+            e.stopPropagation()
+            if(unlocked){
+              window.open(`https://y2mate.com/youtube/${video['video id']}`, '_blank')
+              alert('Successful download on YouTube.')
+            }else{
+              alert('To download this content, you need to subscribe.')
+            }
+          }
+        }
         semDiv.appendChild(card)
       })
       secDiv.appendChild(semDiv)
@@ -367,7 +310,6 @@ async function handleVideoClick(video, unlocked){
     playVideoById(video['video id'])
     return
   }
-  // Not subscribed for this section — ask for password
   const pw = prompt('You are not subscribed to this course. Enter password to watch:')
   if(pw===null) return
   const passwords = passwordsFor(video).map(s=>s.toLowerCase())
@@ -375,188 +317,6 @@ async function handleVideoClick(video, unlocked){
     playVideoById(video['video id'])
   } else {
     alert('Incorrect password or access denied.')
-  }
-}
-
-// --- ADMIN: Video management ---
-// (REPLACED renderExistingVideos)
-function renderExistingVideos(data){  
-  existingVideosDiv.innerHTML = '<h4>Existing Videos</h4>'  
-  data.forEach(v=>{  
-    const row = document.createElement('div')  
-    row.style.borderBottom = '1px solid #eee'  
-    row.style.padding = '6px 0'  
-
-    const unlocked = canAccessVideo(v) // check if admin/user can access
-
-    row.innerHTML = `  
-      <span style="display:flex; align-items:center; gap:6px;">
-        ${unlocked 
-          ? `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24">
-               <path fill="#FF0000" d="M23.5 6.2s-.2-1.6-.8-2.3c-.7-.8-1.5-.8-1.9-.9C17.6 2.7 12 2.7 12 2.7h-.1s-5.6 0-8.8.3c-.4.1-1.2.1-1.9.9-.6-.7-.8 2.3-.8 2.3S0 8.2 0 10.3v1.4c0 2.1.4 4.1.4 4.1s.2 1.6.8 2.3c.7.8 1.7.8 2.1.9 1.5.1 6.7.3 8.7.3s8.8-.1 8.8-.1h.1s5.6 0 8.8-.3c.4-.1 1.2-.1 1.9-.9.6-.7.8-2.3.8-2.3s.4-2 .4-4.1v-1.4c0-2.1-.4-4.1-.4-4.1z"/>
-               <path fill="#FFF" d="M9.8 15.6V8.4l6.4 3.6z"/>
-             </svg>`
-          : '🔒'}
-        ${v.title} (${v.section} — ${v.semester})
-      </span>
-
-      <button class="btn danger" data-id="${v.id}">Delete</button>  
-      <button class="download-btn" 
-              style="margin-left:8px; background:#eee; border:none; 
-              padding:4px 8px; border-radius:6px; cursor:pointer; 
-              font-size:12px; color:#333; display:inline-flex; 
-              align-items:center; gap:6px;" 
-              title="Download this video">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24">
-                <path fill="#FF0000" d="M23.5 6.2s-.2-1.6-.8-2.3c-.7-.8-1.5-.8-1.9-.9C17.6 2.7 12 2.7 12 2.7h-.1s-5.6 0-8.8.3c-.4.1-1.2.1-1.9.9-.6-.7-.8 2.3-.8 2.3S0 8.2 0 10.3v1.4c0 2.1.4 4.1.4 4.1s.2 1.6.8 2.3c.7.8 1.7.8 2.1.9 1.5.1 6.7.3 8.7.3s8.8-.1 8.8-.1h.1s5.6 0 8.8-.3c.4-.1 1.2-.1 1.9-.9.6-.7.8-2.3.8-2.3s.4-2 .4-4.1v-1.4c0-2.1-.4-4.1-.4-4.1z"/>
-                <path fill="#FFF" d="M9.8 15.6V8.4l6.4 3.6z"/>
-              </svg>
-              Download
-      </button>  
-    `  
-
-    existingVideosDiv.appendChild(row)  
-
-    const delBtn = row.querySelector('button[data-id]')  
-    delBtn.onclick = async ()=>{  
-      const id = delBtn.getAttribute('data-id')  
-      if(!confirm('Delete this video?')) return  
-      const { error } = await supabase.from('Videos').delete().eq('id', id)  
-      if(error){ alert(error.message); return }  
-      fetchVideos()  
-    }  
-
-    const dlBtn = row.querySelector('.download-btn')  
-    if(dlBtn){  
-      dlBtn.onclick = (e)=>{  
-        e.stopPropagation()  
-        window.open(`https://y2mate.com/youtube/${v['video id']}`, '_blank')  
-      }  
-    }  
-  })  
-}
-
-// --- ADMIN: Add Video ---
-addVideoForm.onsubmit = async (e)=>{
-  e.preventDefault()
-  if(!currentUser || currentUser.email !== ADMIN_EMAIL) return alert('Admins only.')
-  const title = document.getElementById('videoTitle').value.trim()
-  const video_id = document.getElementById('videoID').value.trim()
-  const password_list = document.getElementById('passwordList').value.trim()
-  const section = document.getElementById('videoSection').value
-  const semester = document.getElementById('videoSemester').value
-  const order = parseInt(document.getElementById('videoOrder').value)
-  if(!title || !video_id || !section || !semester || Number.isNaN(order)) return alert('Fill all fields.')
-
-  const { error } = await supabase.from('Videos').insert([{ 
-    title,
-    'video id': video_id,
-    'password list': password_list,
-    section,
-    semester,
-    order
-  }])
-  if(error){ alert(error.message); return }
-  addVideoForm.reset()
-  fetchVideos()
-}
-
-// --- ADMIN: Subscriptions management ---
-async function fetchSubscriptions(){
-  const { data, error } = await supabase
-    .from('subscription')
-    .select('email, "start date", duration, "end date", courses')
-    .order('email', { ascending: true })
-  if(error){ subscriptionsAdmin.innerHTML = 'Failed to fetch subscriptions.'; console.error(error); return }
-  renderSubscriptionsAdmin(data||[])
-}
-
-function renderSubscriptionsAdmin(data){
-  subscriptionsAdmin.innerHTML = `
-    <h4>All Subscriptions</h4>
-    <table>
-      <tr><th>Email</th><th>Start</th><th>Duration (months)</th><th>End</th><th>Courses</th><th>Action</th></tr>
-      ${data.map(sub=>`
-        <tr>
-          <td>${sub.email}</td>
-          <td>${sub['start date']||''}</td>
-          <td>${sub.duration||''}</td>
-          <td>${sub['end date']||''}</td>
-          <td>${sub.courses||''}</td>
-          <td>
-            <button class="btn ghost" data-edit="${sub.email}">Edit</button>
-            <button class="btn danger" data-del="${sub.email}">Delete</button>
-          </td>
-        </tr>`).join('')}
-    </table>
-    <h4 style="margin-top:14px">Add / Update Subscription</h4>
-    <form id="addSubForm">
-      <div class="grid">
-        <div><label>Email</label><input type="email" id="subEmail" placeholder="Email" required /></div>
-        <div><label>Start Date</label><input type="date" id="subStart" required /></div>
-        <div>
-          <label>Duration</label>
-          <select id="subDuration" required>
-            <option value="">Select Duration</option>
-            <option value="1">1 Month</option>
-            <option value="3">3 Months</option>
-            <option value="5">5 Months</option>
-          </select>
-        </div>
-        <div><label>Courses (comma separated; blank = ALL)</label><input type="text" id="subCourses" placeholder="e.g., Maths, Biology" /></div>
-      </div>
-      <div style="margin-top:10px"><button class="btn" type="submit">Save Subscription</button></div>
-    </form>
-  `
-
-  // row buttons
-  subscriptionsAdmin.querySelectorAll('button[data-edit]').forEach(btn=>{
-    btn.onclick = ()=>{
-      const email = btn.getAttribute('data-edit')
-      const tr = btn.closest('tr')
-      document.getElementById('subEmail').value = email
-      document.getElementById('subStart').value = tr.children[1].textContent
-      document.getElementById('subDuration').value = tr.children[2].textContent
-      document.getElementById('subCourses').value = tr.children[4].textContent
-    }
-  })
-  subscriptionsAdmin.querySelectorAll('button[data-del]').forEach(btn=>{
-    btn.onclick = async ()=>{
-      const email = btn.getAttribute('data-del')
-      if(!confirm('Delete subscription for '+email+'?')) return
-      const { error } = await supabase.from('subscription').delete().eq('email', email)
-      if(error){ alert('Error: '+error.message); return }
-      fetchSubscriptions()
-    }
-  })
-
-  // form submit
-  const addForm = document.getElementById('addSubForm')
-  addForm.onsubmit = async (e)=>{
-    e.preventDefault()
-    const email = document.getElementById('subEmail').value.trim().toLowerCase()
-    const start = document.getElementById('subStart').value
-    const duration = parseInt(document.getElementById('subDuration').value)
-    const courses = document.getElementById('subCourses').value.trim()
-    if(!email || !start || Number.isNaN(duration)) return alert('Fill required fields.')
-
-    // compute end
-    const startDate = new Date(start)
-    const endDate = new Date(startDate)
-    endDate.setMonth(endDate.getMonth()+duration)
-    const endStr = endDate.toISOString().split('T')[0]
-
-    const { error } = await supabase.from('subscription').upsert([{ 
-      email,
-      'start date': start,
-      duration,
-      'end date': endStr,
-      courses
-    }])
-    if(error){ alert('Error: '+error.message); return }
-
-    alert('Subscription saved/updated!')
-    fetchSubscriptions()
   }
 }
 </script>
