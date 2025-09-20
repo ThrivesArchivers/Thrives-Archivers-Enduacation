@@ -41,56 +41,7 @@
   .login-modal{z-index:1001;left:50%;top:50%;transform:translate(-50%,-50%);background:#fff;padding:26px;border-radius:12px;width:92%;max-width:380px;box-shadow:0 2px 18px #2224}
   .login-modal h3{margin:0 0 10px 0}
   .hint{font-size:12px;color:var(--muted)}
-  /* --- YouTube Banner --- */
-  .youtube-banner{
-    margin:24px auto 0 auto;
-    text-align:center;
-    padding:24px 10px 16px 10px;
-    background:linear-gradient(90deg,#fff 80%,#ffeaea 100%);
-    border-radius:16px;
-    max-width:600px;
-    box-shadow:0 2px 16px #f002;
-    border:2px solid var(--youtube);
-    position:relative;
-  }
-  .youtube-banner .yt-icon{
-    font-size:44px;
-    vertical-align:middle;
-    color:var(--youtube);
-    margin-right:16px;
-    text-shadow:0 2px 8px #f002;
-    display:inline-block;
-    transform:translateY(5px);
-  }
-  .youtube-banner a{
-    color:var(--youtube);
-    font-size:28px;
-    font-weight:bold;
-    text-decoration:none;
-    background:linear-gradient(90deg,#fff 60%,#ffeaea 100%);
-    padding:6px 16px;
-    border-radius:8px;
-    box-shadow:0 0 12px #f002;
-    border:2px solid var(--youtube);
-    transition:.2s;
-    margin-left:8px;
-    margin-right:8px;
-    display:inline-block;
-  }
-  .youtube-banner a:hover{
-    background:var(--youtube);
-    color:#fff;
-    text-shadow:0 2px 8px #800;
-  }
-  .youtube-banner .sub-text{
-    display:block;
-    color:var(--youtube);
-    font-size:22px;
-    font-weight:bold;
-    margin-top:10px;
-    letter-spacing:1px;
-    text-shadow:0 2px 10px #f002;
-  }
+  .youtube-download-icon { margin-left:8px; }
 </style>
 </head>
 <body>
@@ -347,8 +298,62 @@ function renderVideos(videos){
         const card = document.createElement('div')
         const unlocked = canAccessVideo(video)
         card.className = 'video-card'
-        card.innerHTML = `<span>${video.title}</span><span class="lock">${unlocked ? '▶️' : '🔒'}</span>`
+        card.innerHTML = `
+          <span style="display:flex; align-items:center; gap:6px;">
+            ${unlocked 
+              ? `<span>▶️</span>`
+              : '<span>🔒</span>'}
+            ${video.title}
+          </span>
+          <button class="youtube-download-icon download-btn"
+                  style="background:none; border:none; padding:0; cursor:pointer;"
+                  title="Download from YouTube">
+            <canvas width="32" height="32" class="yt-canvas"></canvas>
+            <span style="font-size:12px; color:#FF0000; font-weight:bold;">Download</span>
+          </button>
+        `
         card.onclick = ()=> handleVideoClick(video, unlocked)
+        // Draw YouTube canvas icon for each button
+        const ytCanvas = card.querySelector('.yt-canvas');
+        if (ytCanvas) {
+          const ctx = ytCanvas.getContext('2d');
+          // Draw red rounded rectangle
+          ctx.beginPath();
+          const x = 2, y = 7, width = 28, height = 18, radius = 6;
+          ctx.moveTo(x + radius, y);
+          ctx.lineTo(x + width - radius, y);
+          ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+          ctx.lineTo(x + width, y + height - radius);
+          ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+          ctx.lineTo(x + radius, y + height);
+          ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+          ctx.lineTo(x, y + radius);
+          ctx.quadraticCurveTo(x, y, x + radius, y);
+          ctx.closePath();
+          ctx.fillStyle = "#FF0000";
+          ctx.fill();
+          // Draw white play triangle
+          ctx.beginPath();
+          ctx.moveTo(13, 12); // top
+          ctx.lineTo(13, 22); // bottom
+          ctx.lineTo(22, 17); // right
+          ctx.closePath();
+          ctx.fillStyle = "#FFFFFF";
+          ctx.fill();
+        }
+        // Download button logic:
+        const dlBtn = card.querySelector('.download-btn')
+        if(dlBtn){
+          dlBtn.onclick = (e)=>{
+            e.stopPropagation()
+            if(unlocked){
+              window.open(`https://en1.savefrom.net/1-youtube-video-downloader-8jH/?url=https://www.youtube.com/watch?v=${video['video id']}`, '_blank')
+              alert('Successful download on YouTube.')
+            }else{
+              alert('To download this content, you need to subscribe.')
+            }
+          }
+        }
         semDiv.appendChild(card)
       })
       secDiv.appendChild(semDiv)
