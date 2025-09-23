@@ -26,8 +26,7 @@
   .video-card{background:#f1f1f1;padding:10px;margin:8px 0;border-radius:8px;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:space-between;gap:8px}
   .video-card:hover{background:#e6e6e6}
   .lock{font-size:18px}
-  .video-player{margin:20px auto;width:92%;max-width:960px;height:540px;border-radius:12px;overflow:hidden;box-shadow:0 0 15px rgba(0,0,0,.2);background:#000}
-  iframe{width:100%;height:100%;border:none}
+  /* Remove old .video-player styling, replaced by modal */
   .admin-panel{background:#fff;padding:20px;margin:20px auto;width:92%;max-width:1000px;border-radius:12px;box-shadow:0 0 15px rgba(0,0,0,.15);display:none}
   .admin-panel h3{margin-top:0}
   .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
@@ -42,11 +41,77 @@
   .login-modal h3{margin:0 0 10px 0}
   .hint{font-size:12px;color:var(--muted)}
   .youtube-download-icon { margin-left:8px; }
+
+  /* Modal video player styles */
+  .modal-video-bg {
+    display: none; position: fixed; left: 0; top: 0; width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center;
+  }
+  .modal-video-player {
+    background: #000; border-radius: 12px; box-shadow: 0 0 24px #0008;
+    width: 90vw; max-width: 800px; max-height: 90vh; display: flex; flex-direction: column;
+    position: relative;
+  }
+  .modal-video-player iframe {
+    width: 100%; height: 450px; border: none; border-radius: 12px 12px 0 0;
+    background: #000;
+  }
+  .modal-video-close {
+    background: #e53935; color: #fff; border: none; border-radius: 0 0 12px 12px;
+    padding: 10px; cursor: pointer; font-size: 16px; font-weight: bold;
+    transition: background 0.2s;
+  }
+  .modal-video-close:hover { background: #b71c1c; }
+
+  /* Search bar styles */
+  .search-bar-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 16px 0 0 0;
+    background: var(--bg);
+  }
+  .search-bar-input {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    min-width: 220px;
+    max-width: 320px;
+  }
+  .search-bar-btn {
+    background: var(--brand);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s;
+  }
+  .search-bar-btn:hover {
+    background: #155a99;
+  }
 </style>
 </head>
 <body>
   <h2>Thrives Archivers - Video Streaming</h2>
-  
+
+  <!-- Search Bar -->
+  <div class="search-bar-container">
+    <input
+      type="text"
+      id="videoSearchInput"
+      class="search-bar-input"
+      placeholder="Search videos by title, section, semester..."
+      autocomplete="off"
+    />
+    <button class="search-bar-btn" id="videoSearchBtn">Search</button>
+    <button class="search-bar-btn" id="videoClearBtn" style="background:#777;">Clear</button>
+  </div>
+
   <!-- YouTube Channel Banner -->
   <div class="youtube-banner">
     <span class="yt-icon">▶️</span>
@@ -82,8 +147,12 @@
 
   <div class="container" id="container"></div>
 
-  <div class="video-player">
-    <iframe id="videoFrame" src="" allowfullscreen></iframe>
+  <!-- Modal Video Player (NEW) -->
+  <div class="modal-video-bg" id="modalVideoBg">
+    <div class="modal-video-player">
+      <iframe id="modalVideoFrame" src="" allowfullscreen></iframe>
+      <button class="modal-video-close" id="closeModalVideoBtn">Close</button>
+    </div>
   </div>
 
   <!-- Admin Panel -->
@@ -138,7 +207,9 @@ const ADMIN_EMAIL = 'thrivesarchivers@gmail.com'
 
 // --- ELEMENTS ---
 const container = document.getElementById('container')
-const videoFrame = document.getElementById('videoFrame')
+const modalVideoBg = document.getElementById('modalVideoBg')
+const modalVideoFrame = document.getElementById('modalVideoFrame')
+const closeModalVideoBtn = document.getElementById('closeModalVideoBtn')
 const adminPanel = document.getElementById('adminPanel')
 const addVideoForm = document.getElementById('addVideoForm')
 const existingVideosDiv = document.getElementById('existingVideos')
@@ -154,11 +225,16 @@ const logoutBtn = document.getElementById('logoutBtn')
 const displayNameEl = document.getElementById('displayName')
 const subInfo = document.getElementById('subInfo')
 const subscriptionsAdmin = document.getElementById('subscriptionsAdmin')
+// Search bar elements
+const videoSearchInput = document.getElementById('videoSearchInput')
+const videoSearchBtn = document.getElementById('videoSearchBtn')
+const videoClearBtn = document.getElementById('videoClearBtn')
 
 // --- STATE ---
 let currentUser = null
 let subscription = null // row from subscription table
 let allVideos = []
+let filteredVideos = null // if search is active, filteredVideos is set
 
 // --- HELPERS ---
 function showLoginModal(){ loginModal.style.display = 'block'; modalBg.style.display = 'block' }
@@ -272,10 +348,43 @@ async function fetchVideos(){
     .order('order', { ascending: true })
   if(error){ container.innerHTML = '<b>Failed to load videos.</b>'; console.error(error); return }
   allVideos = data || []
+  filteredVideos = null
   renderVideos(allVideos)
   if(currentUser?.email === ADMIN_EMAIL){ renderExistingVideos(allVideos) }
 }
 
+// --- SEARCH ---
+function searchVideos(query) {
+  if(!query || !query.trim()) return allVideos;
+  const q = query.trim().toLowerCase();
+  return allVideos.filter(video =>
+    (video.title && video.title.toLowerCase().includes(q)) ||
+    (video.section && video.section.toLowerCase().includes(q)) ||
+    (video.semester && video.semester.toLowerCase().includes(q))
+  );
+}
+function handleSearch() {
+  const query = videoSearchInput.value;
+  if(!query.trim()) {
+    filteredVideos = null;
+    renderVideos(allVideos);
+    return;
+  }
+  filteredVideos = searchVideos(query);
+  renderVideos(filteredVideos);
+}
+function handleClearSearch() {
+  videoSearchInput.value = '';
+  filteredVideos = null;
+  renderVideos(allVideos);
+}
+videoSearchBtn.onclick = handleSearch;
+videoSearchInput.addEventListener('keydown', e=>{
+  if(e.key==="Enter") handleSearch();
+});
+videoClearBtn.onclick = handleClearSearch;
+
+// --- RENDER ---
 function renderVideos(videos){
   const grouped = {}
   videos.forEach(v=>{
@@ -287,6 +396,11 @@ function renderVideos(videos){
   })
 
   container.innerHTML = ''
+  // Show "No results" if search active and no results
+  if(filteredVideos && videos.length === 0) {
+    container.innerHTML = `<div style="text-align:center;padding:32px;font-size:1.2em;color:#888;">No videos found for your search.</div>`;
+    return;
+  }
   Object.keys(grouped).sort().forEach(section=>{
     const secDiv = document.createElement('div')
     secDiv.className = 'section'
@@ -364,13 +478,25 @@ function renderVideos(videos){
   })
 }
 
-function playVideoById(videoId){
-  videoFrame.src = `https://www.youtube.com/embed/${videoId}`
+// --- MODAL VIDEO LOGIC ---
+function showModalVideo(videoId) {
+  modalVideoFrame.src = `https://www.youtube.com/embed/${videoId}`
+  modalVideoBg.style.display = 'flex'
+}
+function hideModalVideo() {
+  modalVideoFrame.src = ''
+  modalVideoBg.style.display = 'none'
+}
+closeModalVideoBtn.onclick = hideModalVideo
+modalVideoBg.onclick = function(e) {
+  // Only close if clicking the background, not inside the modal
+  if (e.target === modalVideoBg) hideModalVideo()
 }
 
+// --- Update handleVideoClick to use modal ---
 async function handleVideoClick(video, unlocked){
   if(unlocked){
-    playVideoById(video['video id'])
+    showModalVideo(video['video id'])
     return
   }
   // Not subscribed for this section — ask for password
@@ -378,7 +504,7 @@ async function handleVideoClick(video, unlocked){
   if(pw===null) return
   const passwords = passwordsFor(video).map(s=>s.toLowerCase())
   if(passwords.includes(pw.trim().toLowerCase())){
-    playVideoById(video['video id'])
+    showModalVideo(video['video id'])
   } else {
     alert('Incorrect password or access denied.')
   }
@@ -530,4 +656,3 @@ function renderSubscriptionsAdmin(data){
 </script>
 </body>
 </html>
-
