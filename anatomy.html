@@ -16,11 +16,9 @@
   .course-card ul { list-style: none; padding-left: 0; }
   .course-card li { margin-bottom: 12px; display: flex; flex-direction: column; gap: 5px; }
   .icon { font-size: 18px; }
-  
   /* Document links */
   .doc-link { text-decoration: none; color: #007BFF; cursor: pointer; }
   .doc-link:hover { text-decoration: underline; }
-
   /* Buttons */
   .take-quiz-btn {
     display: inline-block;
@@ -34,7 +32,6 @@
     border: 1px solid #ccc;
   }
   .take-quiz-btn:hover { background-color: #d5d5d5; }
-
   .free-quiz-btn {
     display: inline-block;
     margin-top: 10px;
@@ -50,7 +47,6 @@
     transition: transform 0.2s;
   }
   .free-quiz-btn:hover { transform: scale(1.05); }
-
   .whatsapp-button {
     display: inline-block;
     margin-top: 10px;
@@ -72,7 +68,6 @@
     0% { transform: translateY(0); }
     100% { transform: translateY(-5px); }
   }
-
   /* Modal */
   .modal { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); }
   .modal-content { background-color: #fff; margin: 5% auto; width: 90%; max-width: 800px; border-radius: 10px; overflow: hidden; position: relative; }
@@ -81,12 +76,10 @@
 </style>
 </head>
 <body>
-
 <header>
   <img src="file_0000000009d461f89d0cb3387f0b7000.png" alt="Header Image">
   <h1>Thrives Archivers Course Access</h1>
 </header>
-
 <div class="container">
   <div class="course-grid">
 
@@ -95,7 +88,7 @@
       <h3>Anatomy</h3>
       <strong>Gross Anatomy</strong>
       <ul>
-               <li>
+        <li>
           <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1g-Q9qHfstDZC7dnB_zMGVVbTUuocPFNf/preview')">📄 INTRODUCTIONS TO ANATOMY (Thrives Tutor)</a>
         </li>
         <li>
@@ -129,26 +122,105 @@
           <a class="take-quiz-btn" onclick="accessContent('Gross6.html')">📝 Quiz</a>
         </li>
       </ul>
-      
       <strong>Embryology</strong>
       <ul>
         <li><a class="doc-link" onclick="accessContent('Embryology1.html')">📄 Embryology Notes</a></li>
       </ul>
-
       <strong>Histology</strong>
       <ul>
         <li><a class="doc-link" onclick="accessContent('Histology1.html')">📄 Histology Notes</a></li>
       </ul>
     </div>
 
-  </div>
+    <!-- Physiology -->
+    <div class="course-card">
+      <h3>Physiology</h3>
+      <strong>General Physiology</strong>
+      <ul>
+        <li>
+          <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1phGeneralPhysiologyDoc/preview')">📄 General Physiology Notes</a>
+          <a class="take-quiz-btn" onclick="accessContent('Physiology1.html')">📝 Quiz</a>
+        </li>
+      </ul>
+      <strong>Cardiovascular System</strong>
+      <ul>
+        <li>
+          <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1phCardioSystemDoc/preview')">📄 Cardiovascular Physiology</a>
+          <a class="take-quiz-btn" onclick="accessContent('Physiology2.html')">📝 Quiz</a>
+        </li>
+      </ul>
+      <strong>Respiratory System</strong>
+      <ul>
+        <li>
+          <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1phRespiratoryDoc/preview')">📄 Respiratory Physiology</a>
+          <a class="take-quiz-btn" onclick="accessContent('Physiology3.html')">📝 Quiz</a>
+        </li>
+      </ul>
+    </div>
 
+    <!-- Public Health -->
+    <div class="course-card">
+      <h3>Public Health</h3>
+      <strong>Community Medicine</strong>
+      <ul>
+        <li>
+          <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1phCommunityMedDoc/preview')">📄 Community Medicine Notes</a>
+          <a class="take-quiz-btn" onclick="accessContent('PublicHealth1.html')">📝 Quiz</a>
+        </li>
+      </ul>
+      <strong>Environmental Health</strong>
+      <ul>
+        <li>
+          <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1phEnvHealthDoc/preview')">📄 Environmental Health Notes</a>
+          <a class="take-quiz-btn" onclick="accessContent('PublicHealth2.html')">📝 Quiz</a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Medical Biochemical -->
+    <div class="course-card">
+      <h3>Medical Biochemical</h3>
+      <strong>General Biochemistry</strong>
+      <ul>
+        <li>
+          <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1mbGeneralBiochemDoc/preview')">📄 General Biochemistry</a>
+          <a class="take-quiz-btn" onclick="accessContent('Biochem1.html')">📝 Quiz</a>
+        </li>
+      </ul>
+      <strong>Metabolism</strong>
+      <ul>
+        <li>
+          <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1mbMetabolismDoc/preview')">📄 Metabolism Notes</a>
+          <a class="take-quiz-btn" onclick="accessContent('Biochem2.html')">📝 Quiz</a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Behavioral Science and Communication Skills -->
+    <div class="course-card">
+      <h3>Behavioral Science & Communication Skills</h3>
+      <strong>Behavioral Science</strong>
+      <ul>
+        <li>
+          <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1bsBehavioralDoc/preview')">📄 Behavioral Science Notes</a>
+          <a class="take-quiz-btn" onclick="accessContent('Behavioral1.html')">📝 Quiz</a>
+        </li>
+      </ul>
+      <strong>Communication Skills</strong>
+      <ul>
+        <li>
+          <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1bsCommSkillsDoc/preview')">📄 Communication Skills</a>
+          <a class="take-quiz-btn" onclick="accessContent('Behavioral2.html')">📝 Quiz</a>
+        </li>
+      </ul>
+    </div>
+
+  </div>
   <a class="free-quiz-btn" href="anatomyquize.html" target="_blank">Go to Anatomy Quiz</a>
   <a class="whatsapp-button" href="https://wa.me/260973178100" target="_blank">
     Chat with Me on WhatsApp <span class="chat-icon">💬</span>
   </a>
 </div>
-
 <!-- Modal -->
 <div id="modal" class="modal">
   <div class="modal-content">
@@ -156,11 +228,9 @@
     <iframe id="viewerFrame" src=""></iframe>
   </div>
 </div>
-
 <script>
   // ✅ All valid passwords in one place (you can add/remove anytime)
   const validPasswords = ["thrives100", "mbewe", "student2025", "medicinestudygroup"];
-
   function accessContent(link) {
     const password = prompt("This content is protected. Please pay K100 to access. Inbox 0762514399.\nIf already registered, enter your password:");
     if (validPasswords.includes(password)) {
@@ -170,17 +240,14 @@
       alert("Incorrect password or you have not registered.");
     }
   }
-
   function closeModal() {
     document.getElementById('modal').style.display = 'none';
     document.getElementById('viewerFrame').src = '';
   }
-
   window.onclick = function(event) {
     const modal = document.getElementById('modal');
     if (event.target == modal) { closeModal(); }
   }
 </script>
-
 </body>
 </html>
