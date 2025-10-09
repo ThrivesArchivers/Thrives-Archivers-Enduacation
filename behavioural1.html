@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MBC 240 — Behavioural Sciences: MCQs, Close & T/F</title>
+  <style>
+    :root{--bg:#f7f9fc;--card:#ffffff;--accent:#1266cc;--ok:#1a7f37;--bad:#d64545;--muted:#666}
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial; background:var(--bg); color:#111; padding:24px}
+    .container{max-width:900px;margin:0 auto}
+    header{display:flex;gap:12px;align-items:center}
+    h1{font-size:20px;margin:0}
+    p.lead{color:var(--muted);margin-top:4px}
+    .card{background:var(--card);border-radius:10px;padding:18px;margin:18px 0;box-shadow:0 6px 18px rgba(20,20,30,0.06)}
+    .q{margin-bottom:14px}
+    .question{font-weight:600;margin-bottom:8px}
+    .choices{display:flex;flex-direction:column;gap:8px;margin-bottom:6px}
+    button.choice{border:1px solid #ddd;padding:10px 12px;border-radius:8px;text-align:left;background:#fff;cursor:pointer}
+    button.choice.correct{border-color:var(--ok);background:rgba(26,127,55,0.06)}
+    button.choice.wrong{border-color:var(--bad);background:rgba(214,69,69,0.04)}
+    .explain{display:none;margin-top:8px;padding:10px;border-radius:8px;background:#f4f8ff;border:1px solid rgba(18,102,204,0.08)}
+    .feedback{font-weight:600}
+    .small{font-size:13px;color:var(--muted)}
+    .controls{display:flex;gap:8px;align-items:center;margin-top:8px}
+    .btn{padding:8px 10px;border-radius:8px;border:0;background:var(--accent);color:#fff;cursor:pointer}
+    input[type=text]{padding:8px;border-radius:8px;border:1px solid #ccc;width:70%}
+    footer{margin-top:18px;color:var(--muted);font-size:13px}
+    @media (max-width:640px){.choices{gap:6px}button.choice{padding:10px}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>MBC 240 — Behavioural Sciences: Interactive Quiz</h1>
+        <p class="lead">20 multiple-choice questions, 2 short (close) questions, and 10 true/false. Click a choice to see feedback and explanations.</p>
+      </div>
+    </header>
+
+    <!-- Multiple choice questions (20) -->
+    <section class="card" id="mcq-section">
+      <h2>Multiple Choice (20)</h2>
+
+      <!-- Q1 -->
+      <div class="q" data-q="1">
+        <div class="question">1. Which discipline lies at the heart of behavioural sciences?</div>
+        <div class="choices">
+          <button class="choice" data-correct="false">A. Sociology</button>
+          <button class="choice" data-correct="true">B. Psychology</button>
+          <button class="choice" data-correct="false">C. Economics</button>
+          <button class="choice" data-correct="false">D. Anthropology</button>
+        </div>
+        <div class="explain"><div class="feedback">Correct — Psychology.</div>
+        <div class="small">Psychology is the central discipline in behavioural sciences because it focuses on behaviour and mental processes.</div></div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="q" data-q="2">
+        <div class="question">2. Which school of thought emphasises observable behaviour and rewards/punishments?</div>
+        <div class="choices">
+          <button class="choice" data-correct="true">A. Behaviourism</button>
+          <button class="choice" data-correct="false">B. Psychoanalysis</button>
+          <button class="choice" data-correct="false">C. Humanistic psychology</button>
+          <button class="choice" data-correct="false">D. Cognitive theory</button>
+        </div>
+        <div class="explain"><div class="feedback">Correct — Behaviourism.</div>
+        <div class="small">Behaviourism focuses on learning through reinforcement and avoids studying private mental processes.</div></div>
+      </div>
+
+      <!-- Q3 -->
+      <div class="q" data-q="3">
+        <div class="question">3. Which tradition introduced the idea of the unconscious influencing behaviour?</div>
+        <div class="choices">
+          <button class="choice" data-correct="true">A. Psychoanalysis</button>
+          <button class="choice" data-correct="false">B. Gestalt psychology</button>
+          <button class="choice" data-correct="false">C. Social learning theory</button>
+          <button class="choice" data-correct="false">D. Cultural psychology</button>
+        </div>
+        <div class="explain"><div class="feedback">Correct — Psychoanalysis.</div>
+        <div class="small">Psychoanalytic theory (e.g., Freud) emphasises unconscious memories and motives shaping behaviour.</div></div>
+      </div>
+
+      <!-- Q4 -->
+      <div class="q" data-q="4">
+        <div class="question">4. "The whole is greater than the sum of its parts" is a central idea in which perspective?</div>
+        <div class="choices">
+          <button class="choice" data-correct="false">A. Behaviourism</button>
+          <button class="choice" data-correct="true">B. Gestalt psychology</button>
+          <button class="choice" data-correct="false">C. Cognitive theory</button>
+          <button class="choice" data-correct="false">D. Humanistic psychology</button>
+        </div>
+        <div class="explain"><div class="feedback">Correct — Gestalt psychology.</div>
+        <div class="small">Gestalt psychologists emphasise perception of organized wholes rather than isolated elements.</div></div>
+      </div>
+
+      <!-- Q5 -->
+      <div class="q" data-q="5">
+        <div class="question">5. Bandura's Social Learning Theory emphasises learning through:</div>
+        <div class="choices">
+          <button class="choice" data-correct="true">A. Observational learning (modelling)</button>
+          <button class="choice" data-correct="false">B. Only external reinforcement</button>
+          <button class="choice" data-correct="false">C. Genetic programming</button>
+          <button class="choice" data-correct="false">D. Dream analysis</button>
+        </div>
+        <div class="explain"><div class="feedback">Correct — Observational learning.</div>
+        <div class="small">Bandura proposed that people learn by observing others and internalising behaviours, not just by external rewards.</div></div>
+      </div>
+
+      <!-- Q6 -->
+      <div class="q" data-q="6">
+        <div class="question">6. Which field studies how social factors affect illness and recovery (as stated in the course aim)?</div>
+        <div class="choices">
+          <button class="choice" data-correct="false">A. Biochemistry</button>
+          <button class="choice" data-correct="true">B. Behavioural Sciences</button>
+          <button class="choice" data-correct="false">C. Pathology</button>
+          <button class="choice" data-correct="false">D. Epidemiology</button>
+        </div>
+        <div class="explain"><div class="feedback">Correct — Behavioural Sciences.</div>
+        <div class="small">The course aims to help students understand how social factors influence illness and recovery.</div></div>
+      </div>
+
+      <!-- Q7 -->
+      <div class="q" data-q="7">
+        <div class="question">7. Which of the following is NOT listed by Leary (2008) as part of behavioural sciences?</div>
+        <div class="choices">
+          <button class="choice" data-correct="false">A. Psychology</button>
+          <button class="choice" data-correct="false">B. Sociology</button>
+          <button class="choice" data-correct="true">C. Astrophysics</button>
+          <button class="choice" data-correct="false">D. Communication</button>
+        </div>
+        <div class="explain"><div class="feedback">Correct — Astrophysics.</div>
+        <div class="small">Leary listed Psychology, Sociology, Communication, Human development, Education, Marketing, Social Work, etc.; astrophysics is a natural science, not behavioural.</div></div>
+      </div>
+
+      <!-- Q8 -->
+      <div class="q" data-q="8">
+        <div class="question">8. Which perspective emphasises free will and human potential (Carl Rogers)?</div>
+        <div class="choices">
+          <button class="choice" data-correct="true">A. Humanistic psychology</button>
+          <button class="choice" data-correct="false">B. Behaviourism</button>
+          <button class="choice" data-correct="false">C. Psychoanalysis</button>
+          <button class="choice" data-correct="false">D. Gestalt</button>
+        </div>
+        <div class="explain"><div class="feedback">Correct — Humanistic psychology.</div>
+        <div class="small">Humanistic psychology emphasises free will, self-determination and the positive potential of people.</div></div>
+      </div>
+
+      <!-- Q9 -->
+      <div class="q" data-q="9">
+        <div class="question">9. Which of these is an example of a "mental process"?</div>
+        <div class="choices">
+          <button class="choice" data-correct="false">A. Sweating</button>
+          <button class="choice" data-correct="true">B. Memory</button>
+          <button class="choice" data-correct="false">C. Crying</button>
+          <button class="choice" data-correct="false">D. Trembling</button>
+        </div>
+        <div class="explain"><div class="feedback">Correct — Memory.</div>
+        <div class="small">Mental processes include private phenomena like memory, thoughts, perceptions and feelings.</div></div>
+      </div>
+
+      <!-- Q10 -->
+      <div class="q" data-q="10">
+        <div class="question">10. Cultural psychology distinguishes between 'etics' and 'emics'. 'Etics' refers to:</div>
+        <div class="choices">
+          <button class="choice" data-correct="true">A. Universal psychological processes</button>
+          <button class="choice" data-correct="false">B. Culture-specific processes</button>
+          <button class="choice" data-correct="false">C. Methods of behavioural observation</button>
+          <button class="choice" data-correct="false">D. Genetic influences on behaviour</button>
+        </div>
+        <div class="explain"><div class="feedback">Correct — Etics = universal processes.</div>
+        <div class="small">Etics are universal processes (e.g., capacity to learn language); emics are culture-specific expressions.</div></div>
+      </div>
+
+      <!-- Q11 -->
+      <div class="q" data-q="11">
+        <div class="question">11. According to the slides, why is behavioural science important in medicine?</div>
+        <div class="choices">
+          <button class="choice" data-correct="false">A. It replaces clinical training</button>
+          <button class="choice" data-correct="true">B. Behaviour influences disease development, treatment and prevention</button>
+          <button class="choice" data-correct="false">C. It focuses only on lab tests</button>
+          <button class="choice" data-correct="false">D. It only studies animals</button>
+        </div>
+        <div class="explain"><div class="feedback">Correct — behaviours influence health.</div>
+        <div class="small">Behaviours such as smoking contribute to disease; psychological factors affect outcomes and recovery.</div></div>
+      </div>
+
+      <!-- Q12 -->
+      <div class="q" data-q="12">
+        <div class="question">12. The slides state that doctors are at risk for which of the following due to the stresses of medical practice?</div>
+        <div class="choices">
+          <button class="choice" data-correct="false">A. Lower rates of divorce</button>
+          <button class="choice" data-correct="false">B. Less stress than other professions</button>
+          <button class="choice" data-correct="true">C. Higher levels of burnout, alcoholism and divorce</button>
+          <button class="choice" data-correct="false">D. Complete immunity to stress</button>
+        </div>
+        <div class="explain"><div class="feedback">Correct — higher stress and burnout.</div>
+        <div class="small">Medical practice is emotionally and behaviourally demanding and linked with higher levels of distress among doctors.</div></div>
+      </div>
+
+      <!-- Q13 -->
+      <div class="q" data-q="13">
+        <div class="question">13. Which topic would you expect to find in a psychology textbook chapter described in the slides?</div>
+        <div class="choices">
+          <button class="choice" data-correct="false">A. Superstring theory</button>
+          <button class="choice" data-correct="true">B. Biological basis of behaviour</button>
+          <button class="choice" data-correct="false">C. Plate tectonics</button>
+          <button class="choice" data-correct="false">D. The history of art</button>
+        </div>
+        <div class="explain"><div class="feedback">Correct — Biological basis of behaviour.</div>
+        <div class="small">Psychology covers interfaces with biological sciences like neurons, hormones and the nervous system.</div></div>
+      </div>
+
+      <!-- Q14 -->
+      <div class="q" data-q="14">
+        <div class="question">14. If a behaviour was previously punished, behaviourist theory predicts that it will:</div>
+        <div class="choices">
+          <button class="choice" data-correct="true">A. Be less likely to reoccur</button>
+          <button class="choice" data-correct="false">B. Become automatic and guaranteed</button>
+          <button class="choice" data-correct="false">C. Always increase in frequency</button>
+          <button class="choice" data-correct="false">D. Become genetically encoded</button>
+        </div>
+        <div class="explain"><div class="feedback">Correct — less likely to reoccur.</div>
+        <div class="small">Punishment reduces the likelihood of behaviour repeating according to behaviourist principles.</div></div>
+      </div>
+
+      <!-- Q15 -->
+      <div class="q" data-q="15">
+        <div class="question">15. An example of an observable behaviour is:</div>
+        <div class="choices">
+          <button class="choice" data-correct="false">A. A private thought</button>
+          <button class="choice" data-correct="true">B. Crying</button>
+          <button class="choice" data-correct="false">C. A memory</button>
+          <button class="choice" data-correct="false">D. A dream (when private)</button>
+        </div>
+        <div class="explain"><div class="feedback">Correct — Crying.</div>
+        <div class="small">Behaviours that others can directly observe (e.g., crying, laughing) are central to behavioural science observation.</div></div>
+      </div>
+
+      <!-- Q16 -->
+      <div class="q" data-q="16">
+        <div class="question">16. Which method is essential for behavioural scientists to draw valid conclusions about behaviour?</div>
+        <div class="choices">
+          <button class="choice" data-correct="true">A. The scientific method</button>
+          <button class="choice" data-correct="false">B. Pure intuition only</button>
+          <button class="choice" data-correct="false">C. Dream interpretation only</button>
+          <button class="choice" data-correct="false">D. Astrology</button>
+        </div>
+        <div class="explain"><div class="feedback">Correct — scientific method.</div>
+        <div class="small">Scientists use observation, hypotheses and testing to confirm conclusions about behaviour.</div></div>
+      </div>
+
+      <!-- Q17 -->
+      <div class="q" data-q="17">
+        <div class="question">17. Which of the following would be considered a cultural (emics) influence?</div>
+        <div class="choices">
+          <button class="choice" data-correct="false">A. The biological capacity to learn language</button>
+          <button class="choice" data-correct="true">B. The specific language spoken in a community</button>
+          <button class="choice" data-correct="false">C. Universal reflexes</button>
+          <button class="choice" data-correct="false">D. Basic sensory processing</button>
+        </div>
+        <div class="explain"><div class="feedback">Correct — specific language.</div>
+        <div class="small">Emics refer to culture-specific expressions (e.g., which language is used), while etics are universal abilities.</div></div>
+      </div>
+
+      <!-- Q18 -->
+      <div class="q" data-q="18">
+        <div class="question">18. Which of these topics does NOT belong under behavioural sciences as used in the course slides?</div>
+        <div class="choices">
+          <button class="choice" data-correct="false">A. Communication</button>
+          <button class="choice" data-correct="false">B. Social work</button>
+          <button class="choice" data-correct="true">C. Quantum mechanics</button>
+          <button class="choice" data-correct="false">D. Human development</button>
+        </div>
+        <div class="explain"><div class="feedback">Correct — Quantum mechanics.</div>
+        <div class="small">Quantum mechanics is a physical science, not listed by Leary among behavioural science disciplines.</div></div>
+      </div>
+
+      <!-- Q19 -->
+      <div class="q" data-q="19">
+        <div class="question">19. Which example from the slides is used to show an unconscious slip in speech?</div>
+        <div class="choices">
+          <button class="choice" data-correct="false">A. Forgetting your keys</button>
+          <button class="choice" data-correct="true">B. Freudian slip (saying ex's name instead of spouse)</button>
+          <button class="choice" data-correct="false">C. Typing error on a keyboard</button>
+          <button class="choice" data-correct="false">D. Misreading a sign</button>
+        </div>
+        <div class="explain"><div class="feedback">Correct — Freudian slip.</div>
+        <div class="small">A Freudian slip is an example of behaviour influenced by unconscious material.</div></div>
+      </div>
+
+      <!-- Q20 -->
+      <div class="q" data-q="20">
+        <div class="question">20. The course requires attendance and studying outside class because:</div>
+        <div class="choices">
+          <button class="choice" data-correct="true">A. Reading slides does not replace attending lectures</button>
+          <button class="choice" data-correct="false">B. Slides are enough alone</button>
+          <button class="choice" data-correct="false">C. Attendance is optional and irrelevant</button>
+          <button class="choice" data-correct="false">D. Exams are open book only</button>
+        </div>
+        <div class="explain"><div class="feedback">Correct — Attend and study.</div>
+        <div class="small">The lecturer emphasises that slides complement lectures; attending class and personal study are necessary for success.</div></div>
+      </div>
+
+    </section>
+
+    <!-- Close / short answer questions (2) -->
+    <section class="card" id="close-section">
+      <h2>Close / Short Answer (2)</h2>
+
+      <div class="q" data-q="C1">
+        <div class="question">C1. Define 'behaviour' in one short sentence.</div>
+        <input type="text" id="close1-input" placeholder="Type your short answer here" />
+        <div class="controls">
+          <button class="btn" data-target="C1">Reveal model answer</button>
+          <div class="small">Model answer will appear when you click "Reveal model answer".</div>
+        </div>
+        <div class="explain" id="C1-answer"><div class="feedback">Model answer:</div>
+        <div class="small">Behaviour refers to observable actions of people (e.g., crying, laughing, trembling) that others can directly see.</div></div>
+      </div>
+
+      <div class="q" data-q="C2">
+        <div class="question">C2. Give one example of a mental process.</div>
+        <input type="text" id="close2-input" placeholder="Type your short answer here" />
+        <div class="controls">
+          <button class="btn" data-target="C2">Reveal model answer</button>
+          <div class="small">Click to reveal the expected answer and brief explanation.</div>
+        </div>
+        <div class="explain" id="C2-answer"><div class="feedback">Model answer:</div>
+        <div class="small">Example: Memory — private cognitive activity that cannot be observed directly but inferred from behaviour.</div></div>
+      </div>
+
+    </section>
+
+    <!-- True / False (10) -->
+    <section class="card" id="tf-section">
+      <h2>True / False (10)</h2>
+
+      <!-- TF1 -->
+      <div class="q" data-q="TF1">
+        <div class="question">1. Behavioural sciences include communication and social work. (True/False)</div>
+        <div class="choices">
+          <button class="choice" data-correct="true">True</button>
+          <button class="choice" data-correct="false">False</button>
+        </div>
+        <div class="explain"><div class="feedback">Correct — True.</div>
+        <div class="small">Leary lists communication and social work among behavioural sciences.</div></div>
+      </div>
+
+      <!-- TF2 -->
+      <div class="q" data-q="TF2">
+        <div class="question">2. Humanistic psychology denies free will and personal growth. (True/False)</div>
+        <div class="choices">
+          <button class="choice" data-correct="false">True</button>
+          <button class="choice" data-correct="true">False</button>
+        </div>
+        <div class="explain"><div class="feedback">Correct — False.</div>
+        <div class="small">Humanistic psychology emphasises free will and human potential.</div></div>
+      </div>
+
+      <!-- TF3 -->
+      <div class="q" data-q="TF3">
+        <div class="question">3. The unconscious is a concept central to behaviourist theory. (True/False)</div>
+        <div class="choices">
+          <button class="choice" data-correct="false">True</button>
+          <button class="choice" data-correct="true">False</button>
+        </div>
+        <div class="explain"><div class="feedback">Correct — False.</div>
+        <div class="small">The unconscious is central to psychoanalysis, not behaviourism; behaviourism focuses on observable behaviour.</div></div>
+      </div>
+
+      <!-- TF4 -->
+      <div class="q" data-q="TF4">
+        <div class="question">4. Observational learning means people can learn by watching others. (True/False)</div>
+        <div class="choices">
+          <button class="choice" data-correct="true">True</button>
+          <button class="choice" data-correct="false">False</button>
+        </div>
+        <div class="explain"><div class="feedback">Correct — True.</div>
+        <div class="small">Social learning theory highlights learning through observation and modelling.</div></div>
+      </div>
+
+      <!-- TF5 -->
+      <div class="q" data-q="TF5">
+        <div class="question">5. A Freudian slip can reflect unconscious thoughts. (True/False)</div>
+        <div class="choices">
+          <button class="choice" data-correct="true">True</button>
+          <button class="choice" data-correct="false">False</button>
+        </div>
+        <div class="explain"><div class="feedback">Correct — True.</div>
+        <div class="small">Freudian slips are examples of behaviour influenced by unconscious material.</div></div>
+      </div>
+
+      <!-- TF6 -->
+      <div class="q" data-q="TF6">
+        <div class="question">6. The course suggests slides alone are sufficient to replace attending class. (True/False)</div>
+        <div class="choices">
+          <button class="choice" data-correct="false">True</button>
+          <button class="choice" data-correct="true">False</button>
+        </div>
+        <div class="explain"><div class="feedback">Correct — False.</div>
+        <div class="small">The lecturer emphasises that reading slides is no substitute for attending class.</div></div>
+      </div>
+
+      <!-- TF7 -->
+      <div class="q" data-q="TF7">
+        <div class="question">7. Behavioural scientists can infer mental processes by observing behaviour. (True/False)</div>
+        <div class="choices">
+          <button class="choice" data-correct="true">True</button>
+          <button class="choice" data-correct="false">False</button>
+        </div>
+        <div class="explain"><div class="feedback">Correct — True.</div>
+        <div class="small">Because mental processes are private, scientists infer them from observable behaviour.</div></div>
+      </div>
+
+      <!-- TF8 -->
+      <div class="q" data-q="TF8">
+        <div class="question">8. Etics are culture-specific. (True/False)</div>
+        <div class="choices">
+          <button class="choice" data-correct="false">True</button>
+          <button class="choice" data-correct="true">False</button>
+        </div>
+        <div class="explain"><div class="feedback">Correct — False.</div>
+        <div class="small">Etics refer to universal processes; emics are culture-specific.</div></div>
+      </div>
+
+      <!-- TF9 -->
+      <div class="q" data-q="TF9">
+        <div class="question">9. Behavioural sciences are irrelevant to health promotion. (True/False)</div>
+        <div class="choices">
+          <button class="choice" data-correct="false">True</button>
+          <button class="choice" data-correct="true">False</button>
+        </div>
+        <div class="explain"><div class="feedback">Correct — False.</div>
+        <div class="small">Behavioural sciences are key to understanding behaviour change and health promotion.</div></div>
+      </div>
+
+      <!-- TF10 -->
+      <div class="q" data-q="TF10">
+        <div class="question">10. The study of neurons and hormones is unrelated to psychology. (True/False)</div>
+        <div class="choices">
+          <button class="choice" data-correct="false">True</button>
+          <button class="choice" data-correct="true">False</button>
+        </div>
+        <div class="explain"><div class="feedback">Correct — False.</div>
+        <div class="small">Psychology interfaces with biological sciences; neurons and hormones are important for behaviour.</div></div>
+      </div>
+
+    </section>
+
+    <footer class="small">Created from MBC 240 lecture notes. Click any choice to reveal feedback and explanations. You can reuse or embed this single HTML file on your site.</footer>
+  </div>
+
+  <script>
+    // Wire up choices: A single handler for all choice buttons
+    document.querySelectorAll('button.choice').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const container = btn.closest('.q');
+        // prevent double-click answering after correct
+        if(container.classList.contains('answered')) return;
+        const correct = btn.dataset.correct === 'true';
+        // mark styles
+        if(correct){
+          btn.classList.add('correct');
+          // show explanation
+          const exp = container.querySelector('.explain');
+          if(exp) exp.style.display = 'block';
+          container.classList.add('answered');
+        } else {
+          btn.classList.add('wrong');
+          // reveal a short incorrect message, and reveal explanation if available
+          const exp = container.querySelector('.explain');
+          if(exp){
+            // show explanation but indicate user was incorrect and then show correct answer
+            exp.style.display = 'block';
+            // if explanation exists, prepend incorrect note
+            const fb = exp.querySelector('.feedback');
+            if(fb){
+              fb.textContent = 'Incorrect. ' + (fb.textContent || '');
+            }
+            // highlight the correct choice for guidance
+            const correctBtn = container.querySelector('button.choice[data-correct="true"]');
+            if(correctBtn) correctBtn.classList.add('correct');
+          }
+          container.classList.add('answered');
+        }
+      });
+    });
+
+    // Close / reveal buttons
+    document.querySelectorAll('.btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const target = btn.dataset.target;
+        const ans = document.getElementById(target+'-answer');
+        if(ans) ans.style.display = 'block';
+      });
+    });
+
+  </script>
+</body>
+</html>
