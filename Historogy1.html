@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cell & Cell Junction — Quiz & Essays (Dr. Vaseem)</title>
+  <style>
+    :root{--bg:#f7fafc;--card:#ffffff;--accent:#0b5cff;--muted:#6b7280}
+    body{font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial; background:var(--bg); margin:0; padding:24px; color:#0f172a}
+    .container{max-width:1000px;margin:0 auto}
+    header{display:flex;align-items:center;gap:16px;margin-bottom:18px}
+    header h1{font-size:1.25rem;margin:0}
+    .card{background:var(--card);border-radius:10px;padding:18px;box-shadow:0 6px 18px rgba(12,20,40,0.06);margin-bottom:16px}
+    .q{margin-bottom:12px;padding:12px;border-radius:8px;border:1px solid #eef2ff}
+    .opts{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+    label.option{display:flex;align-items:center;gap:10px;padding:8px;border-radius:6px;cursor:pointer;border:1px solid transparent}
+    label.option:hover{background:#fbfdff}
+    .btn{background:var(--accent);color:#fff;padding:8px 12px;border-radius:8px;border:0;cursor:pointer}
+    .btn.secondary{background:#e6eefc;color:var(--accent)}
+    .explanation{margin-top:8px;padding:10px;border-radius:6px;background:#fff8f0;border-left:4px solid #f59e0b;color:#92400e}
+    .correct{background:#ecfdf5;border-left-color:#10b981;color:#065f46}
+    .meta{font-size:0.9rem;color:var(--muted)}
+    .score{font-weight:700}
+    textarea{width:100%;min-height:160px;padding:10px;border-radius:6px;border:1px solid #e6e9ee}
+    .rubric{background:#f8fafc;padding:10px;border-radius:6px;border:1px dashed #cfe3ff;margin-top:8px}
+    footer{font-size:0.85rem;color:var(--muted);margin-top:14px}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Cell & Cell Junction — Interactive MCQs (30) and Essays (3)</h1>
+      <div class="meta">Author: Dr. KAPE— Interactive Quiz Made for Medicine study group</div>
+    </header>
+
+    <div class="card" id="mcq-section">
+      <h2>Multiple Choice Questions (30)</h2>
+      <p class="meta">Select an answer for each question and click <strong>Check</strong>. If your answer is incorrect you'll see the explanation and your answers are collected. You can also use <strong>Check All</strong> to grade the whole quiz.</p>
+
+      <div id="questions"></div>
+
+      <div style="display:flex;gap:8px;margin-top:12px;">
+        <button class="btn" id="checkAll">Check All Answers</button>
+        <button class="btn secondary" id="resetAll">Reset All</button>
+        <div style="margin-left:auto;align-self:center">Score: <span class="score" id="score">0 / 30</span></div>
+      </div>
+    </div>
+
+    <div class="card" id="essay-section">
+      <h2>Essay Questions (3)</h2>
+      <p class="meta">Write full answers in the boxes and click <strong>Review Answer</strong> to reveal the expected (model) answer and marking rubric.</p>
+
+      <div class="essay" data-id="E1">
+        <h3>Essay 1 — (15 marks)</h3>
+        <p><strong>Prompt:</strong> Describe the structure and functions of the cell membrane. Include the roles of lipids, proteins, and carbohydrates, and explain how membrane structure relates to function.</p>
+        <textarea id="essay1"></textarea>
+        <div style="margin-top:8px"><button class="btn" onclick="reviewEssay('E1')">Review Answer</button></div>
+        <div id="E1-review" class="rubric" style="display:none"></div>
+      </div>
+
+      <div class="essay" data-id="E2" style="margin-top:12px">
+        <h3>Essay 2 — (15 marks)</h3>
+        <p><strong>Prompt:</strong> Compare and contrast tight junctions, adherens junctions, desmosomes, hemidesmosomes, focal adhesions, and gap junctions. For each give (a) molecular components, (b) main mechanical/physiological role, and (c) an example tissue where they are important.</p>
+        <textarea id="essay2"></textarea>
+        <div style="margin-top:8px"><button class="btn" onclick="reviewEssay('E2')">Review Answer</button></div>
+        <div id="E2-review" class="rubric" style="display:none"></div>
+      </div>
+
+      <div class="essay" data-id="E3" style="margin-top:12px">
+        <h3>Essay 3 — (20 marks)</h3>
+        <p><strong>Prompt:</strong> Explain the endoplasmic reticulum–Golgi apparatus–secretory pathway: describe how proteins destined for secretion are synthesized, modified, sorted and released. Include the role of transport vesicles and the types of modifications that occur.</p>
+        <textarea id="essay3"></textarea>
+        <div style="margin-top:8px"><button class="btn" onclick="reviewEssay('E3')">Review Answer</button></div>
+        <div id="E3-review" class="rubric" style="display:none"></div>
+      </div>
+
+    </div>
+
+    <footer>Use this file by pasting into an .html file and opening in a modern browser. The quiz works fully offline.</footer>
+  </div>
+
+  <script>
+    // Questions array (30 Qs) with options, correct index, and explanation
+    const questions = [
+      {q: 'Who first described "cells" after observing a thin slice of cork in 1665?', opts: ['Anton van Leeuwenhoek','Matthias Schleiden','Robert Hooke','Theodore Schwann'], a:2, exp: 'Robert Hooke described small box-like structures in cork and named them "cells".'},
+      {q: 'Which statement is NOT part of the classical cell theory (with Virchow modification)?', opts: ['All living organisms are made of cells','Cells are the structural and functional unit of life','New cells arise from pre-existing cells','Cells are formed spontaneously from non-living matter'], a:3, exp: 'Cell theory states new cells come from pre-existing cells; spontaneous generation is not part of cell theory.'},
+      {q: 'Which organelle is primarily responsible for ATP production?', opts: ['Lysosome','Mitochondrion','Golgi apparatus','Peroxisome'], a:1, exp: 'Mitochondria contain enzymes of oxidative phosphorylation to synthesize ATP.'},
+      {q: 'Which cytoplasmic component makes up the principle fluid medium of the cell (70-85%)?', opts: ['Proteins','Lipids','Water','Carbohydrates'], a:2, exp: 'Water is the principal fluid medium of the cell.'},
+      {q: 'Which of these is most abundant by percentage in the plasma membrane?', opts: ['Phospholipids','Proteins','Cholesterol','Carbohydrates'], a:1, exp: 'In many cells proteins compose around 55% and phospholipids 25% — proteins are the largest component by weight.'},
+      {q: 'Ribosomes are composed of which two major biomolecules?', opts: ['DNA and protein','RNA and protein','Lipid and carbohydrate','Protein and carbohydrate'], a:1, exp: 'Ribosomes are ribonucleoprotein particles made of rRNA and proteins.'},
+      {q: 'Which organelle is the site of lipid synthesis (especially smooth ER function)?', opts: ['Rough ER','Smooth ER','Golgi apparatus','Lysosome'], a:1, exp: 'Smooth ER (agranular ER) synthesizes lipids and detoxifies substances.'},
+      {q: 'The Golgi apparatus is especially prominent in which kind of cells?', opts: ['Secretory cells','Red blood cells','Neurons','Sperm cells'], a:0, exp: 'Secretory cells process and package proteins and therefore have a well-developed Golgi.'},
+      {q: 'Lysosomes contain which type of enzymes?', opts: ['Oxidases','Hydrolases','Kinases','Polymerases'], a:1, exp: 'Lysosomes contain hydrolase enzymes that digest macromolecules.'},
+      {q: 'Peroxisomes differ from lysosomes because they mainly contain:', opts: ['Hydrolases','Oxidases','Transferases','Proteases'], a:1, exp: 'Peroxisomes typically contain oxidases and catalase, not hydrolases.'},
+      {q: 'Which structure is NOT part of the cytoskeleton?', opts: ['Microtubules','Microfilaments','Intermediate filaments','Glycocalyx'], a:3, exp: 'Glycocalyx is a carbohydrate coat on the outside of the plasma membrane, not a cytoskeletal filament.'},
+      {q: 'Centrioles are composed primarily of what?', opts: ['Actin filaments','Microtubules (tubulin)','Intermediate filaments','DNA strands'], a:1, exp: 'Centrioles are cylindrical structures built from microtubules (tubulin).'},
+      {q: 'Which cells typically lack centrioles and are poor at cell division?', opts: ['Skin epithelial cells','Nerve cell bodies','Gut epithelial cells','Bone cells'], a:1, exp: 'Many mature neurons lack centrioles and generally do not divide.'},
+      {q: 'Which of the following best describes the glycocalyx?', opts: ['An intracellular protein scaffold','A layer of carbohydrate moieties on the external membrane surface','The inner mitochondrial matrix','A Golgi-derived vesicle'], a:1, exp: 'Glycocalyx is the carbohydrate-rich coating on the cell surface composed of glycoproteins and glycolipids.'},
+      {q: 'Which ion is most abundant inside typical cells and is essential for many intracellular functions?', opts: ['Sodium (Na+)','Potassium (K+)','Chloride (Cl-)','Calcium (Ca2+)'], a:1, exp: 'Potassium is the primary intracellular cation in most cells.'},
+      {q: 'Tight (occluding) junctions are formed by which family of proteins?', opts: ['Integrins','Cadherins','Claudins and occludins','Connexins'], a:2, exp: 'Claudins and occludins (and JAMs) form tight junction strands that seal the paracellular space.'},
+      {q: 'Which junction permits direct cytoplasmic exchange of small molecules and ions between adjacent cells?', opts: ['Desmosome','Tight junction','Gap junction','Hemidesmosome'], a:2, exp: 'Gap junctions, formed by connexons (connexins), allow small molecules and ions to pass between cells.'},
+      {q: 'Desmosomes mainly connect which cytoskeletal element between adjacent cells?', opts: ['Actin filaments','Microtubules','Intermediate filaments','Myosin filaments'], a:2, exp: 'Desmosomes attach to intermediate filaments via desmoplakin and plakoglobin.'},
+      {q: 'Hemidesmosomes bind cells to the extracellular matrix using which transmembrane receptors?', opts: ['Cadherins','Selectins','Integrins (alpha6 beta4)','Connexins'], a:2, exp: 'Hemidesmosomes use integrins (notably alpha6 beta4) to bind the basal lamina (laminin).'},
+      {q: 'Focal adhesions link the extracellular matrix to the cell through which cytoskeletal network?', opts: ['Intermediate filaments','Actin filaments','Microtubules','Ribosomes'], a:1, exp: 'Focal adhesions connect integrins to actin cytoskeleton (via talin, vinculin, alpha-actinin).'},
+      {q: 'Which component of the junction complex is typically associated with the actin cytoskeleton and forms an adhesion belt around epithelial cells?', opts: ['Zona occludens','Zona adherens (adherens junction)','Desmosome','Gap junction'], a:1, exp: 'Adherens junctions (zona adherens) connect actin filaments and form an adhesion belt below the tight junction in epithelia.'},
+      {q: 'Connexons are hexamers made of which proteins?', opts: ['Integrins','Connexins','Cadherins','Claudins'], a:1, exp: 'Six connexin molecules assemble to form a connexon (hemichannel).' },
+      {q: 'Which organelle is the main site of protein glycosylation and packaging for secretion?', opts: ['Nucleus','Mitochondrion','Golgi apparatus','Peroxisome'], a:2, exp: 'The Golgi modifies and packages proteins (including glycosylation) and sorts them into vesicles.'},
+      {q: 'Which process describes release of contents from a cell via fusion of secretory vesicles with the plasma membrane?', opts: ['Endocytosis','Exocytosis','Phagocytosis','Pinocytosis'], a:1, exp: 'Exocytosis is the fusion of vesicles with the plasma membrane to release their contents outside.'},
+      {q: 'Which structure contains DNA and controls the activities of the cell?', opts: ['Ribosome','Nucleus','Golgi apparatus','Lysosome'], a:1, exp: 'The nucleus stores DNA and regulates gene expression and cell activity.'},
+      {q: 'Which of these statements about the rough endoplasmic reticulum (RER) is TRUE?', opts: ['RER has many ribosomes and synthesizes secretory and membrane proteins','RER synthesizes lipids','RER is the main site of oxidative metabolism','RER contains hydrolase enzymes for digestion'], a:0, exp: 'Rough ER with attached ribosomes synthesizes proteins destined for secretion or membranes.'},
+      {q: 'Which secreted extracellular matrix components are produced by the Golgi and are important for cartilage and connective tissues?', opts: ['Hyaluronic acid and chondroitin sulphate','Keratin and elastin','Actin and myosin','Collagen I only'], a:0, exp: 'The Golgi produces glycosaminoglycans like hyaluronic acid and chondroitin sulphate used in proteoglycans.'},
+      {q: 'Which particle is not normally part of a typical eukaryotic cell cytoplasm?', opts: ['Peroxisome','Chloroplast (in animal cell)','Mitochondrion','Golgi vesicle'], a:1, exp: 'Chloroplasts are present in plant cells, not in animal (typical human) cells.'}
+    ];
+
+    const qContainer = document.getElementById('questions');
+
+    function renderQuestions(){
+      qContainer.innerHTML = '';
+      questions.forEach((item,i)=>{
+        const div = document.createElement('div'); div.className='q'; div.id = 'q'+i;
+        const html = `
+          <div><strong>Q${i+1}.</strong> ${item.q}</div>
+          <div class="opts">
+            ${item.opts.map((o,idx)=>`<label class="option"><input type="radio" name="q${i}" value="${idx}"/> <span>${String.fromCharCode(65+idx)}. ${o}</span></label>`).join('')}
+          </div>
+          <div style="margin-top:8px;display:flex;gap:8px;"><button class="btn" onclick="checkQuestion(${i})">Check</button>
+          <button class="btn secondary" onclick="showExplanation(${i})">Show Explanation</button>
+          <div style="margin-left:auto;align-self:center" class="meta">Answered: <span id="ans${i}">—</span></div></div>
+          <div id="exp${i}" style="display:none" class="explanation"></div>
+        `;
+        div.innerHTML = html; qContainer.appendChild(div);
+      });
+    }
+
+    function getSelected(qIndex){
+      const radios = document.getElementsByName('q'+qIndex);
+      for(const r of radios) if(r.checked) return parseInt(r.value);
+      return null;
+    }
+
+    function checkQuestion(i){
+      const sel = getSelected(i);
+      const expDiv = document.getElementById('exp'+i);
+      const ansSpan = document.getElementById('ans'+i);
+      if(sel === null){ alert('Please select an answer for Q'+(i+1)); return; }
+      ansSpan.textContent = String.fromCharCode(65+sel);
+      if(sel === questions[i].a){
+        expDiv.className = 'explanation correct';
+        expDiv.innerHTML = '<strong>Correct.</strong> ' + questions[i].exp;
+      } else {
+        expDiv.className = 'explanation';
+        expDiv.innerHTML = '<strong>Incorrect.</strong> You chose <em>' + String.fromCharCode(65+sel) + '</em>. ' + questions[i].exp;
+      }
+      expDiv.style.display = 'block';
+      updateScore();
+    }
+
+    function showExplanation(i){
+      const expDiv = document.getElementById('exp'+i);
+      expDiv.className = 'explanation';
+      expDiv.innerHTML = '<strong>Explanation:</strong> ' + questions[i].exp + '<br/><em>Correct answer: ' + String.fromCharCode(65+questions[i].a) + '</em>';
+      expDiv.style.display = 'block';
+    }
+
+    function updateScore(){
+      let correct=0; let total=questions.length;
+      for(let i=0;i<total;i++){
+        const sel = getSelected(i);
+        if(sel!==null && sel === questions[i].a) correct++;
+      }
+      document.getElementById('score').textContent = correct + ' / ' + total;
+    }
+
+    document.getElementById('checkAll').addEventListener('click',()=>{
+      for(let i=0;i<questions.length;i++){
+        try{ checkQuestion(i); }catch(e){}
+      }
+      window.scrollTo({top:document.getElementById('mcq-section').offsetTop,behavior:'smooth'});
+    });
+
+    document.getElementById('resetAll').addEventListener('click',()=>{
+      for(let i=0;i<questions.length;i++){
+        const radios = document.getElementsByName('q'+i);
+        for(const r of radios) r.checked=false;
+        const expDiv = document.getElementById('exp'+i); if(expDiv) expDiv.style.display='none';
+        const ansSpan = document.getElementById('ans'+i); if(ansSpan) ansSpan.textContent='—';
+      }
+      updateScore();
+    });
+
+    // Essays expected answers and rubrics
+    const essays = {
+      'E1':{
+        model: `Expected points (full marks):\n- Phospholipid bilayer: amphipathic phospholipids with hydrophilic heads and hydrophobic tails; forms a selective barrier.\n- Proteins: integral (transporters, channels, receptors) and peripheral (signalling, cytoskeleton anchors); ~55% by mass in many cells.\n- Cholesterol: modulates membrane fluidity and stability.\n- Carbohydrates (glycoproteins/glycolipids & glycocalyx): cell recognition, adhesion, protection, receptors for hormones/immune interactions.\n- Membrane functions: selective permeability, compartmentalization, signal transduction, cell–cell communication, attachment to cytoskeleton and extracellular matrix.\n- Relationship structure-function: amphipathic lipids for barrier + fluidity; proteins provide specificity (channels, receptors); carbohydrates for recognition; cholesterol fine-tunes fluidity; membrane asymmetry and microdomains relate to localisation of function.\n(Use diagrams or labelled examples if needed).`,
+        rubric: `Marking rubric (15 marks):\n- Phospholipid bilayer structure and role — 4 marks\n- Protein types & roles (integral vs peripheral) — 4 marks\n- Carbohydrates and glycocalyx functions — 2 marks\n- Cholesterol and fluidity — 2 marks\n- Clear links between structure and function + examples — 3 marks`},
+      'E2':{
+        model: `Expected points (full marks):\n- Tight (occluding) junctions: transmembrane proteins claudins/occludins/JAM; seal paracellular space; found in intestinal epithelium, urinary bladder. (3–4 points)\n- Adherens junctions (zona adherens): cadherins (E-cadherin) linked to actin via catenins; provide contractile belt and maintain cell polarity; common in epithelium.\n- Desmosomes (macula adherens): desmoglein/desmocollin (cadherin family) attach to intermediate filaments via desmoplakin/plakoglobin; mechanical strength in skin and cardiac muscle.\n- Hemidesmosomes: integrin alpha6beta4 and collagen XVII bind basal lamina (laminin), link intermediate filaments to ECM; important in epidermal attachment to basement membrane.\n- Focal adhesions: integrins link ECM (fibronectin, collagen) to actin via talin/vinculin/alpha-actinin; mediate mechanotransduction and cell migration (fibroblasts).\n- Gap junctions: connexins assemble into connexons to form channels for ions and small molecules; electrical and metabolic coupling in heart muscle and some epithelia.\n(Include comparisons: which cytoskeleton each links to, whether cell–cell or cell–matrix, and a tissue example.)`,
+        rubric: `Marking rubric (15 marks):\n- Correct molecular components for each junction (6 marks, 1 per junction)\n- Main mechanical/physiological role (6 marks)\n- Tissue/example and short justification (3 marks)`},
+      'E3':{
+        model: `Expected points (full marks):\n- Protein synthesis begins on ribosomes; signal peptide directs nascent polypeptide to RER (signal recognition particle SRP and SRP receptor).\n- Co-translational translocation into ER lumen or insertion into membrane; signal peptide removed for secreted proteins.\n- In ER: initial folding, disulfide bond formation, N-linked glycosylation and quality control (chaperones, calnexin/calreticulin); misfolded proteins are targeted for ER-associated degradation (ERAD).\n- Packaged into COPII-coated transport vesicles to Golgi.\n- In Golgi: further modification (trim/reshape N-linked glycans, O-linked glycosylation, sulfation), sorting into different vesicles (secretory vesicles, lysosomal enzymes, plasma membrane).\n- Secretory vesicles travel to plasma membrane and undergo regulated or constitutive exocytosis releasing cargo.\n- Mention of vesicle coats (COPII for ER->Golgi, COPI for retrograde), SNAREs and Rab proteins for vesicle targeting/fusion.`,
+        rubric: `Marking rubric (20 marks):\n- ER targeting & translation (SRP, signal peptide) — 4 marks\n- ER processing (folding, glycosylation) — 4 marks\n- Vesicle transport and coats (COPII, COPI) — 4 marks\n- Golgi modifications and sorting — 4 marks\n- Exocytosis and fusion machinery mention (SNAREs/Rabs) — 4 marks`}
+    };
+
+    function reviewEssay(id){
+      const area = document.getElementById(id.toLowerCase());
+      const review = document.getElementById(id+'-review');
+      const data = essays[id];
+      review.style.display = 'block';
+      review.innerHTML = `<strong>Model/Expected Answer:</strong><pre style="white-space:pre-wrap">${data.model}</pre><strong>Marking Rubric:</strong><pre style="white-space:pre-wrap">${data.rubric}</pre>`;
+      window.scrollTo({top: review.offsetTop-60, behavior:'smooth'});
+    }
+
+    // initial render
+    renderQuestions();
+  </script>
+</body>
+</html>
