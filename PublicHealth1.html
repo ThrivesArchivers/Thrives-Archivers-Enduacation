@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Defining Health — Quiz (MCQs + Essays)</title>
+  <style>
+    body{font-family:system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; max-width:900px;margin:20px auto;padding:20px;}
+    h1{font-size:1.6rem;margin-bottom:0.2rem}
+    h2{margin-top:1.2rem}
+    .question{background:#fbfbfb;border:1px solid #eee;padding:12px;margin:12px 0;border-radius:8px}
+    .options{margin-top:8px}
+    .result{margin-top:10px;padding:10px;border-radius:6px;display:none}
+    .correct{background:#e6ffea;border:1px solid #2d9a4a;color:#1b5e20}
+    .incorrect{background:#ffecec;border:1px solid #d85a5a;color:#7a1e1e}
+    button.clear{background:#f0f0f0;border:1px solid #ccc;padding:6px 10px;border-radius:6px;cursor:pointer}
+    details{margin-top:8px;background:#fffef7;padding:8px;border-radius:6px;border:1px solid #f3e7c9}
+    small.note{color:#666}
+  </style>
+</head>
+<body>
+  <h1>Defining Health — Multiple Choice Questions (20)</h1>
+  <p><small class="note">Select an option for each question. Immediate feedback and explanation appear after selection.</small></p>
+
+  <div id="quiz">
+
+    <!-- Q1 -->
+    <div class="question" id="q1">
+      <strong>1. Which statement is correct about the terms "disease" and "illness"?</strong>
+      <div class="options">
+        <label><input type="radio" name="q1" value="a" onclick="checkAnswer('q1', this.value, 'b', '"Disease" is generally considered objective (diagnosed/tested), while "illness" is subjective (what the person feels).')"> a) Disease is subjective; illness is objective.</label><br>
+        <label><input type="radio" name="q1" value="b" onclick="checkAnswer('q1', this.value, 'b', 'Correct — disease is often diagnosed or tested (objective), whereas illness is the felt experience (subjective).')"> b) Disease is objective; illness is subjective.</label><br>
+        <label><input type="radio" name="q1" value="c" onclick="checkAnswer('q1', this.value, 'b', 'Incorrect — this reverses the usual meanings.')"> c) Both are purely objective concepts.</label><br>
+        <label><input type="radio" name="q1" value="d" onclick="checkAnswer('q1', this.value, 'b', 'Incorrect — both terms are not identical; one is usually objective and the other subjective.')"> d) Both are purely subjective concepts.</label>
+      </div>
+      <div id="result-q1" class="result"></div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="question" id="q2">
+      <strong>2. The Western (biomedical) model of health primarily defines health as:</strong>
+      <div class="options">
+        <label><input type="radio" name="q2" value="a" onclick="checkAnswer('q2', this.value, 'c', 'Biomedical model defines health negatively as the absence of disease; it treats the body like a machine and emphasizes curative interventions.')"> a) A positive state of complete wellbeing (physical, mental, social).</label><br>
+        <label><input type="radio" name="q2" value="b" onclick="checkAnswer('q2', this.value, 'c', 'Not correct — this is closer to the holistic/WHO definition.')"> b) A social construct only influenced by culture and class.</label><br>
+        <label><input type="radio" name="q2" value="c" onclick="checkAnswer('q2', this.value, 'c', 'Correct — the biomedical model views health as the absence of disease (negative definition).')"> c) The absence of disease.</label><br>
+        <label><input type="radio" name="q2" value="d" onclick="checkAnswer('q2', this.value, 'c', 'Incorrect — this would be the wellness or salutogenesis emphasis.')"> d) The capacity to realise aspirations and cope with the environment.</label>
+      </div>
+      <div id="result-q2" class="result"></div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="question" id="q3">
+      <strong>3. Which model emphasises resources, resilience, and what keeps people well (rather than what makes them sick)?</strong>
+      <div class="options">
+        <label><input type="radio" name="q3" value="a" onclick="checkAnswer('q3', this.value, 'b', 'Correct — the Salutogenesis model focuses on resources and factors that support health (Aaron Antonovsky).')"> a) Biomedical model</label><br>
+        <label><input type="radio" name="q3" value="b" onclick="checkAnswer('q3', this.value, 'b', 'Correct — salutogenesis focuses on what keeps people well, not pathogenesis.')"> b) Salutogenesis model</label><br>
+        <label><input type="radio" name="q3" value="c" onclick="checkAnswer('q3', this.value, 'b', 'Incorrect — this is not the primary focus of the biomedical model.')"> c) Disease surveillance model</label><br>
+        <label><input type="radio" name="q3" value="d" onclick="checkAnswer('q3', this.value, 'b', 'Incorrect — this describes the biomedical focus on diagnostic criteria.')"> d) Pathogenesis model</label>
+      </div>
+      <div id="result-q3" class="result"></div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="question" id="q4">
+      <strong>4. WHO's 1948 definition of health describes it as:</strong>
+      <div class="options">
+        <label><input type="radio" name="q4" value="a" onclick="checkAnswer('q4', this.value, 'a', 'Correct — WHO (1948) defined health as complete physical, mental and social wellbeing and not merely the absence of disease or infirmity.')"> a) A state of complete physical, mental and social wellbeing, not merely the absence of disease.</label><br>
+        <label><input type="radio" name="q4" value="b" onclick="checkAnswer('q4', this.value, 'a', 'Incorrect — this is the biomedical or negative sense.')"> b) Only the absence of disease or infirmity.</label><br>
+        <label><input type="radio" name="q4" value="c" onclick="checkAnswer('q4', this.value, 'a', 'Incorrect — this is closer to the wellness/resource view (1984 definition).')"> c) The capacity to realise aspirations and satisfy needs (wellness model).</label><br>
+        <label><input type="radio" name="q4" value="d" onclick="checkAnswer('q4', this.value, 'a', 'Incorrect — this is not WHO 1948 wording.')"> d) A purely spiritual state of being.</label>
+      </div>
+      <div id="result-q4" class="result"></div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="question" id="q5">
+      <strong>5. Which of the following is NOT typically listed as a component/dimension of health in the lecture?</strong>
+      <div class="options">
+        <label><input type="radio" name="q5" value="a" onclick="checkAnswer('q5', this.value, 'd', 'Correct — "Financial health" as a named separate dimension was not listed in the slide; the slides listed physical, mental, social, emotional, environmental, spiritual.')"> a) Physical health</label><br>
+        <label><input type="radio" name="q5" value="b" onclick="checkAnswer('q5', this.value, 'd', 'Incorrect — mental health was listed.')"> b) Mental health</label><br>
+        <label><input type="radio" name="q5" value="c" onclick="checkAnswer('q5', this.value, 'd', 'Incorrect — social health was listed.')"> c) Social health</label><br>
+        <label><input type="radio" name="q5" value="d" onclick="checkAnswer('q5', this.value, 'd', 'Correct — this option was not explicitly listed among the six dimensions in the slide set.')"> d) Financial health</label>
+      </div>
+      <div id="result-q5" class="result"></div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="question" id="q6">
+      <strong>6. The Wellness Model (WHO, 1984) describes health primarily as:</strong>
+      <div class="options">
+        <label><input type="radio" name="q6" value="a" onclick="checkAnswer('q6', this.value, 'c', 'Correct — the Wellness Model sees health as a resource or capacity to satisfy needs, realize aspirations, and cope with the environment (a process).')"> a) A fixed state of perfect wellbeing.</label><br>
+        <label><input type="radio" name="q6" value="b" onclick="checkAnswer('q6', this.value, 'c', 'Incorrect — this is not the fixed-state view.')"> b) Only absence of disease.</label><br>
+        <label><input type="radio" name="q6" value="c" onclick="checkAnswer('q6', this.value, 'c', 'Correct — Wellness model emphasises health as a dynamic resource or process for everyday living.')"> c) A resource for everyday living (process/force).</label><br>
+        <label><input type="radio" name="q6" value="d" onclick="checkAnswer('q6', this.value, 'c', 'Incorrect — this is more the biomedical emphasis.')"> d) A matter of genetic fate only.</label>
+      </div>
+      <div id="result-q6" class="result"></div>
+    </div>
+
+    <!-- Q7 -->
+    <div class="question" id="q7">
+      <strong>7. According to the slides, which of the following is NOT a group in the four groups of determinants of health?</strong>
+      <div class="options">
+        <label><input type="radio" name="q7" value="a" onclick="checkAnswer('q7', this.value, 'c', 'Correct — the slides listed Genetic/biological, Lifestyle, Environment, and Health services; "Political ideology" was not listed as a separate group (though politics shapes determinants).')"> a) Genetic and biological factors</label><br>
+        <label><input type="radio" name="q7" value="b" onclick="checkAnswer('q7', this.value, 'c', 'Incorrect — lifestyle was listed.')"> b) Lifestyle</label><br>
+        <label><input type="radio" name="q7" value="c" onclick="checkAnswer('q7', this.value, 'c', 'Correct — political ideology as a standalone fourth group was not listed in that four-group breakdown.')"> c) Political ideology</label><br>
+        <label><input type="radio" name="q7" value="d" onclick="checkAnswer('q7', this.value, 'c', 'Incorrect — health services were listed.')"> d) Health services</label>
+      </div>
+      <div id="result-q7" class="result"></div>
+    </div>
+
+    <!-- Q8 -->
+    <div class="question" id="q8">
+      <strong>8. Dahlgren &amp; Whitehead (1991) are best known for:</strong>
+      <div class="options">
+        <label><input type="radio" name="q8" value="a" onclick="checkAnswer('q8', this.value, 'b', 'Correct — they produced a layered model (often shown as rings) illustrating individual, social, and environmental determinants of health.')"> a) Inventing the biomedical model</label><br>
+        <label><input type="radio" name="q8" value="b" onclick="checkAnswer('q8', this.value, 'b', 'Correct — they developed the determinant model showing layers of influence on health (eg individual, community, socioeconomic, environment).')"> b) Mapping the social determinants of health in a layered model</label><br>
+        <label><input type="radio" name="q8" value="c" onclick="checkAnswer('q8', this.value, 'b', 'Incorrect — they did not focus on genetic engineering.')"> c) Creating the WHO definition of health</label><br>
+        <label><input type="radio" name="q8" value="d" onclick="checkAnswer('q8', this.value, 'b', 'Incorrect — this option is unrelated.')"> d) Proposing the salutogenesis model</label>
+      </div>
+      <div id="result-q8" class="result"></div>
+    </div>
+
+    <!-- Q9 -->
+    <div class="question" id="q9">
+      <strong>9. Which of these is an example of a social determinant of health?</strong>
+      <div class="options">
+        <label><input type="radio" name="q9" value="a" onclick="checkAnswer('q9', this.value, 'd', 'Correct — education is a clear social determinant affecting health choices, opportunities and outcomes.')"> a) Education level</label><br>
+        <label><input type="radio" name="q9" value="b" onclick="checkAnswer('q9', this.value, 'd', 'Incorrect — while DNA influences health, it is a biological rather than social determinant.')"> b) Genetic mutation')</label><br>
+        <label><input type="radio" name="q9" value="c" onclick="checkAnswer('q9', this.value, 'd', 'Incorrect — the chemical composition of water is not a social determinant (it is environmental).')"> c) Chemical composition of a laboratory sample</label><br>
+        <label><input type="radio" name="q9" value="d" onclick="checkAnswer('q9', this.value, 'd', 'Correct — education is indeed a social determinant of health.')"> d) Access to quality education</label>
+      </div>
+      <div id="result-q9" class="result"></div>
+    </div>
+
+    <!-- Q10 -->
+    <div class="question" id="q10">
+      <strong>10. Which factor is correctly matched with the way low income affects health in the slides?</strong>
+      <div class="options">
+        <label><input type="radio" name="q10" value="a" onclick="checkAnswer('q10', this.value, 'b', 'Correct — low income can cause physiological problems like inadequate housing and poor nutrition.')"> a) Physiological — inadequate housing and lack of food
+</label><br>
+        <label><input type="radio" name="q10" value="b" onclick="checkAnswer('q10', this.value, 'b', 'Incorrect — while psychological stress is a way low income affects health, the option below is not the intended match if different.)"> b) Physiological — access to luxury health spas</label><br>
+        <label><input type="radio" name="q10" value="c" onclick="checkAnswer('q10', this.value, 'b', 'Incorrect — behavioral risks are another pathway (smoking etc.), but this option is mismatched).')"> c) Behavioral — genetic inheritance</label><br>
+        <label><input type="radio" name="q10" value="d" onclick="checkAnswer('q10', this.value, 'b', 'Incorrect — psychological refers to stress and lack of social support, not this option.)"> d) Psychological — improved leisure time</label>
+      </div>
+      <div id="result-q10" class="result"></div>
+    </div>
+
+    <!-- Q11 -->
+    <div class="question" id="q11">
+      <strong>11. Which level is NOT part of the "Levels of Health" listed in the slides?</strong>
+      <div class="options">
+        <label><input type="radio" name="q11" value="a" onclick="checkAnswer('q11', this.value, 'd', 'Correct — "Planetary" as a specifically named level was not listed; the slides listed Global, International, National, Community, Family, Individual.')"> a) Global</label><br>
+        <label><input type="radio" name="q11" value="b" onclick="checkAnswer('q11', this.value, 'd', 'Incorrect — global was listed.')"> b) National</label><br>
+        <label><input type="radio" name="q11" value="c" onclick="checkAnswer('q11', this.value, 'd', 'Incorrect — community was listed.')"> c) Community</label><br>
+        <label><input type="radio" name="q11" value="d" onclick="checkAnswer('q11', this.value, 'd', 'Correct — planetary was not part of the given list.')"> d) Planetary</label>
+      </div>
+      <div id="result-q11" class="result"></div>
+    </div>
+
+    <!-- Q12 -->
+    <div class="question" id="q12">
+      <strong>12. Which of the following best describes "social construct" in relation to health?</strong>
+      <div class="options">
+        <label><input type="radio" name="q12" value="a" onclick="checkAnswer('q12', this.value, 'b', 'Correct — social construct means health is influenced by cultural, economic, political and social factors, not only biology.')"> a) A purely biological fact</label><br>
+        <label><input type="radio" name="q12" value="b" onclick="checkAnswer('q12', this.value, 'b', 'Correct — the idea that health is shaped by society, culture and economics is the "social construct" view.')"> b) An idea shaped by social, cultural and economic contexts</label><br>
+        <label><input type="radio" name="q12" value="c" onclick="checkAnswer('q12', this.value, 'b', 'Incorrect — it is not an unchanging biological constant.')"> c) An immutable genetic trait</label><br>
+        <label><input type="radio" name="q12" value="d" onclick="checkAnswer('q12', this.value, 'b', 'Incorrect — this is too narrow.')"> d) Only about individual behaviour</label>
+      </div>
+      <div id="result-q12" class="result"></div>
+    </div>
+
+    <!-- Q13 -->
+    <div class="question" id="q13">
+      <strong>13. Which of the following actions best illustrates a salutogenic approach in an HIV programme?</strong>
+      <div class="options">
+        <label><input type="radio" name="q13" value="a" onclick="checkAnswer('q13', this.value, 'd', 'Correct — focusing on ART adherence and peer support are salutogenic because they strengthen resources that help people live well with HIV.')"> a) Only measuring viral load in the lab</label><br>
+        <label><input type="radio" name="q13" value="b" onclick="checkAnswer('q13', this.value, 'd', 'Incorrect — solely focusing on pathogenesis would be about the virus and its biological effects; salutogenesis focuses on resilience and resources.')"> b) Focusing entirely on how the virus destroys immunity</label><br>
+        <label><input type="radio" name="q13" value="c" onclick="checkAnswer('q13', this.value, 'd', 'Incorrect — clinical surveillance is important but not the salutogenic emphasis.')"> c) Launching mass screening without support services</label><br>
+        <label><input type="radio" name="q13" value="d" onclick="checkAnswer('q13', this.value, 'd', 'Correct — strengthening adherence, peer support and reducing stigma reflects salutogenesis.')"> d) Promoting adherence, peer support and stigma reduction</label>
+      </div>
+      <div id="result-q13" class="result"></div>
+    </div>
+
+    <!-- Q14 -->
+    <div class="question" id="q14">
+      <strong>14. Which PESTEL factor in the slides refers to legal frameworks that shape health?</strong>
+      <div class="options">
+        <label><input type="radio" name="q14" value="a" onclick="checkAnswer('q14', this.value, 'b', 'Correct — the "Legal" element of PESTEL covers laws and regulations that affect health services and public health policy.')"> a) Political</label><br>
+        <label><input type="radio" name="q14" value="b" onclick="checkAnswer('q14', this.value, 'b', 'Correct — legal frameworks are under the Legal/Regulatory component of PESTEL and shape public health practice.')"> b) Legal</label><br>
+        <label><input type="radio" name="q14" value="c" onclick="checkAnswer('q14', this.value, 'b', 'Incorrect — "Environmental" refers to physical environment like pollution.')"> c) Environmental</label><br>
+        <label><input type="radio" name="q14" value="d" onclick="checkAnswer('q14', this.value, 'b', 'Incorrect — wrong match.')"> d) Technological</label>
+      </div>
+      <div id="result-q14" class="result"></div>
+    </div>
+
+    <!-- Q15 -->
+    <div class="question" id="q15">
+      <strong>15. Which is an example of an environmental determinant of health from the slides?</strong>
+      <div class="options">
+        <label><input type="radio" name="q15" value="a" onclick="checkAnswer('q15', this.value, 'c', 'Correct — housing quality (cold/damp, overcrowding) was listed as affecting respiratory infections and mental health.')"> a) Housing quality (cold, damp, overcrowding)</label><br>
+        <label><input type="radio" name="q15" value="b" onclick="checkAnswer('q15', this.value, 'c', 'Incorrect — individual smoking is a lifestyle factor, not environmental in the slide list.')"> b) Individual smoking habit</label><br>
+        <label><input type="radio" name="q15" value="c" onclick="checkAnswer('q15', this.value, 'c', 'Incorrect — education is a social determinant, not environmental.')"> c) Education level</label><br>
+        <label><input type="radio" name="q15" value="d" onclick="checkAnswer('q15', this.value, 'c', 'Incorrect — genetics are biological determinants.')"> d) Family genes</label>
+      </div>
+      <div id="result-q15" class="result"></div>
+    </div>
+
+    <!-- Q16 -->
+    <div class="question" id="q16">
+      <strong>16. Which statement about gender and health was included in the slides?</strong>
+      <div class="options">
+        <label><input type="radio" name="q16" value="a" onclick="checkAnswer('q16', this.value, 'b', 'Correct — the slides noted social categorisation into men and women and that women are more likely to report illness; also mentioned biological protective effect of oestrogen.')"> a) Gender has no relation to health reporting or biology.</label><br>
+        <label><input type="radio" name="q16" value="b" onclick="checkAnswer('q16', this.value, 'b', 'Correct — the slides discussed gender differences in reporting and mention of oestrogen as protective.')"> b) Women are more likely to report illness; biology (e.g., oestrogen) may offer some protection.</label><br>
+        <label><input type="radio" name="q16" value="c" onclick="checkAnswer('q16', this.value, 'b', 'Incorrect — the slides did not state gender is irrelevant.')"> c) Men are immune to social determinants of health.</label><br>
+        <label><input type="radio" name="q16" value="d" onclick="checkAnswer('q16', this.value, 'b', 'Incorrect — this is false.')"> d) Gender determines exact life expectancy irrespective of context.</label>
+      </div>
+      <div id="result-q16" class="result"></div>
+    </div>
+
+    <!-- Q17 -->
+    <div class="question" id="q17">
+      <strong>17. Which of the following best illustrates "development as a determinant of health" from the slides?</strong>
+      <div class="options">
+        <label><input type="radio" name="q17" value="a" onclick="checkAnswer('q17', this.value, 'd', 'Correct — better infrastructure (clean water, sanitation) reduces disease — this is development improving health.')"> a) Genetic counseling before marriage</label><br>
+        <label><input type="radio" name="q17" value="b" onclick="checkAnswer('q17', this.value, 'd', 'Incorrect — genetic counseling is a health intervention but not the clearest example of development improving living conditions.')"> b) Personal exercise routines</label><br>
+        <label><input type="radio" name="q17" value="c" onclick="checkAnswer('q17', this.value, 'd', 'Incorrect — individual behaviour matters but this option does not match development examples.')"> c) Smoking cessation clinics</label><br>
+        <label><input type="radio" name="q17" value="d" onclick="checkAnswer('q17', this.value, 'd', 'Correct — improved infrastructure like clean water and sanitation are examples of development improving health.')"> d) Improved water, sanitation and roads</label>
+      </div>
+      <div id="result-q17" class="result"></div>
+    </div>
+
+    <!-- Q18 -->
+    <div class="question" id="q18">
+      <strong>18. Which of these is a clear example of a lifestyle determinant of health?</strong>
+      <div class="options">
+        <label><input type="radio" name="q18" value="a" onclick="checkAnswer('q18', this.value, 'b', 'Correct — obesity often results from lifestyle factors like diet and physical inactivity and is a risk for CHD.')"> a) Obesity due to poor diet and low activity</label><br>
+        <label><input type="radio" name="q18" value="b" onclick="checkAnswer('q18', this.value, 'b', 'Incorrect — genetic inheritance is biological, not lifestyle.')"> b) Genetic inheritance of sickle cell trait</label><br>
+        <label><input type="radio" name="q18" value="c" onclick="checkAnswer('q18', this.value, 'b', 'Incorrect — housing quality is environmental.')"> c) Living in damp housing</label><br>
+        <label><input type="radio" name="q18" value="d" onclick="checkAnswer('q18', this.value, 'b', 'Incorrect — lack of access to care is a health services issue.')"> d) Lack of access to health services</label>
+      </div>
+      <div id="result-q18" class="result"></div>
+    </div>
+
+    <!-- Q19 -->
+    <div class="question" id="q19">
+      <strong>19. The slides list interactions of factors leading to disease. Which set below correctly lists common risk factors for coronary heart disease (CHD)?</strong>
+      <div class="options">
+        <label><input type="radio" name="q19" value="a" onclick="checkAnswer('q19', this.value, 'b', 'Correct — high cholesterol, high blood pressure, obesity and smoking were given as combined risk factors for CHD.')"> a) High cholesterol, high BP, obesity, smoking</label><br>
+        <label><input type="radio" name="q19" value="b" onclick="checkAnswer('q19', this.value, 'b', 'Correct — this option matches the slide list of CHD risk factors.')"> b) Low blood sugar, short stature, frequent exercise, sun exposure</label><br>
+        <label><input type="radio" name="q19" value="c" onclick="checkAnswer('q19', this.value, 'b', 'Incorrect — these are not typical CHD risks.')"> c) Excessive water intake, high vitamin C intake</label><br>
+        <label><input type="radio" name="q19" value="d" onclick="checkAnswer('q19', this.value, 'b', 'Incorrect — irrelevant mix.')"> d) Young age, low BMI, abstaining from alcohol</label>
+      </div>
+      <div id="result-q19" class="result"></div>
+    </div>
+
+    <!-- Q20 -->
+    <div class="question" id="q20">
+      <strong>20. Which action would most directly address a social determinant of health in a community?</strong>
+      <div class="options">
+        <label><input type="radio" name="q20" value="a" onclick="checkAnswer('q20', this.value, 'c', 'Correct — improving access to clean water and sanitation addresses environmental and social determinants and can prevent disease at community level.')"> a) Launching a new surgical ward in a private hospital only</label><br>
+        <label><input type="radio" name="q20" value="b" onclick="checkAnswer('q20', this.value, 'c', 'Incorrect — while healthcare access is important, building a private surgical ward may not address broad social determinants.')"> b) Providing free cosmetic surgery to a few people</label><br>
+        <label><input type="radio" name="q20" value="c" onclick="checkAnswer('q20', this.value, 'c', 'Correct — improving water and sanitation tackles root environmental/social causes and benefits the whole community.')"> c) Improving community water and sanitation</label><br>
+        <label><input type="radio" name="q20" value="d" onclick="checkAnswer('q20', this.value, 'c', 'Incorrect — purely clinical measures may not change social determinants.')"> d) Increasing the number of specialists in cosmetic dermatology</label>
+      </div>
+      <div id="result-q20" class="result"></div>
+    </div>
+
+  </div>
+
+  <h2>Essay Questions (5)</h2>
+  <p>Below are 5 essay questions. Each has an expected answer/mark scheme so learners know what to include to earn full marks.</p>
+
+  <ol>
+    <li>
+      <strong>Essay 1:</strong> Explain the difference between "disease" and "illness" and discuss why understanding this distinction is important for healthcare providers. <br>
+      <details>
+        <summary>Expected answer (mark scheme)</summary>
+        <p><strong>Key points to include (full marks ~ 8–10 marks):</strong></p>
+        <ul>
+          <li>Define <em>disease</em> as objective, measurable pathology (diagnosed/tested). (2 marks)</li>
+          <li>Define <em>illness</em> as the subjective experience of symptoms and suffering reported by the person. (2 marks)</li>
+          <li>Explain the importance: clinicians must recognise that patients may feel unwell despite normal tests (illness without disease) and may have silent disease without feeling ill. (2 marks)</li>
+          <li>Provide examples (e.g., depression may be felt but not always test-positive; hypertension may be asymptomatic). (2 marks)</li>
+        </ul>
+      </details>
+    </li>
+
+    <li>
+      <strong>Essay 2:</strong> Compare and contrast the biomedical (Western) model and the holistic (WHO) model of health. What are strengths and limitations of each? <br>
+      <details>
+        <summary>Expected answer (mark scheme)</summary>
+        <p><strong>Key points (full marks ~ 10–12 marks):</strong></p>
+        <ul>
+          <li>Describe biomedical model: focuses on absence of disease, body-as-machine, curative interventions, measurable data (2–3 marks).</li>
+          <li>Describe holistic/WHO model: complete physical, mental and social wellbeing; positive definition; acknowledges social causes (2–3 marks).</li>
+          <li>Strengths of biomedical: precise diagnostics, effective acute treatments, measurable outcomes (2 marks).</li>
+          <li>Limitations of biomedical: ignores social determinants, mental and social aspects, preventive care (2 marks).</li>
+          <li>Strengths of holistic: addresses mental/social wellbeing, prevention, public health; more person-centred (2 marks).</li>
+          <li>Limitations of holistic: harder to measure, may be broad/vague for policy unless operationalised (2 marks).</li>
+        </ul>
+      </details>
+    </li>
+
+    <li>
+      <strong>Essay 3:</strong> Describe the salutogenesis model and give two practical examples of salutogenic interventions in public health programmes. <br>
+      <details>
+        <summary>Expected answer (mark scheme)</summary>
+        <p><strong>Key points (full marks ~ 8 marks):</strong></p>
+        <ul>
+          <li>Definition: salutogenesis (Antonovsky) focuses on origins of health, resources, coping, and what keeps people well rather than what causes disease (2–3 marks).</li>
+          <li>Explain concept of sense of coherence / resources like social support, resilience (2 marks).</li>
+          <li>Give two examples: e.g., in HIV programmes — ART adherence support + peer groups; community gardens and training to improve food security and mental wellbeing. Explain how each builds resources. (3 marks)</li>
+        </ul>
+      </details>
+    </li>
+
+    <li>
+      <strong>Essay 4:</strong> Using Dahlgren &amp; Whitehead's model, explain how both individual lifestyle and broad socioeconomic factors interact to affect health. Provide a local example. <br>
+      <details>
+        <summary>Expected answer (mark scheme)</summary>
+        <p><strong>Key points (full marks ~ 10 marks):</strong></p>
+        <ul>
+          <li>Briefly outline the layered model (individual, social/community networks, living/working conditions, general socioeconomic/environmental conditions). (2 marks)</li>
+          <li>Explain interaction: e.g., poverty reduces access to healthy food (environment), which influences lifestyle (diet), raising chronic disease risk; living conditions affect stress and mental health. (3–4 marks)</li>
+          <li>Give a local example: e.g., in a low-income neighbourhood, poor sanitation and overcrowding increase RTIs while low income limits nutritious food leading to malnutrition and poor school performance — connect layers. (3–4 marks)</li>
+        </ul>
+      </details>
+    </li>
+
+    <li>
+      <strong>Essay 5:</strong> Discuss the relationship between health and development. How can improving health contribute to national development, and how can development also improve health? <br>
+      <details>
+        <summary>Expected answer (mark scheme)</summary>
+        <p><strong>Key points (full marks ~ 10 marks):</strong></p>
+        <ul>
+          <li>Explain health as a driver of development: healthier populations are more productive, reduced healthcare costs, better education outcomes. Give example like smallpox eradication reducing disability and boosting productivity. (4 marks)</li>
+          <li>Explain development as determinant of health: infrastructure, sanitation, education and economic growth lead to better health services and outcomes. (3 marks)</li>
+          <li>Discuss shared goals (SDGs) and give a short policy implication (2–3 marks).</li>
+        </ul>
+      </details>
+    </li>
+  </ol>
+
+  <script>
+    function checkAnswer(qId, selectedValue, correctValue, explanation){
+      var resultDiv = document.getElementById('result-' + qId);
+      // show result
+      if(selectedValue === correctValue){
+        resultDiv.className = 'result correct';
+        resultDiv.style.display = 'block';
+        resultDiv.innerHTML = '<strong>Correct.</strong> ' + explanation;
+      } else {
+        resultDiv.className = 'result incorrect';
+        resultDiv.style.display = 'block';
+        resultDiv.innerHTML = '<strong>Incorrect.</strong> ' + explanation + ' <div style="margin-top:8px;"><em>Correct answer: ' + correctValue.toUpperCase() + '</em></div>';
+      }
+    }
+  </script>
+
+  <p style="margin-top:20px;">If you want this exported as a downloadable file, or want the quiz converted to a printable worksheet or a Google Form, tell me which and I will prepare it.</p>
+</body>
+</html>
