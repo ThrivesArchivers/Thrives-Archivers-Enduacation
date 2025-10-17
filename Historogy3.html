@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Skin Anatomy Quiz — Interactive</title>
+  <style>
+    :root{--bg:#f7fafc;--card:#fff;--accent:#0b6efd;--correct:#16a34a;--wrong:#ef4444;--muted:#6b7280}
+    body{font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial;line-height:1.5;margin:0;background:var(--bg);color:#0f172a}
+    .wrap{max-width:980px;margin:28px auto;padding:20px}
+    header{display:flex;align-items:center;gap:16px;margin-bottom:18px}
+    h1{margin:0;font-size:1.4rem}
+    .card{background:var(--card);padding:18px;border-radius:12px;box-shadow:0 6px 18px rgba(2,6,23,0.06);margin-bottom:16px}
+    .q{margin:0 0 10px 0;font-weight:600}
+    .options{display:flex;flex-direction:column;gap:8px}
+    .opt{display:flex;align-items:center;gap:10px;padding:10px;border-radius:8px;border:1px solid #e6eef8;cursor:pointer}
+    .opt input{accent-color:var(--accent)}
+    .feedback{margin-top:10px;padding:10px;border-radius:8px;display:none}
+    .correct{border-left:4px solid var(--correct);background:rgba(16,185,129,0.06);color:var(--correct)}
+    .wrong{border-left:4px solid var(--wrong);background:rgba(239,68,68,0.04);color:var(--wrong)}
+    .explain{color:#0b1220;font-size:0.95rem;margin-top:6px}
+    .controls{display:flex;gap:8px;flex-wrap:wrap}
+    button{background:var(--accent);color:#fff;border:0;padding:8px 12px;border-radius:8px;cursor:pointer}
+    button.secondary{background:#fff;color:var(--accent);border:1px solid #dbeafe}
+    .essay{display:grid;grid-template-columns:1fr 240px;gap:12px}
+    .essay textarea{width:100%;min-height:160px;padding:12px;border-radius:8px;border:1px solid #e6eef8}
+    .model{background:#fff;padding:12px;border-radius:8px;border:1px dashed #cbd5e1;display:none}
+    .small{font-size:0.9rem;color:var(--muted)}
+    footer{margin-top:18px;text-align:center;color:var(--muted);font-size:0.9rem}
+    .score{font-weight:700}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Skin Anatomy — Interactive Quiz</h1>
+      <div class="small">Select an answer to see immediate feedback and explanation.</div>
+    </header>
+
+    <div id="mcq-container">
+      <!-- MCQ cards will be injected here -->
+    </div>
+
+    <div class="card">
+      <h2 style="margin-top:0">Essay Questions</h2>
+      <div class="essay">
+        <div>
+          <label class="q">1. Describe the structure and functions of the skin. (Write your answer below)</label>
+          <textarea id="essay1" placeholder="Type your essay here..."></textarea>
+          <div style="margin-top:8px" class="controls">
+            <button onclick="toggleModel('model1')">Show model answer</button>
+            <button class="secondary" onclick="hideAllModels()">Hide model answers</button>
+          </div>
+          <div id="model1" class="model"><strong>Model answer (short):</strong>
+            <p>The skin consists of three main layers: the epidermis (outer protective keratinized layer containing melanocytes, Langerhans and Merkel cells), the dermis (connective tissue with blood vessels, nerves, hair follicles and glands) and the hypodermis (subcutaneous fat and connective tissue). Functions include protection against mechanical and microbial injury and UV radiation, thermoregulation (via blood flow and sweat), vitamin D synthesis, sensation, and excretion of small amounts of waste through sweat.</p>
+          </div>
+        </div>
+
+        <div>
+          <label class="q">2. Explain the formation and importance of melanin in the skin, and discuss disorders related to abnormal melanin production.</label>
+          <textarea id="essay2" placeholder="Type your essay here..."></textarea>
+          <div style="margin-top:8px" class="controls">
+            <button onclick="toggleModel('model2')">Show model answer</button>
+            <button class="secondary" onclick="hideAllModels()">Hide model answers</button>
+          </div>
+          <div id="model2" class="model"><strong>Model answer (short):</strong>
+            <p>Melanin is produced by melanocytes using the enzyme tyrosinase, converting tyrosine to dopa and then to melanin. Melanin protects epidermal cells from UV-induced DNA damage and determines skin and hair color. Disorders include albinism (lack of tyrosinase → no melanin), vitiligo (loss of melanocytes → depigmented patches), and hyperpigmentation conditions. Melanin also influences susceptibility to skin cancers; low melanin increases risk.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="small">Tip: use the "Hide model answers" button if you prefer to answer essays without seeing the sample.</div>
+      <div style="margin-top:8px">Made for learning • You can save this page locally and open it in your browser.</div>
+    </footer>
+  </div>
+
+  <script>
+    // Questions, options, answer key, explanations
+    const questions = [
+      {q: "The skin is the heaviest single organ of the body, making up about:", opts:["10%","16%","25%","5%"], a:1, exp: "About 16% of body weight."},
+      {q: "The skin covers approximately how much surface area in adults?", opts:["0.5–1.0 m²","1.2–2.3 m²","2.5–3.5 m²","3.5–5.0 m²"], a:1, exp:"Adults typically have 1.2–2.3 m² surface area."},
+      {q: "The epidermis is made up of which type of tissue?", opts:["Connective tissue","Muscle tissue","Epithelial tissue","Nervous tissue"], a:2, exp:"Epidermis is epithelial tissue."},
+      {q: "The dermis originates from which embryonic layer?", opts:["Endoderm","Ectoderm","Mesoderm","Neuroderm"], a:2, exp:"Dermis is from mesoderm."},
+      {q: "The hypodermis mainly functions to:", opts:["Transport blood","Produce keratin","Attach skin to underlying tissues","Form fingerprints"], a:2, exp:"Hypodermis attaches skin to underlying tissues and stores fat."},
+
+      {q: "Melanin is produced by which cell type?", opts:["Keratinocytes","Melanocytes","Merkel cells","Langerhans cells"], a:1, exp:"Melanocytes make melanin."},
+      {q: "The enzyme needed to make melanin is:", opts:["Amylase","Tyrosinase","Peptidase","Catalase"], a:1, exp:"Tyrosinase converts tyrosine into melanin precursors."},
+      {q: "Which type of melanin gives dark brown or black color?", opts:["Pheomelanin","Eumelanin","Neuromelanin","Hemoglobin"], a:1, exp:"Eumelanin is dark brown/black pigment."},
+      {q: "A person with no melanin due to lack of tyrosinase has:", opts:["Addison’s disease","Albinism","Vitiligo","Psoriasis"], a:1, exp:"Albinism is absence of melanin production."},
+      {q: "The main role of melanin is to:", opts:["Prevent sweating","Produce vitamin D","Protect skin from UV radiation","Produce sebum"], a:2, exp:"Melanin protects skin cells from UV damage."},
+
+      {q: "The innermost layer of the epidermis is the:", opts:["Stratum corneum","Stratum lucidum","Stratum spinosum","Stratum basale"], a:3, exp:"Stratum basale (germinativum) is the deepest layer."},
+      {q: "The stratum spinosum is known for:", opts:["Fat storage","Desmosome connections","Vitamin D production","Oil secretion"], a:1, exp:"Cells in spinosum are connected by desmosomes (spiny appearance)."},
+      {q: "The stratum granulosum contains:", opts:["Melanin granules","Keratohyalin granules","Collagen fibers","Sweat glands"], a:1, exp:"Keratohyalin granules help form keratin."},
+      {q: "The stratum lucidum is found only in:", opts:["Thin skin","Hairy skin","Thick skin","Lips"], a:2, exp:"Stratum lucidum appears in thick glabrous skin (palms/soles)."},
+      {q: "The outermost layer of the epidermis is:", opts:["Stratum basale","Stratum corneum","Stratum spinosum","Stratum granulosum"], a:1, exp:"Stratum corneum is the outermost horny layer."},
+
+      {q: "Keratinocytes mainly function to:", opts:["Produce melanin","Make keratin for protection","Store fat","Secrete sweat"], a:1, exp:"Keratinocytes produce keratin, forming a protective barrier."},
+      {q: "Langerhans cells are part of the:", opts:["Digestive system","Nervous system","Immune system","Circulatory system"], a:2, exp:"Langerhans cells present antigens and are immune cells."},
+      {q: "Merkel cells are related to:", opts:["Hair growth","Touch sensation","Immune defense","Oil production"], a:1, exp:"Merkel cells are mechanoreceptors for touch."},
+      {q: "The thickest layer in the epidermis is the:", opts:["Stratum spinosum","Stratum basale","Stratum granulosum","Stratum corneum"], a:0, exp:"In many sites the stratum spinosum is thick; note that corneum thickness varies by site."},
+      {q: "The cells that connect the epidermis to the dermis are called:", opts:["Desmosomes","Hemidesmosomes","Tonofilaments","Anchoring fibrils"], a:1, exp:"Hemidesmosomes attach basal cells to the basal lamina."},
+
+      {q: "The dermis provides:", opts:["Water loss prevention","Strength and flexibility","Pigmentation","Vitamin production"], a:1, exp:"Dermis supplies strength, flexibility, and nourishment."},
+      {q: "The papillary layer of the dermis contains:", opts:["Fat cells","Dermal papillae","Hair follicles","Sebaceous glands"], a:1, exp:"Papillary layer forms dermal papillae that interdigitate with epidermis."},
+      {q: "The reticular layer of the dermis is rich in:", opts:["Collagen and elastic fibers","Keratin","Lipids","Blood cells"], a:0, exp:"The reticular layer is dense with collagen and elastic fibers."},
+      {q: "The hypodermis mainly stores:", opts:["Melanin","Collagen","Fat","Calcium"], a:2, exp:"Hypodermis stores fat (adipose tissue)."},
+      {q: "The anchoring fibrils connect:", opts:["Epidermis to hair","Dermis to epidermis","Hypodermis to dermis","Glands to follicles"], a:1, exp:"Anchoring fibrils bind the dermis to the epidermis."},
+
+      {q: "Sebaceous glands secrete:", opts:["Sweat","Sebum (oil)","Keratin","Melanin"], a:1, exp:"Sebaceous glands produce sebum, an oily secretion."},
+      {q: "Eccrine sweat glands help mainly in:", opts:["Vitamin D formation","Cooling the body","Producing oil","Growing hair"], a:1, exp:"Eccrine glands produce watery sweat for cooling."},
+      {q: "Apocrine sweat glands are found in:", opts:["Palms and soles","Armpits and groin","Face and neck","Forearms"], a:1, exp:"Apocrine glands are in axillae and groin and produce viscous sweat."},
+      {q: "Hair color depends on:", opts:["Collagen","Melanin","Keratin","Blood"], a:1, exp:"Melanin in hair cortex determines color."},
+      {q: "The arrector pili muscle causes:", opts:["Hair to fall","Goosebumps","Sweat to form","Nails to grow"], a:1, exp:"Contraction causes hair to stand (goosebumps)."}
+    ];
+
+    // Build UI
+    const container = document.getElementById('mcq-container');
+    function build(){
+      questions.forEach((qq,i)=>{
+        const card = document.createElement('div'); card.className='card';
+        const qh = document.createElement('h3'); qh.className='q'; qh.textContent=(i+1)+'. '+qq.q; card.appendChild(qh);
+        const opts = document.createElement('div'); opts.className='options';
+
+        qq.opts.forEach((opt,j)=>{
+          const row = document.createElement('label'); row.className='opt';
+          row.setAttribute('data-q', i);
+          row.setAttribute('data-opt', j);
+
+          const radio = document.createElement('input'); radio.type='radio'; radio.name='q'+i; radio.value=j; radio.onclick = ()=>check(i,j);
+          const span = document.createElement('span'); span.textContent = opt;
+          row.appendChild(radio); row.appendChild(span);
+          opts.appendChild(row);
+        });
+
+        card.appendChild(opts);
+
+        const fb = document.createElement('div'); fb.className='feedback'; fb.id='fb'+i;
+        card.appendChild(fb);
+        container.appendChild(card);
+      });
+    }
+
+    function check(qIndex, optIndex){
+      const q = questions[qIndex];
+      const fb = document.getElementById('fb'+qIndex);
+      // clear previous
+      fb.style.display='block'; fb.innerHTML='';
+      if(optIndex === q.a){
+        fb.className='feedback correct';
+        fb.innerHTML = '<strong>Correct.</strong><div class="explain">'+q.exp+'</div>';
+      } else {
+        fb.className='feedback wrong';
+        fb.innerHTML = '<strong>Incorrect.</strong> The correct answer is <strong>'+(q.opts[q.a])+'</strong>.'+
+                       '<div class="explain">'+q.exp+'</div>';
+      }
+      // disable other options for this question
+      const labels = document.querySelectorAll('[data-q="'+qIndex+'"]');
+      labels.forEach(l=>{ l.style.pointerEvents='none'; l.style.opacity='0.95'; });
+    }
+
+    // Essay model toggles
+    function toggleModel(id){
+      const el = document.getElementById(id);
+      if(el.style.display==='none' || el.style.display==='') el.style.display='block'; else el.style.display='none';
+      // scroll into view for convenience
+      el.scrollIntoView({behavior:'smooth', block:'center'});
+    }
+    function hideAllModels(){
+      const models = document.querySelectorAll('.model');
+      models.forEach(m=>m.style.display='none');
+    }
+
+    // initialize
+    build();
+  </script>
+</body>
+</html>
