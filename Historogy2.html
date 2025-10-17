@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Epithelial Tissue Quiz - Thrives Archivers</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 30px;
+    background: #f5f7fa;
+    color: #222;
+  }
+  h1, h2 {
+    text-align: center;
+    color: #0b4f6c;
+  }
+  .question {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin: 20px 0;
+  }
+  .options button {
+    display: block;
+    margin: 8px 0;
+    padding: 10px 15px;
+    width: 100%;
+    background: #e3e7eb;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: left;
+    transition: 0.2s;
+  }
+  .options button:hover {
+    background: #d0d7dd;
+  }
+  .correct {
+    background: #a5d6a7 !important;
+  }
+  .wrong {
+    background: #ef9a9a !important;
+  }
+  .explanation {
+    display: none;
+    margin-top: 10px;
+    padding: 10px;
+    background: #eef5ff;
+    border-left: 4px solid #0b4f6c;
+    border-radius: 8px;
+  }
+  .essay {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin-top: 30px;
+  }
+  .reveal {
+    color: #0077cc;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  .answer {
+    display: none;
+    margin-top: 10px;
+    background: #f0f9f4;
+    border-left: 4px solid #2e7d32;
+    padding: 10px;
+    border-radius: 8px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Thrives Archivers Quiz</h1>
+<h2>Topic: Epithelial Tissue</h2>
+
+<div id="quiz"></div>
+
+<!-- Essay Section -->
+<h2>Essay Questions</h2>
+<div class="essay">
+  <p><b>1. Describe the structure and functions of epithelial tissue.</b></p>
+  <span class="reveal" onclick="toggleAnswer('essay1')">Show Expected Answer</span>
+  <div id="essay1" class="answer">
+    <p>Epithelial tissue is composed of tightly packed cells with minimal extracellular material. It covers body surfaces, lines organs, and forms glands. The cells have polarity (apical, lateral, basal surfaces) and rest on a basement membrane. Functions include protection, absorption, secretion, sensation, and contractility.</p>
+  </div>
+</div>
+
+<div class="essay">
+  <p><b>2. Explain the different types of epithelial cells based on their shape and layers, giving examples of each.</b></p>
+  <span class="reveal" onclick="toggleAnswer('essay2')">Show Expected Answer</span>
+  <div id="essay2" class="answer">
+    <p>Epithelia are classified by the number of layers and cell shape. Simple epithelia (one layer) include simple squamous (lungs), simple cuboidal (kidney tubules), and simple columnar (intestines). Stratified epithelia (many layers) include stratified squamous (skin), and transitional (urinary bladder). Pseudostratified epithelium (trachea) appears multilayered but is single-layered.</p>
+  </div>
+</div>
+
+<script>
+const quizData = [
+  {q: "1. What are the four basic tissues of the body?", options: ["Epithelial, connective, muscular, nervous", "Skin, bone, blood, nerve", "Cartilage, muscle, fat, neuron", "Gland, tendon, ligament, bone"], correct: 0, exp: "The body consists of epithelial, connective, muscular, and nervous tissues."},
+  {q: "2. Epithelial tissue primarily functions to:", options: ["Provide support", "Transmit nerve impulses", "Cover and protect surfaces", "Store energy"], correct: 2, exp: "Epithelial tissue covers body surfaces and provides protection."},
+  {q: "3. The basement membrane connects the epithelium to:", options: ["Muscle", "Nerves", "Connective tissue", "Cartilage"], correct: 2, exp: "The basement membrane separates and connects epithelial tissue to connective tissue."},
+  {q: "4. The apical surface of epithelial cells faces:", options: ["Basement membrane", "Body cavity or lumen", "Connective tissue", "Other cells only"], correct: 1, exp: "The apical surface faces the lumen or external environment."},
+  {q: "5. Which of the following is NOT a function of epithelial tissue?", options: ["Absorption", "Secretion", "Protection", "Impulse conduction"], correct: 3, exp: "Impulse conduction is a function of nervous tissue, not epithelial tissue."},
+  {q: "6. The basal lamina is part of the:", options: ["Apical surface", "Basement membrane", "Lateral surface", "Cytoplasm"], correct: 1, exp: "The basal lamina forms part of the basement membrane."},
+  {q: "7. Which type of junction seals cells tightly together?", options: ["Desmosome", "Tight junction", "Gap junction", "Hemidesmosome"], correct: 1, exp: "Tight junctions prevent leakage by sealing adjacent cells."},
+  {q: "8. Desmosomes provide:", options: ["Secretion", "Mechanical strength", "Absorption", "Transport"], correct: 1, exp: "Desmosomes strongly bind cells together, providing mechanical strength."},
+  {q: "9. Which structure allows ions to pass between cells?", options: ["Tight junction", "Gap junction", "Adherens junction", "Hemidesmosome"], correct: 1, exp: "Gap junctions allow direct communication between cells."},
+  {q: "10. The brush border is formed by:", options: ["Cilia", "Microvilli", "Stereocilia", "Flagella"], correct: 1, exp: "Microvilli form the brush border, increasing surface area for absorption."},
+  {q: "11. Cilia are mainly found in the:", options: ["Intestines", "Kidney", "Trachea", "Skin"], correct: 2, exp: "Cilia move mucus in the respiratory tract (trachea)."},
+  {q: "12. Stereocilia are found in the:", options: ["Epididymis", "Lungs", "Kidney", "Heart"], correct: 0, exp: "Stereocilia occur in the epididymis, aiding absorption."},
+  {q: "13. Simple squamous epithelium allows:", options: ["Diffusion", "Secretion", "Protection", "Movement"], correct: 0, exp: "Simple squamous epithelium facilitates diffusion and filtration."},
+  {q: "14. The type of epithelium in kidney tubules is:", options: ["Simple columnar", "Simple cuboidal", "Stratified squamous", "Transitional"], correct: 1, exp: "Simple cuboidal epithelium lines kidney tubules for secretion and absorption."},
+  {q: "15. Intestinal lining has:", options: ["Simple columnar", "Stratified squamous", "Transitional", "Cuboidal"], correct: 0, exp: "Simple columnar epithelium lines the intestines for absorption."},
+  {q: "16. Pseudostratified epithelium appears multilayered because:", options: ["It has multiple nuclei", "Nuclei are at different levels", "Cells overlap irregularly", "It’s stratified"], correct: 1, exp: "Nuclei are at varying heights, making it look stratified."},
+  {q: "17. The epithelium of the skin is:", options: ["Keratinized stratified squamous", "Non-keratinized", "Simple squamous", "Cuboidal"], correct: 0, exp: "Skin has keratinized stratified squamous epithelium for protection."},
+  {q: "18. The oral cavity is lined by:", options: ["Simple cuboidal", "Non-keratinized stratified squamous", "Transitional", "Simple columnar"], correct: 1, exp: "The mouth is lined with non-keratinized stratified squamous epithelium."},
+  {q: "19. Transitional epithelium is found in the:", options: ["Stomach", "Urinary bladder", "Skin", "Intestines"], correct: 1, exp: "Transitional epithelium stretches to accommodate urine in the bladder."},
+  {q: "20. Exocrine glands secrete:", options: ["Into blood", "Into ducts", "Directly into tissues", "Into bone"], correct: 1, exp: "Exocrine glands release secretions through ducts."},
+  {q: "21. Endocrine glands release hormones into:", options: ["Ducts", "Bloodstream", "Body cavity", "Nerves"], correct: 1, exp: "Endocrine glands are ductless and secrete hormones into blood."},
+  {q: "22. Which gland uses exocytosis to secrete?", options: ["Apocrine", "Merocrine", "Holocrine", "Endocrine"], correct: 1, exp: "Merocrine glands secrete via exocytosis without cell loss."},
+  {q: "23. The mammary gland uses:", options: ["Holocrine", "Apocrine", "Merocrine", "Endocrine"], correct: 1, exp: "Apocrine glands release secretion with part of cytoplasm (e.g., mammary)."},
+  {q: "24. Sebaceous glands secrete by:", options: ["Holocrine method", "Apocrine method", "Merocrine method", "Endocrine method"], correct: 0, exp: "Sebaceous glands release secretion by cell disintegration (holocrine)."},
+  {q: "25. The basement membrane acts as a:", options: ["Filter", "Protein source", "Energy storage", "Barrier for hormones"], correct: 0, exp: "It serves as a filter and support structure for epithelium."},
+  {q: "26. Epithelial cells renew rapidly because:", options: ["They are long-lived", "They have high mitotic activity", "They contain fat", "They lack nuclei"], correct: 1, exp: "Epithelial cells divide actively to replace damaged cells."},
+  {q: "27. The lateral surface of epithelial cells has:", options: ["Gap junctions", "Desmosomes", "Tight junctions", "All of the above"], correct: 3, exp: "All these junctions are found on lateral surfaces for adhesion and communication."},
+  {q: "28. The basal surface connects to:", options: ["Basement membrane", "Apical membrane", "Lumen", "Nucleus"], correct: 0, exp: "The basal surface attaches to the basement membrane."},
+  {q: "29. Which of the following is true about epithelial tissue?", options: ["It has blood vessels", "It is avascular", "It has cartilage", "It stores energy"], correct: 1, exp: "Epithelial tissue is avascular and depends on diffusion for nutrients."},
+  {q: "30. The study of epithelial tissue under microscope is part of:", options: ["Histology", "Anatomy", "Physiology", "Pathology"], correct: 0, exp: "Microscopic study of tissues is called histology."},
+];
+
+function loadQuiz() {
+  const quizContainer = document.getElementById("quiz");
+  quizData.forEach((item, index) => {
+    const qDiv = document.createElement("div");
+    qDiv.className = "question";
+    qDiv.innerHTML = `<b>${item.q}</b>
+      <div class="options">
+        ${item.options.map((opt, i) => `<button onclick="checkAnswer(this, ${i}, ${item.correct}, '${item.exp}')">${opt}</button>`).join("")}
+      </div>
+      <div class="explanation"></div>`;
+    quizContainer.appendChild(qDiv);
+  });
+}
+
+function checkAnswer(btn, selected, correct, exp) {
+  const parent = btn.parentElement;
+  const buttons = parent.querySelectorAll("button");
+  buttons.forEach(b => b.disabled = true);
+  if (selected === correct) {
+    btn.classList.add("correct");
+  } else {
+    btn.classList.add("wrong");
+    buttons[correct].classList.add("correct");
+  }
+  const expDiv = parent.nextElementSibling;
+  expDiv.style.display = "block";
+  expDiv.innerHTML = `<b>Explanation:</b> ${exp}`;
+}
+
+function toggleAnswer(id) {
+  const div = document.getElementById(id);
+  div.style.display = div.style.display === "block" ? "none" : "block";
+}
+
+loadQuiz();
+</script>
+
+</body>
+</html>
