@@ -1,0 +1,610 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Connective Tissue — Quiz (Thrives Archivers)</title>
+<style>
+  :root{font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;line-height:1.35}
+  body{max-width:980px;margin:18px auto;padding:18px;color:#0b1220;background:#f7fafc}
+  header{display:flex;align-items:center;gap:12px}
+  h1{margin:0;font-size:1.6rem}
+  .meta{color:#374151;font-size:0.9rem}
+  .card{background:#fff;padding:16px;border-radius:12px;box-shadow:0 6px 18px rgba(15,23,42,0.06);margin:14px 0}
+  .qnum{font-weight:700;color:#0f172a}
+  .question{margin:8px 0 12px}
+  .options{display:flex;flex-direction:column;gap:8px}
+  label.option{display:flex;gap:10px;align-items:flex-start;padding:8px;border-radius:8px;border:1px solid transparent;cursor:pointer}
+  input[type="radio"]{transform:scale(1.05);margin-top:3px}
+  .feedback{margin-top:10px;padding:10px;border-radius:8px;display:none}
+  .feedback.correct{background:#ecfdf5;border:1px solid #10b981;color:#065f46}
+  .feedback.incorrect{background:#fff1f2;border:1px solid #fb7185;color:#9f1239}
+  .reveal-correct{font-weight:700}
+  .controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  button{background:#0ea5a4;color:white;border:none;padding:8px 12px;border-radius:8px;cursor:pointer}
+  button.secondary{background:#374151}
+  .small{font-size:0.9rem;color:#374151}
+  textarea{width:100%;min-height:140px;padding:10px;border-radius:8px;border:1px solid #e5e7eb}
+  .answer-box{margin-top:10px;padding:12px;border-radius:8px;background:#f1f5f9;border:1px solid #e2e8f0;display:none}
+  .right{outline:3px solid rgba(16,185,129,0.12)}
+  .wrong{outline:3px solid rgba(239,68,68,0.12)}
+  .correct-label{background:#ecfdf5;color:#065f46;padding:6px;border-radius:6px;font-weight:700;display:inline-block}
+  .explain{margin-top:6px;color:#334155}
+  footer{margin-top:18px;color:#475569;font-size:0.9rem;text-align:center}
+  @media (max-width:520px){body{padding:12px}}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Connective Tissue — Quiz</h1>
+    <div class="meta">30 MCQs (instant feedback) • 2 Essay questions (show model answer)</div>
+  </div>
+</header>
+
+<main>
+
+<!-- Utility buttons -->
+<div class="card">
+  <div class="controls">
+    <button id="resetAll" class="secondary">Reset all answers</button>
+    <div class="small">Tip: Select an option to see whether it's correct and read a short explanation.</div>
+  </div>
+</div>
+
+<!-- Questions container -->
+<div id="questions">
+
+  <!-- Each question is a .card with data-correct attribute equal to the option id (a/b/c/d) -->
+  <!-- 1 -->
+  <section class="card question-block" data-correct="b" id="q1">
+    <div class="qnum">Q1.</div>
+    <div class="question">Which embryonic germ layer gives rise to connective tissue?</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q1" value="a"> a) Ectoderm</label>
+      <label class="option"><input type="radio" name="q1" value="b"> b) Mesoderm</label>
+      <label class="option"><input type="radio" name="q1" value="c"> c) Endoderm</label>
+      <label class="option"><input type="radio" name="q1" value="d"> d) Neural crest only</label>
+    </div>
+    <div class="feedback" role="status"></div>
+  </section>
+
+  <!-- 2 -->
+  <section class="card question-block" data-correct="a" id="q2">
+    <div class="qnum">Q2.</div>
+    <div class="question">Which of the following is NOT a main component of connective tissue?</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q2" value="a"> a) Neurons</label>
+      <label class="option"><input type="radio" name="q2" value="b"> b) Cells</label>
+      <label class="option"><input type="radio" name="q2" value="c"> c) Protein fibers</label>
+      <label class="option"><input type="radio" name="q2" value="d"> d) Ground substance</label>
+    </div>
+    <div class="feedback"></div>
+  </section>
+
+  <!-- 3 -->
+  <section class="card question-block" data-correct="c" id="q3">
+    <div class="qnum">Q3.</div>
+    <div class="question">Which cell type is primarily responsible for synthesizing collagen and ground substance?</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q3" value="a"> a) Macrophage</label>
+      <label class="option"><input type="radio" name="q3" value="b"> b) Mast cell</label>
+      <label class="option"><input type="radio" name="q3" value="c"> c) Fibroblast</label>
+      <label class="option"><input type="radio" name="q3" value="d"> d) Plasma cell</label>
+    </div>
+    <div class="feedback"></div>
+  </section>
+
+  <!-- 4 -->
+  <section class="card question-block" data-correct="b" id="q4">
+    <div class="qnum">Q4.</div>
+    <div class="question">Which connective tissue fiber provides great tensile strength and resists pulling forces?</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q4" value="a"> a) Elastic fiber</label>
+      <label class="option"><input type="radio" name="q4" value="b"> b) Collagen fiber</label>
+      <label class="option"><input type="radio" name="q4" value="c"> c) Reticular fiber</label>
+      <label class="option"><input type="radio" name="q4" value="d"> d) Glycosaminoglycan fiber</label>
+    </div>
+    <div class="feedback"></div>
+  </section>
+
+  <!-- 5 -->
+  <section class="card question-block" data-correct="c" id="q5">
+    <div class="qnum">Q5.</div>
+    <div class="question">Reticular fibers are primarily composed of which collagen type?</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q5" value="a"> a) Type I</label>
+      <label class="option"><input type="radio" name="q5" value="b"> b) Type IV</label>
+      <label class="option"><input type="radio" name="q5" value="c"> c) Type III</label>
+      <label class="option"><input type="radio" name="q5" value="d"> d) Type VII</label>
+    </div>
+    <div class="feedback"></div>
+  </section>
+
+  <!-- 6 -->
+  <section class="card question-block" data-correct="a" id="q6">
+    <div class="qnum">Q6.</div>
+    <div class="question">Which specialized connective tissue stores triglycerides and secretes leptin?</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q6" value="a"> a) Adipose tissue</label>
+      <label class="option"><input type="radio" name="q6" value="b"> b) Reticular tissue</label>
+      <label class="option"><input type="radio" name="q6" value="c"> c) Cartilage</label>
+      <label class="option"><input type="radio" name="q6" value="d"> d) Bone</label>
+    </div>
+    <div class="feedback"></div>
+  </section>
+
+  <!-- 7 -->
+  <section class="card question-block" data-correct="b" id="q7">
+    <div class="qnum">Q7.</div>
+    <div class="question">Which connective tissue is described as the most widely distributed, with roughly equal parts cells, fibers, and ground substance?</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q7" value="a"> a) Dense regular CT</label>
+      <label class="option"><input type="radio" name="q7" value="b"> b) Loose (areolar) CT</label>
+      <label class="option"><input type="radio" name="q7" value="c"> c) Cartilage</label>
+      <label class="option"><input type="radio" name="q7" value="d"> d) Bone</label>
+    </div>
+    <div class="feedback"></div>
+  </section>
+
+  <!-- 8 -->
+  <section class="card question-block" data-correct="d" id="q8">
+    <div class="qnum">Q8.</div>
+    <div class="question">Which cell type in connective tissue is short-lived (~10–20 days) and secretes antibodies?</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q8" value="a"> a) Neutrophil</label>
+      <label class="option"><input type="radio" name="q8" value="b"> b) Mast cell</label>
+      <label class="option"><input type="radio" name="q8" value="c"> c) Macrophage</label>
+      <label class="option"><input type="radio" name="q8" value="d"> d) Plasma cell</label>
+    </div>
+    <div class="feedback"></div>
+  </section>
+
+  <!-- 9 -->
+  <section class="card question-block" data-correct="c" id="q9">
+    <div class="qnum">Q9.</div>
+    <div class="question">Mast cells contribute to inflammation by releasing which chemical?</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q9" value="a"> a) Antibodies</label>
+      <label class="option"><input type="radio" name="q9" value="b"> b) Enzymes for phagocytosis</label>
+      <label class="option"><input type="q9" value="c"> c) Histamine</label>
+      <label class="option"><input type="radio" name="q9" value="d"> d) Insulin</label>
+    </div>
+    <div class="feedback"></div>
+  </section>
+
+  <!-- 10 -->
+  <section class="card question-block" data-correct="b" id="q10">
+    <div class="qnum">Q10.</div>
+    <div class="question">Which connective tissue type has collagen fibers aligned parallel to resist stress in one direction?</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q10" value="a"> a) Loose areolar CT</label>
+      <label class="option"><input type="radio" name="q10" value="b"> b) Dense regular CT</label>
+      <label class="option"><input type="radio" name="q10" value="c"> c) Dense irregular CT</label>
+      <label class="option"><input type="radio" name="q10" value="d"> d) Reticular CT</label>
+    </div>
+    <div class="feedback"></div>
+  </section>
+
+  <!-- 11 -->
+  <section class="card question-block" data-correct="c" id="q11">
+    <div class="qnum">Q11.</div>
+    <div class="question">Which connective tissue is a fluid connective tissue and a major transport system?</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q11" value="a"> a) Cartilage</label>
+      <label class="option"><input type="radio" name="q11" value="b"> b) Bone</label>
+      <label class="option"><input type="radio" name="q11" value="c"> c) Blood</label>
+      <label class="option"><input type="radio" name="q11" value="d"> d) Reticular CT</label>
+    </div>
+    <div class="feedback"></div>
+  </section>
+
+  <!-- 12 -->
+  <section class="card question-block" data-correct="a" id="q12">
+    <div class="qnum">Q12.</div>
+    <div class="question">Which ground substance molecule is a large non-sulfated glycosaminoglycan important for viscosity and lubrication?</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q12" value="a"> a) Hyaluronic acid</label>
+      <label class="option"><input type="radio" name="q12" value="b"> b) Dermatan sulfate</label>
+      <label class="option"><input type="radio" name="q12" value="c"> c) Keratan sulfate</label>
+      <label class="option"><input type="radio" name="q12" value="d"> d) Chondroitin sulfate</label>
+    </div>
+    <div class="feedback"></div>
+  </section>
+
+  <!-- 13 -->
+  <section class="card question-block" data-correct="d" id="q13">
+    <div class="qnum">Q13.</div>
+    <div class="question">Which connective tissue disease is characterized by mutations in fibrillin and causes tall stature and weakened aortic walls?</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q13" value="a"> a) Ehlers–Danlos syndrome</label>
+      <label class="option"><input type="radio" name="q13" value="b"> b) Osteogenesis imperfecta</label>
+      <label class="option"><input type="radio" name="q13" value="c"> c) Scurvy</label>
+      <label class="option"><input type="radio" name="q13" value="d"> d) Marfan syndrome</label>
+    </div>
+    <div class="feedback"></div>
+  </section>
+
+  <!-- 14 -->
+  <section class="card question-block" data-correct="b" id="q14">
+    <div class="qnum">Q14.</div>
+    <div class="question">Which condition results from excessive accumulation of interstitial fluid in connective tissue?</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q14" value="a"> a) Fibrosis</label>
+      <label class="option"><input type="radio" name="q14" value="b"> b) Oedema</label>
+      <label class="option"><input type="radio" name="q14" value="c"> c) Atrophy</label>
+      <label class="option"><input type="radio" name="q14" value="d"> d) Hyperplasia</label>
+    </div>
+    <div class="feedback"></div>
+  </section>
+
+  <!-- 15 -->
+  <section class="card question-block" data-correct="a" id="q15">
+    <div class="qnum">Q15.</div>
+    <div class="question">Which collagen type is abundant in tendons and the dermis and forms large fibrils?</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q15" value="a"> a) Type I</label>
+      <label class="option"><input type="radio" name="q15" value="b"> b) Type II</label>
+      <label class="option"><input type="radio" name="q15" value="c"> c) Type III</label>
+      <label class="option"><input type="radio" name="q15" value="d"> d) Type IV</label>
+    </div>
+    <div class="feedback"></div>
+  </section>
+
+  <!-- 16 -->
+  <section class="card question-block" data-correct="c" id="q16">
+    <div class="qnum">Q16.</div>
+    <div class="question">Which structural protein forms elastic fibers together with fibrillin?</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q16" value="a"> a) Collagen</label>
+      <label class="option"><input type="radio" name="q16" value="b"> b) Keratin</label>
+      <label class="option"><input type="radio" name="q16" value="c"> c) Elastin</label>
+      <label class="option"><input type="radio" name="q16" value="d"> d) Actin</label>
+    </div>
+    <div class="feedback"></div>
+  </section>
+
+  <!-- 17 -->
+  <section class="card question-block" data-correct="b" id="q17">
+    <div class="qnum">Q17.</div>
+    <div class="question">Which connective tissue cell type is derived from blood monocytes and is phagocytic?</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q17" value="a"> a) Mast cell</label>
+      <label class="option"><input type="radio" name="q17" value="b"> b) Macrophage</label>
+      <label class="option"><input type="radio" name="q17" value="c"> c) Fibroblast</label>
+      <label class="option"><input type="radio" name="q17" value="d"> d) Plasma cell</label>
+    </div>
+    <div class="feedback"></div>
+  </section>
+
+  <!-- 18 -->
+  <section class="card question-block" data-correct="a" id="q18">
+    <div class="qnum">Q18.</div>
+    <div class="question">Which CT type forms Wharton's jelly in the umbilical cord?</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q18" value="a"> a) Mucoid (mucous) CT</label>
+      <label class="option"><input type="radio" name="q18" value="b"> b) Dense regular CT</label>
+      <label class="option"><input type="radio" name="q18" value="c"> c) Reticular CT</label>
+      <label class="option"><input type="radio" name="q18" value="d"> d) Bone</label>
+    </div>
+    <div class="feedback"></div>
+  </section>
+
+  <!-- 19 -->
+  <section class="card question-block" data-correct="b" id="q19">
+    <div class="qnum">Q19.</div>
+    <div class="question">Which connective tissue cell acts in innate immunity and can bind and kill bacteria, besides releasing mediators?</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q19" value="a"> a) Plasma cell</label>
+      <label class="option"><input type="radio" name="q19" value="b"> b) Mast cell</label>
+      <label class="option"><input type="radio" name="q19" value="c"> c) Fibroblast</label>
+      <label class="option"><input type="radio" name="q19" value="d"> d) Adipocyte</label>
+    </div>
+    <div class="feedback"></div>
+  </section>
+
+  <!-- 20 -->
+  <section class="card question-block" data-correct="d" id="q20">
+    <div class="qnum">Q20.</div>
+    <div class="question">Which structure anchors the basal lamina to the reticular lamina in basement membranes?</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q20" value="a"> a) Type I collagen</label>
+      <label class="option"><input type="radio" name="q20" value="b"> b) Elastin</label>
+      <label class="option"><input type="radio" name="q20" value="c"> c) Hyaluronic acid</label>
+      <label class="option"><input type="radio" name="q20" value="d"> d) Type VII collagen</label>
+    </div>
+    <div class="feedback"></div>
+  </section>
+
+  <!-- 21 -->
+  <section class="card question-block" data-correct="a" id="q21">
+    <div class="qnum">Q21.</div>
+    <div class="question">Which connective tissue type provides the supportive stroma for the spleen and lymph nodes?</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q21" value="a"> a) Reticular CT</label>
+      <label class="option"><input type="radio" name="q21" value="b"> b) Dense irregular CT</label>
+      <label class="option"><input type="radio" name="q21" value="c"> c) Elastic CT</label>
+      <label class="option"><input type="radio" name="q21" value="d"> d) Mucoid CT</label>
+    </div>
+    <div class="feedback"></div>
+  </section>
+
+  <!-- 22 -->
+  <section class="card question-block" data-correct="c" id="q22">
+    <div class="qnum">Q22.</div>
+    <div class="question">Which special connective tissue is primarily responsible for heat production in newborns?</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q22" value="a"> a) White adipose tissue</label>
+      <label class="option"><input type="radio" name="q22" value="b"> b) Cartilage</label>
+      <label class="option"><input type="radio" name="q22" value="c"> c) Brown adipose tissue</label>
+      <label class="option"><input type="radio" name="q22" value="d"> d) Reticular CT</label>
+    </div>
+    <div class="feedback"></div>
+  </section>
+
+  <!-- 23 -->
+  <section class="card question-block" data-correct="b" id="q23">
+    <div class="qnum">Q23.</div>
+    <div class="question">Which ECM adhesion protein helps cells attach to the matrix and is abundant in connective tissue?</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q23" value="a"> a) Keratin</label>
+      <label class="option"><input type="radio" name="q23" value="b"> b) Fibronectin</label>
+      <label class="option"><input type="radio" name="q23" value="c"> c) Myosin</label>
+      <label class="option"><input type="radio" name="q23" value="d"> d) Elastin</label>
+    </div>
+    <div class="feedback"></div>
+  </section>
+
+  <!-- 24 -->
+  <section class="card question-block" data-correct="a" id="q24">
+    <div class="qnum">Q24.</div>
+    <div class="question">Which of these is a resident cell of connective tissue (as opposed to migratory)?</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q24" value="a"> a) Fibroblast</label>
+      <label class="option"><input type="radio" name="q24" value="b"> b) Neutrophil</label>
+      <label class="option"><input type="radio" name="q24" value="c"> c) Eosinophil</label>
+      <label class="option"><input type="radio" name="q24" value="d"> d) Monocyte</label>
+    </div>
+    <div class="feedback"></div>
+  </section>
+
+  <!-- 25 -->
+  <section class="card question-block" data-correct="d" id="q25">
+    <div class="qnum">Q25.</div>
+    <div class="question">Which statement about collagen is TRUE?</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q25" value="a"> a) Collagen is elastic and returns to original length easily</label>
+      <label class="option"><input type="radio" name="q25" value="b"> b) Collagen is a carbohydrate</label>
+      <label class="option"><input type="radio" name="q25" value="c"> c) Collagen is found only in cartilage</label>
+      <label class="option"><input type="radio" name="q25" value="d"> d) Collagen is very strong and resists tensile forces</label>
+    </div>
+    <div class="feedback"></div>
+  </section>
+
+  <!-- 26 -->
+  <section class="card question-block" data-correct="b" id="q26">
+    <div class="qnum">Q26.</div>
+    <div class="question">Which CT is best adapted to withstand stress from multiple directions due to randomly interwoven collagen bundles?</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q26" value="a"> a) Dense regular CT</label>
+      <label class="option"><input type="radio" name="q26" value="b"> b) Dense irregular CT</label>
+      <label class="option"><input type="radio" name="q26" value="c"> c) Loose CT</label>
+      <label class="option"><input type="radio" name="q26" value="d"> d) Reticular CT</label>
+    </div>
+    <div class="feedback"></div>
+  </section>
+
+  <!-- 27 -->
+  <section class="card question-block" data-correct="c" id="q27">
+    <div class="qnum">Q27.</div>
+    <div class="question">Which connective tissue cell stores lipids and is metabolically active?</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q27" value="a"> a) Mast cell</label>
+      <label class="option"><input type="radio" name="q27" value="b"> b) Plasma cell</label>
+      <label class="option"><input type="radio" name="q27" value="c"> c) Adipocyte</label>
+      <label class="option"><input type="radio" name="q27" value="d"> d) Reticular cell</label>
+    </div>
+    <div class="feedback"></div>
+  </section>
+
+  <!-- 28 -->
+  <section class="card question-block" data-correct="d" id="q28">
+    <div class="qnum">Q28.</div>
+    <div class="question">Which connective tissue contains abundant capillaries and allows tissues to move freely over one another?</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q28" value="a"> a) Dense regular CT</label>
+      <label class="option"><input type="radio" name="q28" value="b"> b) Reticular CT</label>
+      <label class="option"><input type="radio" name="q28" value="c"> c) Cartilage</label>
+      <label class="option"><input type="radio" name="q28" value="d"> d) Loose (areolar) CT</label>
+    </div>
+    <div class="feedback"></div>
+  </section>
+
+  <!-- 29 -->
+  <section class="card question-block" data-correct="a" id="q29">
+    <div class="qnum">Q29.</div>
+    <div class="question">What percentage of the body's dry weight is collagen approximately?</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q29" value="a"> a) ~30%</label>
+      <label class="option"><input type="radio" name="q29" value="b"> b) ~5%</label>
+      <label class="option"><input type="radio" name="q29" value="c"> c) ~60%</label>
+      <label class="option"><input type="radio" name="q29" value="d"> d) ~1%</label>
+    </div>
+    <div class="feedback"></div>
+  </section>
+
+  <!-- 30 -->
+  <section class="card question-block" data-correct="c" id="q30">
+    <div class="qnum">Q30.</div>
+    <div class="question">Which ECM glycoprotein helps link cells to the basement membrane and is especially produced by epithelial cells?</div>
+    <div class="options">
+      <label class="option"><input type="radio" name="q30" value="a"> a) Fibronectin</label>
+      <label class="option"><input type="radio" name="q30" value="b"> b) Collagen type I</label>
+      <label class="option"><input type="radio" name="q30" value="c"> c) Laminin</label>
+      <label class="option"><input type="radio" name="q30" value="d"> d) Elastin</label>
+    </div>
+    <div class="feedback"></div>
+  </section>
+
+</div>
+
+<!-- Essay questions -->
+<section class="card">
+  <div class="qnum">Essay 1</div>
+  <div class="question">Explain the main cellular components of connective tissue and their functions. (Write your answer below)</div>
+  <textarea id="essay1" placeholder="Type your essay answer here..."></textarea>
+  <div class="controls" style="margin-top:8px">
+    <button onclick="showEssayAnswer(1)">Show model answer</button>
+    <button class="secondary" onclick="document.getElementById('essay1').value=''">Clear</button>
+  </div>
+  <div id="essay1-answer" class="answer-box" aria-live="polite">
+    <strong>Model answer (short):</strong>
+    <p class="explain">
+      Major resident cells: fibroblasts (synthesize collagen, elastic fibers, and ground substance; when inactive called fibrocytes), adipocytes (store triglycerides, secrete leptin, insulate and cushion), reticular cells (produce reticular fibers). Major migratory cells: macrophages (phagocytose debris and pathogens), plasma cells (produce antibodies), mast cells (release histamine and mediate inflammation), and leukocytes (neutrophils, eosinophils) that respond to infection. Each cell contributes to structure, defence, repair, or metabolic regulation.
+    </p>
+  </div>
+</section>
+
+<section class="card">
+  <div class="qnum">Essay 2</div>
+  <div class="question">Compare dense regular, dense irregular and loose connective tissue in terms of fiber arrangement and typical function/locations.</div>
+  <textarea id="essay2" placeholder="Type your essay answer here..."></textarea>
+  <div class="controls" style="margin-top:8px">
+    <button onclick="showEssayAnswer(2)">Show model answer</button>
+    <button class="secondary" onclick="document.getElementById('essay2').value=''">Clear</button>
+  </div>
+  <div id="essay2-answer" class="answer-box" aria-live="polite">
+    <strong>Model answer (short):</strong>
+    <p class="explain">
+      Dense regular CT: collagen fibers aligned parallel (tendons, ligaments) — resists tension in one direction. Dense irregular CT: bundles of collagen randomly interwoven (dermis, organ capsules) — resists stresses from multiple directions. Loose (areolar) CT: fibers scattered with abundant ground substance and many cells (beneath epithelia, between muscles) — supports, holds fluids, and provides immune defense and nutrition.
+    </p>
+  </div>
+</section>
+
+<footer class="card">
+  <div class="small">Prepared from "Connective Tissue" lecture — Thrives Archivers. Use Reset to try again.</div>
+</footer>
+
+<!-- JavaScript for interactivity -->
+<script>
+(function(){
+  // Setup question behavior
+  const qBlocks = document.querySelectorAll('.question-block');
+  qBlocks.forEach(block => {
+    const correct = block.dataset.correct; // e.g., "b"
+    const radios = block.querySelectorAll('input[type="radio"]');
+    const feedback = block.querySelector('.feedback');
+
+    radios.forEach(radio => {
+      radio.addEventListener('change', () => {
+        // Clear prior highlights
+        block.querySelectorAll('label.option').forEach(l => {
+          l.classList.remove('right','wrong');
+          l.style.borderColor = 'transparent';
+        });
+        // Mark selected and show feedback
+        const selected = radio.value;
+        const labels = block.querySelectorAll('label.option');
+        // highlight correct label
+        let correctLabel = null;
+        labels.forEach((lab) => {
+          const r = lab.querySelector('input[type="radio"]');
+          if(!r) return;
+          if(r.value === correct) {
+            correctLabel = lab;
+            lab.classList.add('right');
+            lab.style.borderColor = 'rgba(16,185,129,0.15)';
+          }
+        });
+        // mark chosen incorrect
+        if(selected === correct) {
+          radio.closest('label').classList.add('right');
+        } else {
+          radio.closest('label').classList.add('wrong');
+          radio.closest('label').style.borderColor = 'rgba(239,68,68,0.12)';
+        }
+
+        // Provide an explanation text per question id
+        let explanation = explanations[block.id] || 'See lecture notes for details.';
+        if(selected === correct) {
+          feedback.className = 'feedback correct';
+          feedback.innerHTML = '<div class="reveal-correct">Correct.</div><div class="explain">'+explanation+'</div>';
+        } else {
+          feedback.className = 'feedback incorrect';
+          feedback.innerHTML = '<div class="reveal-correct">Incorrect.</div> <div class="explain">Correct answer: <strong>'+ optionLabel(correct) +'</strong>. '+ explanation +'</div>';
+        }
+        feedback.style.display = 'block';
+      });
+    });
+  });
+
+  // Reset all
+  document.getElementById('resetAll').addEventListener('click', () => {
+    qBlocks.forEach(block => {
+      block.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+      const fb = block.querySelector('.feedback');
+      fb.style.display = 'none';
+      block.querySelectorAll('label.option').forEach(l => {
+        l.classList.remove('right','wrong');
+        l.style.borderColor = 'transparent';
+      });
+    });
+    // hide essay answers
+    document.getElementById('essay1-answer').style.display = 'none';
+    document.getElementById('essay2-answer').style.display = 'none';
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+
+  // show essay answers
+  window.showEssayAnswer = function(n) {
+    const box = document.getElementById('essay' + n + '-answer');
+    box.style.display = (box.style.display === 'block') ? 'none' : 'block';
+    box.scrollIntoView({behavior:'smooth', block:'center'});
+  };
+
+  // Helpful functions
+  function optionLabel(key) {
+    // returns textual option (a/b/c/d mapping) — used in feedback
+    const map = {a:'a', b:'b', c:'c', d:'d'};
+    return map[key] || key;
+  }
+
+  // Explanations for each question keyed by block id
+  const explanations = {
+    q1: 'Connective tissue originates from the mesoderm during embryonic development.',
+    q2: 'Neurons are a component of nervous tissue, not connective tissue.',
+    q3: 'Fibroblasts synthesize collagen, elastic fibers and ground substance components.',
+    q4: 'Collagen fibers provide tensile strength and resist pulling forces.',
+    q5: 'Reticular fibers are mainly composed of collagen type III and form branching networks.',
+    q6: 'Adipose tissue stores triglycerides and secretes leptin, an endocrine signal.',
+    q7: 'Loose areolar CT contains cells, fibers and ground substance in roughly equal amounts and is widely distributed.',
+    q8: 'Plasma cells are derived from B lymphocytes and secrete antibodies; they are relatively short lived.',
+    q9: 'Mast cells release histamine which dilates blood vessels and mediates inflammation.',
+    q10: 'Dense regular CT has parallel collagen bundles—ideal for tendons and ligaments.',
+    q11: 'Blood is classified as a fluid connective tissue and transports gases, nutrients and wastes.',
+    q12: 'Hyaluronic acid is a large non-sulfated GAG important for viscosity and lubrication in ECM.',
+    q13: 'Marfan syndrome is caused by mutations in fibrillin (a glycoprotein), affecting elastic fibers.',
+    q14: 'Oedema is excess interstitial fluid accumulation in connective tissue.',
+    q15: 'Type I collagen forms large fibrils and is abundant in bone, dermis and tendons.',
+    q16: 'Elastin is the main protein in elastic fibers, with fibrillin as supporting glycoprotein.',
+    q17: 'Macrophages derive from monocytes and perform phagocytosis of microbes and debris.',
+    q18: 'Mucoid CT (Wharton\'s jelly) is the gelatinous CT of the umbilical cord and fetal organs.',
+    q19: 'Mast cells participate in innate immunity and can bind/kill bacteria and release mediators.',
+    q20: 'Type VII collagen links the basal lamina (type IV) to the underlying reticular lamina.',
+    q21: 'Reticular CT (type III collagen) forms the stroma of lymphoid organs like spleen and lymph nodes.',
+    q22: 'Brown adipose tissue is specialized for non-shivering thermogenesis in newborns and small mammals.',
+    q23: 'Fibronectin is an ECM adhesion protein that mediates cell attachment to matrix components.',
+    q24: 'Fibroblasts are resident connective tissue cells; many leukocytes are migratory.',
+    q25: 'Collagen is a structural protein that is strong under tension (not highly elastic).',
+    q26: 'Dense irregular CT has collagen bundles oriented in multiple directions to resist multi-directional stress.',
+    q27: 'Adipocytes (fat cells) store lipids and are metabolically active endocrine cells.',
+    q28: 'Loose areolar CT is well vascularized and permits movement and exchange of nutrients.',
+    q29: 'Approximately 30% of the body\'s dry weight is collagen—it is the most abundant protein.',
+    q30: 'Laminin is a key glycoprotein of the basement membrane produced by epithelial cells.'
+  };
+})();
+</script>
+
+</body>
+</html>
