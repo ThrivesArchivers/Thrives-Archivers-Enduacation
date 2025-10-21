@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Biophysical Chemistry — Interactive Quiz</title>
+  <style>
+    :root{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;--accent:#2b6cb0}
+    body{margin:0;padding:24px;background:#f7fafc;color:#111}
+    .container{max-width:900px;margin:0 auto;background:white;padding:22px;border-radius:12px;box-shadow:0 8px 30px rgba(20,20,30,0.06)}
+    h1{margin:0 0 6px;font-size:22px}
+    p.lead{color:#4a5568;margin-top:0}
+    .q{border:1px solid #edf2f7;padding:14px;border-radius:8px;margin-top:14px}
+    .q h3{margin:0 0 10px;font-size:16px}
+    .options{display:flex;flex-direction:column;gap:8px}
+    .option{background:#f1f5f9;border:1px solid #e2e8f0;padding:10px;border-radius:8px;cursor:pointer}
+    .option:hover{box-shadow:0 2px 8px rgba(0,0,0,0.03)}
+    .option.disabled{opacity:0.6;cursor:default}
+    .correct{border-color:green;background:#ecffef}
+    .wrong{border-color:#e53e3e;background:#fff0f0}
+    .explanation{margin-top:10px;padding:10px;background:#f7fafc;border-radius:6px;border:1px dashed #e2e8f0}
+    footer{margin-top:18px;color:#718096;font-size:13px}
+    .essay{margin-top:20px;border:1px dashed #cbd5e0;padding:12px;border-radius:8px}
+    button.show{background:var(--accent);color:white;border:none;padding:8px 12px;border-radius:6px;cursor:pointer}
+    .meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .small{font-size:13px;color:#718096}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Biophysical Chemistry — Interactive Quiz (30 MCQs + 2 Essays)</h1>
+    <p class="lead">Click an option to reveal whether it's correct and see an explanation. Essays include model answers you can compare with your own.</p>
+
+    <div id="quiz"></div>
+
+    <div class="essay">
+      <h3>Essay 1: Explain the bicarbonate buffering system and how the lungs and kidneys compensate for a metabolic acidosis.</h3>
+      <p><button class="show" data-target="essay1">Show model answer</button></p>
+      <div id="essay1" style="display:none;margin-top:10px;background:#fff;padding:12px;border-radius:6px;border:1px solid #e6eef8">
+        <strong>Model answer (summary):</strong>
+        <p>The bicarbonate buffer system is the main extracellular buffer and involves the equilibrium: <code>CO₂ + H₂O ↔ H₂CO₃ ↔ H⁺ + HCO₃⁻</code>. Carbonic anhydrase accelerates CO₂ hydration to carbonic acid. In metabolic acidosis (decreased HCO₃⁻), the lungs compensate by increasing ventilation (hyperventilation) to lower PaCO₂, shifting the equation left and raising pH. The kidneys compensate over hours to days by increasing H⁺ secretion and regenerating/retaining HCO₃⁻ (via ammoniagenesis and H⁺ excretion), restoring bicarbonate levels. Clinical compensation is partial; both systems work together to return pH toward normal while the primary cause is treated.</p>
+      </div>
+    </div>
+
+    <div class="essay">
+      <h3>Essay 2: A patient with diarrhoea presents with metabolic acidosis. Describe the pathophysiology, likely lab findings (pH, HCO₃⁻, PaCO₂), and immediate management steps.</h3>
+      <p><button class="show" data-target="essay2">Show model answer</button></p>
+      <div id="essay2" style="display:none;margin-top:10px;background:#fff;padding:12px;border-radius:6px;border:1px solid #e6eef8">
+        <strong>Model answer (summary):</strong>
+        <p>Pathophysiology: Acute diarrhoea causes loss of bicarbonate-rich intestinal fluids, decreasing serum HCO₃⁻ and causing metabolic acidosis. Lab findings: low pH (<7.35), low HCO₃⁻ (often &lt;22 mmol/L; severe cases &lt;14), and compensatory low PaCO₂ from hyperventilation (e.g., PaCO₂ &lt;40 mmHg). Immediate management: correct volume depletion with isotonic saline (to restore perfusion and renal bicarbonate reclamation), replace electrolytes (especially potassium), treat underlying cause (antimicrobials if infectious), and reserve IV bicarbonate only for severe acidosis (e.g., pH &lt;7.0 or hemodynamic compromise), being aware of risks (CO₂ rise, cerebral acidosis, hypokalemia).</p>
+      </div>
+    </div>
+
+    <footer>
+      <div class="meta">
+        <div class="small">Created for study and teaching — click any option to see explanations.</div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Question bank: 30 MCQs
+    const questions = [
+      {id:1, q:"Which property of water mostly explains its high surface tension and ability to form droplets?",
+       opts:["Nonpolar covalent bonds","Hydrogen bonding between molecules","Ionic interactions with solutes","High molecular weight"],
+       ans:1, exp:"Water forms hydrogen bonds between the partial positive H of one molecule and the partial negative O of another; this network gives high surface tension."},
+      {id:2, q:"pH is defined as:", opts:["-log[OH-]","-log[H+]","log[H+]","[H+] x 10"], ans:1, exp:"By definition pH = -log10[H+], so lower pH means higher [H+]."},
+      {id:3, q:"Which of the following best describes a physiological buffer?", opts:["A strong acid that fully dissociates","A solution with large amounts of NaCl","A weak acid and its conjugate base pair that resist pH change","Pure water at 37°C"], ans:2, exp:"A buffer usually consists of a weak acid and its conjugate base (or vice versa) and resists pH change when small amounts of acid or base are added."},
+      {id:4, q:"Which buffer system is most important for extracellular (plasma) pH regulation?", opts:["Phosphate buffer","Bicarbonate-carbonic acid buffer","Hemoglobin buffer","Protein buffer"], ans:1, exp:"The bicarbonate buffer system (HCO3-/CO2) is the primary extracellular buffer due to its relation with respiratory CO2 elimination and renal HCO3- handling."},
+      {id:5, q:"Normal arterial blood pH range is approximately:", opts:["6.8 - 7.0","7.0 - 7.2","7.35 - 7.45","7.6 - 7.8"], ans:2, exp:"Normal arterial pH is tightly regulated between ~7.35 and 7.45."},
+      {id:6, q:"A patient has pH 7.20, HCO3- 12 mmol/L, PaCO2 30 mmHg. What is the primary disorder?", opts:["Respiratory acidosis","Metabolic acidosis with partial respiratory compensation","Metabolic alkalosis","Respiratory alkalosis"], ans:1, exp:"Low pH and low HCO3- indicate primary metabolic acidosis; low PaCO2 (30) indicates compensatory hyperventilation (partial)."},
+      {id:7, q:"Which of the following is a common cause of high anion gap metabolic acidosis?", opts:["Vomiting","Diarrhoea","Diabetic ketoacidosis","Excess antacid ingestion"], ans:2, exp:"Diabetic ketoacidosis produces organic acids (ketones) and increases the anion gap."},
+      {id:8, q:"The Henderson–Hasselbalch equation relates pH to which two variables?", opts:["[Na+] and [K+]","pCO2 and [HCO3-]","temperature and pressure","hemoglobin and oxygen saturation"], ans:1, exp:"The H–H equation: pH = pKa + log([HCO3-]/(0.03×pCO2)), relating pH to bicarbonate and CO2 (pCO2)."},
+      {id:9, q:"Which enzyme rapidly interconverts CO2 and H2O with H2CO3 (carbonic acid)?", opts:["ATP synthase","Carbonic anhydrase","Lactate dehydrogenase","Pyruvate kinase"], ans:1, exp:"Carbonic anhydrase catalyses the reversible hydration of CO2 to carbonic acid, important for gas exchange and buffering."},
+      {id:10, q:"In metabolic alkalosis due to vomiting, which additional lab finding is commonly seen?", opts:["Hyperkalemia","Hypokalemia","High anion gap","Low PaCO2"], ans:1, exp:"Vomiting causes loss of gastric H+ and Cl-, volume contraction and renal K+ wasting leading to hypokalemia."},
+      {id:11, q:"Which buffer system is most important for intracellular pH regulation?", opts:["Bicarbonate","Phosphate","Albumin","Carbaminohemoglobin"], ans:1, exp:"Phosphate buffering (H2PO4-/HPO4 2-) is especially important inside cells and in renal tubular fluid."},
+      {id:12, q:"Which process produces fixed acids such as phosphoric and sulfuric acids in the body?", opts:["Oxidation of proteins and nucleic acids","Gluconeogenesis","Urea cycle","Photosynthesis"], ans:0, exp:"Oxidation of proteins, nucleic acids and phospholipids releases acids containing phosphate and sulfate groups."},
+      {id:13, q:"Normal plasma bicarbonate concentration is approximately:", opts:["5-10 mmol/L","12-18 mmol/L","22-26 mmol/L","30-36 mmol/L"], ans:2, exp:"Normal plasma [HCO3-] is about 22–26 mmol/L."},
+      {id:14, q:"Which of the following statements about buffers is TRUE?", opts:["Buffers eliminate H+ permanently","Buffers convert strong acids to strong bases","Buffers resist pH change by binding or releasing H+","Buffers work indefinitely without excretion"], ans:2, exp:"Buffers resist pH changes by reversible binding or releasing H+; excess H+ must still be excreted for permanent correction."},
+      {id:15, q:"A fall in PaCO2 will cause immediate change in blood pH by shifting which equilibrium?", opts:["Hb + O2 ↔ HbO2","CO2 + H2O ↔ H2CO3 ↔ H+ + HCO3-","ATP ↔ ADP + P","Glucose ↔ Pyruvate"], ans:1, exp:"PaCO2 changes shift the carbonic acid–bicarbonate equilibrium and alter [H+]."},
+      {id:16, q:"Which sign is classic for severe metabolic acidosis (e.g., DKA) on respiratory exam?", opts:["Bradypnea","Cheyne–Stokes respiration","Kussmaul breathing (deep, rapid)","Apnea"], ans:2, exp:"Kussmaul respirations are deep, rapid breaths compensating for metabolic acidosis by blowing off CO2."},
+      {id:17, q:"Renal compensation for respiratory acidosis primarily involves: ", opts:["Decreasing H+ secretion","Increasing H+ secretion and increasing HCO3- reabsorption","Increasing ventilation","Secreting bicarbonate into urine"], ans:1, exp:"Kidneys respond to chronic respiratory acidosis by increasing H+ secretion and regenerating/retaining HCO3-."},
+      {id:18, q:"Which of the following is NOT a common cause of respiratory acidosis?", opts:["Opioid overdose","Severe pneumonia","Hyperventilation due to anxiety","Motor neuron disease causing weak respiratory muscles"], ans:2, exp:"Hyperventilation causes respiratory alkalosis, not acidosis."},
+      {id:19, q:"Which laboratory measurement directly reflects the respiratory component of acid–base status?", opts:["Plasma bicarbonate","Arterial PaCO2","Serum electrolytes","Serum lactate"], ans:1, exp:"PaCO2 is the respiratory parameter; bicarbonate reflects metabolic component."},
+      {id:20, q:"An anion gap is calculated as: [Na+] - ([Cl-] + [HCO3-]). A high anion gap suggests:", opts:["Loss of bicarbonate (e.g., diarrhoea)","Addition of unmeasured anions (e.g., lactate, ketones)","Hyperchloremia with normal anions","High plasma albumin only"], ans:1, exp:"High anion gap metabolic acidosis indicates addition of acids like lactate or ketones."},
+      {id:21, q:"Why must rapid IV bicarbonate therapy be used cautiously in acidosis?", opts:["It causes permanent alkalosis","It’s ineffective in raising blood pH","Rapid CO2 generation may worsen intracellular/brain acidosis and cause hypokalemia","It always causes hypernatremia"], ans:2, exp:"Administered HCO3- can generate CO2 which diffuses into cells and the brain faster than HCO3-, potentially lowering intracellular pH; abrupt shifts can cause hypokalemia."},
+      {id:22, q:"Which of the following best explains the chloride shift (Hamburger phenomenon) in erythrocytes?", opts:["Cl- moves out when O2 binds hemoglobin","Cl- exchanges with HCO3- to maintain electroneutrality during CO2 transport","Cl- binds CO2 directly","Cl- is pumped into lungs to release CO2"], ans:1, exp:"In tissues, HCO3- leaves RBCs in exchange for Cl- to maintain electroneutrality; reverse occurs in lungs."},
+      {id:23, q:"Phosphate buffer is particularly important in which location?", opts:["Blood plasma exclusively","Intracellular fluid and renal tubular fluid","Lungs","Gastric lumen"], ans:1, exp:"Phosphate buffer operates mainly intracellularly and in renal tubules where phosphate concentrations are higher."},
+      {id:24, q:"A mixed acid–base disorder is suspected when: ", opts:["Compensation is exactly as expected by formula","Compensation is absent","Measured pH is normal but both PaCO2 and HCO3- are abnormal","pH is extremely low"], ans:2, exp:"A normal pH with abnormal PaCO2 and HCO3- suggests two opposing primary disorders (mixed)."},
+      {id:25, q:"Which clinical condition classically causes respiratory alkalosis?", opts:["Opioid overdose","Anxiety-induced hyperventilation","Severe COPD exacerbation","Acute renal failure"], ans:1, exp:"Hyperventilation from anxiety lowers PaCO2 causing respiratory alkalosis."},
+      {id:26, q:"Lactic acidosis results from:", opts:["Excess bicarbonate intake","Anaerobic metabolism increasing lactic acid production","High PO2 delivery","Excess insulin activity"], ans:1, exp:"When oxygen delivery/utilization is insufficient, pyruvate is reduced to lactate, increasing lactic acid."},
+      {id:27, q:"Which of these is a direct danger of severe hyperkalemia in acidosis?", opts:["Tetany","Cardiac arrhythmias","Pulmonary edema","Hypoventilation"], ans:1, exp:"Hyperkalemia can cause dangerous cardiac arrhythmias including ventricular fibrillation."},
+      {id:28, q:"The usual effect of chronic respiratory acidosis (e.g., COPD) on bicarbonate is:", opts:["No change","Decreased HCO3-","Compensatory increase in HCO3- by the kidneys","Immediate large drop in HCO3-"], ans:2, exp:"In chronic respiratory acidosis the kidneys retain/regenerate HCO3- raising bicarbonate to partially compensate."},
+      {id:29, q:"Which of the following best describes Kussmaul respiration?", opts:["Slow shallow breaths","Deep and labored breathing associated with severe metabolic acidosis","Apnea during sleep","Rapid small tidal volumes only"], ans:1, exp:"Kussmaul breathing is deep, labored breathing seen in severe metabolic acidosis (e.g., DKA)."},
+      {id:30, q:"Which intervention is appropriate first-line for metabolic alkalosis caused by vomiting?", opts:["IV sodium bicarbonate bolus","Normal saline and potassium replacement","Immediate intubation","Administer lactulose"], ans:1, exp:"Replace volume and chloride with normal saline and correct hypokalemia; this addresses the underlying cause of alkalosis."}
+    ];
+
+    // build UI
+    const quizDiv = document.getElementById('quiz');
+    questions.forEach((item, idx) => {
+      const div = document.createElement('div'); div.className='q';
+      const h = document.createElement('h3'); h.textContent = `${idx+1}. ${item.q}`;
+      div.appendChild(h);
+      const opts = document.createElement('div'); opts.className='options';
+      item.opts.forEach((text, i) => {
+        const b = document.createElement('div'); b.className='option'; b.tabIndex=0; b.dataset.q=idx; b.dataset.opt=i;
+        b.innerHTML = `<strong>${String.fromCharCode(65+i)}.</strong> ${text}`;
+        b.addEventListener('click', onChoose);
+        b.addEventListener('keydown', (e)=>{ if(e.key==='Enter') onChoose.call(b); });
+        opts.appendChild(b);
+      });
+      div.appendChild(opts);
+      const expl = document.createElement('div'); expl.className='explanation'; expl.style.display='none'; expl.id = `exp-${idx}`;
+      div.appendChild(expl);
+      quizDiv.appendChild(div);
+    });
+
+    function onChoose(e){
+      const el = (this===window)?e.currentTarget:this;
+      const qIdx = Number(el.dataset.q);
+      const chosen = Number(el.dataset.opt);
+      const q = questions[qIdx];
+      const parent = el.parentElement;
+      // disable all options
+      Array.from(parent.children).forEach(o=>{ o.classList.add('disabled'); o.setAttribute('aria-disabled','true'); });
+      // mark correct / wrong
+      parent.children[q.ans].classList.add('correct');
+      if(chosen !== q.ans){ parent.children[chosen].classList.add('wrong'); }
+      // show explanation
+      const expDiv = document.getElementById(`exp-${qIdx}`);
+      expDiv.style.display = 'block';
+      expDiv.innerHTML = `<strong>Answer:</strong> ${String.fromCharCode(65+q.ans)}<br><strong>Explanation:</strong> ${q.exp}`;
+    }
+
+    // essay toggles
+    document.querySelectorAll('button.show').forEach(b=>{
+      b.addEventListener('click', ()=>{
+        const t = b.dataset.target; const el = document.getElementById(t);
+        el.style.display = (el.style.display==='none')? 'block' : 'none';
+        b.textContent = (el.style.display==='none')? 'Show model answer' : 'Hide model answer';
+      });
+    });
+  </script>
+</body>
+</html>
+
