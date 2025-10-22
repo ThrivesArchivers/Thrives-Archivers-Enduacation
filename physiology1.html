@@ -1,0 +1,768 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Cell Physiology — Interactive Quiz</title>
+<style>
+  :root{
+    --bg:#eaf6ff;
+    --card:#ffffff;
+    --accent:#0b74de;
+    --success:#0f8f4a;
+    --danger:#c92d3b;
+    --muted:#556;
+    --glass: rgba(11,116,222,0.06);
+    --radius:12px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
+    background:linear-gradient(180deg,var(--bg),#f7fbff);
+    color:#10202b;line-height:1.45;padding:20px;
+  }
+  .wrap{max-width:980px;margin:0 auto}
+  header{display:flex;gap:14px;align-items:center;margin-bottom:18px}
+  .logo{background:var(--accent);color:#fff;padding:10px 12px;border-radius:10px;font-weight:700}
+  h1{margin:0;font-size:1.25rem}
+  .meta{color:var(--muted);font-size:.95rem}
+  .card{background:var(--card);border-radius:var(--radius);padding:16px;margin-bottom:14px;
+        box-shadow:0 10px 30px rgba(15,40,80,0.06);border:1px solid rgba(11,116,222,0.06)}
+  h2{margin:0 0 10px 0}
+  .q{padding:12px;border-radius:10px;margin-bottom:10px;background:linear-gradient(180deg,#fff,#fbfdff);
+     border:1px solid rgba(10,20,60,0.03);display:block}
+  .q-row{display:flex;align-items:flex-start;gap:12px}
+  .qnum{width:38px;height:38px;border-radius:50%;background:#eef6ff;color:var(--accent);
+        display:flex;align-items:center;justify-content:center;font-weight:700;margin-top:2px}
+  .q h3{margin:0 0 8px 0;font-size:1rem}
+  .opts{display:flex;flex-direction:column;gap:8px}
+  label.opt{display:flex;gap:10px;align-items:flex-start;padding:8px;border-radius:8px;cursor:pointer;
+            border:1px solid transparent}
+  label.opt:hover{background:#f8fbff}
+  input[type="radio"]{transform:scale(1.02);margin-top:3px}
+  .feedback{margin-top:8px;font-size:.95rem;display:none;padding:10px;border-radius:8px}
+  .feedback.correct{background:rgba(15,143,74,0.08);color:var(--success);border:1px solid rgba(15,143,74,0.12);display:block}
+  .feedback.incorrect{background:rgba(201,45,59,0.06);color:var(--danger);border:1px solid rgba(201,45,59,0.08);display:none}
+  .explain{margin-top:8px;padding:10px;border-radius:8px;background:var(--glass);display:none}
+  .essay{display:flex;flex-direction:column;gap:8px}
+  textarea{width:100%;min-height:140px;padding:10px;border-radius:8px;border:1px solid #e6eefb}
+  .controls{display:flex;gap:8px;flex-wrap:wrap}
+  button{background:var(--accent);color:#fff;border:0;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:700}
+  button.ghost{background:transparent;border:1px solid #cfe6ff;color:var(--accent);font-weight:700}
+  .small{color:var(--muted);font-size:.92rem}
+  footer{margin-top:16px;text-align:center;color:var(--muted);font-size:.9rem}
+  @media (max-width:640px){ .q-row{flex-direction:column} .qnum{margin-bottom:6px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">CELL PHY</div>
+    <div>
+      <h1>Cell Physiology — Interactive Quiz</h1>
+      <div class="meta">30 MCQs + 2 Essay Questions — correct selections reveal explanations</div>
+    </div>
+  </header>
+
+  <section class="card" id="mcq-card">
+    <h2>Multiple Choice Questions (30)</h2>
+    <p class="small">Select an answer. Only the correct selection will reveal the full explanation. Wrong choices show a prompt to try again.</p>
+
+    <!-- QUESTIONS 1–30 -->
+    <!-- To keep the HTML readable I include 30 questions covering lecture topics. Each question contains a .explain for correct explanation and a .feedback.incorrect for wrong attempts -->
+    <div id="mcq-list">
+
+      <!-- Q1 -->
+      <div class="q" id="q1">
+        <div class="q-row">
+          <div class="qnum">1</div>
+          <div style="flex:1">
+            <h3>Which statement best defines a cell?</h3>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="q1" value="A" onchange="mcqCheck(1,this)"> A. A small non-living particle found in tissues.</label>
+              <label class="opt"><input type="radio" name="q1" value="B" data-correct="true" onchange="mcqCheck(1,this)"> B. The basic structural and functional unit of all living organisms.</label>
+              <label class="opt"><input type="radio" name="q1" value="C" onchange="mcqCheck(1,this)"> C. A membrane-bound organelle inside the nucleus.</label>
+              <label class="opt"><input type="radio" name="q1" value="D" onchange="mcqCheck(1,this)"> D. Any protein complex responsible for metabolism.</label>
+            </div>
+            <div class="feedback incorrect" id="fb1">Incorrect — try again.</div>
+            <div class="explain" id="ex1"><strong>Correct —</strong> A cell is the basic structural and functional unit of all living organisms; it performs life processes and builds tissues/organs.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="q" id="q2">
+        <div class="q-row">
+          <div class="qnum">2</div>
+          <div style="flex:1">
+            <h3>Which feature is typical of prokaryotic cells but NOT eukaryotic cells?</h3>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="q2" value="A" onchange="mcqCheck(2,this)"> A. Presence of membrane-bound organelles.</label>
+              <label class="opt"><input type="radio" name="q2" value="B" onchange="mcqCheck(2,this)"> B. A nucleus containing chromosomal DNA.</label>
+              <label class="opt"><input type="radio" name="q2" value="C" data-correct="true" onchange="mcqCheck(2,this)"> C. Lack of membrane-bound organelles and absence of a true nucleus.</label>
+              <label class="opt"><input type="radio" name="q2" value="D" onchange="mcqCheck(2,this)"> D. Complex cytoskeleton networks supporting cell shape.</label>
+            </div>
+            <div class="feedback incorrect" id="fb2">Incorrect — try again.</div>
+            <div class="explain" id="ex2"><strong>Correct —</strong> Prokaryotes (e.g., bacteria) lack membrane-bound organelles and a true nucleus; their genetic material is not enclosed in a nuclear membrane.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q3 -->
+      <div class="q" id="q3">
+        <div class="q-row">
+          <div class="qnum">3</div>
+          <div style="flex:1">
+            <h3>Approximately how thick is the plasma membrane?</h3>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="q3" value="A" data-correct="true" onchange="mcqCheck(3,this)"> A. 6–10 nanometres.</label>
+              <label class="opt"><input type="radio" name="q3" value="B" onchange="mcqCheck(3,this)"> B. 6–10 micrometres.</label>
+              <label class="opt"><input type="radio" name="q3" value="C" onchange="mcqCheck(3,this)"> C. 1–2 millimetres.</label>
+              <label class="opt"><input type="radio" name="q3" value="D" onchange="mcqCheck(3,this)"> D. 100–200 nanometres.</label>
+            </div>
+            <div class="feedback incorrect" id="fb3">Incorrect — try again.</div>
+            <div class="explain" id="ex3"><strong>Correct —</strong> The plasma membrane is ~6–10 nm thick (nanometres, not micrometres).</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q4 -->
+      <div class="q" id="q4">
+        <div class="q-row">
+          <div class="qnum">4</div>
+          <div style="flex:1">
+            <h3>Which membrane lipid is <strong>not</strong> built on a glycerol backbone?</h3>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="q4" value="A" onchange="mcqCheck(4,this)"> A. Phosphatidylcholine.</label>
+              <label class="opt"><input type="radio" name="q4" value="B" data-correct="true" onchange="mcqCheck(4,this)"> B. Sphingomyelin.</label>
+              <label class="opt"><input type="radio" name="q4" value="C" onchange="mcqCheck(4,this)"> C. Phosphatidylserine.</label>
+              <label class="opt"><input type="radio" name="q4" value="D" onchange="mcqCheck(4,this)"> D. Phosphatidylethanolamine.</label>
+            </div>
+            <div class="feedback incorrect" id="fb4">Incorrect — try again.</div>
+            <div class="explain" id="ex4"><strong>Correct —</strong> Sphingomyelin is a sphingolipid (built on sphingosine), not on glycerol.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q5 -->
+      <div class="q" id="q5">
+        <div class="q-row">
+          <div class="qnum">5</div>
+          <div style="flex:1">
+            <h3>Gangliosides are best described as:</h3>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="q5" value="A" onchange="mcqCheck(5,this)"> A. Simple fatty acids in the cytosol.</label>
+              <label class="opt"><input type="radio" name="q5" value="B" data-correct="true" onchange="mcqCheck(5,this)"> B. Glycolipids containing a small cluster of sugars attached to ceramide.</label>
+              <label class="opt"><input type="radio" name="q5" value="C" onchange="mcqCheck(5,this)"> C. Transmembrane proteins that transport ions.</label>
+              <label class="opt"><input type="radio" name="q5" value="D" onchange="mcqCheck(5,this)"> D. Cholesterol derivatives found only in the nucleus.</label>
+            </div>
+            <div class="feedback incorrect" id="fb5">Incorrect — try again.</div>
+            <div class="explain" id="ex5"><strong>Correct —</strong> Gangliosides are ceramide-based glycolipids with sugar clusters; important in cell recognition and as receptors.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q6 -->
+      <div class="q" id="q6">
+        <div class="q-row">
+          <div class="qnum">6</div>
+          <div style="flex:1">
+            <h3>Which membrane function is correctly paired with an example?</h3>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="q6" value="A" onchange="mcqCheck(6,this)"> A. Compartmentalization — mitochondria store neurotransmitters.</label>
+              <label class="opt"><input type="radio" name="q6" value="B" data-correct="true" onchange="mcqCheck(6,this)"> B. Scaffold for biochemical activities — ordering enzymes into complexes on a membrane.</label>
+              <label class="opt"><input type="radio" name="q6" value="C" onchange="mcqCheck(6,this)"> C. Energy transduction — nuclear envelope captures light energy.</label>
+              <label class="opt"><input type="radio" name="q6" value="D" onchange="mcqCheck(6,this)"> D. Selectively permeable barrier — ribosomes block large solutes.</label>
+            </div>
+            <div class="feedback incorrect" id="fb6">Incorrect — try again.</div>
+            <div class="explain" id="ex6"><strong>Correct —</strong> Membranes act as scaffolds, ordering proteins/enzymes for efficient interaction (e.g., ER, mitochondrial membranes).</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q7 -->
+      <div class="q" id="q7">
+        <div class="q-row">
+          <div class="qnum">7</div>
+          <div style="flex:1">
+            <h3>Which of the following is a role of cholesterol in membranes?</h3>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="q7" value="A" onchange="mcqCheck(7,this)"> A. It forms the hydrophilic head groups of phospholipids.</label>
+              <label class="opt"><input type="radio" name="q7" value="B" data-correct="true" onchange="mcqCheck(7,this)"> B. It modulates membrane fluidity and stability.</label>
+              <label class="opt"><input type="radio" name="q7" value="C" onchange="mcqCheck(7,this)"> C. It is the main carrier for mRNA out of the nucleus.</label>
+              <label class="opt"><input type="radio" name="q7" value="D" onchange="mcqCheck(7,this)"> D. It is the primary enzyme of the lysosome.</label>
+            </div>
+            <div class="feedback incorrect" id="fb7">Incorrect — try again.</div>
+            <div class="explain" id="ex7"><strong>Correct —</strong> Cholesterol intersperses among phospholipids, buffering membrane fluidity and reducing permeability.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q8 -->
+      <div class="q" id="q8">
+        <div class="q-row">
+          <div class="qnum">8</div>
+          <div style="flex:1">
+            <h3>Which lipid is especially abundant in the myelin sheath?</h3>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="q8" value="A" data-correct="true" onchange="mcqCheck(8,this)"> A. Galactocerebroside.</label>
+              <label class="opt"><input type="radio" name="q8" value="B" onchange="mcqCheck(8,this)"> B. Triglyceride.</label>
+              <label class="opt"><input type="radio" name="q8" value="C" onchange="mcqCheck(8,this)"> C. Phosphatidylinositol only.</label>
+              <label class="opt"><input type="radio" name="q8" value="D" onchange="mcqCheck(8,this)"> D. Cholesterol ester exclusively.</label>
+            </div>
+            <div class="feedback incorrect" id="fb8">Incorrect — try again.</div>
+            <div class="explain" id="ex8"><strong>Correct —</strong> Myelin is rich in glycolipids such as galactocerebroside, important for nerve insulation.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q9 -->
+      <div class="q" id="q9">
+        <div class="q-row">
+          <div class="qnum">9</div>
+          <div style="flex:1">
+            <h3>Which of these statements about sphingolipids is TRUE?</h3>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="q9" value="A" data-correct="true" onchange="mcqCheck(9,this)"> A. They are built from sphingosine linked to a fatty acid to form a ceramide.</label>
+              <label class="opt"><input type="radio" name="q9" value="B" onchange="mcqCheck(9,this)"> B. They are water-soluble monomers used in the cytosol.</label>
+              <label class="opt"><input type="radio" name="q9" value="C" onchange="mcqCheck(9,this)"> C. They are identical to glycolipids and have no fatty acids.</label>
+              <label class="opt"><input type="radio" name="q9" value="D" onchange="mcqCheck(9,this)"> D. They are composed solely of cholesterol rings.</label>
+            </div>
+            <div class="feedback incorrect" id="fb9">Incorrect — try again.</div>
+            <div class="explain" id="ex9"><strong>Correct —</strong> Sphingolipids derive from sphingosine + fatty acid (ceramide); substitutions produce sphingomyelin or glycolipids.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q10 -->
+      <div class="q" id="q10">
+        <div class="q-row">
+          <div class="qnum">10</div>
+          <div style="flex:1">
+            <h3>Which membrane component binds specific ligands to start signal transduction?</h3>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="q10" value="A" data-correct="true" onchange="mcqCheck(10,this)"> A. Membrane receptor proteins.</label>
+              <label class="opt"><input type="radio" name="q10" value="B" onchange="mcqCheck(10,this)"> B. Glycolipids only (no proteins involved).</label>
+              <label class="opt"><input type="radio" name="q10" value="C" onchange="mcqCheck(10,this)"> C. Nuclear pores.</label>
+              <label class="opt"><input type="radio" name="q10" value="D" onchange="mcqCheck(10,this)"> D. Ribosomal RNA.</label>
+            </div>
+            <div class="feedback incorrect" id="fb10">Incorrect — try again.</div>
+            <div class="explain" id="ex10"><strong>Correct —</strong> Receptor proteins bind ligands (hormones, neurotransmitters) to initiate intracellular signalling cascades.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q11 -->
+      <div class="q" id="q11">
+        <div class="q-row">
+          <div class="qnum">11</div>
+          <div style="flex:1">
+            <h3>Which organelle is the primary site of ATP production in eukaryotic cells?</h3>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="q11" value="A" onchange="mcqCheck(11,this)"> A. Golgi apparatus.</label>
+              <label class="opt"><input type="radio" name="q11" value="B" data-correct="true" onchange="mcqCheck(11,this)"> B. Mitochondrion.</label>
+              <label class="opt"><input type="radio" name="q11" value="C" onchange="mcqCheck(11,this)"> C. Lysosome.</label>
+              <label class="opt"><input type="radio" name="q11" value="D" onchange="mcqCheck(11,this)"> D. Peroxisome.</label>
+            </div>
+            <div class="feedback incorrect" id="fb11">Incorrect — try again.</div>
+            <div class="explain" id="ex11"><strong>Correct —</strong> Mitochondria host the electron transport chain and oxidative phosphorylation, producing most ATP.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q12 -->
+      <div class="q" id="q12">
+        <div class="q-row">
+          <div class="qnum">12</div>
+          <div style="flex:1">
+            <h3>Ribosomes are responsible for:</h3>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="q12" value="A" data-correct="true" onchange="mcqCheck(12,this)"> A. Protein synthesis.</label>
+              <label class="opt"><input type="radio" name="q12" value="B" onchange="mcqCheck(12,this)"> B. Lipid synthesis only.</label>
+              <label class="opt"><input type="radio" name="q12" value="C" onchange="mcqCheck(12,this)"> C. DNA replication in the nucleus.</label>
+              <label class="opt"><input type="radio" name="q12" value="D" onchange="mcqCheck(12,this)"> D. Detoxification of hydrogen peroxide exclusively.</label>
+            </div>
+            <div class="feedback incorrect" id="fb12">Incorrect — try again.</div>
+            <div class="explain" id="ex12"><strong>Correct —</strong> Ribosomes translate mRNA into polypeptide chains (protein synthesis) — on rough ER or free in cytosol.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q13 -->
+      <div class="q" id="q13">
+        <div class="q-row">
+          <div class="qnum">13</div>
+          <div style="flex:1">
+            <h3>Which structure is primarily involved in modifying, sorting and packaging proteins for secretion?</h3>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="q13" value="A" onchange="mcqCheck(13,this)"> A. Rough endoplasmic reticulum.</label>
+              <label class="opt"><input type="radio" name="q13" value="B" data-correct="true" onchange="mcqCheck(13,this)"> B. Golgi apparatus.</label>
+              <label class="opt"><input type="radio" name="q13" value="C" onchange="mcqCheck(13,this)"> C. Mitochondrion.</label>
+              <label class="opt"><input type="radio" name="q13" value="D" onchange="mcqCheck(13,this)"> D. Peroxisome.</label>
+            </div>
+            <div class="feedback incorrect" id="fb13">Incorrect — try again.</div>
+            <div class="explain" id="ex13"><strong>Correct —</strong> The Golgi modifies (e.g., glycosylates), sorts and packages proteins for secretion or delivery to organelles.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q14 -->
+      <div class="q" id="q14">
+        <div class="q-row">
+          <div class="qnum">14</div>
+          <div style="flex:1">
+            <h3>Which organelle contains hydrolytic enzymes and performs intracellular digestion?</h3>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="q14" value="A" data-correct="true" onchange="mcqCheck(14,this)"> A. Lysosome.</label>
+              <label class="opt"><input type="radio" name="q14" value="B" onchange="mcqCheck(14,this)"> B. Smooth ER.</label>
+              <label class="opt"><input type="radio" name="q14" value="C" onchange="mcqCheck(14,this)"> C. Ribosome.</label>
+              <label class="opt"><input type="radio" name="q14" value="D" onchange="mcqCheck(14,this)"> D. Nucleolus.</label>
+            </div>
+            <div class="feedback incorrect" id="fb14">Incorrect — try again.</div>
+            <div class="explain" id="ex14"><strong>Correct —</strong> Lysosomes digest macromolecules and damaged organelles via hydrolytic enzymes, enabling recycling.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q15 -->
+      <div class="q" id="q15">
+        <div class="q-row">
+          <div class="qnum">15</div>
+          <div style="flex:1">
+            <h3>Peroxisomes are primarily involved in:</h3>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="q15" value="A" data-correct="true" onchange="mcqCheck(15,this)"> A. Oxidation reactions that detoxify harmful substances (e.g., breakdown of hydrogen peroxide).</label>
+              <label class="opt"><input type="radio" name="q15" value="B" onchange="mcqCheck(15,this)"> B. Protein synthesis on membrane-bound ribosomes only.</label>
+              <label class="opt"><input type="radio" name="q15" value="C" onchange="mcqCheck(15,this)"> C. Packaging proteins for secretion.</label>
+              <label class="opt"><input type="radio" name="q15" value="D" onchange="mcqCheck(15,this)"> D. DNA transcription.</label>
+            </div>
+            <div class="feedback incorrect" id="fb15">Incorrect — try again.</div>
+            <div class="explain" id="ex15"><strong>Correct —</strong> Peroxisomes detoxify compounds (catalase breaks down H2O2) and participate in fatty acid oxidation.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q16 -->
+      <div class="q" id="q16">
+        <div class="q-row">
+          <div class="qnum">16</div>
+          <div style="flex:1">
+            <h3>The nucleolus is the site where:</h3>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="q16" value="A" onchange="mcqCheck(16,this)"> A. Chromosomes are packaged for mitosis.</label>
+              <label class="opt"><input type="radio" name="q16" value="B" data-correct="true" onchange="mcqCheck(16,this)"> B. Ribosomal RNA is transcribed and ribosomal subunits are assembled.</label>
+              <label class="opt"><input type="radio" name="q16" value="C" onchange="mcqCheck(16,this)"> C. ATP is produced.</label>
+              <label class="opt"><input type="radio" name="q16" value="D" onchange="mcqCheck(16,this)"> D. Lipids are synthesized exclusively.</label>
+            </div>
+            <div class="feedback incorrect" id="fb16">Incorrect — try again.</div>
+            <div class="explain" id="ex16"><strong>Correct —</strong> The nucleolus transcribes rRNA and assembles ribosomal subunits for export to the cytoplasm.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q17 -->
+      <div class="q" id="q17">
+        <div class="q-row">
+          <div class="qnum">17</div>
+          <div style="flex:1">
+            <h3>Which of the following is NOT a function of membrane proteins?</h3>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="q17" value="A" onchange="mcqCheck(17,this)"> A. Acting as enzymes to catalyze membrane-associated reactions.</label>
+              <label class="opt"><input type="radio" name="q17" value="B" onchange="mcqCheck(17,this)"> B. Serving as ion channels to permit ion passage when activated.</label>
+              <label class="opt"><input type="radio" name="q17" value="C" data-correct="true" onchange="mcqCheck(17,this)"> C. Serving as DNA polymerase for nuclear DNA replication while embedded in the plasma membrane.</label>
+              <label class="opt"><input type="radio" name="q17" value="D" onchange="mcqCheck(17,this)"> D. Acting as receptors for hormones and neurotransmitters.</label>
+            </div>
+            <div class="feedback incorrect" id="fb17">Incorrect — try again.</div>
+            <div class="explain" id="ex17"><strong>Correct —</strong> Membrane proteins can be channels, receptors, enzymes, or carriers — but DNA polymerase functions in the nucleus/cytosol, not the plasma membrane.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q18 -->
+      <div class="q" id="q18">
+        <div class="q-row">
+          <div class="qnum">18</div>
+          <div style="flex:1">
+            <h3>Glycoproteins are:</h3>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="q18" value="A" data-correct="true" onchange="mcqCheck(18,this)"> A. Proteins with one or more carbohydrate groups covalently attached.</label>
+              <label class="opt"><input type="radio" name="q18" value="B" onchange="mcqCheck(18,this)"> B. Lipids that have been phosphorylated.</label>
+              <label class="opt"><input type="radio" name="q18" value="C" onchange="mcqCheck(18,this)"> C. Proteins only found in mitochondria.</label>
+              <label class="opt"><input type="radio" name="q18" value="D" onchange="mcqCheck(18,this)"> D. Ribosomal subunits joined with tRNA.</label>
+            </div>
+            <div class="feedback incorrect" id="fb18">Incorrect — try again.</div>
+            <div class="explain" id="ex18"><strong>Correct —</strong> Glycoproteins have covalently attached carbohydrate chains and mediate recognition/adhesion/signaling.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q19 -->
+      <div class="q" id="q19">
+        <div class="q-row">
+          <div class="qnum">19</div>
+          <div style="flex:1">
+            <h3>The rough endoplasmic reticulum is characterized by:</h3>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="q19" value="A" data-correct="true" onchange="mcqCheck(19,this)"> A. Ribosomes attached to its cytoplasmic surface and involvement in protein synthesis.</label>
+              <label class="opt"><input type="radio" name="q19" value="B" onchange="mcqCheck(19,this)"> B. Lack of any membrane and free-floating cisternae.</label>
+              <label class="opt"><input type="radio" name="q19" value="C" onchange="mcqCheck(19,this)"> C. Primary role in ATP synthesis.</label>
+              <label class="opt"><input type="radio" name="q19" value="D" onchange="mcqCheck(19,this)"> D. It is only found in prokaryotes.</label>
+            </div>
+            <div class="feedback incorrect" id="fb19">Incorrect — try again.</div>
+            <div class="explain" id="ex19"><strong>Correct —</strong> Rough ER has ribosomes and is involved in synthesizing and folding proteins destined for secretion or membranes.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q20 -->
+      <div class="q" id="q20">
+        <div class="q-row">
+          <div class="qnum">20</div>
+          <div style="flex:1">
+            <h3>Which of these toxins enters target cells by binding to cell-surface gangliosides?</h3>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="q20" value="A" data-correct="true" onchange="mcqCheck(20,this)"> A. Cholera toxin and botulinum toxin.</label>
+              <label class="opt"><input type="radio" name="q20" value="B" onchange="mcqCheck(20,this)"> B. Insulin and glucagon.</label>
+              <label class="opt"><input type="radio" name="q20" value="C" onchange="mcqCheck(20,this)"> C. ATP and ADP.</label>
+              <label class="opt"><input type="radio" name="q20" value="D" onchange="mcqCheck(20,this)"> D. Urea and ammonia.</label>
+            </div>
+            <div class="feedback incorrect" id="fb20">Incorrect — try again.</div>
+            <div class="explain" id="ex20"><strong>Correct —</strong> Certain bacterial toxins (e.g., cholera) and viral entry mechanisms use gangliosides as receptors to enter cells.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q21 -->
+      <div class="q" id="q21">
+        <div class="q-row">
+          <div class="qnum">21</div>
+          <div style="flex:1">
+            <h3>Which of the following best describes the role of the plasma membrane in ion gradients?</h3>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="q21" value="A" onchange="mcqCheck(21,this)"> A. It cannot influence ion distribution.</label>
+              <label class="opt"><input type="radio" name="q21" value="B" data-correct="true" onchange="mcqCheck(21,this)"> B. It contains transport proteins (pumps/channels) that establish ionic gradients critical for nerve and muscle cells.</label>
+              <label class="opt"><input type="radio" name="q21" value="C" onchange="mcqCheck(21,this)"> C. It synthesizes ions from amino acids.</label>
+              <label class="opt"><input type="radio" name="q21" value="D" onchange="mcqCheck(21,this)"> D. It stores ions permanently within lipid bilayer compartments.</label>
+            </div>
+            <div class="feedback incorrect" id="fb21">Incorrect — try again.</div>
+            <div class="explain" id="ex21"><strong>Correct —</strong> Membrane pumps and channels create and maintain electrochemical gradients (e.g., Na+/K+ pump) essential for excitability.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q22 -->
+      <div class="q" id="q22">
+        <div class="q-row">
+          <div class="qnum">22</div>
+          <div style="flex:1">
+            <h3>Which organelle is primarily responsible for steroid synthesis in steroid-secreting cells?</h3>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="q22" value="A" data-correct="true" onchange="mcqCheck(22,this)"> A. Smooth endoplasmic reticulum (SER).</label>
+              <label class="opt"><input type="radio" name="q22" value="B" onchange="mcqCheck(22,this)"> B. Rough ER.</label>
+              <label class="opt"><input type="radio" name="q22" value="C" onchange="mcqCheck(22,this)"> C. Golgi apparatus only.</label>
+              <label class="opt"><input type="radio" name="q22" value="D" onchange="mcqCheck(22,this)"> D. Ribosome.</label>
+            </div>
+            <div class="feedback incorrect" id="fb22">Incorrect — try again.</div>
+            <div class="explain" id="ex22"><strong>Correct —</strong> Smooth ER synthesizes lipids and steroids, detoxifies drugs, and stores calcium.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q23 -->
+      <div class="q" id="q23">
+        <div class="q-row">
+          <div class="qnum">23</div>
+          <div style="flex:1">
+            <h3>Which of the following is a primary function of membranes in energy transduction?</h3>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="q23" value="A" data-correct="true" onchange="mcqCheck(23,this)"> A. The chloroplast membrane captures light and converts it to chemical energy during photosynthesis.</label>
+              <label class="opt"><input type="radio" name="q23" value="B" onchange="mcqCheck(23,this)"> B. The membrane produces ribosomes directly from lipids.</label>
+              <label class="opt"><input type="radio" name="q23" value="C" onchange="mcqCheck(23,this)"> C. Membranes prevent any chemical reactions from occurring near them.</label>
+              <label class="opt"><input type="radio" name="q23" value="D" onchange="mcqCheck(23,this)"> D. Membranes convert RNA into DNA.</label>
+            </div>
+            <div class="feedback incorrect" id="fb23">Incorrect — try again.</div>
+            <div class="explain" id="ex23"><strong>Correct —</strong> Membranes host complexes (photosystems, electron transport chains) that convert energy into ATP via proton gradients.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q24 -->
+      <div class="q" id="q24">
+        <div class="q-row">
+          <div class="qnum">24</div>
+          <div style="flex:1">
+            <h3>Which statement about integral vs peripheral membrane proteins is correct?</h3>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="q24" value="A" data-correct="true" onchange="mcqCheck(24,this)"> A. Integral proteins span or are embedded in the lipid bilayer; peripheral proteins associate loosely with membrane surfaces.</label>
+              <label class="opt"><input type="radio" name="q24" value="B" onchange="mcqCheck(24,this)"> B. Peripheral proteins always span the membrane while integral proteins never contact lipids.</label>
+              <label class="opt"><input type="radio" name="q24" value="C" onchange="mcqCheck(24,this)"> C. Both types are exclusively carbohydrate molecules.</label>
+              <label class="opt"><input type="radio" name="q24" value="D" onchange="mcqCheck(24,this)"> D. Integral proteins are only found in the nucleus.</label>
+            </div>
+            <div class="feedback incorrect" id="fb24">Incorrect — try again.</div>
+            <div class="explain" id="ex24"><strong>Correct —</strong> Integral proteins span/insert into the bilayer; peripheral proteins attach to membrane surfaces or integral proteins.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q25 -->
+      <div class="q" id="q25">
+        <div class="q-row">
+          <div class="qnum">25</div>
+          <div style="flex:1">
+            <h3>Which process is an example of active transport across the plasma membrane?</h3>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="q25" value="A" onchange="mcqCheck(25,this)"> A. Simple diffusion of oxygen down its concentration gradient.</label>
+              <label class="opt"><input type="radio" name="q25" value="B" data-correct="true" onchange="mcqCheck(25,this)"> B. Sodium-potassium ATPase pumping Na⁺ out and K⁺ into the cell using ATP.</label>
+              <label class="opt"><input type="radio" name="q25" value="C" onchange="mcqCheck(25,this)"> C. Water moving through aquaporins down its osmotic gradient.</label>
+              <label class="opt"><input type="radio" name="q25" value="D" onchange="mcqCheck(25,this)"> D. Facilitated diffusion of glucose with its concentration gradient.</label>
+            </div>
+            <div class="feedback incorrect" id="fb25">Incorrect — try again.</div>
+            <div class="explain" id="ex25"><strong>Correct —</strong> Na⁺/K⁺-ATPase uses ATP to pump ions against gradients — classic active transport.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q26 -->
+      <div class="q" id="q26">
+        <div class="q-row">
+          <div class="qnum">26</div>
+          <div style="flex:1">
+            <h3>What is a cerebroside?</h3>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="q26" value="A" data-correct="true" onchange="mcqCheck(26,this)"> A. A simple sugar linked to ceramide (a type of glycolipid).</label>
+              <label class="opt"><input type="radio" name="q26" value="B" onchange="mcqCheck(26,this)"> B. A nuclear membrane protein that transports RNA.</label>
+              <label class="opt"><input type="radio" name="q26" value="C" onchange="mcqCheck(26,this)"> C. A membrane phospholipid with two glycerol backbones.</label>
+              <label class="opt"><input type="radio" name="q26" value="D" onchange="mcqCheck(26,this)"> D. A carbohydrate chain used for energy storage.</label>
+            </div>
+            <div class="feedback incorrect" id="fb26">Incorrect — try again.</div>
+            <div class="explain" id="ex26"><strong>Correct —</strong> A cerebroside is a glycolipid made of ceramide plus a single sugar (e.g., galactose).</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q27 -->
+      <div class="q" id="q27">
+        <div class="q-row">
+          <div class="qnum">27</div>
+          <div style="flex:1">
+            <h3>Which organelle is the major site for initial protein folding and formation of disulfide bonds for secretory proteins?</h3>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="q27" value="A" data-correct="true" onchange="mcqCheck(27,this)"> A. Rough endoplasmic reticulum (rER).</label>
+              <label class="opt"><input type="radio" name="q27" value="B" onchange="mcqCheck(27,this)"> B. Mitochondrion.</label>
+              <label class="opt"><input type="radio" name="q27" value="C" onchange="mcqCheck(27,this)"> C. Lysosome.</label>
+              <label class="opt"><input type="radio" name="q27" value="D" onchange="mcqCheck(27,this)"> D. Peroxisome.</label>
+            </div>
+            <div class="feedback incorrect" id="fb27">Incorrect — try again.</div>
+            <div class="explain" id="ex27"><strong>Correct —</strong> rER has bound ribosomes and provides the lumen environment for folding and disulfide bond formation of secretory proteins.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q28 -->
+      <div class="q" id="q28">
+        <div class="q-row">
+          <div class="qnum">28</div>
+          <div style="flex:1">
+            <h3>Which of the following is true about membranes and selective permeability?</h3>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="q28" value="A" onchange="mcqCheck(28,this)"> A. Membranes block everything equally; nothing can cross without a pore.</label>
+              <label class="opt"><input type="radio" name="q28" value="B" data-correct="true" onchange="mcqCheck(28,this)"> B. Membranes are selectively permeable: small nonpolar molecules cross easily, charged ions often require channels or transporters.</label>
+              <label class="opt"><input type="radio" name="q28" value="C" onchange="mcqCheck(28,this)"> C. Only proteins can move across membranes, lipids cannot.</label>
+              <label class="opt"><input type="radio" name="q28" value="D" onchange="mcqCheck(28,this)"> D. All molecules cross membranes at the same rate regardless of size or polarity.</label>
+            </div>
+            <div class="feedback incorrect" id="fb28">Incorrect — try again.</div>
+            <div class="explain" id="ex28"><strong>Correct —</strong> Membranes are selective: hydrophobic small molecules permeate, polar/charged species require carriers/channels.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q29 -->
+      <div class="q" id="q29">
+        <div class="q-row">
+          <div class="qnum">29</div>
+          <div style="flex:1">
+            <h3>Which cell structure organizes microtubules and is important during cell division in animal cells?</h3>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="q29" value="A" data-correct="true" onchange="mcqCheck(29,this)"> A. Centrioles (part of the centrosome).</label>
+              <label class="opt"><input type="radio" name="q29" value="B" onchange="mcqCheck(29,this)"> B. Ribosomes.</label>
+              <label class="opt"><input type="radio" name="q29" value="C" onchange="mcqCheck(29,this)"> C. Mitochondrial matrix.</label>
+              <label class="opt"><input type="radio" name="q29" value="D" onchange="mcqCheck(29,this)"> D. Golgi cisternae.</label>
+            </div>
+            <div class="feedback incorrect" id="fb29">Incorrect — try again.</div>
+            <div class="explain" id="ex29"><strong>Correct —</strong> Centrioles in the centrosome help nucleate microtubules and organize the mitotic spindle.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q30 -->
+      <div class="q" id="q30">
+        <div class="q-row">
+          <div class="qnum">30</div>
+          <div style="flex:1">
+            <h3>Which of the following best summarizes nuclei functions?</h3>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="q30" value="A" data-correct="true" onchange="mcqCheck(30,this)"> A. Store genetic material, control gene expression, coordinate replication and ribosome assembly.</label>
+              <label class="opt"><input type="radio" name="q30" value="B" onchange="mcqCheck(30,this)"> B. Produce ATP and detoxify drugs.</label>
+              <label class="opt"><input type="radio" name="q30" value="C" onchange="mcqCheck(30,this)"> C. Digest cellular debris using hydrolytic enzymes.</label>
+              <label class="opt"><input type="radio" name="q30" value="D" onchange="mcqCheck(30,this)"> D. Synthesize membrane lipids exclusively.</label>
+            </div>
+            <div class="feedback incorrect" id="fb30">Incorrect — try again.</div>
+            <div class="explain" id="ex30"><strong>Correct —</strong> The nucleus stores DNA, directs gene expression, controls replication and assembles ribosomal subunits in the nucleolus.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Essay Section -->
+  <section class="card" id="essay-card">
+    <h2>Essay Questions (2)</h2>
+    <p class="small">Type your answer then click <strong>Check answer</strong>. If your text contains the expected key ideas the full model answer will be shown — click <strong>Hide explanation</strong> to collapse it.</p>
+
+    <!-- Essay 1 -->
+    <div class="q" id="essay1">
+      <div class="q-row">
+        <div class="qnum">E1</div>
+        <div style="flex:1">
+          <h3>Explain the roles of membrane lipids and proteins in maintaining cell function. (Concise but comprehensive)</h3>
+          <div class="essay">
+            <textarea id="essay1-text" placeholder="Include words like: phospholipid bilayer, amphipathic, cholesterol, integral proteins, peripheral proteins, transporters, receptors, selective permeability, scaffold"></textarea>
+            <div class="controls">
+              <button onclick="checkEssay(1)">Check answer</button>
+              <button class="ghost" onclick="clearEssay(1)">Clear</button>
+            </div>
+            <div id="essay1-feedback" class="feedback incorrect" style="display:none"></div>
+            <div id="essay1-model" class="explain" style="display:none">
+              <strong>Model Answer — Membrane lipids & proteins</strong>
+              <ol>
+                <li><strong>Phospholipid bilayer (amphipathic)</strong>: forms the barrier separating intracellular and extracellular compartments, creating a hydrophobic core that restricts passage of polar/charged molecules.</li>
+                <li><strong>Cholesterol</strong>: intercalates between phospholipids to modulate fluidity and mechanical stability and reduce passive permeability.</li>
+                <li><strong>Glycolipids/Glycoproteins</strong>: provide recognition/adhesion sites on the extracellular leaflet and can be targets for pathogens or signalling molecules.</li>
+                <li><strong>Integral proteins</strong>: transmembrane proteins function as channels, carriers and pumps (active transport), and receptors that convert extracellular signals into intracellular responses.</li>
+                <li><strong>Peripheral proteins</strong>: attach to membrane surfaces, act as scaffolds or enzymes, and connect membranes to the cytoskeleton to maintain shape and organize signalling complexes.</li>
+                <li><strong>Combined role</strong>: Membrane lipids provide the physical environment; proteins provide specificity — together they enable selective transport, signal transduction, intercellular interaction and compartmentalized biochemical activities.</li>
+              </ol>
+              <div style="text-align:right;margin-top:8px"><button class="ghost" onclick="hideModel('essay1-model')">Hide explanation</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Essay 2 -->
+    <div class="q" id="essay2">
+      <div class="q-row">
+        <div class="qnum">E2</div>
+        <div style="flex:1">
+          <h3>Describe how defects in sphingolipid metabolism can affect the nervous system. Mention one disease example and the underlying idea.</h3>
+          <div class="essay">
+            <textarea id="essay2-text" placeholder="Include words like: sphingolipid, ceramide, galactocerebroside, myelin, enzyme deficiency, accumulation, demyelination, Krabbe, Tay-Sachs"></textarea>
+            <div class="controls">
+              <button onclick="checkEssay(2)">Check answer</button>
+              <button class="ghost" onclick="clearEssay(2)">Clear</button>
+            </div>
+            <div id="essay2-feedback" class="feedback incorrect" style="display:none"></div>
+            <div id="essay2-model" class="explain" style="display:none">
+              <strong>Model Answer — Sphingolipids and nervous system disease</strong>
+              <ol>
+                <li><strong>Sphingolipid basics:</strong> Sphingolipids (derived from sphingosine + fatty acid → ceramide) include sphingomyelin and glycolipids (cerebrosides, gangliosides) that are abundant in neural membranes and myelin.</li>
+                <li><strong>Metabolic defects:</strong> Enzyme deficiencies that degrade sphingolipids cause accumulation of substrates in neurons/glia, disrupting membrane function and myelin integrity.</li>
+                <li><strong>Example — Krabbe disease:</strong> Deficiency of galactocerebrosidase leads to psychosine accumulation, demyelination and severe neurological symptoms (tremors, paralysis, early death).</li>
+                <li><strong>Example — Tay–Sachs:</strong> Defect in hexosaminidase A causes GM2 ganglioside accumulation, progressive neurodegeneration, seizures and blindness in infants.</li>
+                <li><strong>Key idea:</strong> Sphingolipid metabolism is essential for myelin and neuronal membrane homeostasis; its disruption leads to toxic storage, demyelination and neurodegenerative disease.</li>
+              </ol>
+              <div style="text-align:right;margin-top:8px"><button class="ghost" onclick="hideModel('essay2-model')">Hide explanation</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <footer class="small">This quiz was generated from your lecture slides on cell physiology (membranes, organelles and lipids). Save the file and open it in any browser to use offline.</footer>
+</div>
+
+<script>
+/* MCQ logic: show explanation only when the radio selected has data-correct attribute.
+   show incorrect feedback when incorrect option chosen.
+*/
+function mcqCheck(qNum, input){
+  const qId = 'q' + qNum;
+  const fb = document.getElementById('fb' + qNum);
+  const ex = document.getElementById('ex' + qNum);
+  // hide explanation and feedback first
+  if(fb) fb.style.display = 'none';
+  if(ex) ex.style.display = 'none';
+  // If correct
+  if(input.dataset.correct === "true"){
+    if(fb) fb.style.display = 'none';
+    if(ex) { ex.style.display = 'block'; ex.scrollIntoView({behavior:'smooth', block:'center'}); }
+  } else {
+    if(fb) { fb.style.display = 'block'; fb.scrollIntoView({behavior:'smooth', block:'center'}); }
+  }
+}
+
+/* Essay logic:
+   Use lightweight keyword matching. If user includes >= threshold keywords, show model answer and hide the feedback.
+   If not, show a friendly hint listing missing key words.
+*/
+const essayConfigs = {
+  1: {
+    keywords: ['phospholipid','bilayer','amphipath','cholesterol','integral','peripheral','transport','receptor','selective','scaffold'],
+    threshold: 3,
+    modelId: 'essay1-model',
+    feedbackId: 'essay1-feedback',
+    textId: 'essay1-text'
+  },
+  2: {
+    keywords: ['sphingolipid','sphingosine','ceramide','galactocerebroside','myelin','enzyme','krabbe','tay','hexosaminidase','gm2'],
+    threshold: 2,
+    modelId: 'essay2-model',
+    feedbackId: 'essay2-feedback',
+    textId: 'essay2-text'
+  }
+};
+
+function normalize(s){ return (s||'').toLowerCase(); }
+
+function checkEssay(n){
+  const cfg = essayConfigs[n];
+  const text = normalize(document.getElementById(cfg.textId).value);
+  const feedbackEl = document.getElementById(cfg.feedbackId);
+  const modelEl = document.getElementById(cfg.modelId);
+  // reset
+  feedbackEl.style.display = 'none'; modelEl.style.display = 'none';
+  if(!text || text.trim().length < 20){
+    feedbackEl.innerText = 'Answer too short — please provide more details.';
+    feedbackEl.style.display = 'block';
+    return;
+  }
+  let matches = 0;
+  const found = [];
+  cfg.keywords.forEach(k=>{
+    if(text.indexOf(k) !== -1){ matches++; found.push(k); }
+  });
+  if(matches >= cfg.threshold){
+    modelEl.style.display = 'block';
+    modelEl.scrollIntoView({behavior:'smooth', block:'center'});
+  } else {
+    const hint = cfg.keywords.slice(0,6).join(', ');
+    feedbackEl.innerHTML = `Your answer is missing several key ideas. Found <strong>${matches}</strong>. Try including terms such as: <em>${hint}</em>.`;
+    feedbackEl.style.display = 'block';
+    feedbackEl.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+}
+
+function clearEssay(n){
+  const cfg = essayConfigs[n];
+  document.getElementById(cfg.textId).value = '';
+  document.getElementById(cfg.feedbackId).style.display = 'none';
+  document.getElementById(cfg.modelId).style.display = 'none';
+}
+function hideModel(id){ document.getElementById(id).style.display = 'none'; }
+
+</script>
+</body>
+</html>
