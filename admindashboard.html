@@ -157,7 +157,20 @@
 ============================================================================================= */
 const SUPABASE_URL = 'https://SUPABASE_URL';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1dWJjZ3JycWlweWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzA4MjEsImV4cCI6MjA2ODg0NjgyMX0.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A';
-const supabase = supabaseJs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+/* Note: the CDN exposes a global called `supabase` utilities; many examples use `createClient`.
+   The original code used `supabaseJs.createClient`. Keep whichever works for your CDN build.
+   If you see a 'supabaseJs is not defined' error in console, replace `supabaseJs.createClient` with `createClient`.
+*/
+const supabase = (typeof supabaseJs !== 'undefined')
+  ? supabaseJs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+  : (typeof createClient !== 'undefined')
+    ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+    : (() => { console.error('Supabase client not found. Check CDN import.'); return null; })();
+
+/* Protect this page? If true, users who are not authenticated will be redirected to login.html
+   after we attempt to restore session from URL or listen for auth state changes. */
+const REQUIRE_AUTH = true;
 
 /* Admin email (as requested) */
 const ADMIN_EMAIL = 'thrivesarchivers@gmail.com';
@@ -194,27 +207,76 @@ signInBtn.addEventListener('click', () => {
 
 /* Sign out */
 signOutBtn.addEventListener('click', async () => {
+  if (!supabase) return;
   await supabase.auth.signOut();
   location.reload();
 });
 
-/* On page load: check session and load content */
+/* On page load: robust session handling:
+   - Try to parse session returned in URL (handles magic-link / OAuth redirects)
+   - Then check current session
+   - Register onAuthStateChange to handle async auth changes
+   - Only redirect to login.html if REQUIRE_AUTH is true and no session after attempts
+*/
 async function init() {
+  if (!supabase) {
+    console.error('Supabase client not initialized');
+    return;
+  }
+
+  try {
+    // Try to handle session from a redirect (magic link / OAuth). This will store session if present.
+    // If your flow does not use redirects, this call will simply return null/no-op.
+    await supabase.auth.getSessionFromUrl().catch(() => null);
+  } catch (err) {
+    // ignore - older clients or flows may not support it
+    console.debug('getSessionFromUrl not available or failed:', err);
+  }
+
+  // Listen for auth state changes (important for cross-tab / redirect flows)
+  supabase.auth.onAuthStateChange((event, session) => {
+    if (session && session.user) {
+      onAuthChange(session.user);
+    } else {
+      // If user signs out, show signed-out state (we won't redirect here; init handles redirect decision)
+      showSignedOut();
+    }
+  });
+
+  // Get current session
   const { data: { session } } = await supabase.auth.getSession();
+
   if (session && session.user) {
     onAuthChange(session.user);
   } else {
-    // redirect to login if not signed in
-    window.location.href = "login.html";
-    return;
+    // Give the client a very short moment to process possible redirect events (if any).
+    // This reduces race conditions where a redirect-set session hasn't been applied yet.
+    await new Promise(res => setTimeout(res, 500));
+
+    // re-check session
+    const { data: { session: session2 } } = await supabase.auth.getSession();
+    if (session2 && session2.user) {
+      onAuthChange(session2.user);
+    } else {
+      if (REQUIRE_AUTH) {
+        // user is not signed in — redirect to login page
+        window.location.href = "login.html";
+        return;
+      } else {
+        showSignedOut();
+      }
+    }
   }
+
+  // Load content regardless (if admin-only features depend on auth they'll hide automatically)
   await fetchAndRenderContent();
 }
 
 /* When user authenticated */
 async function onAuthChange(user) {
-  const email = user.email;
-  userInfoEl.innerHTML = `Signed in as <strong>${email}</strong> — <span id="enrollStatus">Checking enrollment...</span>`;
+  if (!user) return;
+  const email = user.email || '(no-email)';
+  userInfoEl.innerHTML = `Signed in as <strong>${escapeHtml(email)}</strong> — <span id="enrollStatus">Checking enrollment...</span>`;
   signInBtn.style.display = 'none';
   signOutBtn.style.display = 'inline-block';
 
@@ -234,14 +296,13 @@ async function onAuthChange(user) {
     .limit(1);
 
   const enrollEl = document.getElementById('enrollStatus');
+  if (!enrollEl) return;
   if (error) {
     enrollEl.innerText = 'Error fetching subscription';
     enrollEl.className = 'status-not';
     console.error(error);
   } else if (data && data.length > 0) {
     const sub = data[0];
-    // assume columns: start_date, duration (days), end_date, courses
-    // If your table stores duration or end_date, prefer end_date. We'll check both.
     let now = new Date();
     let endDate = sub.end_date ? new Date(sub.end_date) : null;
     if (!endDate && sub.start_date && sub.duration) {
@@ -271,11 +332,12 @@ function showSignedOut() {
 }
 
 /* ---------- Content fetching + rendering ---------- */
-/* anatomy table design suggestion (see SQL below in comments).
-   We'll query anatomy entries grouped by section and render cards similar to your original layout.
-*/
 async function fetchAndRenderContent() {
-  // get all anatomy items ordered
+  if (!supabase) {
+    courseGrid.innerHTML = '<div style="color:red">Supabase client not initialized.</div>';
+    return;
+  }
+
   const { data, error } = await supabase
     .from('anatomy')
     .select('*')
@@ -287,80 +349,55 @@ async function fetchAndRenderContent() {
     courseGrid.innerHTML = '<div style="color:red">Failed to load content from Supabase.</div>';
     return;
   }
-  // group by section
+
   const groups = {};
-  data.forEach(item => {
+  (data || []).forEach(item => {
     const section = item.section || 'General';
     if (!groups[section]) groups[section] = [];
     groups[section].push(item);
   });
 
-  // render cards
   courseGrid.innerHTML = '';
   for (const section of Object.keys(groups)) {
     const items = groups[section];
     const card = document.createElement('div');
     card.className = 'course-card';
     card.innerHTML = `<h3>${escapeHtml(section)}</h3>`;
-    // group by type header (if you want)
     const ul = document.createElement('ul');
 
     items.forEach(it => {
       const li = document.createElement('li');
-      // depending on type, render appropriate controls
-      // types: note | video | quiz
       let title = escapeHtml(it.title || '(no title)');
       if (it.type === 'note') {
-        // drive preview link or any link
         const a = document.createElement('a');
         a.className = 'doc-link';
         a.href = '#';
         a.textContent = '📄 ' + title;
-        a.addEventListener('click', (e) => {
-          e.preventDefault();
-          // open link in modal iframe
-          showModalWith(it.url);
-        });
+        a.addEventListener('click', (e) => { e.preventDefault(); showModalWith(it.url); });
         li.appendChild(a);
       } else if (it.type === 'video') {
-        // we will attempt to embed youtube embed url if standard youtube link given
         const a = document.createElement('a');
         a.className = 'doc-link';
         a.href = '#';
         a.textContent = '🎬 ' + title;
-        a.addEventListener('click', (e) => {
-          e.preventDefault();
-          // convert to youtube embed URL if needed
-          const embed = youtubeEmbedFromUrl(it.url);
-          if (embed) showModalWith(embed);
-          else showModalWith(it.url);
-        });
+        a.addEventListener('click', (e) => { e.preventDefault(); const embed = youtubeEmbedFromUrl(it.url); showModalWith(embed || it.url); });
         li.appendChild(a);
       } else if (it.type === 'quiz') {
         const a = document.createElement('a');
         a.className = 'doc-link';
         a.href = '#';
         a.textContent = '📝 ' + title;
-        a.addEventListener('click', (e) => {
-          e.preventDefault();
-          // quiz should be local path like "Historogy1.html" - open inside modal
-          showModalWith(it.url);
-        });
+        a.addEventListener('click', (e) => { e.preventDefault(); showModalWith(it.url); });
         li.appendChild(a);
       } else {
-        // fallback: generic link
         const a = document.createElement('a');
         a.className = 'doc-link';
         a.href = '#';
         a.textContent = '🔗 ' + title;
-        a.addEventListener('click', (e) => {
-          e.preventDefault();
-          showModalWith(it.url);
-        });
+        a.addEventListener('click', (e) => { e.preventDefault(); showModalWith(it.url); });
         li.appendChild(a);
       }
 
-      // add small action buttons: video / quiz / note quick buttons
       const actions = document.createElement('div');
       actions.style.display = 'flex';
       actions.style.gap = '8px';
@@ -401,8 +438,7 @@ async function fetchAndRenderContent() {
     courseGrid.appendChild(card);
   }
 
-  // if nothing, show friendly message
-  if (data.length === 0) {
+  if (!data || data.length === 0) {
     courseGrid.innerHTML = `<div class="course-card"><h3>No content yet</h3><p>Admin can add content from the admin panel.</p></div>`;
   }
 }
@@ -410,7 +446,6 @@ async function fetchAndRenderContent() {
 /* Helper to produce youtube embed url from many formats */
 function youtubeEmbedFromUrl(url) {
   if (!url) return null;
-  // common patterns
   const ytShort = /youtu\.be\/([a-zA-Z0-9_\-]+)/;
   const ytWatch = /v=([a-zA-Z0-9_\-]+)/;
   const ytEmbed = /youtube\.com\/embed\/([a-zA-Z0-9_\-]+)/;
@@ -422,7 +457,6 @@ function youtubeEmbedFromUrl(url) {
   } else if (ytWatch.test(url)) {
     id = url.match(ytWatch)[1];
   } else {
-    // maybe the user already provided embed link or IFrame URL
     return url;
   }
   return `https://www.youtube.com/embed/${id}`;
@@ -436,6 +470,7 @@ function escapeHtml(unsafe) {
 
 /* ---------- Admin: Add content ---------- */
 addContentBtn.addEventListener('click', async () => {
+  if (!supabase) return;
   const session = (await supabase.auth.getSession()).data.session;
   if (!session || !session.user || session.user.email !== ADMIN_EMAIL) {
     adminMsg.innerText = 'Only admin can add content. Sign in as admin.';
@@ -461,7 +496,6 @@ addContentBtn.addEventListener('click', async () => {
     console.error(error);
   } else {
     adminMsg.innerText = 'Added successfully.';
-    // clear inputs
     document.getElementById('adminTitle').value = '';
     document.getElementById('adminUrl').value = '';
     document.getElementById('adminOrder').value = '';
@@ -475,6 +509,7 @@ refreshContentBtn.addEventListener('click', fetchAndRenderContent);
 /* Init on load */
 init();
 
+</script>
 </script>
 <!-- =========================
   Supabase Table SQL + Suggestions
@@ -520,5 +555,6 @@ Notes:
    (Supabase docs have examples for email-based policies.)
 
 ===================================== -->
+</body>
 </body>
 </html>
