@@ -92,16 +92,14 @@
   <img src="file_0000000009d461f89d0cb3387f0b7000.png" alt="Header Image">
   <h1>Thrives Archivers Course Access</h1>
 </header>
-
 <!-- Topbar: will show user email and enrollment status -->
 <div class="topbar">
   <div class="user-info" id="userInfo">Not signed in</div>
   <div id="authButtons">
-    <button class="btn btn-primary" id="signInBtn">Sign in (magic link)</button>
+    <button class="btn btn-primary" id="signInBtn">Sign in</button>
     <button class="btn" id="signOutBtn" style="display:none;">Sign out</button>
   </div>
 </div>
-
 <div class="container">
 
   <!-- Admin panel (hidden unless admin) -->
@@ -138,13 +136,12 @@
     <!-- initial static cards will be replaced by dynamic content from Supabase, but we preserve the layout -->
     <!-- When content loads, this area will be filled with section cards -->
   </div>
-
   <a class="free-quiz-btn" href="anatomyquize.html" target="_blank">Go to Anatomy Quiz</a>
   <a class="whatsapp-button" href="https://wa.me/260973178100" target="_blank">
     Chat with Me on WhatsApp <span class="chat-icon">💬</span>
   </a>
-</div>
 
+</div>
 <!-- Modal -->
 <div id="modal" class="modal">
   <div class="modal-content">
@@ -152,7 +149,6 @@
     <iframe id="viewerFrame" src=""></iframe>
   </div>
 </div>
-
 <script>
 /* ================== Supabase config - REPLACE these with your project values ==================
    Get these from your Supabase project settings.
@@ -190,13 +186,10 @@ window.onclick = function(event) {
 }
 
 /* ---------- Authentication ---------- */
-/* We'll use magic link sign-in (email OTP) for simplicity. Admin logs in with their email. */
-signInBtn.addEventListener('click', async () => {
-  const email = prompt('Enter your email to receive a magic sign-in link:');
-  if (!email) return;
-  const { error } = await supabase.auth.signInWithOtp({ email });
-  if (error) alert('Sign-in failed: ' + error.message);
-  else alert('Check your email for the magic link. After clicking it, refresh this page.');
+
+/* Redirect to login page when user clicks sign-in */
+signInBtn.addEventListener('click', () => {
+  window.location.href = "login.html"; // Redirect to login page
 });
 
 /* Sign out */
@@ -211,13 +204,9 @@ async function init() {
   if (session && session.user) {
     onAuthChange(session.user);
   } else {
-    // check for existing session listener
-    supabase.auth.onAuthStateChange((event, session) => {
-      if (session && session.user) onAuthChange(session.user);
-      else showSignedOut();
-    });
-    // initial load as signed out
-    showSignedOut();
+    // redirect to login if not signed in
+    window.location.href = "login.html";
+    return;
   }
   await fetchAndRenderContent();
 }
@@ -487,7 +476,6 @@ refreshContentBtn.addEventListener('click', fetchAndRenderContent);
 init();
 
 </script>
-
 <!-- =========================
   Supabase Table SQL + Suggestions
   =========================
@@ -519,7 +507,7 @@ insert into public.anatomy (section, title, type, url, "order") values
 
 Notes:
 - The front-end code queries `subscription` for the user's email and tries to determine enrollment using `end_date` or start_date + duration.
-- Admin uses magic-link sign-in. When admin logs in as thrivesarchivers@gmail.com the admin panel will appear and allow adding rows to `anatomy`.
+- Admin panel will appear for thrivesarchivers@gmail.com when that user is signed in.
 - For video embedding, provide either a YouTube watch link (https://www.youtube.com/watch?v=ID) or a youtu.be short link. The site will convert it to an embed URL.
 - For drive notes, prefer Google Drive preview links (they open cleanly inside the iframe). Example preview pattern: https://drive.google.com/file/d/FILE_ID/preview
 
@@ -532,6 +520,5 @@ Notes:
    (Supabase docs have examples for email-based policies.)
 
 ===================================== -->
-
 </body>
 </html>
