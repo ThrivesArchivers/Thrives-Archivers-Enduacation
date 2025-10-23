@@ -1,1 +1,537 @@
-try.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Thrives Archivers Course Access</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Supabase JS (CDN) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
+<style>
+  body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; }
+  header { background-color: #333; color: #fff; text-align: center; padding: 10px; }
+  header img { width: 100%; max-height: 250px; object-fit: cover; }
+  .topbar { display:flex; justify-content: flex-end; align-items:center; gap:12px; padding:10px 20px; background:#fff; box-shadow:0 1px 4px rgba(0,0,0,0.06);}
+  .topbar .user-info { font-size:14px; color:#333; }
+  .container { max-width: 1200px; margin: auto; padding: 20px; }
+  .course-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+  .course-card { background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+  .course-card h3 { margin-top: 0; }
+  .course-card ul { list-style: none; padding-left: 0; }
+  .course-card li { margin-bottom: 12px; display: flex; flex-direction: column; gap: 5px; }
+  .icon { font-size: 18px; }
+  .doc-link { text-decoration: none; color: #007BFF; cursor: pointer; }
+  .doc-link:hover { text-decoration: underline; }
+  .take-quiz-btn {
+    display: inline-block;
+    margin-top: 4px;
+    padding: 8px 16px;
+    background-color: #e0e0e0;
+    color: #333;
+    border-radius: 5px;
+    font-size: 14px;
+    text-decoration: none;
+    border: 1px solid #ccc;
+  }
+  .take-quiz-btn:hover { background-color: #d5d5d5; }
+  .free-quiz-btn {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 12px 20px;
+    background: linear-gradient(90deg, #ff7e5f, #feb47b);
+    color: #fff;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .free-quiz-btn:hover { transform: scale(1.05); }
+  .whatsapp-button {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 12px 20px;
+    background-color: #25D366;
+    color: #fff;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    position: relative;
+  }
+  .whatsapp-button .chat-icon {
+    display: inline-block;
+    margin-left: 8px;
+    animation: moveIcon 1s infinite alternate;
+  }
+  @keyframes moveIcon {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-5px); }
+  }
+  .modal { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); }
+  .modal-content { background-color: #fff; margin: 5% auto; width: 90%; max-width: 800px; border-radius: 10px; overflow: hidden; position: relative; }
+  .modal-content iframe { width: 100%; height: 500px; border: none; }
+  .close-btn { position: absolute; top: 5px; right: 10px; font-size: 24px; color: #333; cursor: pointer; font-weight: bold; }
+  /* Admin panel */
+  .admin-panel { background:#fff; padding:12px; border-radius:8px; box-shadow:0 0 8px rgba(0,0,0,0.08); margin-bottom:20px;}
+  .form-row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px; }
+  .form-row input, .form-row select { padding:8px; border-radius:6px; border:1px solid #ccc; }
+  .btn { padding:8px 12px; border-radius:6px; border:none; cursor:pointer; }
+  .btn-primary { background:#007bff;color:#fff; }
+  .btn-danger { background:#dc3545;color:#fff; }
+  .status-enrolled { color:green; font-weight:bold; }
+  .status-not { color:red; font-weight:bold; }
+  /* small screens improvements */
+  @media (max-width:600px){ .topbar{flex-direction:column;align-items:flex-start;} }
+</style>
+</head>
+<body>
+<header>
+  <!-- Keep same header image as requested -->
+  <img src="file_0000000009d461f89d0cb3387f0b7000.png" alt="Header Image">
+  <h1>Thrives Archivers Course Access</h1>
+</header>
+
+<!-- Topbar: will show user email and enrollment status -->
+<div class="topbar">
+  <div class="user-info" id="userInfo">Not signed in</div>
+  <div id="authButtons">
+    <button class="btn btn-primary" id="signInBtn">Sign in (magic link)</button>
+    <button class="btn" id="signOutBtn" style="display:none;">Sign out</button>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Admin panel (hidden unless admin) -->
+  <div id="adminPanel" class="admin-panel" style="display:none;">
+    <h3>Admin Panel — Add Anatomy Content</h3>
+    <div style="font-size:13px; color:#555; margin-bottom:8px;">Add videos, notes (drive preview links), or quiz pages (local html). Visible only to <strong>thrivesarchivers@gmail.com</strong>.</div>
+    <div class="form-row">
+      <select id="adminSection">
+        <option value="Anatomy">Anatomy</option>
+        <option value="Physiology">Physiology</option>
+        <option value="Public Health">Public Health</option>
+        <option value="Medical Biochemical">Medical Biochemical</option>
+        <option value="Behavioral">Behavioral Science</option>
+      </select>
+      <input id="adminTitle" placeholder="Title (e.g., Anatomy of a Hand)" style="flex:1;">
+    </div>
+    <div class="form-row">
+      <select id="adminType">
+        <option value="note">Note (Google Drive preview link)</option>
+        <option value="video">Video (YouTube link)</option>
+        <option value="quiz">Quiz (local html page like Historogy1.html)</option>
+      </select>
+      <input id="adminUrl" placeholder="URL (drive preview / youtube / local html path)" style="flex:1;">
+      <input id="adminOrder" placeholder="Order (number)" style="width:100px;">
+    </div>
+    <div style="display:flex; gap:8px;">
+      <button class="btn btn-primary" id="addContentBtn">Add content</button>
+      <button class="btn btn-danger" id="refreshContentBtn">Refresh content</button>
+    </div>
+    <div id="adminMsg" style="margin-top:8px; font-size:13px;"></div>
+  </div>
+
+  <div class="course-grid" id="courseGrid">
+    <!-- initial static cards will be replaced by dynamic content from Supabase, but we preserve the layout -->
+    <!-- When content loads, this area will be filled with section cards -->
+  </div>
+
+  <a class="free-quiz-btn" href="anatomyquize.html" target="_blank">Go to Anatomy Quiz</a>
+  <a class="whatsapp-button" href="https://wa.me/260973178100" target="_blank">
+    Chat with Me on WhatsApp <span class="chat-icon">💬</span>
+  </a>
+</div>
+
+<!-- Modal -->
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeModal()">&times;</span>
+    <iframe id="viewerFrame" src=""></iframe>
+  </div>
+</div>
+
+<script>
+/* ================== Supabase config - REPLACE these with your project values ==================
+   Get these from your Supabase project settings.
+   SUPABASE_URL example: https://abcxyz.supabase.co
+   SUPABASE_ANON_KEY is the anon/public key (do not use service_role key on client)
+============================================================================================= */
+const SUPABASE_URL = 'https://SUPABASE_URL';
+const SUPABASE_ANON_KEY = 'SUPABASE_ANON_KEY';
+const supabase = supabaseJs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+/* Admin email (as requested) */
+const ADMIN_EMAIL = 'thrivesarchivers@gmail.com';
+
+/* DOM refs */
+const userInfoEl = document.getElementById('userInfo');
+const signInBtn = document.getElementById('signInBtn');
+const signOutBtn = document.getElementById('signOutBtn');
+const adminPanel = document.getElementById('adminPanel');
+const adminMsg = document.getElementById('adminMsg');
+const courseGrid = document.getElementById('courseGrid');
+const addContentBtn = document.getElementById('addContentBtn');
+const refreshContentBtn = document.getElementById('refreshContentBtn');
+
+function showModalWith(link) {
+  document.getElementById('viewerFrame').src = link;
+  document.getElementById('modal').style.display = 'block';
+}
+function closeModal() {
+  document.getElementById('modal').style.display = 'none';
+  document.getElementById('viewerFrame').src = '';
+}
+window.onclick = function(event) {
+  const modal = document.getElementById('modal');
+  if (event.target == modal) { closeModal(); }
+}
+
+/* ---------- Authentication ---------- */
+/* We'll use magic link sign-in (email OTP) for simplicity. Admin logs in with their email. */
+signInBtn.addEventListener('click', async () => {
+  const email = prompt('Enter your email to receive a magic sign-in link:');
+  if (!email) return;
+  const { error } = await supabase.auth.signInWithOtp({ email });
+  if (error) alert('Sign-in failed: ' + error.message);
+  else alert('Check your email for the magic link. After clicking it, refresh this page.');
+});
+
+/* Sign out */
+signOutBtn.addEventListener('click', async () => {
+  await supabase.auth.signOut();
+  location.reload();
+});
+
+/* On page load: check session and load content */
+async function init() {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session && session.user) {
+    onAuthChange(session.user);
+  } else {
+    // check for existing session listener
+    supabase.auth.onAuthStateChange((event, session) => {
+      if (session && session.user) onAuthChange(session.user);
+      else showSignedOut();
+    });
+    // initial load as signed out
+    showSignedOut();
+  }
+  await fetchAndRenderContent();
+}
+
+/* When user authenticated */
+async function onAuthChange(user) {
+  const email = user.email;
+  userInfoEl.innerHTML = `Signed in as <strong>${email}</strong> — <span id="enrollStatus">Checking enrollment...</span>`;
+  signInBtn.style.display = 'none';
+  signOutBtn.style.display = 'inline-block';
+
+  // Show admin panel only for admin email
+  if (email === ADMIN_EMAIL) {
+    adminPanel.style.display = 'block';
+  } else {
+    adminPanel.style.display = 'none';
+  }
+
+  // Check subscription status from subscription table
+  const { data, error } = await supabase
+    .from('subscription')
+    .select('*')
+    .eq('email', email)
+    .order('start_date', { ascending: false })
+    .limit(1);
+
+  const enrollEl = document.getElementById('enrollStatus');
+  if (error) {
+    enrollEl.innerText = 'Error fetching subscription';
+    enrollEl.className = 'status-not';
+    console.error(error);
+  } else if (data && data.length > 0) {
+    const sub = data[0];
+    // assume columns: start_date, duration (days), end_date, courses
+    // If your table stores duration or end_date, prefer end_date. We'll check both.
+    let now = new Date();
+    let endDate = sub.end_date ? new Date(sub.end_date) : null;
+    if (!endDate && sub.start_date && sub.duration) {
+      endDate = new Date(sub.start_date);
+      endDate.setDate(endDate.getDate() + Number(sub.duration));
+    }
+    if (endDate && now <= endDate) {
+      enrollEl.innerText = 'ENROLLED';
+      enrollEl.className = 'status-enrolled';
+    } else {
+      enrollEl.innerText = 'NOT ENROLLED';
+      enrollEl.className = 'status-not';
+    }
+  } else {
+    enrollEl.innerText = 'NOT ENROLLED';
+    enrollEl.className = 'status-not';
+  }
+}
+
+/* When signed out */
+function showSignedOut() {
+  userInfoEl.innerHTML = 'Not signed in';
+  signInBtn.style.display = 'inline-block';
+  signOutBtn.style.display = 'none';
+  adminPanel.style.display = 'none';
+  // still render public/free content
+}
+
+/* ---------- Content fetching + rendering ---------- */
+/* anatomy table design suggestion (see SQL below in comments).
+   We'll query anatomy entries grouped by section and render cards similar to your original layout.
+*/
+async function fetchAndRenderContent() {
+  // get all anatomy items ordered
+  const { data, error } = await supabase
+    .from('anatomy')
+    .select('*')
+    .order('section', { ascending: true })
+    .order('order', { ascending: true });
+
+  if (error) {
+    console.error('Error fetching anatomy:', error);
+    courseGrid.innerHTML = '<div style="color:red">Failed to load content from Supabase.</div>';
+    return;
+  }
+  // group by section
+  const groups = {};
+  data.forEach(item => {
+    const section = item.section || 'General';
+    if (!groups[section]) groups[section] = [];
+    groups[section].push(item);
+  });
+
+  // render cards
+  courseGrid.innerHTML = '';
+  for (const section of Object.keys(groups)) {
+    const items = groups[section];
+    const card = document.createElement('div');
+    card.className = 'course-card';
+    card.innerHTML = `<h3>${escapeHtml(section)}</h3>`;
+    // group by type header (if you want)
+    const ul = document.createElement('ul');
+
+    items.forEach(it => {
+      const li = document.createElement('li');
+      // depending on type, render appropriate controls
+      // types: note | video | quiz
+      let title = escapeHtml(it.title || '(no title)');
+      if (it.type === 'note') {
+        // drive preview link or any link
+        const a = document.createElement('a');
+        a.className = 'doc-link';
+        a.href = '#';
+        a.textContent = '📄 ' + title;
+        a.addEventListener('click', (e) => {
+          e.preventDefault();
+          // open link in modal iframe
+          showModalWith(it.url);
+        });
+        li.appendChild(a);
+      } else if (it.type === 'video') {
+        // we will attempt to embed youtube embed url if standard youtube link given
+        const a = document.createElement('a');
+        a.className = 'doc-link';
+        a.href = '#';
+        a.textContent = '🎬 ' + title;
+        a.addEventListener('click', (e) => {
+          e.preventDefault();
+          // convert to youtube embed URL if needed
+          const embed = youtubeEmbedFromUrl(it.url);
+          if (embed) showModalWith(embed);
+          else showModalWith(it.url);
+        });
+        li.appendChild(a);
+      } else if (it.type === 'quiz') {
+        const a = document.createElement('a');
+        a.className = 'doc-link';
+        a.href = '#';
+        a.textContent = '📝 ' + title;
+        a.addEventListener('click', (e) => {
+          e.preventDefault();
+          // quiz should be local path like "Historogy1.html" - open inside modal
+          showModalWith(it.url);
+        });
+        li.appendChild(a);
+      } else {
+        // fallback: generic link
+        const a = document.createElement('a');
+        a.className = 'doc-link';
+        a.href = '#';
+        a.textContent = '🔗 ' + title;
+        a.addEventListener('click', (e) => {
+          e.preventDefault();
+          showModalWith(it.url);
+        });
+        li.appendChild(a);
+      }
+
+      // add small action buttons: video / quiz / note quick buttons
+      const actions = document.createElement('div');
+      actions.style.display = 'flex';
+      actions.style.gap = '8px';
+      actions.style.marginTop = '6px';
+
+      if (it.type === 'video') {
+        const vidBtn = document.createElement('a');
+        vidBtn.className = 'take-quiz-btn';
+        vidBtn.href = '#';
+        vidBtn.textContent = '🎥 Video';
+        vidBtn.addEventListener('click', (e) => { e.preventDefault(); const embed = youtubeEmbedFromUrl(it.url); showModalWith(embed || it.url); });
+        actions.appendChild(vidBtn);
+      }
+
+      if (it.type === 'quiz') {
+        const qBtn = document.createElement('a');
+        qBtn.className = 'take-quiz-btn';
+        qBtn.href = '#';
+        qBtn.textContent = '📝 Quiz';
+        qBtn.addEventListener('click', (e) => { e.preventDefault(); showModalWith(it.url); });
+        actions.appendChild(qBtn);
+      }
+
+      if (it.type === 'note') {
+        const nBtn = document.createElement('a');
+        nBtn.className = 'take-quiz-btn';
+        nBtn.href = '#';
+        nBtn.textContent = '📄 Note';
+        nBtn.addEventListener('click', (e) => { e.preventDefault(); showModalWith(it.url); });
+        actions.appendChild(nBtn);
+      }
+
+      li.appendChild(actions);
+      ul.appendChild(li);
+    });
+
+    card.appendChild(ul);
+    courseGrid.appendChild(card);
+  }
+
+  // if nothing, show friendly message
+  if (data.length === 0) {
+    courseGrid.innerHTML = `<div class="course-card"><h3>No content yet</h3><p>Admin can add content from the admin panel.</p></div>`;
+  }
+}
+
+/* Helper to produce youtube embed url from many formats */
+function youtubeEmbedFromUrl(url) {
+  if (!url) return null;
+  // common patterns
+  const ytShort = /youtu\.be\/([a-zA-Z0-9_\-]+)/;
+  const ytWatch = /v=([a-zA-Z0-9_\-]+)/;
+  const ytEmbed = /youtube\.com\/embed\/([a-zA-Z0-9_\-]+)/;
+  let id = null;
+  if (ytEmbed.test(url)) {
+    id = url.match(ytEmbed)[1];
+  } else if (ytShort.test(url)) {
+    id = url.match(ytShort)[1];
+  } else if (ytWatch.test(url)) {
+    id = url.match(ytWatch)[1];
+  } else {
+    // maybe the user already provided embed link or IFrame URL
+    return url;
+  }
+  return `https://www.youtube.com/embed/${id}`;
+}
+
+/* Escape helper */
+function escapeHtml(unsafe) {
+  if (!unsafe) return '';
+  return unsafe.replace(/[&<"'>]/g, function(m){ return {'&':'&amp;','<':'&lt;','"':'&quot;',"'":'&#039;', '>':'&gt;'}[m]; });
+}
+
+/* ---------- Admin: Add content ---------- */
+addContentBtn.addEventListener('click', async () => {
+  const session = (await supabase.auth.getSession()).data.session;
+  if (!session || !session.user || session.user.email !== ADMIN_EMAIL) {
+    adminMsg.innerText = 'Only admin can add content. Sign in as admin.';
+    return;
+  }
+  const section = document.getElementById('adminSection').value;
+  const title = document.getElementById('adminTitle').value.trim();
+  const type = document.getElementById('adminType').value;
+  const url = document.getElementById('adminUrl').value.trim();
+  const order = parseInt(document.getElementById('adminOrder').value || '999');
+
+  if (!title || !url) {
+    adminMsg.innerText = 'Title and URL are required.';
+    return;
+  }
+  adminMsg.innerText = 'Adding...';
+  const { data, error } = await supabase
+    .from('anatomy')
+    .insert([{ section, title, type, url, order }]);
+
+  if (error) {
+    adminMsg.innerText = 'Insert failed: ' + error.message;
+    console.error(error);
+  } else {
+    adminMsg.innerText = 'Added successfully.';
+    // clear inputs
+    document.getElementById('adminTitle').value = '';
+    document.getElementById('adminUrl').value = '';
+    document.getElementById('adminOrder').value = '';
+    await fetchAndRenderContent();
+  }
+});
+
+/* Refresh button */
+refreshContentBtn.addEventListener('click', fetchAndRenderContent);
+
+/* Init on load */
+init();
+
+</script>
+
+<!-- =========================
+  Supabase Table SQL + Suggestions
+  =========================
+
+Run these in Supabase SQL editor to create the `anatomy` table.
+
+-- Suggested anatomy table:
+create table public.anatomy (
+  id bigserial primary key,
+  section text not null,      -- e.g., "Anatomy", "Physiology"
+  title text not null,        -- e.g., "Anatomy of a Hand"
+  type text not null,         -- 'note' | 'video' | 'quiz'
+  url text not null,          -- drive preview link, youtube link, or local page path (e.g., 'Historogy1.html')
+  "order" integer default 1000,
+  created_at timestamptz default now()
+);
+
+-- Example insert:
+insert into public.anatomy (section, title, type, url, "order") values
+('Anatomy', 'Anatomy of a Hand', 'note', 'https://drive.google.com/file/d/FILE_ID/preview', 1),
+('Anatomy', 'Forearm Easy Notes (video)', 'video', 'https://www.youtube.com/watch?v=9WL_Ds8konc', 2),
+('Anatomy', 'Cell structure and Cell Division Quiz', 'quiz', 'Historogy1.html', 3);
+
+-- Existing subscription table (you said you already created it). Recommended columns:
+-- subscription(email text primary key, start_date date, duration integer, end_date date, courses text, created_at timestamptz default now())
+-- You can store courses as comma-separated or JSON (jsonb recommended).
+-- Example subscription record:
+-- insert into subscription (email, start_date, duration, end_date, courses) values ('student@example.com', '2025-10-01', 30, '2025-10-31', 'Anatomy,Physiology');
+
+Notes:
+- The front-end code queries `subscription` for the user's email and tries to determine enrollment using `end_date` or start_date + duration.
+- Admin uses magic-link sign-in. When admin logs in as thrivesarchivers@gmail.com the admin panel will appear and allow adding rows to `anatomy`.
+- For video embedding, provide either a YouTube watch link (https://www.youtube.com/watch?v=ID) or a youtu.be short link. The site will convert it to an embed URL.
+- For drive notes, prefer Google Drive preview links (they open cleanly inside the iframe). Example preview pattern: https://drive.google.com/file/d/FILE_ID/preview
+
+-- Security note:
+- Use the anon key on client; do NOT embed the service_role key in client code.
+- Lock down Row Level Security (RLS) if desired, or keep table public for reads and restrict inserts to authenticated users (you can write policies in Supabase so only admin can insert).
+-- Recommended quick RLS policy for admin inserts:
+   1) enable RLS for anatomy table
+   2) create a policy allowing inserts only if auth.uid() corresponds to a row in a 'users' table with admin=true OR check current_setting('request.jwt.claims.email') = 'thrivesarchivers@gmail.com'
+   (Supabase docs have examples for email-based policies.)
+
+===================================== -->
+
+</body>
+</html>
