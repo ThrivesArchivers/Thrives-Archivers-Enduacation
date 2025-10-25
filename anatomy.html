@@ -1,192 +1,259 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>System Maintenance</title>
-  <style>
-    :root{
-      --bg1: #0f172a;
-      --bg2: #071029;
-      --accent: #7c3aed;
-      --light: #e6eef8;
-      --glass: rgba(255,255,255,0.04);
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      background: radial-gradient(1200px 600px at 10% 10%, rgba(124,58,237,0.12), transparent),
-                  radial-gradient(900px 400px at 90% 90%, rgba(14,165,233,0.06), transparent),
-                  linear-gradient(180deg,var(--bg1),var(--bg2));
-      color:var(--light);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      overflow:hidden;
-    }
-
-    /* Container */
-    .card{
-      width:min(920px,94vw);
-      padding:44px;
-      border-radius:20px;
-      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      box-shadow: 0 10px 30px rgba(2,6,23,0.6);
-      backdrop-filter: blur(6px) saturate(120%);
-      border: 1px solid rgba(255,255,255,0.04);
-      text-align:center;
-    }
-
-    h1{margin:0 0 18px 0;font-size: clamp(28px, 4vw, 44px);letter-spacing:1px}
-    p.lead{margin:0 0 24px 0;opacity:0.85}
-
-    /* Motion words area */
-    .motion-wrap{
-      display:flex;
-      gap:18px;
-      justify-content:center;
-      align-items:center;
-      flex-wrap:wrap;
-      padding:18px 10px;
-    }
-
-    .word{
-      font-weight:800;
-      font-size: clamp(28px, 6vw, 64px);
-      line-height:1;
-      padding:12px 26px;
-      border-radius:12px;
-      background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      backdrop-filter: blur(4px);
-      position:relative;
-      transform-origin:center;
-      color:transparent;
-      -webkit-text-stroke: 0.6px rgba(255,255,255,0.06);
-      background-clip: text;
-      -webkit-background-clip: text;
-      animation: floatUp 3.6s ease-in-out infinite;
-    }
-
-    .word::before{
-      content:attr(data-text);
-      position:absolute;
-      inset:0;
-      display:block;
-      background: linear-gradient(90deg, #fff, var(--accent), #3dd5ff);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color:transparent;
-      transform-origin:center;
-      mask-image: linear-gradient(90deg, transparent 0%, black 15%, black 85%, transparent 100%);
-      animation: shine 2.6s linear infinite;
-    }
-
-    /* different styles for each word */
-    .word.sys{font-family: 'Segoe UI', Roboto, Arial; animation-duration:3.8s}
-    .word.under{animation-duration:3.2s}
-    .word.maint{animation-duration:4.2s}
-
-    /* small helper label */
-    .sub{
-      margin-top:14px;
-      font-size:14px;
-      color:rgba(230,238,248,0.8);
-    }
-
-    /* spinner */
-    .spinner{
-      margin:22px auto 0;
-      width:92px;height:92px;border-radius:50%;position:relative;
-    }
-    .arc{
-      position:absolute;inset:0;border-radius:50%;
-      border:6px solid transparent;border-top-color:var(--accent);border-right-color:transparent;
-      animation: spin 1.6s linear infinite;
-      box-shadow:0 6px 18px rgba(124,58,237,0.2);
-    }
-    .arc.two{border-top-color:#3dd5ff;animation-delay:-0.4s;transform:rotate(30deg)}
-
-    /* keyframes */
-    @keyframes floatUp{
-      0%{transform:translateY(0) rotate(-1deg) scale(1)}
-      50%{transform:translateY(-10px) rotate(1deg) scale(1.02)}
-      100%{transform:translateY(0) rotate(-1deg) scale(1)}
-    }
-
-    @keyframes shine{
-      0%{mask-position: -120% 0}
-      100%{mask-position: 220% 0}
-    }
-
-    @keyframes spin{to{transform:rotate(360deg)}}
-
-    /* decorative dots */
-    .dots{
-      position:absolute;left:6%;top:8%;width:200px;height:200px;pointer-events:none;opacity:0.12;
-      filter: blur(10px);
-    }
-
-    /* responsive */
-    @media (max-width:520px){
-      .motion-wrap{gap:8px}
-      .word{padding:10px 14px;font-size: clamp(22px, 10vw, 44px)}
-    }
-
-    /* accessible reduced motion */
-    @media (prefers-reduced-motion: reduce){
-      .word, .arc{animation:none}
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Thrives Archivers Course Access</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; }
+  header { background-color: #333; color: #fff; text-align: center; padding: 10px; }
+  header img { width: 100%; max-height: 250px; object-fit: cover; }
+  h1 { margin-top: 10px; }
+  .container { max-width: 1200px; margin: auto; padding: 20px; }
+  .course-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+  .course-card { background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+  .course-card h3 { margin-top: 0; }
+  .course-card ul { list-style: none; padding-left: 0; }
+  .course-card li { margin-bottom: 12px; display: flex; flex-direction: column; gap: 5px; }
+  .icon { font-size: 18px; }
+  /* Document links */
+  .doc-link { text-decoration: none; color: #007BFF; cursor: pointer; }
+  .doc-link:hover { text-decoration: underline; }
+  /* Buttons */
+  .take-quiz-btn {
+    display: inline-block;
+    margin-top: 4px;
+    padding: 8px 16px;
+    background-color: #e0e0e0;
+    color: #333;
+    border-radius: 5px;
+    font-size: 14px;
+    text-decoration: none;
+    border: 1px solid #ccc;
+  }
+  .take-quiz-btn:hover { background-color: #d5d5d5; }
+  .free-quiz-btn {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 12px 20px;
+    background: linear-gradient(90deg, #ff7e5f, #feb47b);
+    color: #fff;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .free-quiz-btn:hover { transform: scale(1.05); }
+  .whatsapp-button {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 12px 20px;
+    background-color: #25D366;
+    color: #fff;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    position: relative;
+  }
+  .whatsapp-button .chat-icon {
+    display: inline-block;
+    margin-left: 8px;
+    animation: moveIcon 1s infinite alternate;
+  }
+  @keyframes moveIcon {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-5px); }
+  }
+  /* Modal */
+  .modal { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); }
+  .modal-content { background-color: #fff; margin: 5% auto; width: 90%; max-width: 800px; border-radius: 10px; overflow: hidden; position: relative; }
+  .modal-content iframe { width: 100%; height: 500px; border: none; }
+  .close-btn { position: absolute; top: 5px; right: 10px; font-size: 24px; color: #333; cursor: pointer; font-weight: bold; }
+</style>
 </head>
 <body>
-  <div class="card" role="alert" aria-live="polite">
-    <svg class="dots" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <defs>
-        <radialGradient id="g" cx="30%" cy="30%">
-          <stop offset="0%" stop-color="#7c3aed" stop-opacity="0.9" />
-          <stop offset="100%" stop-color="#7c3aed" stop-opacity="0" />
-        </radialGradient>
-      </defs>
-      <circle cx="40" cy="40" r="38" fill="url(#g)" />
-      <circle cx="160" cy="160" r="34" fill="#03c4ff" fill-opacity="0.08" />
-    </svg>
+<header>
+  <img src="file_0000000009d461f89d0cb3387f0b7000.png" alt="Header Image">
+  <h1>Thrives Archivers Course Access</h1>
+</header>
+<div class="container">
+  <div class="course-grid">
 
-    <h1>We'll be right back</h1>
-    <p class="lead">Our system is currently undergoing scheduled maintenance. We're improving things — thanks for your patience.</p>
-
-    <div class="motion-wrap" aria-hidden="false">
-      <div class="word sys" data-text="SYSTEM">SYSTEM</div>
-      <div class="word under" data-text="UNDER">UNDER</div>
-      <div class="word maint" data-text="MAINTENANCE">MAINTENANCE</div>
+    <!-- Anatomy -->
+    <div class="course-card">
+      <h3>Anatomy</h3>
+      <strong>Gross Anatomy</strong>
+      <ul>
+        <li>
+          <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1g-Q9qHfstDZC7dnB_zMGVVbTUuocPFNf/preview')">📄 INTRODUCTIONS TO ANATOMY (Thrives Tutor)</a>
+        </li>
+        <li>
+          <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1feP6JSyE5gFOlGPnLEIch3_xhJgqQyMY/preview')">📄 Ostorogy of Upper Limbs</a>
+          <a class="take-quiz-btn" onclick="accessContent('https://www.youtube.com/embed/vIeuD0pQNr8?si=O6GTaxmEKofYe1RR')">🎥 Video</a>
+          <a class="take-quiz-btn" onclick="accessContent('Gross1.html')">📝 Quiz</a>
+        </li>
+        <li>
+          <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1fgBndheNWEsawjXN8DZ_OQmkmwY5mSLz/preview')">📄 Pectoral Region</a>
+          <a class="take-quiz-btn" onclick="accessContent('https://www.youtube.com/embed/P-kMR5eNoHE?si=tvvGTmEL47p0XDHl')">🎥 Video</a>
+          <a class="take-quiz-btn" onclick="accessContent('gross2.html')">📝 Quiz</a>
+        </li>
+        <li>
+          <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1ftAMb2P5UFYJLYgx1vVnqmHGP3kTjzQx/preview')">📄 ARM, CUBITAL FOSSA & ELBOW JOINT</a>
+          <a class="take-quiz-btn" onclick="accessContent('https://www.youtube.com/embed/RFehGNZPhpA?si=lYtVl-w9Sp3VOKtz')">🎥 Video</a>
+          <a class="take-quiz-btn" onclick="accessContent('Gross3.html')">📝 Quiz</a>
+        </li>
+        <li>
+          <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1ftJgS45NG_tMbpTP1vVnqmHGP3kTjzQx/preview')">📄 Anatomy of a Shoulder</a>
+          <a class="take-quiz-btn" onclick="accessContent('https://www.youtube.com/embed/7QI_owVSwKY?si=w11gETTdWuSiHQTm')">🎥 Video</a>
+          <a class="take-quiz-btn" onclick="accessContent('gross4.html')">📝 Quiz</a>
+        </li>
+        <li>
+          <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1fvvjvjMNQY2CnJjk4SlrH5Ha9cOK2LjR/preview')">📄 Forearm Easy Notes</a>
+          <a class="take-quiz-btn" onclick="accessContent('https://www.youtube.com/embed/9WL_Ds8konc?si=ZUJJg_xLL1ewZNXk')">🎥 Video</a>
+          <a class="take-quiz-btn" onclick="accessContent('Gross5.html')">📝 Quiz</a>
+        </li>
+        <li>
+          <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1fzbshqzmDM2Rtb8gmT2MsEXJIUV6RxeH/preview')">📄 Anatomy of a Hand</a>
+         <a class="take-quiz-btn" onclick="accessContent('https://www.youtube.com/embed/zyl6eoU-3Rg?si=F8LrmHKYG1OyXV1q')">🎥 Video</a>
+          <a class="take-quiz-btn" onclick="accessContent('Gross6.html')">📝 Quiz</a>
+        </li>
+      </ul>
+      <strong>Embryology</strong>
+      <ul>
+        <li><a class="doc-link" onclick="accessContent('Embryology1.html')">📄 Embryology Notes</a></li>
+      </ul>
+      <strong>Histology</strong>
+      <ul>
+        <li><a class="doc-link" onclick="accessContent('Histology1.html')">📄 Histology Notes</a></li>
+    <a class="take-quiz-btn" onclick="accessContent('Historogy1.html')">📝 Cell structure and Cell Division Quiz</a>
+        <a class="take-quiz-btn" onclick="accessContent('Historogy2.html')">📝 Epithelial tissues Quiz</a>
+        <a class="take-quiz-btn" onclick="accessContent('Historogy3.html')">📝 Anatomy of a skin Quiz</a>
+        <a class="take-quiz-btn" onclick="accessContent('Historogy4.html')">📝 Connective tissues Quiz</a>	
+      </ul>
     </div>
 
-    <div class="spinner" aria-hidden="true">
-      <div class="arc"></div>
-      <div class="arc two"></div>
+    <!-- Physiology -->
+
+    <!-- Physiology -->
+    <div class="course-card">
+    <h3>PHYSIOLOGY</h3>
+      <li>
+  <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1nvVcXkV2-Cgf-j4rKYQI9pyNL0yt2CK2/preview')">
+    📄 INTRODUCTIONS TO PHYSIOLOGY (Thrives Tutor)
+  </a>
+   <a class="take-quiz-btn" onclick="accessContent('Physiology1.html')">📝 Quiz</a>
+</li>
+      </ul>
+      <strong>Cardiovascular System</strong>
+      <ul>
+        <li>
+          <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1phCardioSystemDoc/preview')">📄 Cardiovascular Physiology</a>
+          <a class="take-quiz-btn" onclick="accessContent('Physiology2.html')">📝 Quiz</a>
+        </li>
+      </ul>
+      <strong>Respiratory System</strong>
+      <ul>
+        <li>
+          <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1phRespiratoryDoc/preview')">📄 Respiratory Physiology</a>
+          <a class="take-quiz-btn" onclick="accessContent('Physiology3.html')">📝 Quiz</a>
+        </li>
+      </ul>
     </div>
 
-    <div class="sub">Expected back soon • For urgent help contact <a href="0762514399">0762514399</a></div>
+    <!-- Public Health -->
+    <div class="course-card">
+      <h3>Public Health</h3>
+      <strong>Community Medicine</strong>
+      <ul>
+        <li>
+          <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1phCommunityMedDoc/preview')">📄 Community Medicine Notes</a>
+          <a class="take-quiz-btn" onclick="accessContent('PublicHealth1.html')">📝 Quiz</a>
+        </li>
+      </ul>
+      <strong>Environmental Health</strong>
+      <ul>
+        <li>
+          <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1phEnvHealthDoc/preview')">📄 Environmental Health Notes</a>
+          <a class="take-quiz-btn" onclick="accessContent('PublicHealth2.html')">📝 Quiz</a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Medical Biochemical -->
+    <div class="course-card">
+      <h3>Medical Biochemical</h3>
+      <strong>General Biochemistry</strong>
+      <ul>
+        <li>
+          <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1mbGeneralBiochemDoc/preview')">📄 General Biochemistry</a>
+          <a class="take-quiz-btn" onclick="accessContent('Biochem1.html')">📝 Quiz</a>
+        </li>
+      </ul>
+      <strong>Metabolism</strong>
+      <ul>
+        <li>
+          <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1mbMetabolismDoc/preview')">📄 Metabolism Notes</a>
+          <a class="take-quiz-btn" onclick="accessContent('Biochem2.html')">📝 Quiz</a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Behavioral Science and Communication Skills -->
+    <div class="course-card">
+      <h3>Behavioral Science & Communication Skills</h3>
+      <strong>Behavioral Science</strong>
+      <ul>
+        <li>
+          <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1bsBehavioralDoc/preview')">📄 Behavioral Science Notes</a>
+          <a class="take-quiz-btn" onclick="accessContent('Behavioral1.html')">📝 Quiz</a>
+        </li>
+      </ul>
+      <strong>Communication Skills</strong>
+      <ul>
+        <li>
+          <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1bsCommSkillsDoc/preview')">📄 Communication Skills</a>
+          <a class="take-quiz-btn" onclick="accessContent('Behavioral2.html')">📝 Quiz</a>
+        </li>
+      </ul>
+    </div>
+
   </div>
-
-  <script>
-    // Small JS to add a subtle stagger to the shimmer for better visual rhythm
-    (function(){
-      const words = document.querySelectorAll('.word');
-      words.forEach((w,i)=>{
-        const before = getComputedStyle(w,'::before');
-        w.style.setProperty('--delay', (i*0.15)+'s');
-        // add slight transform tilt based on index
-        w.style.transform = `translateY(${(i-1)*2}px) rotate(${(i-1)*1}deg)`;
-      });
-
-      // Make the spinner accessible: announce countdown (optional)
-      const card = document.querySelector('.card');
-      // if you want to announce time remaining you can update card.setAttribute('aria-label', '...') here
-    })();
-  </script>
+  <a class="free-quiz-btn" href="anatomyquize.html" target="_blank">Go to Anatomy Quiz</a>
+  <a class="whatsapp-button" href="https://wa.me/260973178100" target="_blank">
+    Chat with Me on WhatsApp <span class="chat-icon">💬</span>
+  </a>
+</div>
+<!-- Modal -->
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeModal()">&times;</span>
+    <iframe id="viewerFrame" src=""></iframe>
+  </div>
+</div>
+<script>
+  // ✅ All valid passwords in one place (you can add/remove anytime)
+  const validPasswords = ["thrives100", "mbewe", "student2025", "medicinestudygroup", "abana24", ];
+  function accessContent(link) {
+    const password = prompt("This content is protected. Please pay K100 to access. Inbox 0762514399.\nIf already registered, enter your password:");
+    if (validPasswords.includes(password)) {
+      document.getElementById('viewerFrame').src = link;
+      document.getElementById('modal').style.display = 'block';
+    } else {
+      alert("Incorrect password or you have not registered.");
+    }
+  }
+  function closeModal() {
+    document.getElementById('modal').style.display = 'none';
+    document.getElementById('viewerFrame').src = '';
+  }
+  window.onclick = function(event) {
+    const modal = document.getElementById('modal');
+    if (event.target == modal) { closeModal(); }
+  }
+</script>
 </body>
 </html>
-
-
