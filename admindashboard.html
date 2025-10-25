@@ -1,560 +1,658 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Thrives Archivers Course Access</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- Supabase JS (CDN) -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
-<style>
-  body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; }
-  header { background-color: #333; color: #fff; text-align: center; padding: 10px; }
-  header img { width: 100%; max-height: 250px; object-fit: cover; }
-  .topbar { display:flex; justify-content: flex-end; align-items:center; gap:12px; padding:10px 20px; background:#fff; box-shadow:0 1px 4px rgba(0,0,0,0.06);}
-  .topbar .user-info { font-size:14px; color:#333; }
-  .container { max-width: 1200px; margin: auto; padding: 20px; }
-  .course-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-  .course-card { background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-  .course-card h3 { margin-top: 0; }
-  .course-card ul { list-style: none; padding-left: 0; }
-  .course-card li { margin-bottom: 12px; display: flex; flex-direction: column; gap: 5px; }
-  .icon { font-size: 18px; }
-  .doc-link { text-decoration: none; color: #007BFF; cursor: pointer; }
-  .doc-link:hover { text-decoration: underline; }
-  .take-quiz-btn {
-    display: inline-block;
-    margin-top: 4px;
-    padding: 8px 16px;
-    background-color: #e0e0e0;
-    color: #333;
-    border-radius: 5px;
-    font-size: 14px;
-    text-decoration: none;
-    border: 1px solid #ccc;
-  }
-  .take-quiz-btn:hover { background-color: #d5d5d5; }
-  .free-quiz-btn {
-    display: inline-block;
-    margin-top: 10px;
-    padding: 12px 20px;
-    background: linear-gradient(90deg, #ff7e5f, #feb47b);
-    color: #fff;
-    border-radius: 6px;
-    font-size: 16px;
-    font-weight: bold;
-    text-decoration: none;
-    border: none;
-    cursor: pointer;
-    transition: transform 0.2s;
-  }
-  .free-quiz-btn:hover { transform: scale(1.05); }
-  .whatsapp-button {
-    display: inline-block;
-    margin-top: 10px;
-    padding: 12px 20px;
-    background-color: #25D366;
-    color: #fff;
-    border-radius: 6px;
-    font-size: 16px;
-    font-weight: bold;
-    text-decoration: none;
-    position: relative;
-  }
-  .whatsapp-button .chat-icon {
-    display: inline-block;
-    margin-left: 8px;
-    animation: moveIcon 1s infinite alternate;
-  }
-  @keyframes moveIcon {
-    0% { transform: translateY(0); }
-    100% { transform: translateY(-5px); }
-  }
-  .modal { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); }
-  .modal-content { background-color: #fff; margin: 5% auto; width: 90%; max-width: 800px; border-radius: 10px; overflow: hidden; position: relative; }
-  .modal-content iframe { width: 100%; height: 500px; border: none; }
-  .close-btn { position: absolute; top: 5px; right: 10px; font-size: 24px; color: #333; cursor: pointer; font-weight: bold; }
-  /* Admin panel */
-  .admin-panel { background:#fff; padding:12px; border-radius:8px; box-shadow:0 0 8px rgba(0,0,0,0.08); margin-bottom:20px;}
-  .form-row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px; }
-  .form-row input, .form-row select { padding:8px; border-radius:6px; border:1px solid #ccc; }
-  .btn { padding:8px 12px; border-radius:6px; border:none; cursor:pointer; }
-  .btn-primary { background:#007bff;color:#fff; }
-  .btn-danger { background:#dc3545;color:#fff; }
-  .status-enrolled { color:green; font-weight:bold; }
-  .status-not { color:red; font-weight:bold; }
-  /* small screens improvements */
-  @media (max-width:600px){ .topbar{flex-direction:column;align-items:flex-start;} }
-</style>
+  <meta charset="utf-8" />
+  <title>Thrives Archivers Course Access</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    /* Layout & visuals (kept consistent with your original) */
+    body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; }
+    header { background-color: #333; color: #fff; text-align: center; padding: 10px; position: relative; }
+    header img { width: 100%; max-height: 250px; object-fit: cover; }
+    header h1 { margin-top: 10px; }
+    .container { max-width: 1200px; margin: auto; padding: 20px; }
+
+    .course-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+    .course-card { background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    .course-card h3 { margin-top: 0; }
+    .course-card ul { list-style: none; padding-left: 0; }
+    .course-card li { margin-bottom: 12px; display: flex; flex-direction: column; gap: 6px; }
+
+    .doc-link { text-decoration: none; color: #007BFF; cursor: pointer; }
+    .doc-link:hover { text-decoration: underline; }
+
+    .take-quiz-btn {
+      display: inline-block; margin-top: 4px; padding: 8px 16px; background-color: #e0e0e0; color: #333;
+      border-radius: 5px; font-size: 14px; text-decoration: none; border: 1px solid #ccc; cursor: pointer;
+    }
+    .take-quiz-btn:hover { background-color: #d5d5d5; }
+
+    .free-quiz-btn {
+      display: inline-block; margin-top: 12px; padding: 12px 20px; background: linear-gradient(90deg,#ff7e5f,#feb47b);
+      color: #fff; border-radius: 6px; font-size: 16px; font-weight: bold; text-decoration: none; border: none; cursor: pointer;
+    }
+    .whatsapp-button { display:inline-block; margin-top:10px; padding:12px 20px; background:#25D366; color:#fff; border-radius:6px; text-decoration:none; }
+
+    .status-badge { padding: 6px 10px; border-radius: 999px; background: rgba(0,0,0,0.08); display: inline-block; margin-left: 10px; font-weight: 600; }
+
+    /* Modal */
+    .modal { display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background-color:rgba(0,0,0,0.8); }
+    .modal-content { background-color:#fff; margin:5% auto; width:90%; max-width:900px; border-radius:10px; overflow:hidden; position:relative; }
+    .modal-content iframe { width:100%; height:600px; border:none; }
+    .close-btn { position:absolute; top:5px; right:10px; font-size:24px; color:#333; cursor:pointer; font-weight:bold; }
+
+    /* Admin panel */
+    .admin-toolbar { display:none; margin-bottom:20px; }
+    .admin-panel { background:#fff; padding:12px; border-radius:8px; box-shadow:0 0 6px rgba(0,0,0,0.08); }
+    .admin-panel input, .admin-panel select { padding:8px; width:100%; margin-bottom:8px; border-radius:4px; border:1px solid #ddd; }
+    .btn { padding:8px 12px; border-radius:6px; border:none; cursor:pointer; }
+    .btn-primary { background:#007bff; color:#fff; }
+    .btn-danger { background:#dc3545; color:#fff; }
+    .btn-ghost { background:#f0f0f0; color:#333; }
+
+    .entry-controls { display:flex; gap:8px; margin-top:6px; }
+
+    /* Login modal */
+    .login-modal { display:none; position:fixed; z-index:11000; left:0; top:0; width:100%; height:100%; background: rgba(0,0,0,0.6); }
+    .login-content { background:#fff; width:360px; max-width:95%; margin:6% auto; padding:16px; border-radius:8px; position:relative; }
+    .login-content h3 { margin:0 0 12px 0; }
+    .login-content input { width:100%; padding:8px; margin-bottom:8px; border:1px solid #ddd; border-radius:4px; }
+    .login-close { position:absolute; right:10px; top:8px; cursor:pointer; font-weight:bold; }
+
+    /* Corner auth button with small menu (hidden by default) */
+    .corner-auth { position: fixed; top: 12px; left: 12px; z-index: 12000; display:flex; gap:6px; align-items:center; }
+    .corner-btn { background:#333; color:#fff; border-radius:6px; padding:8px 10px; border:none; cursor:pointer; font-weight:700; }
+    .corner-menu { display:none; background:#fff; color:#333; border-radius:6px; box-shadow:0 2px 8px rgba(0,0,0,0.15); overflow:hidden; margin-left:6px; min-width:180px; }
+    .corner-menu button { display:block; width:100%; padding:8px 12px; background:none; border:none; text-align:left; cursor:pointer; }
+    .corner-menu button:hover { background:#f4f4f4; }
+
+    @media (max-width:600px) {
+      header .user-info { position:static; margin-top:8px; display:block; background:transparent; }
+      .entry-controls { flex-direction:column; }
+      .login-content { margin-top:20%; }
+      .corner-auth { left:8px; top:8px; }
+    }
+  </style>
 </head>
 <body>
-<header>
-  <!-- Keep same header image as requested -->
-  <img src="file_0000000009d461f89d0cb3387f0b7000.png" alt="Header Image">
-  <h1>Thrives Archivers Course Access</h1>
-</header>
-<!-- Topbar: will show user email and enrollment status -->
-<div class="topbar">
-  <div class="user-info" id="userInfo">Not signed in</div>
-  <div id="authButtons">
-    <button class="btn btn-primary" id="signInBtn">Sign in</button>
-    <button class="btn" id="signOutBtn" style="display:none;">Sign out</button>
-  </div>
-</div>
-<div class="container">
-
-  <!-- Admin panel (hidden unless admin) -->
-  <div id="adminPanel" class="admin-panel" style="display:none;">
-    <h3>Admin Panel — Add Anatomy Content</h3>
-    <div style="font-size:13px; color:#555; margin-bottom:8px;">Add videos, notes (drive preview links), or quiz pages (local html). Visible only to <strong>thrivesarchivers@gmail.com</strong>.</div>
-    <div class="form-row">
-      <select id="adminSection">
-        <option value="Anatomy">Anatomy</option>
-        <option value="Physiology">Physiology</option>
-        <option value="Public Health">Public Health</option>
-        <option value="Medical Biochemical">Medical Biochemical</option>
-        <option value="Behavioral">Behavioral Science</option>
-      </select>
-      <input id="adminTitle" placeholder="Title (e.g., Anatomy of a Hand)" style="flex:1;">
+  <!-- Corner auth button & menu -->
+  <div class="corner-auth">
+    <button id="cornerMainBtn" class="corner-btn">Account</button>
+    <div id="cornerMenu" class="corner-menu" aria-hidden="true">
+      <button id="cornerLoginBtn">Sign in / Sign up</button>
+      <button id="cornerGuestBtn">Continue as Guest</button>
+      <button id="cornerLogoutBtn" style="display:none;">Sign Out</button>
     </div>
-    <div class="form-row">
-      <select id="adminType">
-        <option value="note">Note (Google Drive preview link)</option>
-        <option value="video">Video (YouTube link)</option>
-        <option value="quiz">Quiz (local html page like Historogy1.html)</option>
-      </select>
-      <input id="adminUrl" placeholder="URL (drive preview / youtube / local html path)" style="flex:1;">
-      <input id="adminOrder" placeholder="Order (number)" style="width:100px;">
+  </div>
+
+  <header>
+    <img src="file_0000000009d461f89d0cb3387f0b7000.png" alt="Header Image">
+    <h1>Thrives Archivers Course Access</h1>
+
+    <!-- User info (top-right) -->
+    <div class="user-info" id="userArea" style="position:absolute; right:12px; top:12px;">
+      <span id="userEmail">Not signed in</span>
+      <span id="enrollStatus" class="status-badge"></span>
+      <button id="enrollBtn" style="display:none;">Enroll</button>
     </div>
-    <div style="display:flex; gap:8px;">
-      <button class="btn btn-primary" id="addContentBtn">Add content</button>
-      <button class="btn btn-danger" id="refreshContentBtn">Refresh content</button>
+  </header>
+
+  <div class="container">
+    <!-- Admin toolbar (only visible to admin) -->
+    <div class="admin-toolbar" id="adminToolbar">
+      <div class="admin-panel">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <strong>Admin panel</strong>
+          <small style="color:#666;">Signed in as admin: <span id="adminEmailLabel"></span></small>
+        </div>
+
+        <form id="entryForm">
+          <input type="hidden" id="editingId" value="" />
+          <label>Section</label>
+          <input id="fieldSection" placeholder="Gross Anatomy" required />
+          <label>Title</label>
+          <input id="fieldTitle" placeholder="Anatomy of a Hand" required />
+          <label>Drive notes (preview link)</label>
+          <input id="fieldDrive" placeholder="https://drive.google.com/file/d/xxx/preview" />
+          <label>YouTube embed link</label>
+          <input id="fieldYouTube" placeholder="https://www.youtube.com/embed/VIDEO_ID" />
+          <label>Quiz page (relative path)</label>
+          <input id="fieldQuiz" placeholder="Historogy1.html" />
+          <label>Order (int)</label>
+          <input id="fieldOrder" type="number" value="10" />
+          <label>Published?</label>
+          <select id="fieldPublished"><option value="true">Yes</option><option value="false">No</option></select>
+          <label>Free for guests?</label>
+          <select id="fieldFree"><option value="false">No</option><option value="true">Yes</option></select>
+
+          <div style="margin-top:10px; display:flex; gap:8px;">
+            <button class="btn btn-primary" type="submit">Save Entry</button>
+            <button class="btn btn-ghost" id="clearForm" type="button">Clear</button>
+            <button class="btn btn-ghost" id="reloadEntries" type="button">Reload</button>
+          </div>
+        </form>
+      </div>
     </div>
-    <div id="adminMsg" style="margin-top:8px; font-size:13px;"></div>
+
+    <!-- Course grid (populated from Supabase anatomy table) -->
+    <div class="course-grid" id="courseGrid"></div>
+
+    <a class="free-quiz-btn" href="anatomyquize.html" target="_blank">Go to Anatomy Quiz</a>
+    <a class="whatsapp-button" href="https://wa.me/260973178100" target="_blank">Chat with Me on WhatsApp 💬</a>
   </div>
 
-  <div class="course-grid" id="courseGrid">
-    <!-- initial static cards will be replaced by dynamic content from Supabase, but we preserve the layout -->
-    <!-- When content loads, this area will be filled with section cards -->
+  <!-- Viewer modal -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal()">&times;</span>
+      <iframe id="viewerFrame" src=""></iframe>
+    </div>
   </div>
-  <a class="free-quiz-btn" href="anatomyquize.html" target="_blank">Go to Anatomy Quiz</a>
-  <a class="whatsapp-button" href="https://wa.me/260973178100" target="_blank">
-    Chat with Me on WhatsApp <span class="chat-icon">💬</span>
-  </a>
 
-</div>
-<!-- Modal -->
-<div id="modal" class="modal">
-  <div class="modal-content">
-    <span class="close-btn" onclick="closeModal()">&times;</span>
-    <iframe id="viewerFrame" src=""></iframe>
+  <!-- Login modal (email/password) -->
+  <div id="loginModal" class="login-modal" aria-hidden="true">
+    <div class="login-content" role="dialog" aria-modal="true">
+      <span id="loginClose" class="login-close">&times;</span>
+      <h3 id="loginTitle">Sign In</h3>
+      <form id="loginForm">
+        <input id="loginEmail" type="email" placeholder="Email" required />
+        <input id="loginPassword" type="password" placeholder="Password" required />
+        <button id="loginSubmit" class="btn btn-primary" style="width:100%;">Sign In</button>
+      </form>
+      <div style="margin-top:8px; display:flex; gap:8px;">
+        <button id="showSignup" class="btn btn-ghost" style="flex:1;">Create account</button>
+        <button id="forgotPassword" class="btn btn-ghost" style="flex:1;">Forgot password</button>
+      </div>
+      <div style="margin-top:10px; color:#666; font-size:13px;">
+        Note: This page uses email & password auth (no magic links). Guests can browse free items.
+      </div>
+    </div>
   </div>
-</div>
-<script>
-/* ================== Supabase config - REPLACE these with your project values ==================
-   Get these from your Supabase project settings.
-   SUPABASE_URL example: https://abcxyz.supabase.co
-   SUPABASE_ANON_KEY is the anon/public key (do not use service_role key on client)
-============================================================================================= */
-const SUPABASE_URL = 'https://SUPABASE_URL';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1dWJjZ3JycWlweWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzA4MjEsImV4cCI6MjA2ODg0NjgyMX0.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A';
 
-/* Note: the CDN exposes a global called `supabase` utilities; many examples use `createClient`.
-   The original code used `supabaseJs.createClient`. Keep whichever works for your CDN build.
-   If you see a 'supabaseJs is not defined' error in console, replace `supabaseJs.createClient` with `createClient`.
-*/
-const supabase = (typeof supabaseJs !== 'undefined')
-  ? supabaseJs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-  : (typeof createClient !== 'undefined')
-    ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-    : (() => { console.error('Supabase client not found. Check CDN import.'); return null; })();
+  <!-- Supabase client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
+  <script>
+    // ---------- CONFIG ----------
+    const supabaseUrl = 'https://odwiqajuubcgrrqipyju.supabase.co'
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1dWJjZ3JycWlweWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzA4MjEsImV4cCI6MjA2ODg0NjgyMX0.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A'
+  const supabase = createClient(supabaseUrl, supabaseKey)
+   const ADMIN_EMAIL = "thrivesarchivers@gmail.com";
+    const SUBS_TABLE = "subscription";
+    const ANATOMY_TABLE = "anatomy";
 
-/* Protect this page? If true, users who are not authenticated will be redirected to login.html
-   after we attempt to restore session from URL or listen for auth state changes. */
-const REQUIRE_AUTH = true;
+    // ---------- INIT ----------
+    const supabase = supabase_js.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-/* Admin email (as requested) */
-const ADMIN_EMAIL = 'thrivesarchivers@gmail.com';
+    // UI references
+    const userEmailEl = document.getElementById('userEmail');
+    const enrollStatusEl = document.getElementById('enrollStatus');
+    const enrollBtn = document.getElementById('enrollBtn');
+    const courseGrid = document.getElementById('courseGrid');
+    const adminToolbar = document.getElementById('adminToolbar');
+    const adminEmailLabel = document.getElementById('adminEmailLabel');
 
-/* DOM refs */
-const userInfoEl = document.getElementById('userInfo');
-const signInBtn = document.getElementById('signInBtn');
-const signOutBtn = document.getElementById('signOutBtn');
-const adminPanel = document.getElementById('adminPanel');
-const adminMsg = document.getElementById('adminMsg');
-const courseGrid = document.getElementById('courseGrid');
-const addContentBtn = document.getElementById('addContentBtn');
-const refreshContentBtn = document.getElementById('refreshContentBtn');
+    // corner menu
+    const cornerMainBtn = document.getElementById('cornerMainBtn');
+    const cornerMenu = document.getElementById('cornerMenu');
+    const cornerLoginBtn = document.getElementById('cornerLoginBtn');
+    const cornerGuestBtn = document.getElementById('cornerGuestBtn');
+    const cornerLogoutBtn = document.getElementById('cornerLogoutBtn');
 
-function showModalWith(link) {
-  document.getElementById('viewerFrame').src = link;
-  document.getElementById('modal').style.display = 'block';
-}
-function closeModal() {
-  document.getElementById('modal').style.display = 'none';
-  document.getElementById('viewerFrame').src = '';
-}
-window.onclick = function(event) {
-  const modal = document.getElementById('modal');
-  if (event.target == modal) { closeModal(); }
-}
+    // login modal elements
+    const loginModal = document.getElementById('loginModal');
+    const loginClose = document.getElementById('loginClose');
+    const loginForm = document.getElementById('loginForm');
+    const loginEmail = document.getElementById('loginEmail');
+    const loginPassword = document.getElementById('loginPassword');
+    const loginTitle = document.getElementById('loginTitle');
+    const showSignupBtn = document.getElementById('showSignup');
+    const forgotPasswordBtn = document.getElementById('forgotPassword');
 
-/* ---------- Authentication ---------- */
+    // admin form
+    const entryForm = document.getElementById('entryForm');
+    const clearFormBtn = document.getElementById('clearForm');
+    const reloadBtn = document.getElementById('reloadEntries');
 
-/* Redirect to login page when user clicks sign-in */
-signInBtn.addEventListener('click', () => {
-  window.location.href = "login.html"; // Redirect to login page
-});
-
-/* Sign out */
-signOutBtn.addEventListener('click', async () => {
-  if (!supabase) return;
-  await supabase.auth.signOut();
-  location.reload();
-});
-
-/* On page load: robust session handling:
-   - Try to parse session returned in URL (handles magic-link / OAuth redirects)
-   - Then check current session
-   - Register onAuthStateChange to handle async auth changes
-   - Only redirect to login.html if REQUIRE_AUTH is true and no session after attempts
-*/
-async function init() {
-  if (!supabase) {
-    console.error('Supabase client not initialized');
-    return;
-  }
-
-  try {
-    // Try to handle session from a redirect (magic link / OAuth). This will store session if present.
-    // If your flow does not use redirects, this call will simply return null/no-op.
-    await supabase.auth.getSessionFromUrl().catch(() => null);
-  } catch (err) {
-    // ignore - older clients or flows may not support it
-    console.debug('getSessionFromUrl not available or failed:', err);
-  }
-
-  // Listen for auth state changes (important for cross-tab / redirect flows)
-  supabase.auth.onAuthStateChange((event, session) => {
-    if (session && session.user) {
-      onAuthChange(session.user);
-    } else {
-      // If user signs out, show signed-out state (we won't redirect here; init handles redirect decision)
-      showSignedOut();
+    // ---------- UTILS ----------
+    function setGuestMode(enabled) {
+      localStorage.setItem('thrives_guest', enabled ? '1' : '0');
+      updateUIForUser(null, enabled);
+      loadAnatomyEntries();
     }
-  });
+    function isGuestMode() { return localStorage.getItem('thrives_guest') === '1'; }
 
-  // Get current session
-  const { data: { session } } = await supabase.auth.getSession();
-
-  if (session && session.user) {
-    onAuthChange(session.user);
-  } else {
-    // Give the client a very short moment to process possible redirect events (if any).
-    // This reduces race conditions where a redirect-set session hasn't been applied yet.
-    await new Promise(res => setTimeout(res, 500));
-
-    // re-check session
-    const { data: { session: session2 } } = await supabase.auth.getSession();
-    if (session2 && session2.user) {
-      onAuthChange(session2.user);
-    } else {
-      if (REQUIRE_AUTH) {
-        // user is not signed in — redirect to login page
-        window.location.href = "login.html";
-        return;
-      } else {
-        showSignedOut();
-      }
+    async function getCurrentUser() {
+      const { data } = await supabase.auth.getUser();
+      return data.user ?? null;
     }
-  }
 
-  // Load content regardless (if admin-only features depend on auth they'll hide automatically)
-  await fetchAndRenderContent();
-}
-
-/* When user authenticated */
-async function onAuthChange(user) {
-  if (!user) return;
-  const email = user.email || '(no-email)';
-  userInfoEl.innerHTML = `Signed in as <strong>${escapeHtml(email)}</strong> — <span id="enrollStatus">Checking enrollment...</span>`;
-  signInBtn.style.display = 'none';
-  signOutBtn.style.display = 'inline-block';
-
-  // Show admin panel only for admin email
-  if (email === ADMIN_EMAIL) {
-    adminPanel.style.display = 'block';
-  } else {
-    adminPanel.style.display = 'none';
-  }
-
-  // Check subscription status from subscription table
-  const { data, error } = await supabase
-    .from('subscription')
-    .select('*')
-    .eq('email', email)
-    .order('start_date', { ascending: false })
-    .limit(1);
-
-  const enrollEl = document.getElementById('enrollStatus');
-  if (!enrollEl) return;
-  if (error) {
-    enrollEl.innerText = 'Error fetching subscription';
-    enrollEl.className = 'status-not';
-    console.error(error);
-  } else if (data && data.length > 0) {
-    const sub = data[0];
-    let now = new Date();
-    let endDate = sub.end_date ? new Date(sub.end_date) : null;
-    if (!endDate && sub.start_date && sub.duration) {
-      endDate = new Date(sub.start_date);
-      endDate.setDate(endDate.getDate() + Number(sub.duration));
+    function openCornerMenu(toggle = true) {
+      if (toggle) cornerMenu.style.display = cornerMenu.style.display === 'block' ? 'none' : 'block';
+      else cornerMenu.style.display = 'block';
+      cornerMenu.setAttribute('aria-hidden', cornerMenu.style.display === 'none');
     }
-    if (endDate && now <= endDate) {
-      enrollEl.innerText = 'ENROLLED';
-      enrollEl.className = 'status-enrolled';
-    } else {
-      enrollEl.innerText = 'NOT ENROLLED';
-      enrollEl.className = 'status-not';
+
+    function closeModal() {
+      document.getElementById('modal').style.display = 'none';
+      document.getElementById('viewerFrame').src = '';
     }
-  } else {
-    enrollEl.innerText = 'NOT ENROLLED';
-    enrollEl.className = 'status-not';
-  }
-}
 
-/* When signed out */
-function showSignedOut() {
-  userInfoEl.innerHTML = 'Not signed in';
-  signInBtn.style.display = 'inline-block';
-  signOutBtn.style.display = 'none';
-  adminPanel.style.display = 'none';
-  // still render public/free content
-}
-
-/* ---------- Content fetching + rendering ---------- */
-async function fetchAndRenderContent() {
-  if (!supabase) {
-    courseGrid.innerHTML = '<div style="color:red">Supabase client not initialized.</div>';
-    return;
-  }
-
-  const { data, error } = await supabase
-    .from('anatomy')
-    .select('*')
-    .order('section', { ascending: true })
-    .order('order', { ascending: true });
-
-  if (error) {
-    console.error('Error fetching anatomy:', error);
-    courseGrid.innerHTML = '<div style="color:red">Failed to load content from Supabase.</div>';
-    return;
-  }
-
-  const groups = {};
-  (data || []).forEach(item => {
-    const section = item.section || 'General';
-    if (!groups[section]) groups[section] = [];
-    groups[section].push(item);
-  });
-
-  courseGrid.innerHTML = '';
-  for (const section of Object.keys(groups)) {
-    const items = groups[section];
-    const card = document.createElement('div');
-    card.className = 'course-card';
-    card.innerHTML = `<h3>${escapeHtml(section)}</h3>`;
-    const ul = document.createElement('ul');
-
-    items.forEach(it => {
-      const li = document.createElement('li');
-      let title = escapeHtml(it.title || '(no title)');
-      if (it.type === 'note') {
-        const a = document.createElement('a');
-        a.className = 'doc-link';
-        a.href = '#';
-        a.textContent = '📄 ' + title;
-        a.addEventListener('click', (e) => { e.preventDefault(); showModalWith(it.url); });
-        li.appendChild(a);
-      } else if (it.type === 'video') {
-        const a = document.createElement('a');
-        a.className = 'doc-link';
-        a.href = '#';
-        a.textContent = '🎬 ' + title;
-        a.addEventListener('click', (e) => { e.preventDefault(); const embed = youtubeEmbedFromUrl(it.url); showModalWith(embed || it.url); });
-        li.appendChild(a);
-      } else if (it.type === 'quiz') {
-        const a = document.createElement('a');
-        a.className = 'doc-link';
-        a.href = '#';
-        a.textContent = '📝 ' + title;
-        a.addEventListener('click', (e) => { e.preventDefault(); showModalWith(it.url); });
-        li.appendChild(a);
-      } else {
-        const a = document.createElement('a');
-        a.className = 'doc-link';
-        a.href = '#';
-        a.textContent = '🔗 ' + title;
-        a.addEventListener('click', (e) => { e.preventDefault(); showModalWith(it.url); });
-        li.appendChild(a);
+    // when clicking outside close corner menu
+    document.addEventListener('click', (e) => {
+      if (!cornerMainBtn.contains(e.target) && !cornerMenu.contains(e.target)) {
+        cornerMenu.style.display = 'none';
       }
-
-      const actions = document.createElement('div');
-      actions.style.display = 'flex';
-      actions.style.gap = '8px';
-      actions.style.marginTop = '6px';
-
-      if (it.type === 'video') {
-        const vidBtn = document.createElement('a');
-        vidBtn.className = 'take-quiz-btn';
-        vidBtn.href = '#';
-        vidBtn.textContent = '🎥 Video';
-        vidBtn.addEventListener('click', (e) => { e.preventDefault(); const embed = youtubeEmbedFromUrl(it.url); showModalWith(embed || it.url); });
-        actions.appendChild(vidBtn);
-      }
-
-      if (it.type === 'quiz') {
-        const qBtn = document.createElement('a');
-        qBtn.className = 'take-quiz-btn';
-        qBtn.href = '#';
-        qBtn.textContent = '📝 Quiz';
-        qBtn.addEventListener('click', (e) => { e.preventDefault(); showModalWith(it.url); });
-        actions.appendChild(qBtn);
-      }
-
-      if (it.type === 'note') {
-        const nBtn = document.createElement('a');
-        nBtn.className = 'take-quiz-btn';
-        nBtn.href = '#';
-        nBtn.textContent = '📄 Note';
-        nBtn.addEventListener('click', (e) => { e.preventDefault(); showModalWith(it.url); });
-        actions.appendChild(nBtn);
-      }
-
-      li.appendChild(actions);
-      ul.appendChild(li);
     });
 
-    card.appendChild(ul);
-    courseGrid.appendChild(card);
-  }
+    // ---------- AUTH UI HANDLERS ----------
+    cornerMainBtn.addEventListener('click', () => openCornerMenu());
+    cornerLoginBtn.addEventListener('click', () => {
+      loginTitle.textContent = 'Sign In';
+      loginForm.dataset.mode = 'signin';
+      loginModal.style.display = 'block';
+      openCornerMenu(false);
+    });
+    cornerGuestBtn.addEventListener('click', () => {
+      setGuestMode(true);
+      alert('Browsing as Guest. Free items are available. Sign in anytime.');
+      openCornerMenu(false);
+    });
+    cornerLogoutBtn.addEventListener('click', async () => {
+      await signOut();
+      openCornerMenu(false);
+    });
 
-  if (!data || data.length === 0) {
-    courseGrid.innerHTML = `<div class="course-card"><h3>No content yet</h3><p>Admin can add content from the admin panel.</p></div>`;
-  }
-}
+    loginClose.addEventListener('click', () => loginModal.style.display = 'none');
+    window.addEventListener('keydown', (e) => { if (e.key === 'Escape') loginModal.style.display = 'none'; });
 
-/* Helper to produce youtube embed url from many formats */
-function youtubeEmbedFromUrl(url) {
-  if (!url) return null;
-  const ytShort = /youtu\.be\/([a-zA-Z0-9_\-]+)/;
-  const ytWatch = /v=([a-zA-Z0-9_\-]+)/;
-  const ytEmbed = /youtube\.com\/embed\/([a-zA-Z0-9_\-]+)/;
-  let id = null;
-  if (ytEmbed.test(url)) {
-    id = url.match(ytEmbed)[1];
-  } else if (ytShort.test(url)) {
-    id = url.match(ytShort)[1];
-  } else if (ytWatch.test(url)) {
-    id = url.match(ytWatch)[1];
-  } else {
-    return url;
-  }
-  return `https://www.youtube.com/embed/${id}`;
-}
+    showSignupBtn.addEventListener('click', () => {
+      loginTitle.textContent = 'Create account';
+      loginForm.dataset.mode = 'signup';
+      loginModal.style.display = 'block';
+    });
 
-/* Escape helper */
-function escapeHtml(unsafe) {
-  if (!unsafe) return '';
-  return unsafe.replace(/[&<"'>]/g, function(m){ return {'&':'&amp;','<':'&lt;','"':'&quot;',"'":'&#039;', '>':'&gt;'}[m]; });
-}
+    forgotPasswordBtn.addEventListener('click', async () => {
+      const email = prompt('Enter your email to receive a password recovery link:');
+      if (!email) return;
+      const { error } = await supabase.auth.resetPasswordForEmail(email);
+      if (error) alert('Could not send recovery email: ' + error.message);
+      else alert('Recovery email sent. Check your inbox.');
+    });
 
-/* ---------- Admin: Add content ---------- */
-addContentBtn.addEventListener('click', async () => {
-  if (!supabase) return;
-  const session = (await supabase.auth.getSession()).data.session;
-  if (!session || !session.user || session.user.email !== ADMIN_EMAIL) {
-    adminMsg.innerText = 'Only admin can add content. Sign in as admin.';
-    return;
-  }
-  const section = document.getElementById('adminSection').value;
-  const title = document.getElementById('adminTitle').value.trim();
-  const type = document.getElementById('adminType').value;
-  const url = document.getElementById('adminUrl').value.trim();
-  const order = parseInt(document.getElementById('adminOrder').value || '999');
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = loginEmail.value.trim();
+      const password = loginPassword.value;
+      const mode = loginForm.dataset.mode || 'signin';
+      if (!email || !password) return alert('Enter email and password.');
 
-  if (!title || !url) {
-    adminMsg.innerText = 'Title and URL are required.';
-    return;
-  }
-  adminMsg.innerText = 'Adding...';
-  const { data, error } = await supabase
-    .from('anatomy')
-    .insert([{ section, title, type, url, order }]);
+      if (mode === 'signin') {
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) return alert('Sign in failed: ' + error.message);
+        loginModal.style.display = 'none';
+        loginForm.reset();
+        // clear guest mode
+        localStorage.setItem('thrives_guest', '0');
+      } else {
+        // signup
+        const { data, error } = await supabase.auth.signUp({ email, password });
+        if (error) return alert('Sign up failed: ' + error.message);
+        alert('Account created. If email confirmation is required, confirm and then sign in.');
+        loginForm.dataset.mode = 'signin';
+        loginForm.reset();
+      }
+    });
 
-  if (error) {
-    adminMsg.innerText = 'Insert failed: ' + error.message;
-    console.error(error);
-  } else {
-    adminMsg.innerText = 'Added successfully.';
-    document.getElementById('adminTitle').value = '';
-    document.getElementById('adminUrl').value = '';
-    document.getElementById('adminOrder').value = '';
-    await fetchAndRenderContent();
-  }
-});
+    async function signOut() {
+      localStorage.setItem('thrives_guest', '0');
+      await supabase.auth.signOut();
+      updateUIForUser(null, false);
+      loadAnatomyEntries();
+    }
 
-/* Refresh button */
-refreshContentBtn.addEventListener('click', fetchAndRenderContent);
+    // Listen to auth changes (update UI)
+    supabase.auth.onAuthStateChange((event, session) => {
+      const user = session?.user ?? null;
+      updateUIForUser(user, false);
+      loadAnatomyEntries();
+    });
 
-/* Init on load */
-init();
+    // ---------- SUBSCRIPTION CHECK ----------
+    async function checkSubscriptionStatus(email) {
+      if (!email) {
+        enrollStatusEl.textContent = '';
+        enrollBtn.style.display = 'none';
+        return false;
+      }
+      const { data, error } = await supabase.from(SUBS_TABLE).select('*').eq('email', email);
+      if (error) { console.error(error); enrollStatusEl.textContent = 'Status: Unknown'; return false; }
+      const now = new Date();
+      let enrolled = false;
+      if (data && data.length > 0) {
+        for (const row of data) {
+          let courses = row.courses;
+          if (typeof courses === 'string') {
+            try { courses = JSON.parse(courses); } catch (e) {}
+          }
+          const hasAnatomy = Array.isArray(courses)
+            ? courses.map(c => String(c).toLowerCase()).includes('anatomy')
+            : String(courses || '').toLowerCase().includes('anatomy');
+          const start = row.start_date ? new Date(row.start_date) : null;
+          const end = row.end_date ? new Date(row.end_date) : null;
+          const within = (!start || now >= start) && (!end || now <= end);
+          if (hasAnatomy && within) { enrolled = true; break; }
+        }
+      }
+      enrollStatusEl.textContent = enrolled ? 'Enrolled' : 'Not enrolled';
+      enrollBtn.style.display = enrolled ? 'none' : 'inline-block';
+      return enrolled;
+    }
 
-</script>
-</script>
-<!-- =========================
-  Supabase Table SQL + Suggestions
-  =========================
+    // Enroll button: create a pending subscription row & open WhatsApp
+    enrollBtn.addEventListener('click', async () => {
+      const { data } = await supabase.auth.getUser();
+      const user = data.user ?? null;
+      if (!user) {
+        if (confirm('You must sign in to enroll. Sign in now?')) {
+          loginTitle.textContent = 'Sign In';
+          loginForm.dataset.mode = 'signin';
+          loginModal.style.display = 'block';
+        }
+        return;
+      }
+      const phone = '260973178100';
+      const message = encodeURIComponent(`Hello, I want to enroll for Anatomy. Email: ${user.email}. I will pay K100.`);
+      if (confirm('Create a pending enrollment record so admin can follow up?')) {
+        const start = new Date().toISOString();
+        const end = new Date(Date.now() + 30*24*60*60*1000).toISOString();
+        const payload = {
+          email: user.email,
+          start_date: start,
+          end_date: end,
+          duration: 30,
+          courses: JSON.stringify(['Anatomy']),
+          status: 'pending'
+        };
+        const { error } = await supabase.from(SUBS_TABLE).insert([payload]);
+        if (error) alert('Could not create pending subscription: ' + error.message);
+        else alert('Pending enrollment created. Please complete payment via WhatsApp.');
+      }
+      window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
+    });
 
-Run these in Supabase SQL editor to create the `anatomy` table.
+    // ---------- LOAD & RENDER ANATOMY ENTRIES ----------
+    // Renders only published entries. If guest mode -> only show item.free === true
+    async function loadAnatomyEntries() {
+      const { data, error } = await supabase.from(ANATOMY_TABLE).select('*').order('order', { ascending: true });
+      if (error) {
+        console.error('Error loading anatomy entries:', error);
+        courseGrid.innerHTML = `<div class="course-card"><h3>Error loading content</h3><p>Could not load dynamic content.</p></div>`;
+        return;
+      }
+      if (!data || data.length === 0) {
+        courseGrid.innerHTML = `<div class="course-card"><h3>No content yet</h3><p>Admin can add anatomy entries via the admin panel.</p></div>`;
+        return;
+      }
 
--- Suggested anatomy table:
-create table public.anatomy (
-  id bigserial primary key,
-  section text not null,      -- e.g., "Anatomy", "Physiology"
-  title text not null,        -- e.g., "Anatomy of a Hand"
-  type text not null,         -- 'note' | 'video' | 'quiz'
-  url text not null,          -- drive preview link, youtube link, or local page path (e.g., 'Historogy1.html')
-  "order" integer default 1000,
-  created_at timestamptz default now()
-);
+      const guest = isGuestMode();
+      let html = '';
+      // group by section
+      const grouped = {};
+      for (const item of data) {
+        if (!item.published) continue;
+        if (guest && item.free !== true) continue; // guests see only free items
+        const section = item.section || 'General';
+        if (!grouped[section]) grouped[section] = [];
+        grouped[section].push(item);
+      }
 
--- Example insert:
-insert into public.anatomy (section, title, type, url, "order") values
-('Anatomy', 'Anatomy of a Hand', 'note', 'https://drive.google.com/file/d/FILE_ID/preview', 1),
-('Anatomy', 'Forearm Easy Notes (video)', 'video', 'https://www.youtube.com/watch?v=9WL_Ds8konc', 2),
-('Anatomy', 'Cell structure and Cell Division Quiz', 'quiz', 'Historogy1.html', 3);
+      for (const [section, items] of Object.entries(grouped)) {
+        html += `<div class="course-card"><h3>${escapeHtml(section)}</h3><ul>`;
+        for (const item of items) {
+          html += `<li>`;
+          if (item.drive_link) {
+            html += `<a class="doc-link" onclick="checkEnrollmentAndOpen('${escapeAttr(item.drive_link)}')">📄 ${escapeHtml(item.title || 'Notes')}</a>`;
+          } else {
+            html += `<span style="font-weight:600;">${escapeHtml(item.title || 'Untitled')}</span>`;
+          }
+          if (item.youtube_link) {
+            html += `<button class="take-quiz-btn" onclick="checkEnrollmentAndOpen('${escapeAttr(item.youtube_link)}')">🎥 Video</button>`;
+          }
+          if (item.quiz_page) {
+            html += `<button class="take-quiz-btn" onclick="checkEnrollmentAndOpen('${escapeAttr(item.quiz_page)}')">📝 Quiz</button>`;
+          }
 
--- Existing subscription table (you said you already created it). Recommended columns:
--- subscription(email text primary key, start_date date, duration integer, end_date date, courses text, created_at timestamptz default now())
--- You can store courses as comma-separated or JSON (jsonb recommended).
--- Example subscription record:
--- insert into subscription (email, start_date, duration, end_date, courses) values ('student@example.com', '2025-10-01', 30, '2025-10-31', 'Anatomy,Physiology');
+          // admin controls (visible only to admin)
+          html += `<div class="entry-controls" data-entry-id="${item.id}" style="display:none;">`;
+          html += `<button class="btn btn-ghost btn-edit" data-id="${item.id}">Edit</button>`;
+          html += `<button class="btn btn-danger btn-delete" data-id="${item.id}">Delete</button>`;
+          html += `</div>`;
 
-Notes:
-- The front-end code queries `subscription` for the user's email and tries to determine enrollment using `end_date` or start_date + duration.
-- Admin panel will appear for thrivesarchivers@gmail.com when that user is signed in.
-- For video embedding, provide either a YouTube watch link (https://www.youtube.com/watch?v=ID) or a youtu.be short link. The site will convert it to an embed URL.
-- For drive notes, prefer Google Drive preview links (they open cleanly inside the iframe). Example preview pattern: https://drive.google.com/file/d/FILE_ID/preview
+          html += `</li>`;
+        }
+        html += `</ul></div>`;
+      }
 
--- Security note:
-- Use the anon key on client; do NOT embed the service_role key in client code.
-- Lock down Row Level Security (RLS) if desired, or keep table public for reads and restrict inserts to authenticated users (you can write policies in Supabase so only admin can insert).
--- Recommended quick RLS policy for admin inserts:
-   1) enable RLS for anatomy table
-   2) create a policy allowing inserts only if auth.uid() corresponds to a row in a 'users' table with admin=true OR check current_setting('request.jwt.claims.email') = 'thrivesarchivers@gmail.com'
-   (Supabase docs have examples for email-based policies.)
+      courseGrid.innerHTML = html;
 
-===================================== -->
-</body>
+      // Attach admin listeners
+      document.querySelectorAll('.btn-edit').forEach(b => b.addEventListener('click', onEditClick));
+      document.querySelectorAll('.btn-delete').forEach(b => b.addEventListener('click', onDeleteClick));
+
+      // show/hide entry-controls based on admin
+      const user = await getCurrentUser();
+      if (user && user.email === ADMIN_EMAIL) {
+        document.querySelectorAll('.entry-controls').forEach(ec => ec.style.display = 'flex');
+      } else {
+        document.querySelectorAll('.entry-controls').forEach(ec => ec.style.display = 'none');
+      }
+
+      // update enroll button visibility for current session
+      if (user) await checkSubscriptionStatus(user.email);
+      else if (isGuestMode()) { enrollStatusEl.textContent = 'Guest'; enrollBtn.style.display = 'inline-block'; }
+      else { enrollStatusEl.textContent = ''; enrollBtn.style.display = 'none'; }
+    }
+
+    // ---------- ADMIN: edit & delete ----------
+    async function onEditClick(e) {
+      const id = e.target.getAttribute('data-id');
+      if (!id) return;
+      const { data, error } = await supabase.from(ANATOMY_TABLE).select('*').eq('id', id).single();
+      if (error) { alert('Could not fetch entry for edit'); console.error(error); return; }
+      document.getElementById('editingId').value = data.id;
+      document.getElementById('fieldSection').value = data.section || '';
+      document.getElementById('fieldTitle').value = data.title || '';
+      document.getElementById('fieldDrive').value = data.drive_link || '';
+      document.getElementById('fieldYouTube').value = data.youtube_link || '';
+      document.getElementById('fieldQuiz').value = data.quiz_page || '';
+      document.getElementById('fieldOrder').value = data.order ?? 10;
+      document.getElementById('fieldPublished').value = data.published ? 'true' : 'false';
+      document.getElementById('fieldFree').value = data.free ? 'true' : 'false';
+      adminToolbar.style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    async function onDeleteClick(e) {
+      const id = e.target.getAttribute('data-id');
+      if (!id) return;
+      if (!confirm('Delete this entry? This cannot be undone.')) return;
+      const { error } = await supabase.from(ANATOMY_TABLE).delete().eq('id', id);
+      if (error) { alert('Delete failed: ' + error.message); console.error(error); }
+      else { alert('Deleted'); await loadAnatomyEntries(); }
+    }
+
+    // ---------- ADMIN: create/update form ----------
+    entryForm.addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      const editingId = document.getElementById('editingId').value || null;
+      const section = document.getElementById('fieldSection').value.trim();
+      const title = document.getElementById('fieldTitle').value.trim();
+      const drive_link = document.getElementById('fieldDrive').value.trim();
+      const youtube_link = document.getElementById('fieldYouTube').value.trim();
+      const quiz_page = document.getElementById('fieldQuiz').value.trim();
+      const order = parseInt(document.getElementById('fieldOrder').value) || 0;
+      const published = document.getElementById('fieldPublished').value === 'true';
+      const free = document.getElementById('fieldFree').value === 'true';
+
+      const user = await getCurrentUser();
+      if (!user || user.email !== ADMIN_EMAIL) return alert('Only admin can create/update entries.');
+
+      if (editingId) {
+        const { error } = await supabase.from(ANATOMY_TABLE).update({
+          section, title, drive_link, youtube_link, quiz_page, order, published, free, updated_at: new Date().toISOString()
+        }).eq('id', editingId);
+        if (error) return alert('Update failed: ' + error.message);
+        alert('Updated');
+        entryForm.reset();
+        document.getElementById('editingId').value = '';
+        await loadAnatomyEntries();
+      } else {
+        const { error } = await supabase.from(ANATOMY_TABLE).insert([{
+          section, title, drive_link, youtube_link, quiz_page, order, published, free
+        }]);
+        if (error) return alert('Insert failed: ' + error.message);
+        alert('Saved');
+        entryForm.reset();
+        await loadAnatomyEntries();
+      }
+    });
+
+    clearFormBtn.addEventListener('click', () => { entryForm.reset(); document.getElementById('editingId').value = ''; });
+    reloadBtn.addEventListener('click', () => loadAnatomyEntries());
+
+    // ---------- ACCESS CONTROL: check enrollment & open ----------
+    async function checkEnrollmentAndOpen(link) {
+      // decide whether link can be opened or must be gated
+      const user = await getCurrentUser();
+      if (!user) {
+        if (isGuestMode()) {
+          // Guests -> only free links opened by load function (guests shouldn't see non-free)
+          alert('Sign in to access this content (guests can access free content only).');
+          return;
+        }
+        if (confirm('You need to sign in to access this content. Sign in now?')) {
+          loginTitle.textContent = 'Sign In';
+          loginForm.dataset.mode = 'signin';
+          loginModal.style.display = 'block';
+        }
+        return;
+      }
+      // admin bypass
+      if (user.email === ADMIN_EMAIL) { openInModal(link); return; }
+
+      // check subscription
+      const { data, error } = await supabase.from(SUBS_TABLE).select('*').eq('email', user.email);
+      if (error) { alert('Could not verify subscription. Contact admin.'); console.error(error); return; }
+      const now = new Date();
+      let enrolled = false;
+      if (data && data.length > 0) {
+        for (const row of data) {
+          let courses = row.courses;
+          if (typeof courses === 'string') {
+            try { courses = JSON.parse(courses); } catch (e) {}
+          }
+          const hasAnatomy = Array.isArray(courses)
+            ? courses.map(c => String(c).toLowerCase()).includes('anatomy')
+            : String(courses || '').toLowerCase().includes('anatomy');
+          const start = row.start_date ? new Date(row.start_date) : null;
+          const end = row.end_date ? new Date(row.end_date) : null;
+          const within = (!start || now >= start) && (!end || now <= end);
+          if (hasAnatomy && within) { enrolled = true; break; }
+        }
+      }
+      if (enrolled) openInModal(link);
+      else {
+        if (confirm('You are not enrolled. Contact via WhatsApp to enroll?')) {
+          window.open('https://wa.me/260973178100', '_blank');
+        }
+      }
+    }
+    window.checkEnrollmentAndOpen = checkEnrollmentAndOpen; // make global for inline onclick
+
+    function openInModal(link) {
+      document.getElementById('viewerFrame').src = link;
+      document.getElementById('modal').style.display = 'block';
+    }
+    window.closeModal = closeModal; // global
+
+    // ---------- INITIAL UI UPDATE ----------
+    async function updateUIForUser(user = null, guestOverride = null) {
+      const guest = guestOverride === null ? isGuestMode() : guestOverride;
+      if (guest) {
+        userEmailEl.textContent = 'Guest';
+        enrollStatusEl.textContent = 'Guest';
+        enrollBtn.style.display = 'inline-block';
+        cornerLogoutBtn.style.display = 'inline-block';
+        cornerLoginBtn.style.display = 'inline-block';
+        cornerGuestBtn.style.display = 'inline-block';
+        adminToolbar.style.display = 'none';
+        cornerLogoutBtn.textContent = 'Exit Guest';
+        return;
+      }
+
+      if (!user) {
+        // fetch current user to be safe
+        const { data } = await supabase.auth.getUser();
+        user = data.user ?? null;
+      }
+
+      if (!user) {
+        userEmailEl.textContent = 'Not signed in';
+        enrollStatusEl.textContent = '';
+        enrollBtn.style.display = 'none';
+        cornerLogoutBtn.style.display = 'none';
+        cornerLoginBtn.style.display = 'inline-block';
+        cornerGuestBtn.style.display = 'inline-block';
+        adminToolbar.style.display = 'none';
+        adminEmailLabel.textContent = '';
+        return;
+      }
+
+      userEmailEl.textContent = user.email;
+      cornerLoginBtn.style.display = 'none';
+      cornerGuestBtn.style.display = 'inline-block';
+      cornerLogoutBtn.style.display = 'inline-block';
+      cornerLogoutBtn.textContent = 'Sign Out';
+
+      const isAdmin = user.email === ADMIN_EMAIL;
+      if (isAdmin) {
+        adminToolbar.style.display = 'block';
+        adminEmailLabel.textContent = user.email;
+        // Show edit controls on entries
+        document.querySelectorAll('.entry-controls').forEach(ec => ec.style.display = 'flex');
+      } else {
+        adminToolbar.style.display = 'none';
+        document.querySelectorAll('.entry-controls').forEach(ec => ec.style.display = 'none');
+      }
+
+      await checkSubscriptionStatus(user.email);
+    }
+
+    // ---------- UTILITY ESCAPES ----------
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'","&#039;");
+    }
+    function escapeAttr(s) {
+      if (!s) return '';
+      return String(s).replaceAll("'", "\\'").replaceAll('"', '\\"');
+    }
+
+    // ---------- STARTUP ----------
+    (async function start() {
+      // initialize guest flag if not set
+      if (localStorage.getItem('thrives_guest') === null) localStorage.setItem('thrives_guest', '0');
+
+      // Update UI for whatever auth state currently is
+      const { data } = await supabase.auth.getUser();
+      const user = data.user ?? null;
+      const guest = isGuestMode();
+      await updateUIForUser(user, guest);
+
+      // Load entries
+      await loadAnatomyEntries();
+    })();
+
+  </script>
 </body>
 </html>
