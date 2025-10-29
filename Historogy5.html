@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Medicine Study Group Quiz — Muscle Tissue</title>
+  <style>
+    :root{--bg:#0b1020;--card:#0f1724;--accent:#7dd3fc;--text:#e6eef8;--muted:#9fb3c8}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text)}
+    canvas.particles{position:fixed;inset:0;z-index:0}
+    .app{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px}
+    .card{width:100%;max-width:980px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:12px;padding:22px;box-shadow:0 6px 30px rgba(3,8,23,0.6)}
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .title{display:block}
+    h1{font-size:20px;margin:0 0 4px 0}
+    p.lead{margin:0;color:var(--muted);font-size:13px}
+    .meta{font-size:12px;color:var(--muted);margin-top:8px}
+    .quiz-area{margin-top:18px}
+    .qbox{background:rgba(255,255,255,0.02);padding:14px;border-radius:8px;margin-bottom:12px}
+    .qnum{font-weight:600;color:var(--accent);font-size:13px}
+    .qtext{margin:6px 0 10px 0}
+    .options{display:grid;grid-template-columns:1fr;gap:8px}
+    button.opt{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:10px 12px;border-radius:8px;text-align:left;color:var(--text);cursor:pointer}
+    button.opt:hover{border-color:rgba(125,211,252,0.18)}
+    button.opt.correct{border-color:rgba(34,197,94,0.9);box-shadow:0 6px 14px rgba(34,197,94,0.06)}
+    button.opt.incorrect{border-color:rgba(239,68,68,0.9);opacity:0.9}
+    .explanation{margin-top:10px;padding:10px;border-radius:8px;background:rgba(255,255,255,0.02);font-size:13px;color:var(--muted)}
+    .controls{display:flex;gap:8px;align-items:center;margin-top:14px}
+    .btn{background:var(--accent);border:none;padding:10px 14px;border-radius:8px;color:#062029;cursor:pointer;font-weight:600}
+    .ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--text)}
+    .score{margin-left:auto;font-weight:700;color:var(--accent)}
+    footer{margin-top:14px;font-size:12px;color:var(--muted)}
+    @media(min-width:700px){.options{grid-template-columns:1fr 1fr}}
+  </style>
+</head>
+<body>
+  <canvas class="particles" id="particles"></canvas>
+  <div class="app">
+    <div class="card" role="main">
+      <header>
+        <div class="title">
+          <h1>Medicine Study Group Quiz</h1>
+          <p class="lead">Quiz: <strong>Muscle Tissue</strong> — Prepared by Doc Kape</p>
+          <div class="meta">30 multiple-choice questions — immediate feedback and explanations</div>
+        </div>
+        <div class="score" id="score">Score: 0 / 0</div>
+      </header>
+
+      <section class="quiz-area" id="quiz-area" aria-live="polite">
+        <!-- questions will be injected here -->
+      </section>
+
+      <div class="controls">
+        <button class="btn" id="prevBtn">Previous</button>
+        <button class="btn" id="nextBtn">Next</button>
+        <button class="ghost" id="showAll">Show All Answers</button>
+        <button class="ghost" id="restart">Restart</button>
+      </div>
+
+      <footer>Medicine Study Group — Prepared by Doc Kape</footer>
+    </div>
+  </div>
+
+  <script>
+    // Questions bank (30) — based on provided lecture content
+    const questions = [
+      {q:"Which embryonic layer gives rise to muscle tissue?", opts:["Ectoderm","Endoderm","Mesoderm","Neural crest"], a:2, exp:"Muscle tissue is of mesodermal origin."},
+      {q:"What is the specialized name for the muscle cell cytoplasm?", opts:["Sarcolemma","Sarcoplasm","Myofibril","Endomysium"], a:1, exp:"The cytoplasm of a muscle cell is called sarcoplasm."},
+      {q:"Which structure is the cell membrane of a muscle fiber called?", opts:["Sarcolemma","Sarcoplasmic reticulum","Epimysium","Perimysium"], a:0, exp:"The muscle cell membrane is called the sarcolemma."},
+      {q:"In skeletal muscle fibers, nuclei are typically located where?", opts:["Centrally located","Scattered in cytoplasm","Peripherally under the sarcolemma","Only in the neuromuscular junction"], a:2, exp:"Skeletal muscle fibers are multinucleated and nuclei lie at the periphery under the sarcolemma."},
+      {q:"Which connective tissue layer surrounds an individual muscle fiber?", opts:["Epimysium","Perimysium","Endomysium","Fascia"], a:2, exp:"Endomysium is the delicate layer surrounding each muscle fiber (and its external lamina)."},
+      {q:"Which band of the sarcomere contains only thin (actin) filaments?", opts:["A band","I band","H zone","M line"], a:1, exp:"The I band contains only thin filaments and appears light under microscope."},
+      {q:"What protein complex blocks myosin-binding sites on actin at rest?", opts:["Myosin light chain","Troponin–tropomyosin complex","Dystrophin","Titin"], a:1, exp:"Troponin–tropomyosin complex covers the myosin-binding sites on actin when muscle is relaxed."},
+      {q:"Which ion released from the sarcoplasmic reticulum triggers contraction?", opts:["Na+","K+","Ca2+","Cl-"], a:2, exp:"Calcium ions bind to troponin to allow actin–myosin interaction and contraction."},
+      {q:"A T-tubule together with two terminal cisternae of the SR is called a:", opts:["Dyad","Triad","Sarcomere","Neuromuscular junction"], a:1, exp:"In skeletal muscle a T-tubule plus two terminal cisternae form a triad."},
+      {q:"Which motor unit characteristic offers fine, precise control (e.g., eye muscles)?", opts:["Large number of fibers per axon","Single motor neuron innervates many muscles","Few fibers per motor unit","Motor units are absent"], a:2, exp:"Muscles requiring precise control have motor units with few fibers per axon."},
+      {q:"Myasthenia gravis primarily targets which structure?", opts:["Sarcoplasmic reticulum","ACh receptors at neuromuscular junction","T-tubules","Sarcomere"], a:1, exp:"Myasthenia gravis is autoimmune against ACh receptors in the motor end plate, causing muscle weakness."},
+      {q:"Duchenne muscular dystrophy is caused by a defect in which protein?", opts:["Myosin","Actin","Dystrophin","Troponin"], a:2, exp:"DMD arises from defective dystrophin, which normally stabilizes the sarcolemma."},
+      {q:"Which feature is typical of cardiac muscle cells?", opts:["Multinucleated peripheral nuclei","Intercalated discs and central nuclei","No T-tubules","No gap junctions"], a:1, exp:"Cardiac muscle cells have central nuclei and intercalated discs (with gap junctions and desmosomes)."},
+      {q:"Cardiac muscle contraction is best described as:", opts:["Voluntary and intermittent","Strong, fast and fatigable","Strong, continuous and intrinsic","No regulation by autonomic system"], a:2, exp:"Cardiac muscle provides strong, continuous contractions that are intrinsic and modulated by the autonomic nervous system."},
+      {q:"Which of the following is more abundant in cardiac muscle compared to skeletal?", opts:["Sarcoplasmic reticulum","T-tubules (larger and more numerous)","No mitochondria","External lamina"], a:1, exp:"Cardiac muscle has larger and more numerous T-tubules (often forming dyads)."},
+      {q:"Smooth muscle cells are best described as:", opts:["Long, cylindrical and striated","Fusiform, spindle-shaped, non-striated","Branched and multinucleated","Identical to skeletal fibers"], a:1, exp:"Smooth muscle cells are spindle-shaped (fusiform), with a single central nucleus and non-striated."},
+      {q:"Which membrane invagination is common in smooth muscle and functions similar to T‑tubules?", opts:["Intercalated discs","Caveolae","Triads","Basal lamina"], a:1, exp:"Smooth muscle cells have caveolae (membrane foldings) involved in calcium handling."},
+      {q:"Which junction links smooth muscle cells electrically?", opts:["Desmosomes","Fascia adherens","Gap junctions","Hemidesmosomes"], a:2, exp:"Gap junctions electrically couple smooth muscle cells for coordinated contraction."},
+      {q:"Hypertrophy refers to which change in muscle?", opts:["Increase in number of cells","Increase in cell volume","Complete regeneration","Degeneration"], a:1, exp:"Hypertrophy is increased cell volume; hyperplasia is increase in cell number."},
+      {q:"Which of these is an example of hyperplasia in smooth muscle?", opts:["Muscle fiber enlargement after weight lifting","Uterine enlargement in pregnancy (cell number increase)","Dystrophin loss","Neuromuscular blockade"], a:1, exp:"Uterine growth involves hyperplasia (increase in cell number) in response to hormones."},
+      {q:"Which muscle type commonly shows branching cells and intercalated discs?", opts:["Skeletal muscle","Cardiac muscle","Smooth muscle","Myoepithelial cells"], a:1, exp:"Cardiac muscle cells are branched and connected by intercalated discs."},
+      {q:"Where are satellite cells located?", opts:["Inside the sarcomere","Adjacent to most skeletal muscle fibres under the basement membrane","Within the neuromuscular junction only","In cardiac nodal tissue"], a:1, exp:"Satellite (progenitor) cells remain adjacent to skeletal muscle fibres beneath the external lamina and assist regeneration."},
+      {q:"Which protein links the cytoskeleton to the extracellular matrix and is deficient in DMD?", opts:["Titin","Nebulin","Dystrophin","Myoglobin"], a:2, exp:"Dystrophin links intracellular cytoskeleton to ECM; its absence causes membrane instability in DMD."},
+      {q:"What is the name of the contractile unit within myofibrils?", opts:["Myofilament","Sarcolemma","Sarcomere","Fascicle"], a:2, exp:"A sarcomere is the repeating contractile unit of a myofibril (between two Z discs)."},
+      {q:"Which region of the A band contains only thick filaments?", opts:["I band","H zone","Z disc","M line"], a:1, exp:"The H zone is the central region of the A band containing only thick (myosin) filaments."},
+      {q:"Which of these best describes the role of troponin C?", opts:["Binds ATP","Binds Ca2+","Blocks actin-myosin interaction","Anchors thin filaments to Z-disc"], a:1, exp:"TnC is the calcium-binding subunit of troponin; binding Ca2+ triggers conformational change permitting contraction."},
+      {q:"What is the effect of acetylcholine (ACh) at the neuromuscular junction?", opts:["Inhibits muscle impulse","Initiates a muscle impulse by binding receptors on motor end plate","Destroys sarcoplasmic reticulum","Blocks T-tubules"], a:1, exp:"ACh released from the synaptic knob binds receptors on the motor end plate to initiate a muscle impulse."},
+      {q:"Which accessory protein helps maintain alignment of thick filaments at the M-line?", opts:["Titin","Troponin","Dystrophin","Nebulin"], a:0, exp:"Titin is a giant elastic protein that helps maintain thick filament alignment and passive elasticity; it associates near the M-line."}
+    ];
+
+    // state
+    let current = 0; let correctCount = 0; let answered = Array(questions.length).fill(false);
+
+    const quizArea = document.getElementById('quiz-area');
+    const scoreEl = document.getElementById('score');
+    function renderQuestion(i){
+      const q = questions[i];
+      const total = questions.length;
+      quizArea.innerHTML = `
+        <div class="qbox" data-index="${i}">
+          <div class="qnum">Question ${i+1} of ${total}</div>
+          <div class="qtext">${q.q}</div>
+          <div class="options" role="list">
+            ${q.opts.map((opt,idx)=>`<button class="opt" data-idx="${idx}" type="button">${String.fromCharCode(65+idx)}. ${opt}</button>`).join('')}
+          </div>
+          <div class="explanation" style="display:none" aria-hidden="true"></div>
+        </div>
+      `;
+
+      // update score display
+      scoreEl.textContent = `Score: ${correctCount} / ${questions.length}`;
+
+      // attach handlers
+      const optButtons = quizArea.querySelectorAll('button.opt');
+      optButtons.forEach(btn=>btn.addEventListener('click', onSelect));
+
+      // if already answered, show feedback
+      if(answered[i]){
+        revealAnswer(i);
+      }
+    }
+
+    function onSelect(e){
+      const btn = e.currentTarget; const idx = Number(btn.dataset.idx); const qIndex = current;
+      if(answered[qIndex]) return; // prevent re-answering
+      answered[qIndex] = true;
+      const correctIdx = questions[qIndex].a;
+      const opts = document.querySelectorAll('.options button.opt');
+      opts.forEach((b,j)=>{
+        b.disabled = true;
+        if(j===correctIdx) b.classList.add('correct');
+        if(j===idx && j!==correctIdx) b.classList.add('incorrect');
+      });
+      const correct = (idx===correctIdx);
+      if(correct) correctCount++;
+      const expl = quizArea.querySelector('.explanation');
+      expl.style.display = 'block'; expl.setAttribute('aria-hidden','false');
+      expl.innerHTML = `<strong>${correct? 'Correct.': 'Wrong.'}</strong> ${questions[qIndex].exp}`;
+      scoreEl.textContent = `Score: ${correctCount} / ${questions.length}`;
+    }
+
+    function revealAnswer(i){
+      const box = quizArea.querySelector('.qbox');
+      if(!box) return;
+      const correctIdx = questions[i].a;
+      const opts = box.querySelectorAll('button.opt');
+      opts.forEach((b,j)=>{ b.disabled = true; if(j===correctIdx) b.classList.add('correct'); });
+      const expl = box.querySelector('.explanation'); expl.style.display='block'; expl.setAttribute('aria-hidden','false'); expl.innerHTML = questions[i].exp;
+    }
+
+    document.getElementById('nextBtn').addEventListener('click', ()=>{ if(current < questions.length-1){ current++; renderQuestion(current); } });
+    document.getElementById('prevBtn').addEventListener('click', ()=>{ if(current > 0){ current--; renderQuestion(current); } });
+    document.getElementById('restart').addEventListener('click', ()=>{ if(confirm('Restart the quiz? All answers will be cleared.')){ current=0; correctCount=0; answered.fill(false); renderQuestion(0); } });
+    document.getElementById('showAll').addEventListener('click', ()=>{ // reveal all answers
+      // mark all as answered, but do not change score counts (only compute correctCount anew)
+      correctCount = 0;
+      answered = answered.map((v,idx)=>true);
+      // compute correctCount as total correct
+      correctCount = questions.length; // show all as correct for display purposes? Better show count of total possible
+      scoreEl.textContent = `Score: ${correctCount} / ${questions.length}`;
+      // render current question then reveal
+      renderQuestion(current);
+    });
+
+    // initial render
+    renderQuestion(0);
+
+    // -- Particle background --
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d');
+    let w = canvas.width = innerWidth; let h = canvas.height = innerHeight;
+    window.addEventListener('resize', ()=>{ w = canvas.width = innerWidth; h = canvas.height = innerHeight; });
+
+    const particles = [];
+    const PARTICLE_COUNT = Math.max(20, Math.floor((w*h)/60000));
+    function rand(min,max){ return Math.random()*(max-min)+min }
+    for(let i=0;i<PARTICLE_COUNT;i++){
+      particles.push({x:rand(0,w), y:rand(0,h), vx:rand(-0.3,0.3), vy:rand(-0.3,0.3), r:rand(0.6,2.2), alpha:rand(0.1,0.6)});
+    }
+    function step(){
+      ctx.clearRect(0,0,w,h);
+      for(const p of particles){
+        p.x += p.vx; p.y += p.vy;
+        if(p.x<0) p.x=w; if(p.x>w) p.x=0; if(p.y<0) p.y=h; if(p.y>h) p.y=0;
+        ctx.beginPath(); ctx.globalAlpha = p.alpha; ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fillStyle = '#7dd3fc'; ctx.fill();
+      }
+      // draw gentle connecting lines
+      for(let i=0;i<particles.length;i++){
+        for(let j=i+1;j<particles.length;j++){
+          const a = particles[i], b = particles[j];
+          const dx = a.x-b.x, dy = a.y-b.y; const d = Math.sqrt(dx*dx+dy*dy);
+          if(d<90){ ctx.globalAlpha = (1 - d/90)*0.06; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.strokeStyle='#7dd3fc'; ctx.lineWidth=1; ctx.stroke(); }
+        }
+      }
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(step);
+    }
+    step();
+
+    // Accessibility: keyboard selection (1-4) for options
+    window.addEventListener('keydown', (e)=>{
+      if(e.key>='1' && e.key<='4'){
+        const idx = Number(e.key)-1; const box = document.querySelector('.qbox'); if(!box) return; const btn = box.querySelectorAll('button.opt')[idx]; if(btn) btn.click();
+      }
+      if(e.key==='ArrowRight') document.getElementById('nextBtn').click();
+      if(e.key==='ArrowLeft') document.getElementById('prevBtn').click();
+    });
+  </script>
+</body>
+</html>
