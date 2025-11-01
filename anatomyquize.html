@@ -1,236 +1,189 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Medicine Quiz – Osteology</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Thrives Archivers — Blood Quiz (30 MCQs)</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #eef2f7;
-      margin: 20px;
-      padding: 20px;
-      max-width: 900px;
-      margin: auto;
-    }
-    h1, h2 {
-      color: #222;
-    }
-    .question {
-      background: #fff;
-      padding: 15px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px #ccc;
-      margin-bottom: 15px;
-    }
-    .options label {
-      display: block;
-      margin: 6px 0;
-      cursor: pointer;
-    }
-    .explanation {
-      margin-top: 10px;
-      font-size: 14px;
-      color: #444;
-    }
-    .correct {
-      color: green;
-      font-weight: bold;
-    }
-    .incorrect {
-      color: red;
-    }
-    #submit-btn {
-      background-color: #007bff;
-      color: white;
-      border: none;
-      padding: 12px 20px;
-      font-size: 16px;
-      border-radius: 5px;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-    #result {
-      font-size: 20px;
-      margin-top: 20px;
-      font-weight: bold;
-      color: #333;
+    :root{--bg:#0b1020;--card:#0f1724;--accent:#6ee7b7;--muted:#9aa4b2}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial}
+    body{background:linear-gradient(180deg,#031021 0%, #081426 60%);color:#e6eef6;overflow:hidden}
+    /* particles canvas stretches behind everything */
+    #particles{position:fixed;inset:0;z-index:0}
+    .wrap{position:relative;z-index:2;max-width:980px;margin:32px auto;padding:28px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));box-shadow:0 10px 40px rgba(2,6,23,0.7)}
+    header{display:flex;align-items:center;gap:16px}
+    header h1{margin:0;font-size:20px}
+    header p{margin:0;color:var(--muted);font-size:13px}
+    .meta{display:flex;gap:12px;margin-top:10px;align-items:center}
+    .meta .pill{background:rgba(255,255,255,0.03);padding:6px 10px;border-radius:999px;font-size:13px}
+    .card{background:var(--card);padding:20px;border-radius:10px;margin-top:18px}
+    .question{font-size:18px;margin-bottom:12px}
+    .options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .opt{background:rgba(255,255,255,0.02);padding:12px;border-radius:8px;cursor:pointer;border:1px solid rgba(255,255,255,0.03)}
+    .opt:hover{transform:translateY(-3px)}
+    .opt.correct{border-color:rgba(110,231,183,0.9);box-shadow:0 6px 18px rgba(110,231,183,0.06)}
+    .opt.wrong{opacity:0.6;border-color:rgba(255,99,99,0.8)}
+    .explain{margin-top:12px;padding:12px;border-radius:8px;background:rgba(0,0,0,0.25);color:#dff6ea;font-size:14px}
+    footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px}
+    .controls{display:flex;gap:8px}
+    button{background:transparent;border:1px solid rgba(255,255,255,0.06);color:inherit;padding:8px 12px;border-radius:8px;cursor:pointer}
+    button.primary{background:var(--accent);color:#04201a;border:none}
+    .score{font-size:14px;color:var(--muted)}
+    .progress{height:8px;background:rgba(255,255,255,0.04);border-radius:999px;overflow:hidden;width:200px}
+    .progress > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#34d399);width:0%}
+    .qcount{color:var(--muted);font-size:13px}
+    @media (max-width:700px){.options{grid-template-columns:1fr}
+      .wrap{margin:12px}
     }
   </style>
 </head>
 <body>
+<canvas id="particles"></canvas>
+<div class="wrap">
+  <header>
+    <div style="width:54px;height:54px;border-radius:10px;background:linear-gradient(135deg,#0ea5a0, #6ee7b7);display:flex;align-items:center;justify-content:center;font-weight:700;color:#04201a">TA</div>
+    <div>
+      <h1>Thrives Archivers — Blood Quiz (30 MCQs)</h1>
+      <p>Immediate feedback + explanations. Topic: Blood — cells, plasma, hematopoiesis, staining & clinical correlates.</p>
+      <div class="meta">
+        <div class="pill">30 questions</div>
+        <div class="pill">Instant feedback</div>
+        <div class="pill">Based on Blood Introductions</div>
+      </div>
+    </div>
+  </header>
 
-  <h1>📝 Medicine Study Group – Quiz Two</h1>
-  <h2>🦴 Osteology of the Upper Limb – MCQs</h2>
+  <div class="card" id="quizCard">
+    <div class="qcount" id="qcount">Question 1 of 30</div>
+    <div class="question" id="question">Loading...</div>
+    <div class="options" id="options"></div>
+    <div class="explain" id="explain" style="display:none"></div>
+    <footer>
+      <div class="controls">
+        <button id="prevBtn">◀ Previous</button>
+        <button id="nextBtn">Next ▶</button>
+        <button id="showScore" class="primary">Show Score</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="progress" title="progress"><i id="bar"></i></div>
+        <div class="score" id="score">Score: 0</div>
+      </div>
+    </footer>
+  </div>
+</div>
 
-  <form id="quizForm"></form>
+<script>
+// Simple particle background
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+let w = canvas.width = innerWidth;
+let h = canvas.height = innerHeight;
+const particles = [];
+function rand(min,max){return Math.random()*(max-min)+min}
+class P{constructor(){this.x=rand(0,w);this.y=rand(0,h);this.vx=rand(-0.3,0.3);this.vy=rand(-0.3,0.3);this.r=rand(0.6,2.2)}update(){this.x+=this.vx;this.y+=this.vy;if(this.x<0)this.x=w;if(this.x>w)this.x=0;if(this.y<0)this.y=h;if(this.y>h)this.y=0}draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);ctx.fillStyle='rgba(110,231,183,0.08)';ctx.fill()}}
+for(let i=0;i<180;i++)particles.push(new P());
+function anim(){ctx.clearRect(0,0,w,h);for(const p of particles){p.update();p.draw()}requestAnimationFrame(anim)}
+anim();
+addEventListener('resize',()=>{w=canvas.width=innerWidth;h=canvas.height=innerHeight});
 
-  <button id="submit-btn" onclick="calculateScore()">Submit Quiz</button>
-  <div id="result"></div>
+// Quiz data (30 MCQs) - question, options array, answer index (0-based), explanation
+const QUIZ = [
+  {q:'Define blood. Which statement is most correct?', opts:['A liquid tissue composed only of cells','Specialized connective tissue of cells in plasma','A type of intercellular fluid without proteins','Pure plasma with dissolved gases'], a:1, ex:'Blood is a specialized connective tissue consisting of formed elements (cells) suspended in plasma.'},
+  {q:'What percent of whole blood is plasma (approximately)?', opts:['25%','55%','75%','95%'], a:1, ex:'Plasma makes up about 55% of whole blood; erythrocytes are ~44%.'},
+  {q:'Which plasma protein is mainly responsible for maintaining oncotic (osmotic) pressure?', opts:['Fibrinogen','Immunoglobulins','Albumin','Globulins'], a:2, ex:'Albumin, produced by the liver, maintains plasma osmotic pressure.'},
+  {q:'Which plasma protein is directly involved in blood clotting?', opts:['Albumin','Fibrinogen','Gamma-globulin','Alpha-globulin'], a:1, ex:'Fibrinogen is converted to fibrin during clot formation.'},
+  {q:'Which statement about serum is true?', opts:['Serum contains fibrinogen','Serum is obtained after clotting (no fibrinogen)','Serum is the same as plasma','Serum is formed only when blood is anticoagulated'], a:1, ex:'Serum is plasma without clotting factors like fibrinogen; obtained after clotting.'},
+  {q:'Normal adult hematocrit (packed RBC volume) for males is approximately:', opts:['20-30%','30-35%','40-50%','55-65%'], a:2, ex:'Normal male hematocrit is ~40–50%.'},
+  {q:'Which cell type is anucleated in mature form and transports O2/CO2?', opts:['Neutrophil','Erythrocyte','Lymphocyte','Monocyte'], a:1, ex:'Erythrocytes (RBCs) are anucleated and transport respiratory gases.'},
+  {q:'What is the typical lifespan of a human erythrocyte?', opts:['10 days','30 days','120 days','365 days'], a:2, ex:'Average RBC lifespan is about 120 days.'},
+  {q:'Reticulocytes are:', opts:['Mature RBCs with nucleus','Immature RBCs with residual RNA','Platelet precursors','Granulocyte precursors'], a:1, ex:'Reticulocytes are immature RBCs containing residual ribosomal RNA; ~1% of circulating RBCs.'},
+  {q:'Which stain(s) are commonly used for blood smears?', opts:['Giemsa and Wright','H&E only','PAS stain','Silver stain'], a:0, ex:'Giemsa and Wright stains are standard for peripheral blood smears.'},
+  {q:'Granulocytes are characterised by:', opts:['No granules in cytoplasm','Polymorphic (lobulated) nuclei and specific granules','Spherical nuclei and no granules','Being only lymphocytes'], a:1, ex:'Granulocytes (neutrophils, eosinophils, basophils) have lobulated nuclei and cytoplasmic granules.'},
+  {q:'Which leukocyte is most numerous in normal peripheral blood?', opts:['Eosinophil','Basophil','Neutrophil','Monocyte'], a:2, ex:'Neutrophils are the most abundant leukocyte (approx. 50–75%).'},
+  {q:'Which leukocyte increases characteristically in parasitic infections and allergies?', opts:['Neutrophils','Eosinophils','Basophils','Lymphocytes'], a:1, ex:'Eosinophils increase in parasitic infections and allergic reactions.'},
+  {q:'Basophils contain which mediators?', opts:['Hemoglobin and ferritin','Heparin and histamine','Insulin and glucagon','Lysozyme only'], a:1, ex:'Basophils carry heparin and histamine and have IgE receptors.'},
+  {q:'Which agranulocyte gives rise to macrophages in tissues?', opts:['Neutrophil','Eosinophil','Monocyte','Basophil'], a:2, ex:'Monocytes circulate then migrate to tissues and differentiate into macrophages.'},
+  {q:'Lymphocytes are primarily involved in:', opts:['Transport of oxygen','Innate and adaptive immune responses','Blood clotting','Phagocytosis in acute bacterial infection'], a:1, ex:'Lymphocytes (T, B, NK) mediate immune responses; B cells produce antibodies.'},
+  {q:'Platelets originate from:', opts:['Erythroblasts','Megakaryocytes','Lymphoblasts','Monocytes'], a:1, ex:'Platelets are cytoplasmic fragments shed from bone marrow megakaryocytes.'},
+  {q:'Normal platelet count range (per mm³) is approximately:', opts:['1-4 thousand','15-40 thousand','150-400 thousand','1-2 million'], a:2, ex:'Normal platelet count is ~150–400 ×10³ per mm³.'},
+  {q:'Which process describes blood cell formation in bone marrow?', opts:['Erythropoiesis only','Leukopoiesis only','Haematopoiesis (haemopoiesis)','Thrombogenesis only'], a:2, ex:'Haematopoiesis (or haemopoiesis) is formation of all blood cells in bone marrow.'},
+  {q:'Which precursor cell is pluripotential and gives rise to all blood lineages?', opts:['Progenitor cell','Stem cell (pluripotential)','Polychromatophilic erythroblast','Megakaryocyte'], a:1, ex:'Pluripotential haemopoietic stem cells can differentiate into all blood cell lines.'},
+  {q:'Polymorphonuclear neutrophils are most active in which stage of inflammation?', opts:['Chronic inflammation only','Acute inflammation (first responders)','Adaptive immunity phase','Allergic late phase'], a:1, ex:'Neutrophils are first responders in acute inflammation and are highly phagocytic.'},
+  {q:'Which leukocyte is associated with viral infections (relative increase)?', opts:['Neutrophils','Eosinophils','Lymphocytes','Basophils'], a:2, ex:'Lymphocytosis commonly occurs in viral infections.'},
+  {q:'Which stain affinity term refers to "acid-loving" (pink/red) dyes like eosin?', opts:['Basophilic','Azurophilic','Eosinophilic (acidophilic)','Neutrophilic'], a:2, ex:'Eosinophilic (acidophilic) indicates affinity for acidic dyes such as eosin, giving pink staining.'},
+  {q:'Azurophilic granules are best described as:', opts:['Mitochondria-rich zones','Primary lysosomal granules','Secreted immunoglobulins','Membrane receptors'], a:1, ex:'Azurophilic granules are primary lysosomal granules seen in many leukocytes.'},
+  {q:'Which clinical condition is defined by reduced RBC count or hemoglobin?', opts:['Polycythemia','Leukocytosis','Anemia','Thrombocytosis'], a:2, ex:'Anemia refers to reduced number of RBCs or decreased hemoglobin concentration.'},
+  {q:'Polycythemia refers to:', opts:['Low WBC count','Increased RBC count or hematocrit','Low platelet function','Excess plasma proteins only'], a:1, ex:'Polycythemia (erythrocytosis) is an increased RBC count or hematocrit.'},
+  {q:'Which statement about erythroblast maturation is true?', opts:['Nucleus is retained in mature RBCs','Nucleus is ejected during late erythroblast stage','RBCs divide after entering circulation','Reticulocytes lack RNA'], a:1, ex:'During erythropoiesis, the nucleus is ejected; reticulocytes still have residual RNA.'},
+  {q:'Which medication is known to inhibit platelet function?', opts:['Paracetamol','Aspirin (NSAID)','Insulin','Amoxicillin'], a:1, ex:'Aspirin and other NSAIDs inhibit platelet function (affect clotting).' }
+];
 
-  <script>
-    const questions = [
-      {
-        q: "Which of the following bones is part of the pectoral girdle?",
-        options: ["Humerus", "Radius", "Clavicle", "Ulna"],
-        answer: 2,
-        explanation: "Clavicle is one of the two bones forming the pectoral girdle."
-      },
-      {
-        q: "How many bones make up the upper limb in total (on one side)?",
-        options: ["26", "30", "33", "24"],
-        answer: 1,
-        explanation: "There are 30 bones in each upper limb."
-      },
-      {
-        q: "Which bone articulates with the glenoid cavity of the scapula?",
-        options: ["Clavicle", "Radius", "Humerus", "Ulna"],
-        answer: 2,
-        explanation: "The humerus fits into the glenoid cavity of the scapula."
-      },
-      {
-        q: "What type of bone is the scapula?",
-        options: ["Long bone", "Flat bone", "Irregular bone", "Short bone"],
-        answer: 1,
-        explanation: "Scapula is a flat bone that provides surface for muscle attachment."
-      },
-      {
-        q: "The olecranon process is part of which bone?",
-        options: ["Radius", "Humerus", "Scapula", "Ulna"],
-        answer: 3,
-        explanation: "The olecranon process is on the posterior part of the ulna."
-      },
-      {
-        q: "Which bone is commonly fractured during a fall on the shoulder?",
-        options: ["Ulna", "Radius", "Clavicle", "Scapula"],
-        answer: 2,
-        explanation: "The clavicle is commonly fractured when falling on the shoulder."
-      },
-      {
-        q: "Which of the following bones is the lateral bone of the forearm?",
-        options: ["Radius", "Ulna", "Humerus", "Scapula"],
-        answer: 0,
-        explanation: "Radius is the lateral bone of the forearm."
-      },
-      {
-        q: "How many carpal bones are found in one hand?",
-        options: ["6", "8", "10", "12"],
-        answer: 1,
-        explanation: "There are 8 carpal bones arranged in two rows."
-      },
-      {
-        q: "Which bone contains the deltoid tuberosity?",
-        options: ["Radius", "Humerus", "Scapula", "Ulna"],
-        answer: 1,
-        explanation: "Deltoid tuberosity is a roughened area on the humerus."
-      },
-      {
-        q: "The head of the radius articulates with which part of the humerus?",
-        options: ["Olecranon fossa", "Capitulum", "Trochlea", "Coronoid fossa"],
-        answer: 1,
-        explanation: "The head of the radius articulates with the capitulum."
-      },
-      {
-        q: "What is the name of the socket in the scapula that receives the head of the humerus?",
-        options: ["Acromion", "Glenoid cavity", "Coracoid process", "Spine"],
-        answer: 1,
-        explanation: "The glenoid cavity articulates with the head of the humerus."
-      },
-      {
-        q: "How many metacarpal bones are there in one hand?",
-        options: ["4", "5", "6", "7"],
-        answer: 1,
-        explanation: "There are 5 metacarpals in each hand."
-      },
-      {
-        q: "The trochlea of the humerus articulates with which bone?",
-        options: ["Radius", "Scapula", "Ulna", "Clavicle"],
-        answer: 2,
-        explanation: "The trochlea articulates with the ulna."
-      },
-      {
-        q: "Which carpal bone is most commonly fractured?",
-        options: ["Lunate", "Scaphoid", "Hamate", "Pisiform"],
-        answer: 1,
-        explanation: "Scaphoid is the most commonly fractured carpal bone."
-      },
-      {
-        q: "What type of joint is the shoulder joint?",
-        options: ["Hinge joint", "Ball and socket joint", "Pivot joint", "Saddle joint"],
-        answer: 1,
-        explanation: "Shoulder joint is a ball and socket joint for wide range of motion."
-      },
-      {
-        q: "The anatomical neck of the humerus lies between:",
-        options: ["Head and shaft", "Head and greater tubercle", "Head and glenoid cavity", "Greater and lesser tubercles"],
-        answer: 1,
-        explanation: "The anatomical neck is between the head and the greater tubercle."
-      },
-      {
-        q: "Which of these bones forms the elbow joint with the humerus?",
-        options: ["Radius and Ulna", "Scapula and Clavicle", "Radius and Scapula", "Clavicle and Ulna"],
-        answer: 0,
-        explanation: "Both radius and ulna form the elbow joint with humerus."
-      },
-      {
-        q: "The styloid process is found on:",
-        options: ["Humerus", "Scapula", "Radius and Ulna", "Clavicle"],
-        answer: 2,
-        explanation: "Styloid process is found on both radius and ulna."
-      },
-      {
-        q: "The medial epicondyle is found on which bone?",
-        options: ["Radius", "Humerus", "Ulna", "Scapula"],
-        answer: 1,
-        explanation: "Medial epicondyle is a bony projection on the humerus."
-      },
-      {
-        q: "Which process of the scapula projects anteriorly?",
-        options: ["Spine", "Acromion", "Glenoid", "Coracoid"],
-        answer: 3,
-        explanation: "The coracoid process projects anteriorly from the scapula."
-      }
-    ];
+let idx = 0; let score = 0; const total = QUIZ.length; const userAnswered = new Array(total).fill(false);
+const selectedChoice = new Array(total).fill(null);
+const questionEl = document.getElementById('question');
+const optionsEl = document.getElementById('options');
+const explainEl = document.getElementById('explain');
+const qcountEl = document.getElementById('qcount');
+const scoreEl = document.getElementById('score');
+const bar = document.getElementById('bar');
 
-    const form = document.getElementById("quizForm");
-
-    questions.forEach((q, index) => {
-      const div = document.createElement("div");
-      div.className = "question";
-      div.innerHTML = `<p><strong>${index + 1}. ${q.q}</strong></p>` +
-        q.options.map((opt, i) =>
-          `<label>
-            <input type="radio" name="q${index}" value="${i}" onchange="showExplanation(${index}, ${i})"> ${opt}
-          </label>`
-        ).join("") +
-        `<div id="explanation${index}" class="explanation"></div>`;
-      form.appendChild(div);
-    });
-
-    function showExplanation(qIndex, selected) {
-      const explainDiv = document.getElementById("explanation" + qIndex);
-      const correct = questions[qIndex].answer;
-      const explain = questions[qIndex].explanation;
-      if (selected === correct) {
-        explainDiv.innerHTML = `<span class='correct'>Correct!</span><br>${explain}`;
-      } else {
-        explainDiv.innerHTML = `<span class='incorrect'>Incorrect.</span><br>${explain}`;
-      }
+function render(){
+  const item = QUIZ[idx];
+  qcountEl.textContent = `Question ${idx+1} of ${total}`;
+  questionEl.textContent = item.q;
+  optionsEl.innerHTML=''; explainEl.style.display='none'; explainEl.textContent='';
+  item.opts.forEach((o,i)=>{
+    const div = document.createElement('div');
+    div.className='opt';
+    div.innerHTML=`<strong>${String.fromCharCode(65+i)}.</strong> ${o}`;
+    div.onclick = ()=>select(i,div);
+    // if previously answered, show state
+    if(userAnswered[idx]){
+      div.style.pointerEvents='none';
+      if(i===QUIZ[idx].a) div.classList.add('correct');
+      if(selectedChoice[idx]===i && i!==QUIZ[idx].a) div.classList.add('wrong');
     }
+    optionsEl.appendChild(div);
+  });
+  // update progress bar & score
+  const pct = Math.round(((idx)/total)*100);
+  bar.style.width = pct + '%';
+  scoreEl.textContent = `Score: ${score}`;
+}
 
-    function calculateScore() {
-      let score = 0;
-      questions.forEach((q, i) => {
-        const selected = document.querySelector(`input[name='q${i}']:checked`);
-        if (selected && parseInt(selected.value) === q.answer) {
-          score++;
-        }
-      });
-      const percent = ((score / questions.length) * 100).toFixed(2);
-      document.getElementById("result").innerText = `You scored ${score}/20 (${percent}%)`;
-    }
-  </script>
+function select(choice,el){
+  if(userAnswered[idx]) return;
+  userAnswered[idx]=true; selectedChoice[idx]=choice;
+  const correct = QUIZ[idx].a;
+  // mark all options appropriately
+  [...optionsEl.children].forEach((child,i)=>{
+    child.style.pointerEvents='none';
+    if(i===correct) child.classList.add('correct');
+    if(i===choice && i!==correct) child.classList.add('wrong');
+  });
+  // update score
+  if(choice===correct){ score++; scoreEl.textContent = `Score: ${score}`; explainEl.textContent = 'Correct! ' + QUIZ[idx].ex; }
+  else { explainEl.textContent = `Incorrect. Correct answer: ${String.fromCharCode(65+correct)}. ` + QUIZ[idx].ex; }
+  explainEl.style.display='block';
+}
 
+document.getElementById('nextBtn').onclick = ()=>{ if(idx<total-1){ idx++; render(); } else alert('This is the last question. Use Show Score to view results.'); };
+document.getElementById('prevBtn').onclick = ()=>{ if(idx>0){ idx--; render(); } };
+
+document.getElementById('showScore').onclick = ()=>{
+  // reveal score summary modal-like alert
+  const percent = Math.round((score/total)*100);
+  alert(`You scored ${score} out of ${total} (${percent}%).\n\nTip: Click through questions to review explanations.`);
+}
+
+// Keyboard navigation
+addEventListener('keydown', (e)=>{
+  if(e.key==='ArrowRight') document.getElementById('nextBtn').click();
+  if(e.key==='ArrowLeft') document.getElementById('prevBtn').click();
+});
+
+// Initialize
+render();
+</script>
 </body>
 </html>
-
