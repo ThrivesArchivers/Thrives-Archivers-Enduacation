@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Gametogenesis & Reproduction — 30 MCQ Quiz (Prepared by Doc Kape)</title>
+  <style>
+    /* --- Page / layout --- */
+    :root{
+      --card-bg: rgba(255,255,255,0.95);
+      --accent: #2b7cff;
+      --muted: #555;
+      --correct: #0a8f2a;
+      --wrong: #c62828;
+      --glass: rgba(255,255,255,0.65);
+    }
+    html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;}
+    body{position:relative;overflow:auto;background:linear-gradient(180deg,#0f172a 0%, #071033 70%); color:#061026;}
+    header{position:relative;z-index:5;padding:28px 20px;color:white;text-align:center}
+    header h1{margin:0;font-size:20px;letter-spacing:0.2px}
+    header p{margin:6px 0 0;font-size:13px;opacity:0.9}
+    main{max-width:980px;margin:18px auto;padding:18px;position:relative;z-index:5}
+    .quiz-card{background:var(--card-bg);border-radius:12px;padding:18px;box-shadow:0 8px 30px rgba(2,6,23,0.45);}
+    .meta{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+    .meta .badge{background:var(--glass);padding:6px 10px;border-radius:999px;font-weight:600;color:#05306b}
+    .question{margin:10px 0 18px;padding:12px;border-radius:8px;background:linear-gradient(180deg,rgba(11,35,85,0.03),rgba(11,35,85,0.01));}
+    .q-head{display:flex;align-items:flex-start;gap:12px}
+    .q-num{font-weight:700;color:var(--accent);min-width:36px}
+    .q-text{font-weight:600}
+    .options{margin-top:10px;display:grid;gap:8px}
+    label.option{display:flex;align-items:center;gap:10px;padding:10px;border-radius:8px;border:1px solid rgba(4,10,30,0.06);cursor:pointer}
+    input[type="radio"]{transform:scale(1.05)}
+    .explain{margin-top:8px;padding:10px;border-radius:8px;background:#f6fbff;border-left:4px solid var(--accent);font-size:13px;display:none}
+    .wrong-msg{margin-top:8px;padding:10px;border-radius:8px;background:#fff2f2;border-left:4px solid var(--wrong);font-size:13px;display:none}
+    footer{margin-top:18px;padding:12px;color:#fff;text-align:center;opacity:0.95}
+    .small{font-size:13px;color:var(--muted)}
+    /* responsive */
+    @media (max-width:600px){
+      .meta{flex-direction:column;align-items:flex-start}
+    }
+
+    /* Canvas overlay controls */
+    .top-right-badge{position:fixed;right:18px;top:18px;z-index:6;background:rgba(255,255,255,0.12);padding:8px 12px;border-radius:999px;color:white;font-weight:600;backdrop-filter: blur(6px);border:1px solid rgba(255,255,255,0.06)}
+  </style>
+</head>
+<body>
+  <!-- Particle background canvas -->
+  <canvas id="bgCanvas" style="position:fixed;inset:0;z-index:1;display:block"></canvas>
+
+  <div class="top-right-badge">© Doc Kape — Study smart. Learn clear.</div>
+
+  <header>
+    <h1>Gametogenesis & Reproduction — 30 MCQs</h1>
+    <p class="small">Simple, clear questions for learners. Select an answer — correct selections will reveal an explanation. Prepared by <strong>Doc Kape</strong>.</p>
+  </header>
+
+  <main>
+    <div class="quiz-card" id="quiz">
+      <div class="meta">
+        <div class="badge">30 Questions</div>
+        <div class="small">Topic: Reproduction, Gametogenesis, Spermatogenesis, Oogenesis, Hormones & Clinical facts</div>
+      </div>
+
+      <!-- Questions will be injected here -->
+      <div id="questionsContainer"></div>
+
+      <div style="margin-top:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button id="showAllAnswers" style="padding:10px 14px;border-radius:8px;border:none;background:var(--accent);color:white;font-weight:700;cursor:pointer">Show Correct Answers</button>
+        <button id="resetBtn" style="padding:10px 14px;border-radius:8px;border:1px solid rgba(2,6,23,0.06);background:white;cursor:pointer">Reset</button>
+        <div style="margin-left:auto" class="small">Prepared by <strong>Doc Kape</strong></div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="small">© Doc Kape — Study smart. Learn clear. </div>
+  </footer>
+
+  <script>
+    /***********************
+     * Questions data
+     ***********************/
+    const questions = [
+      {
+        q: "1. What is reproduction?",
+        options: ["Process of growing taller", "Process of forming new living organisms", "Process of digesting food", "Process of breathing"],
+        correct: 1,
+        explain: "Reproduction is the process of forming a new living organism (baby, plant, or animal)."
+      },
+      {
+        q: "2. Which cells are called gametes?",
+        options: ["Skin cells", "Blood cells", "Sex cells (sperm and egg)", "Muscle cells"],
+        correct: 2,
+        explain: "Gametes are the special sex cells: sperm (male) and ova/eggs (female)."
+      },
+      {
+        q: "3. Where are male gametes produced?",
+        options: ["Ovary", "Testes", "Pancreas", "Thyroid"],
+        correct: 1,
+        explain: "Male gametes (sperm) are produced in the testes (testicles)."
+      },
+      {
+        q: "4. Where are female gametes produced?",
+        options: ["Ovary", "Testes", "Liver", "Kidney"],
+        correct: 0,
+        explain: "Female gametes (eggs) are produced in the ovaries."
+      },
+      {
+        q: "5. What is the name for sperm production?",
+        options: ["Oogenesis", "Spermatogenesis", "Fertilization", "Ovulation"],
+        correct: 1,
+        explain: "Spermatogenesis is the process by which sperm are produced in the testes."
+      },
+      {
+        q: "6. What is the name for egg production?",
+        options: ["Oogenesis", "Spermiogenesis", "Mitosis", "Menstruation"],
+        correct: 0,
+        explain: "Oogenesis (or ovogenesis) is the process of forming the mature egg (ovum)."
+      },
+      {
+        q: "7. From which early cells do gametes develop?",
+        options: ["Red blood cells", "Muscle precursors", "Primordial germ cells (PGCs)", "Neurons"],
+        correct: 2,
+        explain: "Gametes derive from primordial germ cells (PGCs) that migrate to the developing gonads."
+      },
+      {
+        q: "8. Where do primordial germ cells (PGCs) originate during embryo development?",
+        options: ["Liver", "Yolk sac wall", "Placenta", "Heart"],
+        correct: 1,
+        explain: "PGCs form in the wall of the yolk sac early in development before migrating to the gonads."
+      },
+      {
+        q: "9. Which cells in seminiferous tubules support and nourish developing sperm?",
+        options: ["Leydig cells", "Sertoli (sustentacular) cells", "Epithelial cells", "Adipocytes"],
+        correct: 1,
+        explain: "Sertoli cells nourish, protect, and help release developing sperm in seminiferous tubules."
+      },
+      {
+        q: "10. Which cells in the testes produce testosterone?",
+        options: ["Sertoli cells", "Spermatogonia", "Leydig (interstitial) cells", "Follicle cells"],
+        correct: 2,
+        explain: "Leydig (interstitial) cells between tubules secrete testosterone, the main male sex hormone."
+      },
+      {
+        q: "11. Which hormone stimulates Leydig cells to make testosterone?",
+        options: ["FSH", "LH", "Insulin", "Oxytocin"],
+        correct: 1,
+        explain: "LH (luteinizing hormone) acts on Leydig cells to stimulate testosterone production."
+      },
+      {
+        q: "12. Which hormone mainly acts on Sertoli cells to promote sperm development?",
+        options: ["FSH", "Prolactin", "Adrenaline", "Calcitonin"],
+        correct: 0,
+        explain: "FSH (follicle-stimulating hormone) primarily acts on Sertoli cells to support spermatogenesis."
+      },
+      {
+        q: "13. What does 'meiosis' do in gamete formation?",
+        options: ["Keeps chromosome number the same", "Doubles chromosomes", "Reduces chromosome number by half", "Changes cell into bone"],
+        correct: 2,
+        explain: "Meiosis reduces the chromosome number from diploid (46) to haploid (23) so sperm and egg give the right number when they join."
+      },
+      {
+        q: "14. Where is the acrosome located on a sperm and what is its role?",
+        options: ["Tail; gives energy", "Head; contains enzymes to help enter the egg", "Middle piece; stores DNA", "Neck; supports movement"],
+        correct: 1,
+        explain: "The acrosome sits on the sperm head and contains enzymes (e.g., hyaluronidase) that help the sperm penetrate the egg."
+      },
+      {
+        q: "15. What structure provides energy for the sperm to swim?",
+        options: ["Nucleus", "Acrosome", "Mitochondria in the middle piece", "Ribosomes"],
+        correct: 2,
+        explain: "Mitochondria arranged in the middle piece make ATP which powers sperm movement."
+      },
+      {
+        q: "16. Spermiogenesis is the process where:",
+        options: ["Spermatogonia divide by mitosis", "Spermatids change shape into mature sperm", "Eggs are released", "PGCs migrate to the yolk sac"],
+        correct: 1,
+        explain: "Spermiogenesis transforms round spermatids into elongated, motile spermatozoa."
+      },
+      {
+        q: "17. How long does it take roughly to form mature sperm in humans?",
+        options: ["1–2 days", "1 week", "About 64–74 days", "One year"],
+        correct: 2,
+        explain: "Spermatogenesis (full development to mature sperm) takes about 64–74 days."
+      },
+      {
+        q: "18. In females, when does meiosis I begin for oocytes?",
+        options: ["After menopause", "Before birth (in the fetus)", "At puberty for the first time", "At fertilization"],
+        correct: 1,
+        explain: "Primary oocytes begin meiosis I before birth and then pause (arrest) until puberty."
+      },
+      {
+        q: "19. At ovulation, an egg is usually arrested at which stage?",
+        options: ["Prophase I", "Metaphase II", "Telophase II", "Anaphase I"],
+        correct: 1,
+        explain: "The secondary oocyte is arrested in metaphase II at ovulation and completes meiosis II only if fertilization occurs."
+      },
+      {
+        q: "20. What is a polar body?",
+        options: ["A fertilized egg", "A small cell produced during oocyte divisions that usually dies", "A sperm tail part", "A hormone secreted by ovaries"],
+        correct: 1,
+        explain: "Polar bodies are small cells formed during oocyte meiosis; they contain little cytoplasm and usually degenerate."
+      },
+      {
+        q: "21. Approximately how many primary oocytes are present in a newborn female?",
+        options: ["About 2 million", "About 100", "About 10,000", "None — they form at puberty"],
+        correct: 0,
+        explain: "A newborn female has roughly 1–2 million primary oocytes; many are lost before puberty."
+      },
+      {
+        q: "22. Roughly how many eggs are ovulated during a normal female reproductive life?",
+        options: ["About 480", "2 million", "0", "10,000"],
+        correct: 0,
+        explain: "Around 400–500 eggs are ovulated during a typical reproductive lifespan (≈12 per year over many years)."
+      },
+      {
+        q: "23. What is the role of inhibin in male reproduction?",
+        options: ["Stimulates testosterone", "Decreases the rate of spermatogenesis by lowering FSH", " causes ovulation", "Forms acrosome"],
+        correct: 1,
+        explain: "Inhibin is made by Sertoli cells and signals the pituitary to lower FSH when sperm production is adequate."
+      },
+      {
+        q: "24. What is cryptorchidism and why can it cause infertility?",
+        options: ["Undescended testis; higher temperature harms sperm production", "Blocked fallopian tube; prevents egg movement", "Extra chromosomes; makes sperm slow", "Excess inhibin production"],
+        correct: 0,
+        explain: "Cryptorchidism (undescended testes) exposes developing sperm to higher temperatures and may reduce sperm count."
+      },
+      {
+        q: "25. What is a teratoma and how does it relate to primordial germ cells?",
+        options: ["A muscle tumor not related to germ cells", "A tumor that can form when germ cells lodge outside gonads and differentiate into many tissues", "A type of egg cell", "A normal follicle stage"],
+        correct: 1,
+        explain: "If primordial germ cells get misplaced outside the gonads, they may form teratomas — tumors with mixed tissues (hair, teeth)."
+      },
+      {
+        q: "26. Which follicle stage contains a mature egg ready for ovulation?",
+        options: ["Primordial follicle", "Primary follicle", "Graafian (mature) follicle", "Atretic follicle"],
+        correct: 2,
+        explain: "The Graafian (mature) follicle contains the secondary oocyte that is released at ovulation."
+      },
+      {
+        q: "27. What becomes of the ruptured follicle after ovulation?",
+        options: ["It disappears immediately", "Turns into corpus luteum which secretes hormones", "Becomes a sperm", "Goes back to a primordial follicle"],
+        correct: 1,
+        explain: "After ovulation the ruptured follicle becomes the corpus luteum, which produces progesterone to support early pregnancy."
+      },
+      {
+        q: "28. What is the main clinical threshold often cited below which male fertility is likely impaired?",
+        options: [">200 million sperm/ml", "<20 million sperm/ml", "Exactly 46 sperm/ml", "Sperm size less than 5 µm"],
+        correct: 1,
+        explain: "A sperm count below about 20 million per milliliter is commonly associated with reduced fertility (oligozoospermia)."
+      },
+      {
+        q: "29. What forms the blood-testis barrier?",
+        options: ["Tight junctions between Sertoli cells", "Capillaries around the testis", "Leydig cell membranes", "Basement membrane only"],
+        correct: 0,
+        explain: "Tight junctions between Sertoli cells create the blood-testis barrier, protecting developing germ cells from immune attack."
+      },
+      {
+        q: "30. What happens to a secondary oocyte if it is not fertilized?",
+        options: ["It completes meiosis and becomes a baby", "It dies/degenerates about 24 hours after ovulation", "It becomes a sperm", "It turns into corpus luteum"],
+        correct: 1,
+        explain: "If fertilization does not occur, the secondary oocyte degenerates roughly 24 hours after ovulation."
+      }
+    ];
+
+    /***********************
+     * Render questions
+     ***********************/
+    const container = document.getElementById('questionsContainer');
+
+    function createQuestionCard(i,qObj){
+      const wrapper = document.createElement('div');
+      wrapper.className = 'question';
+      wrapper.id = 'q' + i;
+
+      wrapper.innerHTML = `
+        <div class="q-head">
+          <div class="q-num">${i+1}.</div>
+          <div style="flex:1">
+            <div class="q-text">${qObj.q}</div>
+            <div class="options" role="radiogroup" aria-labelledby="q${i}-label">
+              ${qObj.options.map((opt, idx) => `
+                <label class="option" for="q${i}_opt${idx}">
+                  <input type="radio" name="q${i}" id="q${i}_opt${idx}" data-q="${i}" data-idx="${idx}">
+                  <div><strong>${String.fromCharCode(65+idx)}.</strong></div>
+                  <div style="flex:1">${opt}</div>
+                </label>
+              `).join('')}
+            </div>
+            <div class="explain" id="expl_${i}"><strong>Explanation:</strong> <span></span></div>
+            <div class="wrong-msg" id="wrong_${i}">Incorrect — try again.</div>
+          </div>
+        </div>
+      `;
+      return wrapper;
+    }
+
+    questions.forEach((q,i)=>{
+      container.appendChild(createQuestionCard(i,q));
+    });
+
+    /***********************
+     * Interaction logic
+     ***********************/
+    container.addEventListener('change', (e) => {
+      const input = e.target;
+      if(!input || input.tagName !== 'INPUT') return;
+      const qIndex = Number(input.dataset.q);
+      const pick = Number(input.dataset.idx);
+      const qObj = questions[qIndex];
+
+      const explainEl = document.getElementById('expl_' + qIndex);
+      const wrongEl = document.getElementById('wrong_' + qIndex);
+
+      // hide both first
+      explainEl.style.display = 'none';
+      wrongEl.style.display = 'none';
+
+      if(pick === qObj.correct){
+        // show explanation
+        explainEl.querySelector('span').textContent = ' ' + qObj.explain;
+        explainEl.style.display = 'block';
+        // style the option label to show correctness (brief highlight)
+        highlightOption(qIndex, pick, true);
+      } else {
+        wrongEl.style.display = 'block';
+        highlightOption(qIndex, pick, false);
+      }
+    });
+
+    function highlightOption(qIndex, pickIdx, correct){
+      // subtle flash on selected label
+      const radios = document.getElementsByName('q' + qIndex);
+      radios.forEach(r => {
+        const lab = r.closest('label.option');
+        if(!lab) return;
+        lab.style.transition = 'box-shadow .28s, transform .18s';
+        lab.style.boxShadow = 'none';
+        lab.style.transform = 'none';
+        lab.style.borderColor = 'rgba(4,10,30,0.06)';
+      });
+      // apply to the chosen one
+      const chosen = document.querySelector(`#q${qIndex}_opt${pickIdx}`);
+      if(chosen){
+        const lab = chosen.closest('label.option');
+        if(lab){
+          if(correct){
+            lab.style.boxShadow = '0 6px 20px rgba(10,143,42,0.12)';
+            lab.style.borderColor = 'rgba(10,143,42,0.28)';
+          } else {
+            lab.style.boxShadow = '0 6px 20px rgba(198,40,40,0.12)';
+            lab.style.borderColor = 'rgba(198,40,40,0.22)';
+          }
+          // quick scale for feedback
+          lab.style.transform = 'scale(1.01)';
+          setTimeout(()=>{ lab.style.transform='scale(1)'; }, 250);
+        }
+      }
+    }
+
+    /***********************
+     * Show All Answers / Reset
+     ***********************/
+    document.getElementById('showAllAnswers').addEventListener('click', ()=>{
+      questions.forEach((q, i) => {
+        // check the correct radio
+        const correctInput = document.querySelector(`#q${i}_opt${q.correct}`);
+        if(correctInput){
+          correctInput.checked = true;
+          // show explanation
+          const explainEl = document.getElementById('expl_' + i);
+          explainEl.querySelector('span').textContent = ' ' + q.explain;
+          explainEl.style.display = 'block';
+        }
+      });
+      // smooth scroll to top of quiz
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', ()=>{
+      // hide all explanations and wrong messages, clear radios and styles
+      questions.forEach((q,i) => {
+        const radios = document.getElementsByName('q' + i);
+        radios.forEach(r => r.checked=false);
+        const explainEl = document.getElementById('expl_' + i);
+        const wrongEl = document.getElementById('wrong_' + i);
+        explainEl.style.display = 'none';
+        wrongEl.style.display = 'none';
+        // remove highlight styles
+        radios.forEach(r => {
+          const lab = r.closest('label.option');
+          if(lab){
+            lab.style.boxShadow = 'none';
+            lab.style.borderColor = 'rgba(4,10,30,0.06)';
+            lab.style.transform = 'none';
+          }
+        });
+      });
+    });
+
+    /***********************
+     * Particles background
+     ***********************/
+    (function runParticles(){
+      const canvas = document.getElementById('bgCanvas');
+      const ctx = canvas.getContext('2d');
+      let w = canvas.width = innerWidth;
+      let h = canvas.height = innerHeight;
+
+      window.addEventListener('resize', ()=>{ w=canvas.width=innerWidth; h=canvas.height=innerHeight; });
+
+      const colors = [
+        'rgba(59,130,246,0.9)',
+        'rgba(96,165,250,0.78)',
+        'rgba(99,102,241,0.78)',
+        'rgba(34,197,94,0.72)',
+        'rgba(250,204,21,0.9)'
+      ];
+
+      // create particles
+      const N = Math.max(Math.floor((w*h)/90000), 40); // scale to screen
+      const particles = [];
+      function rand(min,max){ return Math.random()*(max-min)+min; }
+
+      for(let i=0;i<N;i++){
+        particles.push({
+          x: Math.random()*w,
+          y: Math.random()*h,
+          vx: rand(-0.25,0.25),
+          vy: rand(-0.6,0.6),
+          r: rand(1.6,3.6),
+          col: colors[Math.floor(Math.random()*colors.length)],
+          drift: rand(-0.2,0.2)
+        });
+      }
+
+      function draw(){
+        ctx.clearRect(0,0,w,h);
+        // subtle gradient overlay for depth
+        const g = ctx.createLinearGradient(0,0,0,h);
+        g.addColorStop(0, 'rgba(3,7,23,0.18)');
+        g.addColorStop(1, 'rgba(3,7,23,0.35)');
+        ctx.fillStyle = g;
+        ctx.fillRect(0,0,w,h);
+
+        // draw connecting lines
+        for(let i=0;i<particles.length;i++){
+          const p = particles[i];
+          for(let j=i+1;j<particles.length;j++){
+            const q = particles[j];
+            const dx = p.x - q.x, dy = p.y - q.y;
+            const d = Math.sqrt(dx*dx + dy*dy);
+            if(d < 120){
+              const alpha = 0.12 * (1 - d/120);
+              ctx.strokeStyle = p.col.replace(/[\d\.]+\)$/,'') + alpha + ')';
+              ctx.beginPath();
+              ctx.moveTo(p.x,p.y);
+              ctx.lineTo(q.x,q.y);
+              ctx.lineWidth = 0.6;
+              ctx.stroke();
+            }
+          }
+        }
+
+        // draw particles
+        for(let p of particles){
+          ctx.beginPath();
+          ctx.fillStyle = p.col;
+          ctx.globalAlpha = 0.95;
+          ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+          ctx.fill();
+        }
+        ctx.globalAlpha = 1.0;
+      }
+
+      function step(){
+        // move
+        for(let p of particles){
+          p.x += p.vx + Math.sin((p.y + Date.now()*0.0006) * 0.02)*p.drift;
+          p.y += p.vy;
+          // wrap around edges
+          if(p.x < -10) p.x = w + 10;
+          if(p.x > w + 10) p.x = -10;
+          if(p.y < -10) p.y = h + 10;
+          if(p.y > h + 10) p.y = -10;
+        }
+        draw();
+        requestAnimationFrame(step);
+      }
+      step();
+    })();
+
+    // Accessibility: allow keyboard selection (already supported by radios)
+  </script>
+</body>
+</html>
