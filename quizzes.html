@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neurophysiology Quiz</title>
+<style>
+    body { font-family: Arial, sans-serif; margin: 20px; background-color: #f9f9f9; }
+    h1, h2 { color: #2c3e50; }
+    .question { margin-bottom: 20px; padding: 15px; background-color: #ecf0f1; border-radius: 8px; }
+    .options button { display: block; margin: 5px 0; padding: 8px 12px; cursor: pointer; border-radius: 5px; border: 1px solid #2c3e50; background-color: #fff; }
+    .options button:hover { background-color: #bdc3c7; }
+    .explanation { margin-top: 10px; font-style: italic; color: #2980b9; }
+    #score { font-size: 1.2em; margin-top: 20px; font-weight: bold; }
+</style>
+</head>
+<body>
+
+<h1>Neurophysiology Quiz</h1>
+<p>Answer the questions. After selecting, the explanation will appear. Your percentage score updates automatically.</p>
+
+<h2>Multiple Choice Questions (30)</h2>
+<div id="mcq-container"></div>
+
+<h2>True/False Questions (10)</h2>
+<div id="tf-container"></div>
+
+<div id="score"></div>
+
+<script>
+// 30 MCQs
+const mcqData = [
+    { q: "What is a synapse?", options: ["An anatomical connection", "A physiological junction between two cells", "Part of muscle fiber", "A type of neurotransmitter"], answer: 1, explanation: "A synapse is a physiological junction between a neuron and another cell." },
+    { q: "Electrical synapses involve:", options: ["Neurotransmitters", "Gap junctions", "Slow impulse", "Only inhibitory"], answer: 1, explanation: "Electrical synapses are connected by gap junctions allowing fast current passage." },
+    { q: "Gap junction channels are made of:", options: ["Connexins", "Synaptobrevin", "Syntaxin", "Choline acetyltransferase"], answer: 0, explanation: "Gap junction channels are made of connexin subunits forming connexons." },
+    { q: "Chemical synapses use:", options: ["Electric current", "Neurotransmitters", "Mechanical pressure", "ATP pumps"], answer: 1, explanation: "Chemical synapses convert current into neurotransmitters that affect postsynaptic cells." },
+    { q: "Neurotransmitter at neuromuscular junction:", options: ["Dopamine", "GABA", "Acetylcholine", "Serotonin"], answer: 2, explanation: "Acetylcholine is used at skeletal muscle junctions." },
+    { q: "ACh is synthesized in:", options: ["Liver", "Presynaptic terminal", "Postsynaptic membrane", "Glial cells"], answer: 1, explanation: "ACh is synthesized in the presynaptic terminal from choline and acetyl CoA." },
+    { q: "Enzyme that breaks down acetylcholine:", options: ["Acetylcholine esterase", "Choline acetyltransferase", "Glutaminase", "GABA-T"], answer: 0, explanation: "Acetylcholine esterase degrades ACh in the synaptic cleft." },
+    { q: "ACh binding opens:", options: ["Voltage-gated Na+ channels", "Ligand-gated cation channels", "Ca2+ pumps", "Cl- channels"], answer: 1, explanation: "ACh binds nicotinic receptors, which are ligand-gated cation channels." },
+    { q: "End Plate Potential (EPP) is:", options: ["Propagated action potential", "Local depolarization at motor end plate", "Inhibitory hyperpolarization", "Resting membrane potential"], answer: 1, explanation: "EPP is a local depolarization due to Na+ influx at the motor end plate." },
+    { q: "EPSP stands for:", options: ["Excitatory Post-Synaptic Potential", "Electrical Pulse Synapse Potential", "End Plate Stimulation Potential", "Exocytosis Potential Signal"], answer: 0, explanation: "EPSP is a graded depolarization at postsynaptic neuron." },
+    { q: "Which neurotransmitter causes IPSP?", options: ["Acetylcholine", "GABA", "Glutamate", "Dopamine"], answer: 1, explanation: "GABA (or glycine) hyperpolarizes postsynaptic membrane causing IPSP." },
+    { q: "Ion influx causing IPSP:", options: ["Na+", "K+", "Cl-", "Ca2+"], answer: 2, explanation: "Cl- influx increases negativity inside, leading to hyperpolarization." },
+    { q: "Trigger for neurotransmitter exocytosis:", options: ["Na+ influx", "Ca2+ influx", "K+ efflux", "Cl- influx"], answer: 1, explanation: "Ca2+ entering voltage-gated channels triggers vesicle fusion." },
+    { q: "Vesicle fusion proteins:", options: ["Connexins", "Synaptobrevin and Syntaxin", "Choline transporters", "Acetyl-CoA"], answer: 1, explanation: "Synaptobrevin and syntaxins mediate vesicle fusion with presynaptic membrane." },
+    { q: "Nicotine binds to:", options: ["Muscarinic ACh receptor", "Nicotinic ACh receptor", "GABA receptor", "Glutamate receptor"], answer: 1, explanation: "Nicotinic cholinergic receptors are activated by nicotine and ACh." },
+    { q: "Myasthenia gravis is:", options: ["Genetic", "Autoimmune", "Ion channel blocker", "Bacterial"], answer: 1, explanation: "It is an autoimmune disease affecting ACh receptors." },
+    { q: "Congenital myasthenic syndrome is:", options: ["Genetic", "Autoimmune", "Viral", "Bacterial"], answer: 0, explanation: "A genetic disorder affecting neuromuscular transmission." },
+    { q: "GABA is synthesized from:", options: ["Glutamate", "Acetylcholine", "Dopamine", "Serotonin"], answer: 0, explanation: "GABA is enzymatically synthesized from glutamate." },
+    { q: "Glutamate decarboxylase converts glutamate to:", options: ["GABA", "Acetylcholine", "Dopamine", "Glycine"], answer: 0, explanation: "Glutamate decarboxylase forms GABA from glutamate." },
+    { q: "Tetrodotoxin blocks:", options: ["Voltage-gated Na+ channels", "Voltage-gated K+ channels", "ACh receptors", "GABA receptors"], answer: 0, explanation: "TTX inhibits voltage-gated Na+ channels." },
+    { q: "Tetraethylammonium affects:", options: ["Na+ channels", "K+ channels", "Cl- channels", "Ca2+ channels"], answer: 1, explanation: "TEA blocks voltage-gated K+ channels." },
+    { q: "Primary hyperkalemic paralysis is related to:", options: ["High K+", "Low Na+", "High Ca2+", "Low Cl-"], answer: 0, explanation: "Excess potassium can lead to periodic paralysis." },
+    { q: "Hypokalemia can cause:", options: ["Muscle weakness", "Hyperexcitability", "ACh accumulation", "GABA deficiency"], answer: 0, explanation: "Low potassium impairs action potentials, causing weakness." },
+    { q: "Hypocalcemia leads to:", options: ["Tetany", "Paralysis", "Drowsiness", "Excess EPSP"], answer: 0, explanation: "Low calcium increases excitability, causing tetany." },
+    { q: "Hypercalcemia can cause:", options: ["Depression of nervous system", "Tetany", "Muscle spasm", "Acidosis"], answer: 0, explanation: "High calcium decreases excitability, causing CNS depression." },
+    { q: "ACh vesicles originate from:", options: ["Postsynaptic membrane", "Neuron soma via axoplasmic flow", "Muscle fiber", "Glial cells"], answer: 1, explanation: "ACh vesicles are transported from soma to terminal." },
+    { q: "End Plate Potential is graded:", options: ["True", "False"], answer: 0, explanation: "EPP is graded and local." },
+    { q: "EPSP is propagating action potential:", options: ["True", "False"], answer: 1, explanation: "EPSP is non-propagating and summative." },
+    { q: "Nicotinic receptors are ligand-gated channels:", options: ["True", "False"], answer: 0, explanation: "They open in response to ligand binding." }
+];
+
+// 10 True/False questions
+const tfData = [
+    { q: "Myasthenia gravis affects neuromuscular junction.", answer: true, explanation: "It is an autoimmune disease targeting ACh receptors." },
+    { q: "Electrical synapses are slower than chemical synapses.", answer: false, explanation: "Electrical synapses are faster due to direct current flow." },
+    { q: "GABA causes excitatory postsynaptic potentials.", answer: false, explanation: "GABA causes inhibitory potentials (IPSP)." },
+    { q: "Acetylcholine is degraded by acetylcholinesterase.", answer: true, explanation: "AChE breaks down acetylcholine in the synaptic cleft." },
+    { q: "End Plate Potential is a propagating action potential.", answer: false, explanation: "EPP is local and non-propagating." },
+    { q: "Tetrodotoxin blocks voltage-gated Na+ channels.", answer: true, explanation: "TTX prevents action potentials by blocking Na+ channels." },
+    { q: "Hyperkalemia can cause muscle paralysis.", answer: true, explanation: "Excess K+ impairs normal excitability of muscle." },
+    { q: "Nicotinic receptors are ligand-gated ion channels.", answer: true, explanation: "They open in response to ACh or nicotine binding." },
+    { q: "Glutamate is a precursor for GABA synthesis.", answer: true, explanation: "Glutamate decarboxylase converts glutamate to GABA." },
+    { q: "Acetylcholine is synthesized in the postsynaptic membrane.", answer: false, explanation: "ACh is synthesized in the presynaptic terminal." }
+];
+
+let score = 0;
+let totalQuestions = mcqData.length + tfData.length;
+
+function createQuiz(containerId, data, isTF=false) {
+    const container = document.getElementById(containerId);
+    data.forEach((qData, index) => {
+        const div = document.createElement("div");
+        div.classList.add("question");
+        let optionsHTML = '';
+        if(isTF) {
+            optionsHTML = `<button onclick="checkTFAnswer(${index},true,this)">${"True"}</button>
+                           <button onclick="checkTFAnswer(${index},false,this)">${"False"}</button>`;
+        } else {
+            qData.options.forEach((opt, i) => {
+                optionsHTML += `<button onclick="checkMCQAnswer(${index},${i}, this)">${opt}</button>`;
+            });
+        }
+        div.innerHTML = `<strong>Q${index+1}:</strong> ${qData.q}<div class="options">${optionsHTML}</div><div class="explanation" id="${containerId}-exp${index}" style="display:none;"></div>`;
+        container.appendChild(div);
+    });
+}
+
+function checkMCQAnswer(qIndex, optIndex, btn) {
+    const expDiv = document.getElementById("mcq-container-exp" + qIndex);
+    const qData = mcqData[qIndex];
+    if (qData.answer === optIndex) {
+        btn.style.backgroundColor = "#2ecc71";
+        expDiv.style.color = "#27ae60";
+        score++;
+    } else {
+        btn.style.backgroundColor = "#e74c3c";
+        expDiv.style.color = "#c0392b";
+    }
+    expDiv.style.display = "block";
+    expDiv.innerHTML = qData.explanation;
+    updateScore();
+}
+
+function checkTFAnswer(qIndex, selected, btn) {
+    const expDiv = document.getElementById("tf-container-exp" + qIndex);
+    const qData = tfData[qIndex];
+    if (qData.answer === selected) {
+        btn.style.backgroundColor = "#2ecc71";
+        expDiv.style.color = "#27ae60";
+        score++;
+    } else {
+        btn.style.backgroundColor = "#e74c3c";
+        expDiv.style.color = "#c0392b";
+    }
+    expDiv.style.display = "block";
+    expDiv.innerHTML = qData.explanation;
+    updateScore();
+}
+
+function updateScore() {
+    document.getElementById("score").innerHTML = `Score: ${((score / totalQuestions) * 100).toFixed(2)}%`;
+}
+
+// Load quizzes
+createQuiz("mcq-container", mcqData);
+createQuiz("tf-container", tfData, true);
+</script>
+
+</body>
+</html>
