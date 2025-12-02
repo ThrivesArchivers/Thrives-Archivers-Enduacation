@@ -68,6 +68,18 @@
     0% { transform: translateY(0); }
     100% { transform: translateY(-5px); }
   }
+  /* Notification Banner */
+  .notification {
+    background: linear-gradient(90deg,#ffe9b5,#ffd1a3);
+    color: #333;
+    padding: 12px 18px;
+    border-radius: 8px;
+    margin: 18px auto;
+    max-width: 1200px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    font-weight: bold;
+    text-align: center;
+  }
   /* Modal */
   .modal { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); }
   .modal-content { background-color: #fff; margin: 5% auto; width: 90%; max-width: 800px; border-radius: 10px; overflow: hidden; position: relative; }
@@ -80,6 +92,12 @@
   <img src="file_0000000009d461f89d0cb3387f0b7000.png" alt="Header Image">
   <h1>Thrives Archivers Course Access</h1>
 </header>
+
+<!-- Notification added on top as requested -->
+<div class="notification">
+  Prepare with us: Biochemistry test one. Check the Biochemistry section below.
+</div>
+
 <div class="container">
   <div class="course-grid">
 
@@ -118,7 +136,7 @@
         </li>
         <li>
           <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1fzbshqzmDM2Rtb8gmT2MsEXJIUV6RxeH/preview')">📄 Anatomy of a Hand</a>
-         <a class="take-quiz-btn" onclick="accessContent('https://www.youtube.com/embed/zyl6eoU-3Rg?si=F8LrmHKYG1OyXV1q')">🎥 Video</a>
+          <a class="take-quiz-btn" onclick="accessContent('https://www.youtube.com/embed/zyl6eoU-3Rg?si=F8LrmHKYG1OyXV1q')">🎥 Video</a>
           <a class="take-quiz-btn" onclick="accessContent('Gross6.html')">📝 Quiz</a>
         </li>
       </ul>
@@ -129,27 +147,25 @@
       <strong>Histology</strong>
       <ul>
         <li><a class="doc-link" onclick="accessContent('Histology1.html')">📄 Histology Notes</a></li>
-    <a class="take-quiz-btn" onclick="accessContent('Historogy1.html')">📝 Cell structure and Cell Division Quiz</a>
+        <a class="take-quiz-btn" onclick="accessContent('Historogy1.html')">📝 Cell structure and Cell Division Quiz</a>
         <a class="take-quiz-btn" onclick="accessContent('Historogy2.html')">📝 Epithelial tissues Quiz</a>
         <a class="take-quiz-btn" onclick="accessContent('Historogy3.html')">📝 Anatomy of a skin Quiz</a>
         <a class="take-quiz-btn" onclick="accessContent('Historogy4.html')">📝 Connective tissues Quiz</a>	
         <a class="take-quiz-btn" onclick="accessContent('Historogy5.html')">📝 Muscle tissues Quiz</a>
         <a class="take-quiz-btn" onclick="accessContent('Historogy6.html')">📝 Blood Introductions Quiz</a>
-  
       </ul>
     </div>
 
     <!-- Physiology -->
-
-    <!-- Physiology -->
     <div class="course-card">
-    <h3>PHYSIOLOGY</h3>
-      <li>
-  <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1nvVcXkV2-Cgf-j4rKYQI9pyNL0yt2CK2/preview')">
-    📄 INTRODUCTIONS TO PHYSIOLOGY (Thrives Tutor)
-  </a>
-   <a class="take-quiz-btn" onclick="accessContent('Physiology1.html')">📝 Quiz</a>
-</li>
+      <h3>PHYSIOLOGY</h3>
+      <ul>
+        <li>
+          <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1nvVcXkV2-Cgf-j4rKYQI9pyNL0yt2CK2/preview')">
+            📄 INTRODUCTIONS TO PHYSIOLOGY (Thrives Tutor)
+          </a>
+          <a class="take-quiz-btn" onclick="accessContent('Physiology1.html')">📝 Quiz</a>
+        </li>
       </ul>
       <strong>Cardiovascular System</strong>
       <ul>
@@ -200,6 +216,39 @@
         <li>
           <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1mbMetabolismDoc/preview')">📄 Metabolism Notes</a>
           <a class="take-quiz-btn" onclick="accessContent('Biochem2.html')">📝 Quiz</a>
+        </li>
+      </ul>
+
+      <!-- New: Biochemistry test 1 preparation -->
+      <strong>Biochemistry test 1 preparation</strong>
+      <ul>
+        <!-- 1. MCQS -->
+        <li>
+          <a class="take-quiz-btn" href="Biotest1.htm" target="_blank">📝 Previous tests MCQS (Biotest1.htm)</a>
+        </li>
+
+        <!-- 2. Biochemistry introduction summarized notes + Tutorial sheet 1 solutions -->
+        <li>
+          <div><strong>2a.</strong> <a class="doc-link" onclick="accessContent('Biochem_intro_summary.html')">Biochemistry introduction — Summarized notes</a></div>
+          <div><strong>2b.</strong> <a class="doc-link" onclick="accessContent('Biochem_tutorial1_solutions.html')">Tutorial sheet 1 — Solutions</a></div>
+        </li>
+
+        <!-- 3. Enzymes summary + Tutorial sheet 2 -->
+        <li>
+          <div><strong>3a.</strong> <a class="doc-link" onclick="accessContent('Biochem_enzymes_summary.html')">Summarized notes — Enzymes</a></div>
+          <div><strong>3b.</strong> <a class="doc-link" onclick="accessContent('Biochem_tutorial2.html')">Tutorial sheet 2</a></div>
+        </li>
+
+        <!-- 4. Biogenetics summary + Tutorial sheet 4 solutions -->
+        <li>
+          <div><strong>4a.</strong> <a class="doc-link" onclick="accessContent('Biochem_biogenetics_summary.html')">Summarized notes — Biogenetics</a></div>
+          <div><strong>4b.</strong> <a class="doc-link" onclick="accessContent('Biochem_tutorial4_solutions.html')">Tutorial sheet 4 — Solutions</a></div>
+        </li>
+
+        <!-- 5. Carbohydrate metabolism summary + Tutorial sheet 5 solutions -->
+        <li>
+          <div><strong>5a.</strong> <a class="doc-link" onclick="accessContent('Biochem_carbs_summary.html')">Summarized notes — Carbohydrate metabolism</a></div>
+          <div><strong>5b.</strong> <a class="doc-link" onclick="accessContent('Biochem_tutorial5_solutions.html')">Tutorial sheet 5 — Solutions</a></div>
         </li>
       </ul>
     </div>
