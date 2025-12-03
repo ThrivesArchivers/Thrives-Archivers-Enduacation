@@ -1,0 +1,699 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Biochemistry Test One — Preparation</title>
+
+<style>
+  :root{
+    --bg: #000;
+    --panel-bg: rgba(0,0,0,0.55);
+    --muted: rgba(255,255,255,0.12);
+    --accent: #7ee787;
+    --danger: #ff6b6b;
+    --card: rgba(255,255,255,0.06);
+    --text: #fff;
+    --max-w: 1000px;
+  }
+
+  html,body{height:100%;margin:0;padding:0;font-family:system-ui,Arial,Helvetica,sans-serif;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased;}
+  #bg{position:fixed;inset:0;z-index:-1;background:#000;}
+  .container{max-width:var(--max-w);margin:24px auto;padding:22px;background:var(--panel-bg);border-radius:14px;backdrop-filter:blur(6px);box-shadow:0 6px 20px rgba(0,0,0,0.6);}
+  header h1{margin:0 0 6px;text-align:center;font-size:1.8rem;}
+  header h2{margin:0 0 18px;text-align:center;font-weight:500;color:rgba(255,255,255,0.85);font-size:1rem;}
+  .intro{margin:12px 0 18px;padding:14px;background:var(--muted);border-radius:10px;color:var(--text);line-height:1.4;}
+  .controls{display:flex;gap:8px;align-items:center;justify-content:center;margin-bottom:12px;flex-wrap:wrap;}
+  button{background:transparent;border:1px solid rgba(255,255,255,0.12);color:var(--text);padding:10px 14px;border-radius:8px;cursor:pointer;}
+  button:focus{outline:3px solid rgba(124, 200, 255, 0.18);outline-offset:3px;}
+  button.primary{border-color:var(--accent);background:linear-gradient(90deg,rgba(126,231,135,0.06),transparent);}
+
+  .card{background:var(--card);padding:16px;margin:16px 0;border-radius:12px;}
+  .q{font-weight:700;font-size:1.05rem;margin-bottom:8px;}
+  fieldset{border:0;padding:0;margin:0;}
+  label{display:block;margin:8px 0;padding:10px;border-radius:8px;cursor:pointer;border:1px solid transparent;}
+  input[type="radio"]{margin-right:10px;}
+  label[aria-checked="true"]{background:rgba(126,231,135,0.06);border-color:rgba(126,231,135,0.18);}
+  .result{margin-top:10px;padding:10px;border-radius:8px;display:none;}
+  .result.correct{background:rgba(0,200,80,0.12);border-left:4px solid rgba(0,200,80,0.9);}
+  .result.wrong{background:rgba(255,60,60,0.08);border-left:4px solid rgba(255,60,60,0.9);}
+  .explain{margin-top:8px;padding:10px;background:rgba(255,255,255,0.06);border-radius:8px;display:none;color:rgba(255,255,255,0.92);}
+
+  .summary{padding:12px;margin-top:10px;border-radius:10px;background:linear-gradient(90deg,rgba(255,255,255,0.02),transparent);display:none;}
+  .summary .score{font-weight:700;font-size:1.2rem;margin-bottom:6px;}
+  .meta{font-size:0.92rem;color:rgba(255,255,255,0.78);}
+
+  /* accessibility / focus */
+  label:focus-within{outline:3px solid rgba(124, 200, 255, 0.12);outline-offset:2px;border-radius:8px;}
+  @media (max-width:520px){
+    .container{margin:18px;padding:16px;}
+  }
+
+  /* reduce motion preference */
+  @media (prefers-reduced-motion: reduce){
+    #bg{display:none;}
+  }
+</style>
+</head>
+
+<body>
+<canvas id="bg" role="img" aria-label="Animated particle background"></canvas>
+
+<div class="container" role="main">
+  <header>
+    <h1>Biochemistry Test One — Preparation</h1>
+    <h2>Prepared by Doc Kape</h2>
+  </header>
+
+  <div class="intro" id="intro">
+    “This quiz is meant to boost your confidence and help you prepare for Biochemistry Test 1 without difficulty. Let us all thrive together and achieve together.”
+  </div>
+
+  <div class="controls" role="region" aria-label="Quiz controls">
+    <button id="resetBtn">Reset answers</button>
+    <button id="scoreBtn" class="primary">Show score</button>
+  </div>
+
+  <section id="quiz" aria-live="polite">
+    <!-- Questions will be generated here -->
+  </section>
+
+  <div id="summary" class="summary" aria-live="polite">
+    <div class="score" id="scoreText"></div>
+    <div class="meta" id="metaText"></div>
+  </div>
+</div>
+
+<script>
+/* ---------- Particle background (responsive & respectful) ---------- */
+(function(){
+  const canvas = document.getElementById('bg');
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+  const DPR = Math.max(1, window.devicePixelRatio || 1);
+
+  function resize() {
+    canvas.width = innerWidth * DPR;
+    canvas.height = innerHeight * DPR;
+    canvas.style.width = innerWidth + 'px';
+    canvas.style.height = innerHeight + 'px';
+    ctx.scale(DPR, DPR);
+
+    // adjust particle count by screen size
+    const count = Math.max(20, Math.min(120, Math.floor((innerWidth*innerHeight)/80000)));
+    particles.length = 0;
+    for (let i = 0; i < count; i++) {
+      particles.push({
+        x: Math.random()*innerWidth,
+        y: Math.random()*innerHeight,
+        r: Math.random()*3+0.6,
+        dx: (Math.random()-0.5)*0.6,
+        dy: (Math.random()-0.5)*0.6,
+        color: `hsl(${Math.random()*360},70%,60%)`
+      });
+    }
+  }
+
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    canvas.style.display = 'none';
+    return;
+  }
+
+  function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles.forEach(p=>{
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fillStyle = p.color;
+      ctx.fill();
+      p.x += p.dx; p.y += p.dy;
+      if (p.x < -10) p.x = innerWidth + 10;
+      if (p.x > innerWidth + 10) p.x = -10;
+      if (p.y < -10) p.y = innerHeight + 10;
+      if (p.y > innerHeight + 10) p.y = -10;
+    });
+    requestAnimationFrame(animate);
+  }
+
+  window.addEventListener('resize', resize, {passive:true});
+  resize();
+  animate();
+})();
+
+/* ---------- Quiz data & rendering ---------- */
+/* Existing core questions (kept) plus Acid-Base Balance (10), Enzymology (10), and additional protein/metabolism questions added.
+   Each question object:
+   { id, question, choices: [...], answer: "...", explanation: "..." }
+*/
+const questions = [
+  // kept original/earlier items (IDs 1-45) - shortened core set to avoid duplication
+  {
+    id: 1,
+    question: "Which of the following amino acids is aromatic?",
+    choices: ["Lysine", "Phenylalanine", "Alanine", "Arginine"],
+    answer: "Phenylalanine",
+    explanation: "Phenylalanine contains a benzyl side chain and is aromatic."
+  },
+  {
+    id: 2,
+    question: "What is the primary structure of a protein?",
+    choices: ["3D folded shape", "Sequence of amino acids", "Interaction with other proteins", "Phosphorylation status"],
+    answer: "Sequence of amino acids",
+    explanation: "Primary structure is the linear sequence of amino acids linked by peptide bonds."
+  },
+  {
+    id: 3,
+    question: "Which bond is primarily responsible for secondary structure formation (alpha helix, beta sheet)?",
+    choices: ["Peptide bond", "Hydrogen bond", "Disulfide bond", "Ionic bond"],
+    answer: "Hydrogen bond",
+    explanation: "Hydrogen bonds between backbone amide and carbonyl groups stabilize α-helices and β-sheets."
+  },
+  {
+    id: 4,
+    question: "Which nucleotide pair is held together by three hydrogen bonds?",
+    choices: ["A — T", "A — U", "G — C", "C — U"],
+    answer: "G — C",
+    explanation: "Guanine–cytosine base pairs form three H-bonds; A–T/A–U form two."
+  },
+  {
+    id: 5,
+    question: "The enzyme that synthesizes DNA from an RNA primer (in bacteria) is:",
+    choices: ["DNA polymerase I", "DNA primase", "DNA ligase", "DNA polymerase III"],
+    answer: "DNA polymerase III",
+    explanation: "In bacteria, DNA pol III does bulk DNA synthesis using RNA primers provided by primase."
+  },
+
+  // Additional earlier set items (a few representative ones)
+  {
+    id: 6,
+    question: "ATP synthase uses which direct energy source to produce ATP?",
+    choices: ["Conversion of glucose to pyruvate", "Oxidation of pyruvate to CO2 and H2O", "A proton gradient across the inner mitochondrial membrane", "Direct energy from NADH oxidation"],
+    answer: "A proton gradient across the inner mitochondrial membrane",
+    explanation: "ATP synthase harnesses the proton-motive force (electrochemical gradient) to synthesize ATP."
+  },
+
+  // ---------------------------------------------------------
+  // New: Acid-Base Balance (10 MCQs) (IDs 46-55)
+  // ---------------------------------------------------------
+  {
+    id: 46,
+    question: "The pH of a solution is a measure of:",
+    choices: ["The concentration of hydrogen ions", "The concentration of hydroxyl ions", "The total number of ions", "The concentration of water molecules"],
+    answer: "The concentration of hydrogen ions",
+    explanation: "pH is defined as the negative logarithm of the hydrogen ion concentration."
+  },
+  {
+    id: 47,
+    question: "Which buffer system is the primary extracellular buffer in the human body?",
+    choices: ["Phosphate buffer", "Protein buffer", "Bicarbonate buffer", "Hemoglobin buffer"],
+    answer: "Bicarbonate buffer",
+    explanation: "Bicarbonate/CO2 is the main extracellular buffering system, tightly linked to respiration."
+  },
+  {
+    id: 48,
+    question: "What happens to blood pH when CO2 concentration increases?",
+    choices: ["pH increases", "pH decreases", "pH remains constant", "Depends on bicarbonate concentration"],
+    answer: "pH decreases",
+    explanation: "Increased CO2 shifts the equilibrium toward carbonic acid, increasing H+ and lowering pH (respiratory acidosis)."
+  },
+  {
+    id: 49,
+    question: "The Henderson-Hasselbalch equation relates pH to:",
+    choices: ["Temperature and hydrogen ion concentration", "pKa and the ratio of conjugate base to acid", "Water dissociation constant", "Buffer capacity"],
+    answer: "pKa and the ratio of conjugate base to acid",
+    explanation: "Henderson–Hasselbalch: pH = pKa + log([A-]/[HA]) — it links pH, pKa and conjugate ratio."
+  },
+  {
+    id: 50,
+    question: "The normal arterial blood pH is:",
+    choices: ["6.8–7.0", "7.0–7.2", "7.35–7.45", "7.55–7.65"],
+    answer: "7.35–7.45",
+    explanation: "Normal arterial pH is tightly regulated around 7.35–7.45."
+  },
+  {
+    id: 51,
+    question: "In metabolic acidosis, which compensatory mechanism occurs first?",
+    choices: ["Renal H+ secretion increases", "Respiratory rate increases (hyperventilation)", "Bicarbonate reabsorption decreases", "CO2 retention increases"],
+    answer: "Respiratory rate increases (hyperventilation)",
+    explanation: "Respiratory compensation (hyperventilation) is rapid; renal compensation (increased H+ secretion) is slower."
+  },
+  {
+    id: 52,
+    question: "A buffer works best when:",
+    choices: ["pH = pKa", "pH > pKa + 2", "pH < pKa − 2", "The acid is fully dissociated"],
+    answer: "pH = pKa",
+    explanation: "Buffers are most effective when pH ≈ pKa because they can equally neutralize added acid or base."
+  },
+  {
+    id: 53,
+    question: "Which pair acts as a physiological buffer in erythrocytes?",
+    choices: ["HCO3-/H2CO3", "H2PO4-/HPO4(2-)", "HbH/Hb", "NH4+/NH3"],
+    answer: "HbH/Hb",
+    explanation: "Hemoglobin buffers H+ in erythrocytes (HbH/Hb) and helps transport CO2 as bicarbonate."
+  },
+  {
+    id: 54,
+    question: "Which statement is TRUE about bicarbonate buffering?",
+    choices: ["It cannot buffer fixed acids", "It is linked to respiration via CO2", "It operates only inside cells", "It has no effect on blood pH"],
+    answer: "It is linked to respiration via CO2",
+    explanation: "The bicarbonate buffer is connected with respiration because CO2 levels are controlled by ventilation."
+  },
+  {
+    id: 55,
+    question: "In respiratory alkalosis, what primarily causes the pH change?",
+    choices: ["Increased bicarbonate", "Decreased CO2 due to hyperventilation", "Increased fixed acid", "Loss of bicarbonate through urine"],
+    answer: "Decreased CO2 due to hyperventilation",
+    explanation: "Hyperventilation lowers arterial CO2, reducing H+ and raising blood pH (respiratory alkalosis)."
+  },
+
+  // ---------------------------------------------------------
+  // New: Enzymology (10 MCQs) (IDs 56-65)
+  // ---------------------------------------------------------
+  {
+    id: 56,
+    question: "Enzymes act as catalysts by:",
+    choices: ["Increasing activation energy", "Lowering activation energy", "Changing equilibrium constant", "Increasing ΔG"],
+    answer: "Lowering activation energy",
+    explanation: "Enzymes accelerate reactions by lowering the activation energy; they do not change ΔG or equilibrium."
+  },
+  {
+    id: 57,
+    question: "The active site of an enzyme:",
+    choices: ["Has no specific structure", "Is the site where substrates bind and react", "Is located far from substrate binding region", "Denatures easily at room temperature"],
+    answer: "Is the site where substrates bind and react",
+    explanation: "The active site provides a microenvironment where substrates bind and catalysis occurs."
+  },
+  {
+    id: 58,
+    question: "The lock-and-key model of enzyme action emphasizes:",
+    choices: ["Dynamic fit between enzyme and substrate", "Rigid complementarity between enzyme and substrate", "Structural flexibility", "Induced conformational change"],
+    answer: "Rigid complementarity between enzyme and substrate",
+    explanation: "Lock-and-key posits rigid complementarity; the induced-fit model emphasizes conformational change."
+  },
+  {
+    id: 59,
+    question: "In competitive inhibition, the inhibitor:",
+    choices: ["Binds only to the enzyme-substrate complex", "Binds to a site other than the active site", "Competes with the substrate for the active site", "Decreases Vmax and Km"],
+    answer: "Competes with the substrate for the active site",
+    explanation: "Competitive inhibitors bind the active site and increase apparent Km without changing Vmax."
+  },
+  {
+    id: 60,
+    question: "Which statement about noncompetitive inhibition is true?",
+    choices: ["Vmax decreases, Km unchanged", "Km increases, Vmax unchanged", "Both Vmax and Km decrease", "Only Km decreases"],
+    answer: "Vmax decreases, Km unchanged",
+    explanation: "Noncompetitive inhibitors reduce Vmax but generally do not change Km (affinity of enzyme for substrate)."
+  },
+  {
+    id: 61,
+    question: "The Michaelis constant (Km) is:",
+    choices: ["The substrate concentration giving half Vmax", "The enzyme concentration at maximum velocity", "A measure of enzyme inhibition", "The product concentration at equilibrium"],
+    answer: "The substrate concentration giving half Vmax",
+    explanation: "Km is the [S] at which reaction velocity is 50% of Vmax; it often reflects substrate affinity."
+  },
+  {
+    id: 62,
+    question: "A high Km value indicates:",
+    choices: ["High affinity between enzyme and substrate", "Low affinity between enzyme and substrate", "High enzyme concentration", "High catalytic efficiency"],
+    answer: "Low affinity between enzyme and substrate",
+    explanation: "High Km means more substrate is needed to reach 1/2 Vmax → lower affinity."
+  },
+  {
+    id: 63,
+    question: "The Lineweaver–Burk plot is used to:",
+    choices: ["Determine enzyme molecular weight", "Identify coenzymes", "Calculate Km and Vmax graphically", "Measure enzyme pH optimum"],
+    answer: "Calculate Km and Vmax graphically",
+    explanation: "Lineweaver–Burk (double reciprocal) linearizes Michaelis–Menten data to estimate Km and Vmax."
+  },
+  {
+    id: 64,
+    question: "Which of the following is a coenzyme?",
+    choices: ["Mg2+", "NAD", "Zn2+", "Fe2+"],
+    answer: "NAD",
+    explanation: "NAD is a coenzyme (organic molecule carrying electrons); Mg2+, Zn2+, Fe2+ are metal cofactors."
+  },
+  {
+    id: 65,
+    question: "Enzyme activity is usually expressed in:",
+    choices: ["Moles per second", "Units or katal", "Molar concentration per liter", "Grams per mole"],
+    answer: "Units or katal",
+    explanation: "Enzyme activity is commonly given in units (µmol substrate converted/min) or SI katal (mol/s)."
+  },
+
+  // ---------------------------------------------------------
+  // Additional Protein / Amino-Acid / Metabolism Questions (IDs 66-95)
+  // (selected/cleaned from your list)
+  // ---------------------------------------------------------
+  {
+    id: 66,
+    question: "Which one of the following statements concerning glutamine is correct?",
+    choices: ["Contains an amide group", "Has Glu as its three-letter abbreviation", "Classified as an acidic amino acid", "Has a charged polar side chain", "Doesn't have a chiral carbon"],
+    answer: "Contains an amide group",
+    explanation: "Glutamine has an amide functional group on its side chain; three-letter code is Gln not Glu."
+  },
+  {
+    id: 67,
+    question: "Succinate dehydrogenase catalyzes conversion of succinate to fumarate. Malonate inhibits this enzyme. What type of inhibition is malonate?",
+    choices: ["Competitive", "Uncompetitive", "Non-competitive", "Feedback", "Allosteric"],
+    answer: "Competitive",
+    explanation: "Malonate is a structural analogue of succinate and competes for the active site (competitive inhibitor)."
+  },
+  {
+    id: 68,
+    question: "Alkaptonuria is associated with a defect in catabolism of which amino acid?",
+    choices: ["Proline", "Methionine", "Phenylalanine", "Histidine", "Valine"],
+    answer: "Phenylalanine",
+    explanation: "Alkaptonuria results from homogentisic acid oxidase deficiency in the tyrosine/phenylalanine degradative pathway."
+  },
+  {
+    id: 69,
+    question: "An amino acid that yields acetoacetyl‑CoA during catabolism is called:",
+    choices: ["Ketogenic", "Hydrophobic", "Polar", "Polar and hydrophobic", "Aromatic"],
+    answer: "Ketogenic",
+    explanation: "Amino acids that produce acetyl-CoA or acetoacetyl-CoA are ketogenic (e.g., leucine, lysine)."
+  },
+  {
+    id: 70,
+    question: "Which amino acid contains an imidazole ring?",
+    choices: ["Tyrosine", "Phenylalanine", "Histidine", "Proline", "Tryptophan"],
+    answer: "Histidine",
+    explanation: "Histidine has an imidazole side chain and can act as a proton donor/acceptor in enzyme active sites."
+  },
+  {
+    id: 71,
+    question: "Which LDH isoenzyme predominates in serum in the first two days after an acute myocardial infarction?",
+    choices: ["LDH1", "LDH2", "LDH3", "LDH4", "LDH5"],
+    answer: "LDH1",
+    explanation: "LDH1 (heart isoenzyme) rises early in myocardial infarction and predominates in early serum changes."
+  },
+  {
+    id: 72,
+    question: "A chiral carbon of an amino acid arises from the fact that it:",
+    choices: ["Is symmetric", "Is bonded to both amino and carboxylic groups", "Is bonded to four different chemical groups", "Has a net charge of zero", "Assumes an L configuration"],
+    answer: "Is bonded to four different chemical groups",
+    explanation: "A chiral (stereogenic) carbon is bonded to four distinct substituents, creating optical isomerism."
+  },
+  {
+    id: 73,
+    question: "Which bond supports the primary structure of proteins?",
+    choices: ["Ionic", "Peptide", "Hydrogen", "Hydrophilic", "Hydrophobic"],
+    answer: "Peptide",
+    explanation: "Primary structure is formed by covalent peptide bonds linking amino acids."
+  },
+  {
+    id: 74,
+    question: "The normal adult hemoglobin has two identical α and two identical β polypeptide chains. This level of structure is called:",
+    choices: ["Primary", "Secondary", "Quaternary", "Tertiary", "Binary"],
+    answer: "Quaternary",
+    explanation: "Quaternary structure describes the arrangement of multiple polypeptide subunits."
+  },
+  {
+    id: 75,
+    question: "Electrophoretic separation of plasma proteins relies primarily on which physiochemical property?",
+    choices: ["Inability to denature", "Presence of charge", "Optical activity", "Solubility", "Viscosity"],
+    answer: "Presence of charge",
+    explanation: "Electrophoresis separates proteins based on net charge (and size) under an electric field."
+  },
+  {
+    id: 76,
+    question: "Which amino acid is a major gluconeogenic substrate sent to the liver during fasting?",
+    choices: ["Alanine", "Glycine", "Cysteine", "Pyruvate", "Tryptophan"],
+    answer: "Alanine",
+    explanation: "Alanine is transported from muscle to liver and converted to pyruvate for gluconeogenesis."
+  },
+  {
+    id: 77,
+    question: "Which amino acid is involved in producing glutathione (a key antioxidant)?",
+    choices: ["Glutamine", "Glutamate", "Proline", "Ornithine", "Arginine"],
+    answer: "Glutamate",
+    explanation: "Glutathione is a tripeptide of glutamate, cysteine and glycine (glutamate provides the γ‑glutamyl linkage)."
+  },
+  {
+    id: 78,
+    question: "A serine side chain is normally phosphorylated to regulate activity. Which substitution would most likely permanently disrupt normal regulation?",
+    choices: ["Serine → Glutamic acid", "Serine → Threonine", "Serine → Tyrosine", "Serine → Lysine", "Serine → Leucine"],
+    answer: "Serine → Leucine",
+    explanation: "Leucine cannot be phosphorylated and is structurally very different; substitution to Glu may mimic phosphorylation in some contexts but Leu removes the regulatory site."
+  },
+  {
+    id: 79,
+    question: "Which amino acids produce sulfuric acid (non-volatile acid) upon metabolism?",
+    choices: ["Cysteine and Isoleucine", "Cysteine and Alanine", "Cysteine and Methionine", "Methionine and Isoleucine", "Isoleucine and Alanine"],
+    answer: "Cysteine and Methionine",
+    explanation: "Cysteine and methionine contain sulfur and yield sulfuric acid upon catabolism contributing to nonvolatile acid load."
+  },
+  {
+    id: 80,
+    question: "Transmembrane protein regions within the plasma membrane are most likely enriched in:",
+    choices: ["Acidic residues", "Basic residues", "Hydrophobic residues", "Glycosylated residues", "Acetylated residues"],
+    answer: "Hydrophobic residues",
+    explanation: "Transmembrane spans are composed largely of hydrophobic amino acids that interact with lipid tails."
+  },
+  {
+    id: 81,
+    question: "Which property indicates that isoenzymes isolated were from the same tissue?",
+    choices: ["Same physicochemical properties", "Catalysis of same reaction", "Same electrophoretic mobility", "Tissue localization", "Same molecular weight"],
+    answer: "Catalysis of same reaction",
+    explanation: "Isoenzymes catalyze the same reaction but differ in structure; shared catalytic function indicates isoenzyme identity even if other properties vary."
+  },
+  {
+    id: 82,
+    question: "Which factor can influence the charge of amino acid residues in an enzyme active site?",
+    choices: ["Competitive inhibitor", "Excess substrate", "pH of the medium", "Temperature", "Atmospheric pressure"],
+    answer: "pH of the medium",
+    explanation: "pH affects protonation states of ionizable side chains and thus their charge and catalytic properties."
+  },
+  {
+    id: 83,
+    question: "Most common form of regulation in feedback inhibition of enzyme catalysis is:",
+    choices: ["Covalent modification", "Allosteric regulation", "Proteolysis", "Carboxylation", "Hydroxylation"],
+    answer: "Allosteric regulation",
+    explanation: "Allosteric regulation (binding at regulatory sites) is a common rapid mechanism for feedback control of metabolic enzymes."
+  },
+  {
+    id: 84,
+    question: "Which is an example of a secondary structure element?",
+    choices: ["Peptide bonding between amino acids", "Hydrophobic interactions", "Hydrogen bonding between R groups", "Disulfide bonds", "Hydrogen bonding between amine and carbonyl groups"],
+    answer: "Hydrogen bonding between amine and carbonyl groups",
+    explanation: "Secondary structures (α-helix, β-sheet) are stabilized by backbone hydrogen bonds between amide and carbonyl groups."
+  },
+  {
+    id: 85,
+    question: "Which level of protein structure is determined primarily by hydrogen bonds?",
+    choices: ["Primary", "Tertiary", "Secondary", "Quaternary", "None"],
+    answer: "Secondary",
+    explanation: "Secondary structure (α-helix, β-sheet) is stabilized mainly by hydrogen bonds in the peptide backbone."
+  },
+  {
+    id: 86,
+    question: "Glycosylated hemoglobin (HbA1c) results from glycation of which globin chains?",
+    choices: ["γ-globin chains", "α-globin chains", "β-globin chains", "δ-globin chains", "Both α and β-globin chains"],
+    answer: "β-globin chains",
+    explanation: "Hemoglobin A1c formation involves non-enzymatic glycation primarily of β‑chains at N‑terminal valine residues."
+  },
+  {
+    id: 87,
+    question: "Hemoglobin C disease arises from:",
+    choices: ["Substitution of lysine for glutamic acid in β-chain", "Substitution of glutamic acid for lysine in β-chain", "Substitution of valine for glutamic acid in β-chain", "Substitution of a polar by nonpolar in β-chain", "Substitution of an α with β chain"],
+    answer: "Substitution of lysine for glutamic acid in β-chain",
+    explanation: "Hb C results from glutamic acid → lysine substitution at position 6 of the β chain (E6K)."
+  },
+  {
+    id: 88,
+    question: "Thalassemias are best described as:",
+    choices: ["Hereditary hemolytic diseases with imbalance in globin chain synthesis", "Polygenic disorders", "Affect only α-globin chains", "Not hemoglobinopathies", "Only γ-chain disorders"],
+    answer: "Hereditary hemolytic diseases with imbalance in globin chain synthesis",
+    explanation: "Thalassemias are inherited disorders causing reduced synthesis of one or more globin chains, leading to anemia."
+  },
+  {
+    id: 89,
+    question: "Which two amino acids in collagen typically undergo post-translational modification (hydroxylation)?",
+    choices: ["Lysine and Histidine", "Glycine and Alanine", "Valine and Isoleucine", "Lysine and Proline", "Leucine and Glutamic acid"],
+    answer: "Lysine and Proline",
+    explanation: "Proline and lysine residues are hydroxylated during collagen maturation; hydroxylation is required for cross-linking and stability."
+  },
+  {
+    id: 90,
+    question: "Lack of post-translational modification in collagen leading to defective crosslinking causes:",
+    choices: ["Sickle cell anemia", "Pernicious anemia", "Scurvy", "Phenylketonuria", "Hemosiderosis"],
+    answer: "Scurvy",
+    explanation: "Vitamin C deficiency impairs prolyl/lysyl hydroxylases, reducing collagen crosslinking and causing scurvy."
+  },
+  {
+    id: 91,
+    question: "What specifies a protein's three-dimensional shape?",
+    choices: ["Peptide bond", "Amino acid sequence", "Interaction with other polypeptides", "Molecular chaperones", "Interaction with water"],
+    answer: "Amino acid sequence",
+    explanation: "Protein folding is primarily determined by primary sequence (Anfinsen's dogma), though chaperones assist folding in vivo."
+  },
+  {
+    id: 92,
+    question: "Which plasma protein is most abundant in blood?",
+    choices: ["Globulins", "Albumin", "Fibrinogen", "Prothrombin", "Thrombin"],
+    answer: "Albumin",
+    explanation: "Albumin is the most abundant plasma protein and maintains oncotic pressure and transports many molecules."
+  },
+  {
+    id: 93,
+    question: "Primary function of albumin in plasma is:",
+    choices: ["Blood clotting", "Transport of lipids", "Maintaining osmotic pressure", "Antibody production", "Transport of carbohydrates"],
+    answer: "Maintaining osmotic pressure",
+    explanation: "Albumin contributes most to plasma oncotic (colloid osmotic) pressure and serves as a carrier protein."
+  },
+  {
+    id: 94,
+    question: "Which plasma protein is directly involved in blood clotting?",
+    choices: ["Albumin", "Globulins", "Fibrinogen", "Complement", "C-reactive protein"],
+    answer: "Fibrinogen",
+    explanation: "Fibrinogen is cleaved to fibrin during the clotting cascade to form the clot matrix."
+  },
+  {
+    id: 95,
+    question: "Which plasma protein is produced primarily by the liver?",
+    choices: ["Immunoglobulins", "Fibrinogen", "Albumin", "Complement", "Thrombin"],
+    answer: "Albumin",
+    explanation: "Albumin and many plasma proteins (including fibrinogen, most complements) are synthesized in the liver; immunoglobulins are produced by plasma cells."
+  }
+];
+
+const quizEl = document.getElementById('quiz');
+const summaryEl = document.getElementById('summary');
+const scoreText = document.getElementById('scoreText');
+const metaText = document.getElementById('metaText');
+
+function createQuestionCard(q) {
+  const card = document.createElement('article');
+  card.className = 'card';
+  card.id = 'q' + q.id;
+  card.setAttribute('aria-labelledby', `q${q.id}-label`);
+
+  const qlabel = document.createElement('div');
+  qlabel.className = 'q';
+  qlabel.id = `q${q.id}-label`;
+  qlabel.textContent = q.id + '. ' + q.question;
+  card.appendChild(qlabel);
+
+  const fieldset = document.createElement('fieldset');
+  fieldset.setAttribute('role','radiogroup');
+  fieldset.setAttribute('aria-label', q.question);
+
+  q.choices.forEach((choice, idx) => {
+    const id = `q${q.id}-opt${idx}`;
+    const label = document.createElement('label');
+    label.setAttribute('for', id);
+    label.tabIndex = 0;
+    label.setAttribute('aria-checked', 'false');
+
+    const input = document.createElement('input');
+    input.type = 'radio';
+    input.name = 'q' + q.id;
+    input.id = id;
+    input.value = choice;
+    input.addEventListener('change', () => {
+      // update aria-checked for labels
+      const labels = fieldset.querySelectorAll('label');
+      labels.forEach(l=>{
+        const inp = l.querySelector('input');
+        l.setAttribute('aria-checked', (inp && inp.checked) ? 'true' : 'false');
+      });
+      showResult(q.id, input.value);
+    });
+
+    // allow label keyboard activation
+    label.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Enter' || ev.key === ' ') {
+        ev.preventDefault();
+        input.checked = true;
+        input.dispatchEvent(new Event('change'));
+      }
+    });
+
+    label.appendChild(input);
+    const txt = document.createElement('span');
+    txt.textContent = choice;
+    label.appendChild(txt);
+    fieldset.appendChild(label);
+  });
+
+  card.appendChild(fieldset);
+
+  const result = document.createElement('div');
+  result.id = 'result' + q.id;
+  result.className = 'result';
+  result.setAttribute('aria-live', 'polite');
+  card.appendChild(result);
+
+  const explain = document.createElement('div');
+  explain.id = 'explain' + q.id;
+  explain.className = 'explain';
+  explain.textContent = q.explanation || '';
+  card.appendChild(explain);
+
+  return card;
+}
+
+function renderQuiz() {
+  quizEl.innerHTML = '';
+  questions.forEach(q => {
+    quizEl.appendChild(createQuestionCard(q));
+  });
+  summaryEl.style.display = 'none';
+}
+
+function showResult(qNum, picked) {
+  const q = questions.find(x => x.id === qNum);
+  const result = document.getElementById('result' + qNum);
+  const explain = document.getElementById('explain' + qNum);
+  if (!result || !explain) return;
+  result.style.display = 'block';
+  explain.style.display = 'block';
+  if (picked === q.answer) {
+    result.className = 'result correct';
+    result.textContent = 'Correct';
+  } else {
+    result.className = 'result wrong';
+    result.textContent = 'Incorrect — correct answer: ' + q.answer;
+  }
+}
+
+/* Score & reset */
+function calculateScore() {
+  let total = questions.length;
+  let correct = 0;
+  questions.forEach(q=>{
+    const chosen = document.querySelector(`input[name="q${q.id}"]:checked`);
+    if (chosen && chosen.value === q.answer) correct++;
+  });
+  return {correct, total};
+}
+
+document.getElementById('scoreBtn').addEventListener('click', () => {
+  const {correct,total} = calculateScore();
+  scoreText.textContent = `You scored ${correct} / ${total}`;
+  const percent = Math.round((correct/total)*100);
+  metaText.textContent = `Percent: ${percent}% — ${percent >= 70 ? 'Good work!': 'Review the explanations and try again.'}`;
+  summaryEl.style.display = 'block';
+  summaryEl.scrollIntoView({behavior:'smooth', block:'center'});
+});
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  questions.forEach(q=>{
+    const chosen = document.querySelector(`input[name="q${q.id}"]:checked`);
+    if (chosen) chosen.checked = false;
+    const r = document.getElementById('result' + q.id);
+    const e = document.getElementById('explain' + q.id);
+    if (r) { r.style.display = 'none'; r.className = 'result'; r.textContent = ''; }
+    if (e) { e.style.display = 'none'; }
+    // reset aria-checked
+    const labels = document.querySelectorAll(`#q${q.id} label`);
+    labels.forEach(l => l.setAttribute('aria-checked', 'false'));
+  });
+  summaryEl.style.display = 'none';
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+
+/* Initial render */
+renderQuiz();
+</script>
+</body>
+</html>
