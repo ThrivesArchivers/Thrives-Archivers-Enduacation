@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Public Health — Test 2 Preparation</title>
+  <style>
+    :root{
+      --card-bg: rgba(255,255,255,0.95);
+      --accent: #ff6b6b;
+      --accent-2: #4dabf7;
+      --text: #123;
+      --muted: #556;
+      --success: #2b9e5a;
+      --danger: #e63946;
+    }
+    html,body{height:100%;margin:0;font-family:Inter,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--text);background:linear-gradient(135deg,#f8fafc 0%, #f0f7ff 100%);}
+    #particle-canvas{position:fixed;left:0;top:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+    .app{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px;}
+    .card{width:100%;max-width:980px;background:var(--card-bg);border-radius:14px;box-shadow:0 10px 30px rgba(18,30,46,0.12);padding:22px;backdrop-filter: blur(6px);border:1px solid rgba(255,255,255,0.6);}
+    header{display:flex;align-items:center;gap:16px;margin-bottom:12px;}
+    .logo{width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px;}
+    h1{margin:0;font-size:20px}
+    p.lead{margin:0;color:var(--muted);font-size:13px}
+    .progress{display:flex;align-items:center;gap:8px;margin-top:12px}
+    .progressbar{flex:1;height:10px;background:linear-gradient(90deg,#eef2ff,#fff);border-radius:999px;overflow:hidden;border:1px solid rgba(0,0,0,0.04)}
+    .progressbar > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));width:0%;}
+    .q-card{padding:16px;border-radius:10px;border:1px solid rgba(0,0,0,0.04);background:linear-gradient(180deg,rgba(255,255,255,0.6),rgba(255,255,255,0.9));}
+    .q-text{font-weight:600;margin-bottom:10px}
+    .options{display:flex;flex-direction:column;gap:8px}
+    .option{display:flex;align-items:center;gap:12px;padding:10px;border-radius:8px;border:1px solid rgba(0,0,0,0.06);cursor:pointer;background:white;transition:transform .08s,box-shadow .08s;}
+    .option:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(20,30,50,0.06)}
+    input[type="radio"]{accent-color:var(--accent-2);width:18px;height:18px}
+    .controls{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:14px}
+    button{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;padding:10px 14px;border-radius:10px;border:none;cursor:pointer;font-weight:600;box-shadow:0 8px 20px rgba(79,70,229,0.08);}
+    button.ghost{background:transparent;color:var(--muted);border:1px solid rgba(0,0,0,0.06);box-shadow:none;}
+    .feedback{margin-top:12px;padding:12px;border-radius:8px;font-size:14px}
+    .feedback.correct{background:rgba(43,158,90,0.08);border:1px solid rgba(43,158,90,0.12);color:var(--success)}
+    .feedback.wrong{background:rgba(230,57,70,0.06);border:1px solid rgba(230,57,70,0.12);color:var(--danger)}
+    .explain{margin-top:8px;color:var(--muted);font-size:13px}
+    footer{margin-top:16px;display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:13px}
+    .score{font-weight:700;color:var(--accent-2)}
+    @media (max-width:640px){.card{padding:16px}.logo{width:52px;height:52px}}
+  </style>
+</head>
+<body>
+  <canvas id="particle-canvas"></canvas>
+  <div class="app">
+    <div class="card" role="main" aria-labelledby="title">
+      <header>
+        <div class="logo">PH</div>
+        <div>
+          <h1 id="title">Public Health — Test 1 Preparation</h1>
+          <p class="lead">30 questions · Immediate feedback · Covers definitions, prevention levels, core functions and public health approach</p>
+        </div>
+      </header>
+
+      <div class="progress" aria-hidden="true">
+        <div style="font-size:13px;color:var(--muted)"><span id="qcount">1</span>/30</div>
+        <div class="progressbar" aria-hidden="true"><i id="progress-fill" style="width:3.33%"></i></div>
+        <div style="font-size:13px;color:var(--muted)">Score: <span id="live-score">0</span></div>
+      </div>
+
+      <div class="question-area" id="quiz"></div>
+
+      <footer>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button id="prevBtn" class="ghost" disabled>Previous</button>
+          <button id="nextBtn">Next</button>
+        </div>
+        <div class="score" id="finalHint">Progress the quiz to see your final score.</div>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    // 30 questions based on the supplied public health content
+    const questions = [
+      { q: "Which of the following definitions best captures Public Health (Winslow, 1920)?",
+        opts: ["The art and science of preventing disease, prolonging life, and promoting health through organized community effort", "Individual clinical care to cure disease", "The study of hospital management only", "A branch of medicine focused solely on surgery"],
+        a: 0,
+        exp: "Winslow defined public health as the art and science of preventing disease, prolonging life, and promoting health through organized community efforts."
+      },
+      { q: "Which 3 Ps summarize core aims of public health as presented in the slides?",
+        opts: ["Prevention, Promotion, Prolonging life", "Policy, Profit, Practice", "Prescription, Procedure, Prognosis", "Population, Primary care, Pharmacy"],
+        a: 0,
+        exp: "The 3 Ps are Prevention of illness, Promoting good health, and Prolonging life through organized societal efforts."
+      },
+      { q: "Which additional two Ps (to make 5 Ps) are included in the expanded public health framework?",
+        opts: ["Protection and Preparedness", "Profit and Productivity", "Pharmacology and Pathology", "Procedures and Protocols"],
+        a: 0,
+        exp: "The expanded 5 Ps include Prevention, Promotion, Protection, Population-based, and Preparedness."
+      },
+      { q: "Public health primarily concerns the health of which groups?",
+        opts: ["Whole populations, communities, families and groups", "Only hospital inpatients", "Only individual patients in clinics", "Only laboratory animals"],
+        a: 0,
+        exp: "Public health focuses on the health of populations, communities, families and population groups rather than just individuals."
+      },
+      { q: "Which statement reflects the idea that 'the community is the client' in public health practice?",
+        opts: ["Services are designed around population needs and community partnership", "Only individual clinical needs are addressed", "Clients are always passive recipients of care", "Health interventions ignore community involvement"],
+        a: 0,
+        exp: "Public health treats communities as clients and emphasizes active community participation in health efforts."
+      },
+      { q: "Which of the following is a principle of public health?",
+        opts: ["Population perspective", "Focusing exclusively on tertiary care", "Ignoring social determinants", "Treating health as a private matter only"],
+        a: 0,
+        exp: "A population perspective that focuses on whole communities is a core principle of public health."
+      },
+      { q: "Health promotion in public health primarily aims to:",
+        opts: ["Enable people to increase control over their health", "Provide only surgical care", "Limit people’s choices", "Focus solely on infectious disease surveillance"],
+        a: 0,
+        exp: "Health promotion aims to enable individuals and communities to increase control over and improve their health."
+      },
+      { q: "Which of these is NOT a major way that health can be promoted (from the slides)?",
+        opts: ["Behavioral change and supportive environments", "Socio-economic measures and political action", "Astrology-based counseling", "Health care delivery improvements"],
+        a: 2,
+        exp: "Astrology-based counseling is not an evidence-based method of health promotion listed in the slides."
+      },
+      { q: "Prevention in public health is aimed at:",
+        opts: ["Promoting, preserving and restoring health while minimizing suffering", "Replacing all physicians with nurses", "Eliminating all risks through medication alone", "Focusing only on genetic diseases"],
+        a: 0,
+        exp: "Prevention includes promoting, preserving and restoring health and reducing suffering through interventions at different levels."
+      },
+      { q: "Primary prevention is best described as:",
+        opts: ["Actions to prevent disease or injury from occurring", "Early detection and treatment to limit progression", "Rehabilitation and reducing disability", "Only emergency response activities"],
+        a: 0,
+        exp: "Primary prevention aims to stop disease or injury before it occurs (e.g., vaccination, health education)."
+      },
+      { q: "Which of the following is an example of primary prevention for HIV?",
+        opts: ["Providing Pre-Exposure Prophylaxis (PrEP) and promoting condom use", "Antiretroviral therapy (ART) for people living with HIV", "Treating opportunistic infections", "Rehabilitation after advanced disease"],
+        a: 0,
+        exp: "PrEP and behavior change (ABC) are primary prevention measures to prevent new HIV infections."
+      },
+      { q: "Secondary prevention focuses on:",
+        opts: ["Early detection and prompt treatment to limit progression or transmission", "Primary prevention activities only", "Long-term rehabilitation", "Nutritional counseling only for healthy people"],
+        a: 0,
+        exp: "Secondary prevention emphasizes screening, early diagnosis and treatment to prevent progression or spread."
+      },
+      { q: "Which is an example of secondary prevention in HIV control?",
+        opts: ["Offering HIV testing and counseling (HTS) to identify infection early", "Implementing ART for a person with chronic disease complications", "Providing general health education for entire population", "Eradicating HIV completely"],
+        a: 0,
+        exp: "HIV testing and early diagnosis are secondary prevention measures to detect infection early and act promptly."
+      },
+      { q: "Tertiary prevention aims to:",
+        opts: ["Reduce complications, disability and death and improve quality of life for those already affected", "Prevent new cases only", "Provide prenatal vitamins for healthy mothers only", "Replace health services with community rituals"],
+        a: 0,
+        exp: "Tertiary prevention aims to reduce complications and improve functioning and quality of life among affected individuals."
+      },
+      { q: "Which of the following is a tertiary prevention example for HIV?",
+        opts: ["Providing Antiretroviral Therapy (ART) and managing opportunistic infections", "Distributing condoms to uninfected adolescents", "Offering PrEP to high-risk but uninfected individuals", "Population-wide health promotion only"],
+        a: 0,
+        exp: "ART and management of opportunistic infections help reduce morbidity and mortality among people living with HIV (tertiary prevention)."
+      },
+      { q: "Which sequence best describes the public health approach outlined in the slides?",
+        opts: ["Surveillance → Risk factor identification → Intervention evaluation → Implementation", "Implementation → Surveillance → Intervention evaluation → Risk factor identification", "Risk factor identification → Implementation → Surveillance → Evaluation", "None of the above"],
+        a: 0,
+        exp: "The standard public health approach is surveillance (what is the problem?), risk factor identification (what is the cause?), intervention evaluation (what works?), and implementation (how to do it?)."
+      },
+      { q: "Surveillance in public health primarily asks:",
+        opts: ["What is the problem?", "How to build hospitals", "Which medication is most profitable", "How to privatize health services"],
+        a: 0,
+        exp: "Surveillance involves monitoring health status to identify community health problems — asking 'What is the problem?'."
+      },
+      { q: "Risk factor identification in the public health approach focuses on:",
+        opts: ["Determining causes and contributing factors for health problems", "Only clinical surgical interventions", "Publishing hospital income reports", "Eliminating community input"],
+        a: 0,
+        exp: "Identifying risk factors helps explain causes and guides targeted interventions."
+      },
+      { q: "Intervention evaluation in public health examines:",
+        opts: ["What works to reduce the problem (effectiveness and impact)", "How to increase patient fees", "Which hospital staff to fire", "Only laboratory test accuracy"],
+        a: 0,
+        exp: "Intervention evaluation assesses which interventions are effective and should be scaled or adapted."
+      },
+      { q: "Implementation in the public health approach answers:",
+        opts: ["How to deliver and scale effective interventions in real-world settings", "Only how to publish academic papers", "How to prevent community involvement", "Only how to market medicines"],
+        a: 0,
+        exp: "Implementation focuses on how to put proven interventions into practice, considering feasibility and context."
+      },
+      { q: "Which of the following is NOT one of the core disciplines of public health listed in the slides?",
+        opts: ["Epidemiology", "Biostatistics", "Environmental Health Sciences", "Astrophysics"],
+        a: 3,
+        exp: "Epidemiology, Biostatistics, Environmental Health, Social & Behavioral Sciences, and Health Policy are core public health disciplines — astrophysics is not."
+      },
+      { q: "Which of these is one of the three core functions of public health summarized in the slides?",
+        opts: ["Assessment of health status and needs", "Individual bedside surgery", "Private insurance management", "Pharmaceutical sales"],
+        a: 0,
+        exp: "Assessment of health status and needs is a core public health function (along with policy development and assurance)."
+      },
+      { q: "Policy development as a core function of public health includes:",
+        opts: ["Developing policies and plans that support community health and enforcing laws that protect health", "Only conducting lab research", "Replacing public services with private ones", "Focusing solely on individual clinical decisions"],
+        a: 0,
+        exp: "Policy development encompasses creating supportive policies and enforcing regulations to protect community health."
+      },
+      { q: "Assurance (quality) as a core function involves all EXCEPT:",
+        opts: ["Linking people to needed personal health services and assuring a competent workforce", "Assuring the quality and accessibility of health services", "Enforcing arbitrary private contracts that reduce service access", "Informing, educating and empowering people about health issues"],
+        a: 2,
+        exp: "Assurance includes ensuring services are available and of good quality; enforcing private contracts that reduce access contradicts this role."
+      },
+      { q: "Which activity aligns with the 'assessment' public health function?",
+        opts: ["Monitoring health status and diagnosing/investigating community health hazards", "Selling medical devices", "Ignoring community health data", "Privatizing public hospitals"],
+        a: 0,
+        exp: "Assessment involves monitoring health, diagnosing and investigating community health problems and hazards."
+      },
+      { q: "Which is an example of policy development in public health?",
+        opts: ["Creating vaccination policies and enforcing sanitation regulations", "Only treating individual patients", "Building malls", "Solely conducting private clinical trials for profit"],
+        a: 0,
+        exp: "Policy development produces public policies like vaccination schedules and sanitation regulations to protect population health."
+      },
+      { q: "Informing, educating and empowering people about health is classified under which core function?",
+        opts: ["Assurance (part of essential public health services)", "Only clinical medicine", "Biostatistics exclusively", "Environmental sampling only"],
+        a: 0,
+        exp: "Informing and educating the public is an assurance activity and part of essential public health services to enable healthy decisions."
+      },
+      { q: "Which of the following summarizes the three main takeaways presented in the summary slide?",
+        opts: ["Public health defined by 3Ps; three prevention levels (primary, secondary, tertiary); public health approach and ten functions grouped into assessment, policy development and assurance", "Public health only cares for individuals in hospitals", "Public health is solely about vaccines", "Public health is unrelated to society"],
+        a: 0,
+        exp: "The summary lists the 3Ps, three levels of prevention, the public health approach, and the ten essential functions summarized into three core functions."
+      }
+    ];
+
+    // State
+    let current = 0;
+    let score = 0;
+    let answered = Array(questions.length).fill(false);
+    let correctFlags = Array(questions.length).fill(false);
+
+    // DOM refs
+    const quizEl = document.getElementById('quiz');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const qcount = document.getElementById('qcount');
+    const progressFill = document.getElementById('progress-fill');
+    const liveScore = document.getElementById('live-score');
+    const finalHint = document.getElementById('finalHint');
+
+    function renderQuestion(i){
+      const item = questions[i];
+      qcount.textContent = (i+1);
+      progressFill.style.width = ((i)/(questions.length))*100 + '%';
+      const optLetters = ['A','B','C','D'];
+      let html = `
+        <div class="q-card" role="region" aria-labelledby="q${i}">
+          <div class="q-text" id="q${i}">${i+1}. ${item.q}</div>
+          <form class="options" id="form-${i}" aria-describedby="feedback-${i}">
+      `;
+      item.opts.forEach((o, idx) => {
+        const disabled = answered[i] ? 'disabled' : '';
+        html += `
+          <label class="option" for="q${i}_opt${idx}">
+            <input type="radio" name="q${i}" id="q${i}_opt${idx}" value="${idx}" ${disabled} />
+            <div>
+              <div style="font-weight:700">${optLetters[idx]}. ${o}</div>
+            </div>
+          </label>
+        `;
+      });
+      html += `</form>`;
+      if(answered[i]){
+        const wasCorrect = correctFlags[i];
+        html += `<div id="feedback-${i}" class="feedback ${wasCorrect ? 'correct':'wrong'}" role="status" aria-live="polite">
+          ${wasCorrect ? 'Correct' : 'Incorrect'}.
+          <div class="explain">${item.exp}</div>
+        </div>`;
+      } else {
+        html += `<div id="feedback-${i}" class="feedback" style="display:none" role="status" aria-live="polite"></div>`;
+      }
+      html += `</div>`;
+      quizEl.innerHTML = html;
+      const form = document.getElementById(`form-${i}`);
+      form.addEventListener('change', (e) => {
+        handleAnswer(i, parseInt(e.target.value,10));
+      });
+      prevBtn.disabled = i === 0;
+      nextBtn.textContent = i === questions.length-1 ? 'Finish' : 'Next';
+      liveScore.textContent = score;
+      finalHint.textContent = `Answer all questions — your final score will appear after finishing.`;
+    }
+
+    function handleAnswer(index, selectedIdx){
+      if(answered[index]) return;
+      const q = questions[index];
+      const isCorrect = selectedIdx === q.a;
+      answered[index] = true;
+      correctFlags[index] = isCorrect;
+      if(isCorrect) score++;
+      renderQuestion(index);
+      const feedback = document.getElementById(`feedback-${index}`);
+      if(feedback){
+        feedback.style.display = 'block';
+        feedback.className = 'feedback ' + (isCorrect ? 'correct':'wrong');
+        feedback.innerHTML = `${isCorrect ? 'Correct' : 'Incorrect'}.<div class="explain">${q.exp}</div>`;
+      }
+      liveScore.textContent = score;
+    }
+
+    prevBtn.addEventListener('click', () => {
+      if(current>0){ current--; renderQuestion(current); }
+    });
+    nextBtn.addEventListener('click', () => {
+      if(current < questions.length-1){
+        current++;
+        renderQuestion(current);
+      } else {
+        showSummary();
+      }
+    });
+
+    function showSummary(){
+      progressFill.style.width = '100%';
+      const percent = Math.round((score/questions.length)*100);
+      quizEl.innerHTML = `
+        <div class="q-card" role="region" aria-live="polite">
+          <h2 style="margin:0 0 8px 0">Quiz Complete</h2>
+          <div style="font-size:16px;margin-bottom:8px">You scored <strong>${score}</strong> out of <strong>${questions.length}</strong> (${percent}%).</div>
+          <div style="color:var(--muted);margin-bottom:12px">Review each question below — correct answers are highlighted.</div>
+          <div id="review" style="display:flex;flex-direction:column;gap:8px;max-height:48vh;overflow:auto;padding-right:8px"></div>
+          <div style="margin-top:12px;display:flex;gap:8px">
+            <button id="retryBtn" class="ghost">Retry</button>
+            <button id="downloadBtn">Download as HTML</button>
+          </div>
+        </div>
+      `;
+      const review = document.getElementById('review');
+      questions.forEach((q, idx) => {
+        const optLetters = ['A','B','C','D'];
+        let qhtml = `<div style="padding:10px;border-radius:8px;background:linear-gradient(180deg,#fff,#fbfbff);border:1px solid rgba(0,0,0,0.04)">
+          <div style="font-weight:700">${idx+1}. ${q.q}</div>
+          <div style="margin-top:6px">`;
+        q.opts.forEach((o,i)=>{
+          const isCorrect = i === q.a;
+          qhtml += `<div style="padding:6px;border-radius:6px;margin-top:6px;${isCorrect ? 'background:linear-gradient(90deg,rgba(74,222,128,0.12),rgba(74,222,128,0.02));border:1px solid rgba(74,222,128,0.12);' : ''}">
+            <strong>${optLetters[i]}.</strong> ${o} ${isCorrect ? '<em style="color:var(--success);margin-left:8px">✓ correct answer</em>' : ''}
+          </div>`;
+        });
+        qhtml += `</div><div style="margin-top:8px;color:var(--muted)">${q.exp}</div></div>`;
+        review.insertAdjacentHTML('beforeend', qhtml);
+      });
+
+      document.getElementById('retryBtn').addEventListener('click', () => {
+        current = 0; score = 0; answered.fill(false); correctFlags.fill(false);
+        renderQuestion(0);
+      });
+
+      document.getElementById('downloadBtn').addEventListener('click', () => {
+        const blob = new Blob([document.documentElement.outerHTML], {type:'text/html'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'public-health-test2-preparation.html';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      });
+
+      finalHint.textContent = `Completed — score: ${score}/${questions.length} (${percent}%).`;
+    }
+
+    // Initial render
+    renderQuestion(current);
+
+    // Particle background (Canva-coloured)
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+    let w = canvas.width = innerWidth;
+    let h = canvas.height = innerHeight;
+    window.addEventListener('resize', () => { w = canvas.width = innerWidth; h = canvas.height = innerHeight; initParticles(); });
+
+    const palette = ['#ff7b7b','#ffd166','#6ee7b7','#6fb3ff','#b692ff','#ff9fdf','#6be5c8','#ffd3a5'];
+    let particles = [];
+    function initParticles(){
+      particles = [];
+      const count = Math.round((w*h)/60000 * 40) + 20;
+      for(let i=0;i<count;i++){
+        particles.push({
+          x: Math.random()*w,
+          y: Math.random()*h,
+          r: Math.random()*6 + 2,
+          vx: (Math.random()-0.5)*0.6,
+          vy: (Math.random()-0.5)*0.6,
+          c: palette[Math.floor(Math.random()*palette.length)],
+          alpha: 0.18 + Math.random()*0.6
+        });
+      }
+    }
+    function draw(){
+      ctx.clearRect(0,0,w,h);
+      const g = ctx.createLinearGradient(0,0,w,h);
+      g.addColorStop(0,'rgba(255,255,255,0.06)');
+      g.addColorStop(1,'rgba(240,250,255,0.06)');
+      ctx.fillStyle = g; ctx.fillRect(0,0,w,h);
+      for(const p of particles){
+        ctx.beginPath(); ctx.fillStyle = p.c; ctx.globalAlpha = p.alpha; ctx.shadowColor = p.c; ctx.shadowBlur = 12;
+        ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill(); ctx.closePath(); ctx.globalAlpha = 1;
+      }
+      for(let i=0;i<particles.length;i++){
+        for(let j=i+1;j<particles.length;j++){
+          const a = particles[i], b = particles[j];
+          const dx = a.x-b.x, dy = a.y-b.y;
+          const d = Math.sqrt(dx*dx+dy*dy);
+          if(d<120){
+            ctx.beginPath(); ctx.strokeStyle = a.c; ctx.globalAlpha = (1 - d/120)*0.06; ctx.lineWidth = 1;
+            ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); ctx.closePath(); ctx.globalAlpha = 1;
+          }
+        }
+      }
+    }
+    function update(){
+      for(const p of particles){
+        p.x += p.vx; p.y += p.vy;
+        if(p.x < -20) p.x = w+20;
+        if(p.x > w+20) p.x = -20;
+        if(p.y < -20) p.y = h+20;
+        if(p.y > h+20) p.y = -20;
+      }
+    }
+    function loop(){ update(); draw(); requestAnimationFrame(loop); }
+    initParticles();
+    loop();
+
+    // Keyboard nav
+    document.addEventListener('keydown', (e) => {
+      if(e.key === 'ArrowRight') nextBtn.click();
+      if(e.key === 'ArrowLeft') prevBtn.click();
+    });
+  </script>
+</body>
+</html>
