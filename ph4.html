@@ -1,0 +1,566 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Public Health vs Clinical Medicine — Test 4 Preparation</title>
+  <style>
+    :root{
+      --card-bg: rgba(255,255,255,0.96);
+      --accent: #ff6f61;
+      --accent-2: #4fb3ff;
+      --text: #112;
+      --muted: #586;
+      --success: #2ea66b;
+      --danger: #e04b48;
+    }
+    html,body{height:100%;margin:0;font-family:Inter,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--text);background:linear-gradient(135deg,#f8fbff 0%, #fff7f4 100%);}
+    #particle-canvas{position:fixed;left:0;top:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+    .app{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px;}
+    .card{width:100%;max-width:980px;background:var(--card-bg);border-radius:14px;box-shadow:0 10px 30px rgba(17,24,39,0.08);padding:22px;backdrop-filter: blur(6px);border:1px solid rgba(255,255,255,0.6);}
+    header{display:flex;align-items:center;gap:16px;margin-bottom:12px;}
+    .logo{width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:18px;}
+    h1{margin:0;font-size:20px}
+    p.lead{margin:0;color:var(--muted);font-size:13px}
+    .progress{display:flex;align-items:center;gap:8px;margin-top:12px}
+    .progressbar{flex:1;height:10px;background:linear-gradient(90deg,#eef6ff,#fff);border-radius:999px;overflow:hidden;border:1px solid rgba(0,0,0,0.04)}
+    .progressbar > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));width:0%;}
+    .q-card{padding:16px;border-radius:10px;border:1px solid rgba(0,0,0,0.04);background:linear-gradient(180deg,rgba(255,255,255,0.6),rgba(255,255,255,0.95));}
+    .q-text{font-weight:600;margin-bottom:10px}
+    .options{display:flex;flex-direction:column;gap:8px}
+    .option{display:flex;align-items:center;gap:12px;padding:10px;border-radius:8px;border:1px solid rgba(0,0,0,0.06);cursor:pointer;background:white;transition:transform .08s,box-shadow .08s;}
+    .option:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(20,30,50,0.06)}
+    input[type="radio"]{accent-color:var(--accent-2);width:18px;height:18px}
+    .controls{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:14px}
+    button{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;padding:10px 14px;border-radius:10px;border:none;cursor:pointer;font-weight:600;box-shadow:0 8px 20px rgba(79,70,229,0.08);}
+    button.ghost{background:transparent;color:var(--muted);border:1px solid rgba(0,0,0,0.06);box-shadow:none;}
+    .feedback{margin-top:12px;padding:12px;border-radius:8px;font-size:14px}
+    .feedback.correct{background:rgba(46,166,107,0.08);border:1px solid rgba(46,166,107,0.12);color:var(--success)}
+    .feedback.wrong{background:rgba(224,75,72,0.06);border:1px solid rgba(224,75,72,0.12);color:var(--danger)}
+    .explain{margin-top:8px;color:var(--muted);font-size:13px}
+    footer{margin-top:16px;display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:13px}
+    .score{font-weight:700;color:var(--accent-2)}
+    @media (max-width:640px){.card{padding:16px}.logo{width:52px;height:52px}}
+  </style>
+</head>
+<body>
+  <canvas id="particle-canvas" aria-hidden="true"></canvas>
+  <div class="app">
+    <div class="card" role="main" aria-labelledby="title">
+      <header>
+        <div class="logo">PH</div>
+        <div>
+          <h1 id="title">Public Health vs Clinical Medicine — Test 4 Preparation</h1>
+          <p class="lead">30 questions · Immediate feedback · Covers definitions, similarities, differences, iceberg phenomenon, clinical exam and why med students should learn public health</p>
+        </div>
+      </header>
+
+      <div class="progress" aria-hidden="true">
+        <div style="font-size:13px;color:var(--muted)"><span id="qcount">1</span>/30</div>
+        <div class="progressbar" aria-hidden="true"><i id="progress-fill" style="width:3.33%"></i></div>
+        <div style="font-size:13px;color:var(--muted)">Score: <span id="live-score">0</span></div>
+      </div>
+
+      <div class="question-area" id="quiz"></div>
+
+      <footer>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button id="prevBtn" class="ghost" disabled>Previous</button>
+          <button id="nextBtn">Next</button>
+        </div>
+        <div class="score" id="finalHint">Answer questions to view your final score.</div>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      { q: "Which classic definition best summarizes public health (Winslow, 1920)?",
+        opts: [
+          "The art and science of preventing disease, prolonging life and promoting health through organized community effort",
+          "Individual bedside clinical diagnosis and surgery",
+          "Private practice focused on cosmetic outcomes",
+          "A branch of medicine only concerned with hospital administration"
+        ],
+        a: 0,
+        exp: "Winslow's definition describes public health as community-organized prevention, promotion and life prolongation."
+      },
+      { q: "Clinical medicine primarily focuses on:",
+        opts: [
+          "Diagnosis, treatment and care of individual patients",
+          "National health policy only",
+          "Environmental sanitation exclusively",
+          "Epidemiological surveillance only"
+        ],
+        a: 0,
+        exp: "Clinical medicine applies medical knowledge directly to diagnose and treat individual patients."
+      },
+      { q: "Which of the following are the '3 Ps' associated with public health in the lecture?",
+        opts: [
+          "Prevention, Promotion, Prolonging life",
+          "Policy, Payment, Pharmacy",
+          "Patient, Provider, Procedure",
+          "Practice, Profit, Privacy"
+        ],
+        a: 0,
+        exp: "The 3 Ps summarize public health aims: preventing illness, promoting health and prolonging life."
+      },
+      { q: "The 'iceberg phenomenon' in epidemiology refers to:",
+        opts: [
+          "The fact that many cases in the community are unseen compared with the symptomatic cases seen by physicians",
+          "A type of glacier-related disease",
+          "A hospital infection control method",
+          "A procedure in clinical radiology"
+        ],
+        a: 0,
+        exp: "The iceberg illustrates that clinical cases are the tip; a larger number of pre-symptomatic or hidden cases exist in the community."
+      },
+      { q: "In the iceberg analogy, what represents the 'tip'?",
+        opts: [
+          "Symptomatic cases that present to physicians",
+          "All environmental health interventions",
+          "Policy documents",
+          "Surveillance reports only"
+        ],
+        a: 0,
+        exp: "Physicians typically see the symptomatic patients — the visible tip of the disease iceberg."
+      },
+      { q: "Which of these is part of the public health approach?",
+        opts: [
+          "Surveillance, risk factor identification, intervention evaluation and implementation",
+          "Only prescribing medication to admitted patients",
+          "Performing surgery on all sick patients",
+          "Private clinic billing procedures"
+        ],
+        a: 0,
+        exp: "Public health uses surveillance to define problems, identifies causes, tests interventions, and implements effective solutions."
+      },
+      { q: "Compared with public health, clinical medicine is usually:",
+        opts: [
+          "Individual-focused and more immediate (short-term care)",
+          "Entirely population-wide and long-term",
+          "Only concerned with sanitation",
+          "Focused on legislation exclusively"
+        ],
+        a: 0,
+        exp: "Clinical medicine centers on individual patients and often delivers short-term, immediate diagnosis and treatment."
+      },
+      { q: "What does IPPA stand for in clinical examination?",
+        opts: [
+          "Inspection, Palpation, Percussion, Auscultation",
+          "Investigation, Prescription, Prognosis, Analysis",
+          "Infection, Poisoning, Pain, Allergy",
+          "Immunization, Prevention, Planning, Assessment"
+        ],
+        a: 0,
+        exp: "IPPA describes the basic sequence of physical exam techniques used by clinicians."
+      },
+      { q: "Which basic diagnostic devices are commonly used in clinical examination (lecture example)?",
+        opts: [
+          "Stethoscope, otoscope, tongue depressor",
+          "Seismograph and spectrometer",
+          "Satellite imaging kit",
+          "Industrial air sampler only"
+        ],
+        a: 0,
+        exp: "Stethoscopes and otoscopes are routine clinical tools used at the bedside."
+      },
+      { q: "One similarity between public health and clinical medicine is that both:",
+        opts: [
+          "Are goal-oriented and aim to improve health and reduce suffering",
+          "Always work in isolation from other disciplines",
+          "Focus only on profit generation",
+          "Ignore scientific evidence"
+        ],
+        a: 0,
+        exp: "Both fields are goal-driven and use scientific evidence to improve health outcomes."
+      },
+      { q: "Both public health and clinical medicine commonly use which scientific discipline for understanding disease patterns?",
+        opts: [
+          "Epidemiology",
+          "Astronomy",
+          "Classical mechanics",
+          "Pure linguistics"
+        ],
+        a: 0,
+        exp: "Epidemiology is central to both: for clinicians (diagnosis, prognosis) and public health (surveillance, prevention)."
+      },
+      { q: "Public health differs from clinical medicine mainly by its unit of concern. Public health focuses on:",
+        opts: [
+          "Populations and communities",
+          "Only the single patient",
+          "Only hospital equipment",
+          "Only private clinic waiting rooms"
+        ],
+        a: 0,
+        exp: "Public health targets population-level health determinants and outcomes."
+      },
+      { q: "Which best describes the time orientation difference between public health and clinical medicine?",
+        opts: [
+          "Public health is long-term and future-focused; clinical medicine is short-term and immediate",
+          "Both are exclusively short-term",
+          "Both ignore future risks",
+          "Clinical medicine is future-focused; public health is only immediate"
+        ],
+        a: 0,
+        exp: "Public health emphasizes long-term prevention and trends, while clinical medicine often addresses immediate patient needs."
+      },
+      { q: "Outcome measurement in clinical medicine is typically:",
+        opts: [
+          "Recovery, symptom relief and survival for individual patients",
+          "Population incidence and life expectancy only",
+          "Only economic returns",
+          "Only political metrics"
+        ],
+        a: 0,
+        exp: "Clinical outcomes focus on individual patient recovery and survival metrics."
+      },
+      { q: "Outcome measurement in public health often emphasizes:",
+        opts: [
+          "Reduced disease incidence and improved population life expectancy",
+          "Only the number of hospital beds",
+          "Individual cosmetic outcomes",
+          "Daily clinic revenue"
+        ],
+        a: 0,
+        exp: "Public health uses population-level indicators like incidence, prevalence and life expectancy."
+      },
+      { q: "Which statement about cost implications is consistent with the lecture?",
+        opts: [
+          "Prevention (public health) is generally more cost-effective than individualized curative care",
+          "Individualized care is always cheaper than prevention",
+          "Prevention has no economic impact",
+          "Public health always costs more than clinical care"
+        ],
+        a: 0,
+        exp: "Investing in prevention often yields greater cost-effectiveness and societal benefit."
+      },
+      { q: "Why should medical students learn public health? One key reason is to:",
+        opts: [
+          "Understand social, environmental and economic determinants of health",
+          "Replace clinical training entirely",
+          "Avoid working in communities",
+          "Focus only on laboratory techniques"
+        ],
+        a: 0,
+        exp: "Public health broadens clinicians' perspectives beyond biology to determinants that shape population health."
+      },
+      { q: "Learning public health helps clinicians emphasize prevention. Which prevention level is commonly targeted by public health?",
+        opts: [
+          "Primary prevention (prevent disease occurrence)",
+          "Only tertiary care",
+          "Only elective cosmetic surgery",
+          "Only individual psychotherapy"
+        ],
+        a: 0,
+        exp: "Public health strongly focuses on primary prevention such as immunization and health education."
+      },
+      { q: "Which skill from public health is essential for handling outbreaks and epidemics?",
+        opts: [
+          "Surveillance and outbreak investigation (epidemiology)",
+          "Only hospital billing procedures",
+          "Only surgical skills",
+          "Only marketing of medicines"
+        ],
+        a: 0,
+        exp: "Epidemiology and surveillance allow timely detection and control of outbreaks."
+      },
+      { q: "How does public health training help prepare medical students for leadership roles?",
+        opts: [
+          "By teaching health policy, planning and management useful for directing health programs",
+          "By training them exclusively in surgical techniques",
+          "By avoiding community engagement",
+          "By focusing only on private practice marketing"
+        ],
+        a: 0,
+        exp: "Understanding policy and management equips physicians for roles like district health director or health system leadership."
+      },
+      { q: "Which statement expresses how public health and clinical medicine complement each other?",
+        opts: [
+          "Clinical care treats individuals; public health prevents disease across populations — together they provide a full continuum of care",
+          "They are unrelated and should remain separate",
+          "Public health only duplicates what clinicians do",
+          "Clinical medicine should replace public health entirely"
+        ],
+        a: 0,
+        exp: "Both fields are complementary: prevention and community protection plus clinical treatment form a cohesive health system."
+      },
+      { q: "Which ethical principles are shared by both public health and clinical medicine (as noted)?",
+        opts: [
+          "Beneficence, non-maleficence and justice",
+          "Only profit maximization",
+          "Only personal gain",
+          "Only secrecy without consent"
+        ],
+        a: 0,
+        exp: "Both adhere to core medical ethics principles protecting individuals' and populations' rights and safety."
+      },
+      { q: "Which of the following best describes a medical approach when first seeing a patient?",
+        opts: [
+          "History-taking, physical examination (IPPA) and use of clinical judgment",
+          "Only sending policy memos",
+          "Solely analyzing population datasets without exam",
+          "Immediately publishing research before examining the patient"
+        ],
+        a: 0,
+        exp: "Clinical encounters begin with history, physical exam and diagnostic reasoning tailored to the individual."
+      },
+      { q: "Which activity is an example of public health's environmental protection role mentioned in the lecture?",
+        opts: [
+          "Monitoring and controlling air and water pollution to prevent disease",
+          "Individual cosmetic consultations",
+          "Elective surgical procedures",
+          "Private pharmaceutical sales"
+        ],
+        a: 0,
+        exp: "Environmental protection—clean air and water—reduces respiratory and diarrheal diseases across populations."
+      },
+      { q: "Why is understanding the iceberg phenomenon important for clinicians?",
+        opts: [
+          "It reminds clinicians that many cases exist unseen in the community, so population data matter for decision-making",
+          "It suggests clinicians should ignore community data",
+          "It implies only hospital data are valid",
+          "It indicates clinicians should stop treating patients"
+        ],
+        a: 0,
+        exp: "Recognizing hidden (pre-symptomatic) disease helps clinicians appreciate surveillance and community-level interventions."
+      },
+      { q: "Which reason explains why public health is important for economic productivity (lecture example)?",
+        opts: [
+          "Preventing diseases like malaria reduces absenteeism and improves economic output",
+          "Only building hospitals increases GDP automatically",
+          "Medical tourism is the only economic driver",
+          "Removing vaccinations increases productivity"
+        ],
+        a: 0,
+        exp: "Reducing disease burden increases work attendance and productivity, benefiting the economy."
+      },
+      { q: "Which of these best summarizes the lecture conclusion about the relationship between public health and clinical medicine?",
+        opts: [
+          "They complement each other; clinicians who know public health can treat individuals and protect communities",
+          "They must compete for resources and cannot cooperate",
+          "Public health is unnecessary if clinical care exists",
+          "Clinical medicine always supersedes public health"
+        ],
+        a: 0,
+        exp: "The lecture concludes that integrated knowledge produces well-rounded professionals who serve both individuals and populations."
+      },
+      { q: "Which reason for teaching public health to medical students emphasizes justice and access?",
+        opts: [
+          "To address health inequities and advocate for equitable access to care",
+          "To teach complex hospital accounting only",
+          "To avoid community work",
+          "To promote private insurance only"
+        ],
+        a: 0,
+        exp: "Public health trains physicians to identify and act on social determinants and inequities affecting access to health."
+      }
+    ];
+
+    // State
+    let current = 0;
+    let score = 0;
+    let answered = Array(questions.length).fill(false);
+    let correctFlags = Array(questions.length).fill(false);
+
+    // DOM refs
+    const quizEl = document.getElementById('quiz');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const qcount = document.getElementById('qcount');
+    const progressFill = document.getElementById('progress-fill');
+    const liveScore = document.getElementById('live-score');
+    const finalHint = document.getElementById('finalHint');
+
+    function renderQuestion(i){
+      const item = questions[i];
+      qcount.textContent = (i+1);
+      progressFill.style.width = ((i)/(questions.length))*100 + '%';
+      const optLetters = ['A','B','C','D'];
+      let html = `
+        <div class="q-card" role="region" aria-labelledby="q${i}">
+          <div class="q-text" id="q${i}">${i+1}. ${item.q}</div>
+          <form class="options" id="form-${i}" aria-describedby="feedback-${i}">
+      `;
+      item.opts.forEach((o, idx) => {
+        const disabled = answered[i] ? 'disabled' : '';
+        html += `
+          <label class="option" for="q${i}_opt${idx}">
+            <input type="radio" name="q${i}" id="q${i}_opt${idx}" value="${idx}" ${disabled} />
+            <div>
+              <div style="font-weight:700">${optLetters[idx]}. ${o}</div>
+            </div>
+          </label>
+        `;
+      });
+      html += `</form>`;
+      if(answered[i]){
+        const wasCorrect = correctFlags[i];
+        html += `<div id="feedback-${i}" class="feedback ${wasCorrect ? 'correct':'wrong'}" role="status" aria-live="polite">
+          ${wasCorrect ? 'Correct' : 'Incorrect'}.
+          <div class="explain">${item.exp}</div>
+        </div>`;
+      } else {
+        html += `<div id="feedback-${i}" class="feedback" style="display:none" role="status" aria-live="polite"></div>`;
+      }
+      html += `</div>`;
+      quizEl.innerHTML = html;
+      const form = document.getElementById(`form-${i}`);
+      form.addEventListener('change', (e) => {
+        handleAnswer(i, parseInt(e.target.value,10));
+      });
+      prevBtn.disabled = i === 0;
+      nextBtn.textContent = i === questions.length-1 ? 'Finish' : 'Next';
+      liveScore.textContent = score;
+      finalHint.textContent = `Answer all questions — your final score will appear after finishing.`;
+    }
+
+    function handleAnswer(index, selectedIdx){
+      if(answered[index]) return;
+      const q = questions[index];
+      const isCorrect = selectedIdx === q.a;
+      answered[index] = true;
+      correctFlags[index] = isCorrect;
+      if(isCorrect) score++;
+      renderQuestion(index);
+      const feedback = document.getElementById(`feedback-${index}`);
+      if(feedback){
+        feedback.style.display = 'block';
+        feedback.className = 'feedback ' + (isCorrect ? 'correct':'wrong');
+        feedback.innerHTML = `${isCorrect ? 'Correct' : 'Incorrect'}.<div class="explain">${q.exp}</div>`;
+      }
+      liveScore.textContent = score;
+    }
+
+    prevBtn.addEventListener('click', () => {
+      if(current>0){ current--; renderQuestion(current); }
+    });
+    nextBtn.addEventListener('click', () => {
+      if(current < questions.length-1){
+        current++;
+        renderQuestion(current);
+      } else {
+        showSummary();
+      }
+    });
+
+    function showSummary(){
+      progressFill.style.width = '100%';
+      const percent = Math.round((score/questions.length)*100);
+      quizEl.innerHTML = `
+        <div class="q-card" role="region" aria-live="polite">
+          <h2 style="margin:0 0 8px 0">Quiz Complete</h2>
+          <div style="font-size:16px;margin-bottom:8px">You scored <strong>${score}</strong> out of <strong>${questions.length}</strong> (${percent}%).</div>
+          <div style="color:var(--muted);margin-bottom:12px">Review each question below — correct answers are highlighted.</div>
+          <div id="review" style="display:flex;flex-direction:column;gap:8px;max-height:48vh;overflow:auto;padding-right:8px"></div>
+          <div style="margin-top:12px;display:flex;gap:8px">
+            <button id="retryBtn" class="ghost">Retry</button>
+            <button id="downloadBtn">Download as HTML</button>
+          </div>
+        </div>
+      `;
+      const review = document.getElementById('review');
+      questions.forEach((q, idx) => {
+        const optLetters = ['A','B','C','D'];
+        let qhtml = `<div style="padding:10px;border-radius:8px;background:linear-gradient(180deg,#fff,#fbfbff);border:1px solid rgba(0,0,0,0.04)">
+          <div style="font-weight:700">${idx+1}. ${q.q}</div>
+          <div style="margin-top:6px">`;
+        q.opts.forEach((o,i)=>{
+          const isCorrect = i === q.a;
+          qhtml += `<div style="padding:6px;border-radius:6px;margin-top:6px;${isCorrect ? 'background:linear-gradient(90deg,rgba(74,222,128,0.12),rgba(74,222,128,0.02));border:1px solid rgba(74,222,128,0.12);' : ''}">
+            <strong>${optLetters[i]}.</strong> ${o} ${isCorrect ? '<em style="color:var(--success);margin-left:8px">✓ correct answer</em>' : ''}
+          </div>`;
+        });
+        qhtml += `</div><div style="margin-top:8px;color:var(--muted)">${q.exp}</div></div>`;
+        review.insertAdjacentHTML('beforeend', qhtml);
+      });
+
+      document.getElementById('retryBtn').addEventListener('click', () => {
+        current = 0; score = 0; answered.fill(false); correctFlags.fill(false);
+        renderQuestion(0);
+      });
+
+      document.getElementById('downloadBtn').addEventListener('click', () => {
+        const blob = new Blob([document.documentElement.outerHTML], {type:'text/html'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'public-health-test4-public-health-vs-clinical-medicine.html';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      });
+
+      finalHint.textContent = `Completed — score: ${score}/${questions.length} (${percent}%).`;
+    }
+
+    // Initial render
+    renderQuestion(current);
+
+    // Particle background
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+    let w = canvas.width = innerWidth;
+    let h = canvas.height = innerHeight;
+    window.addEventListener('resize', () => { w = canvas.width = innerWidth; h = canvas.height = innerHeight; initParticles(); });
+
+    const palette = ['#ff9b92','#ffd58a','#9ff2cc','#9fcaff','#d1b7ff','#ffb6dd','#9be5d8','#ffe6b3'];
+    let particles = [];
+    function initParticles(){
+      particles = [];
+      const count = Math.round((w*h)/60000 * 36) + 18;
+      for(let i=0;i<count;i++){
+        particles.push({
+          x: Math.random()*w,
+          y: Math.random()*h,
+          r: Math.random()*6 + 2,
+          vx: (Math.random()-0.5)*0.6,
+          vy: (Math.random()-0.5)*0.6,
+          c: palette[Math.floor(Math.random()*palette.length)],
+          alpha: 0.18 + Math.random()*0.6
+        });
+      }
+    }
+    function draw(){
+      ctx.clearRect(0,0,w,h);
+      const g = ctx.createLinearGradient(0,0,w,h);
+      g.addColorStop(0,'rgba(255,255,255,0.06)');
+      g.addColorStop(1,'rgba(245,250,255,0.06)');
+      ctx.fillStyle = g; ctx.fillRect(0,0,w,h);
+      for(const p of particles){
+        ctx.beginPath(); ctx.fillStyle = p.c; ctx.globalAlpha = p.alpha; ctx.shadowColor = p.c; ctx.shadowBlur = 10;
+        ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill(); ctx.closePath(); ctx.globalAlpha = 1;
+      }
+      for(let i=0;i<particles.length;i++){
+        for(let j=i+1;j<particles.length;j++){
+          const a = particles[i], b = particles[j];
+          const dx = a.x-b.x, dy = a.y-b.y;
+          const d = Math.sqrt(dx*dx+dy*dy);
+          if(d<120){
+            ctx.beginPath(); ctx.strokeStyle = a.c; ctx.globalAlpha = (1 - d/120)*0.06; ctx.lineWidth = 1;
+            ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); ctx.closePath(); ctx.globalAlpha = 1;
+          }
+        }
+      }
+    }
+    function update(){
+      for(const p of particles){
+        p.x += p.vx; p.y += p.vy;
+        if(p.x < -20) p.x = w+20;
+        if(p.x > w+20) p.x = -20;
+        if(p.y < -20) p.y = h+20;
+        if(p.y > h+20) p.y = -20;
+      }
+    }
+    function loop(){ update(); draw(); requestAnimationFrame(loop); }
+    initParticles(); loop();
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if(e.key === 'ArrowRight') nextBtn.click();
+      if(e.key === 'ArrowLeft') prevBtn.click();
+    });
+  </script>
+</body>
+</html>
