@@ -1,0 +1,519 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Public Health Test 1 Preparation</title>
+  <style>
+    :root{
+      --card-bg: rgba(255,255,255,0.95);
+      --accent: #ff6b6b;
+      --accent-2: #4dabf7;
+      --text: #123;
+      --muted: #556;
+      --success: #2b9e5a;
+      --danger: #e63946;
+      --glass: rgba(255,255,255,0.75);
+    }
+    html,body{height:100%;margin:0;font-family:Inter,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--text);background:linear-gradient(135deg,#f8f9fb 0%, #eef6ff 100%);}
+    /* Canvas covers whole screen */
+    #particle-canvas{position:fixed;left:0;top:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+    .app{
+      position:relative;
+      z-index:1;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:32px;
+    }
+    .card{
+      width:100%;
+      max-width:980px;
+      background:var(--card-bg);
+      border-radius:14px;
+      box-shadow: 0 10px 30px rgba(18,30,46,0.12);
+      padding:22px;
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255,255,255,0.6);
+    }
+    header{
+      display:flex;
+      align-items:center;
+      gap:16px;
+      margin-bottom:12px;
+    }
+    .logo{
+      width:64px;height:64px;border-radius:12px;
+      background:linear-gradient(135deg,var(--accent),var(--accent-2));
+      display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px;box-shadow:0 6px 18px rgba(79,70,229,0.08);
+    }
+    h1{margin:0;font-size:20px}
+    p.lead{margin:0;color:var(--muted);font-size:13px}
+    .question-area{margin-top:18px}
+    .progress{
+      display:flex;align-items:center;gap:8px;margin-top:12px;
+    }
+    .progressbar{
+      flex:1;height:10px;background:linear-gradient(90deg,#eef2ff,#fff);border-radius:999px;overflow:hidden;border:1px solid rgba(0,0,0,0.04)
+    }
+    .progressbar > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));width:0%;}
+    .q-card{padding:16px;border-radius:10px;border:1px solid rgba(0,0,0,0.04);background:linear-gradient(180deg,rgba(255,255,255,0.6),rgba(255,255,255,0.9));}
+    .q-text{font-weight:600;margin-bottom:10px}
+    .options{display:flex;flex-direction:column;gap:8px}
+    .option{
+      display:flex;align-items:center;gap:12px;padding:10px;border-radius:8px;border:1px solid rgba(0,0,0,0.06);cursor:pointer;background:white;
+      transition:transform .08s,box-shadow .08s;
+    }
+    .option:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(20,30,50,0.06)}
+    input[type="radio"]{accent-color:var(--accent-2);width:18px;height:18px}
+    .controls{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:14px}
+    .left{display:flex;gap:8px;align-items:center}
+    button{
+      background:linear-gradient(90deg,var(--accent),var(--accent-2));
+      color:white;padding:10px 14px;border-radius:10px;border:none;cursor:pointer;font-weight:600;
+      box-shadow:0 8px 20px rgba(79,70,229,0.08);
+    }
+    button.ghost{background:transparent;color:var(--muted);border:1px solid rgba(0,0,0,0.06);box-shadow:none;}
+    .feedback{margin-top:12px;padding:12px;border-radius:8px;font-size:14px}
+    .feedback.correct{background:rgba(43,158,90,0.08);border:1px solid rgba(43,158,90,0.12);color:var(--success)}
+    .feedback.wrong{background:rgba(230,57,70,0.06);border:1px solid rgba(230,57,70,0.12);color:var(--danger)}
+    .explain{margin-top:8px;color:var(--muted);font-size:13px}
+    footer{margin-top:16px;display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:13px}
+    .score{font-weight:700;color:var(--accent-2)}
+    @media (max-width:640px){
+      .card{padding:16px}
+      header{gap:10px}
+      .logo{width:52px;height:52px}
+    }
+  </style>
+</head>
+<body>
+  <canvas id="particle-canvas"></canvas>
+  <div class="app">
+    <div class="card" role="main" aria-labelledby="title">
+      <header>
+        <div class="logo">PH</div>
+        <div>
+          <h1 id="title">Public Health — Test 1 Preparation</h1>
+          <p class="lead">30 questions · Immediate feedback · Explanations appear when you answer</p>
+        </div>
+      </header>
+
+      <div class="progress" aria-hidden="true">
+        <div style="font-size:13px;color:var(--muted)"><span id="qcount">1</span>/30</div>
+        <div class="progressbar" aria-hidden="true"><i id="progress-fill" style="width:3.33%"></i></div>
+        <div style="font-size:13px;color:var(--muted)">Score: <span id="live-score">0</span></div>
+      </div>
+
+      <div class="question-area" id="quiz">
+        <!-- question card rendered by JS -->
+      </div>
+
+      <footer>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button id="prevBtn" class="ghost" disabled>Previous</button>
+          <button id="nextBtn">Next</button>
+        </div>
+        <div class="score" id="finalHint">Progress the quiz to see your final score.</div>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    // 30 questions derived from provided content
+    const questions = [
+      { q: "Which of the following best matches the WHO (1948) definition of health?", 
+        opts: ["Absence of disease", "Complete physical, mental and social well-being", "Ability to perform work duties", "Being free from pain"],
+        a: 1,
+        exp: "WHO defines health as a state of complete physical, mental and social well-being, not merely absence of disease."
+      },
+      { q: "The word 'health' comes from the Latin word 'hale' meaning:", 
+        opts: ["Sickness", "Whole", "Comfort", "Balance"],
+        a: 1,
+        exp: "'Hale' means whole — indicating completeness or wholeness of a person."
+      },
+      { q: "The etymology of 'disease' (dis-ease) literally means:", 
+        opts: ["Without comfort or ease", "A specific diagnosis", "A contagious condition", "A medical treatment"],
+        a: 0,
+        exp: "Dis-ease literally means 'not being at ease' or a lack of ease."
+      },
+      { q: "Which statement correctly contrasts 'disease' and 'illness'?", 
+        opts: ["Disease is subjective; illness is objective", "Both are always objective", "Disease is typically objectively diagnosed; illness is the person's subjective experience", "Illness is diagnosed with tests; disease is how a patient feels"],
+        a: 2,
+        exp: "Disease is usually an objectively diagnosable condition; illness is the patient's subjective experience of symptoms."
+      },
+      { q: "The biomedical (Western medical) model primarily views health as:", 
+        opts: ["A social process", "Absence of disease (negative view)", "A spiritual state", "An adaptive resource for living"],
+        a: 1,
+        exp: "The biomedical model emphasizes absence of disease and often treats the body like a machine; it's a negative definition."
+      },
+      { q: "Which of the following is a limitation of the biomedical model?", 
+        opts: ["It recognizes social causes of disease", "It focuses on prevention and social support", "It largely ignores social causes and concentrates on curative care", "It defines health as a resource for living"],
+        a: 2,
+        exp: "The biomedical model typically does not acknowledge social determinants and focuses on curative interventions."
+      },
+      { q: "The Holistic model of health includes which of the following dimensions?", 
+        opts: ["Physical only", "Physical, mental and social well-being", "Only spiritual health", "Economic wealth"],
+        a: 1,
+        exp: "The holistic/WHO model explicitly includes physical, mental, and social dimensions of health."
+      },
+      { q: "Which model describes health as a 'process' and a 'resource for everyday living' (WHO, 1984)?", 
+        opts: ["Biomedical Model", "Wellness Model", "Salutogenesis Model", "Layman's Model"],
+        a: 1,
+        exp: "The Wellness Model (WHO, 1984) views health as a process and a resource, not merely a state."
+      },
+      { q: "Antonovsky's Salutogenesis model focuses on:", 
+        opts: ["Causes of disease (pathogenesis)", "Factors that support health and coping resources", "Only genetic causes", "Solely medical treatments"],
+        a: 1,
+        exp: "Salutogenesis asks 'What keeps people well?' and emphasizes resources and coping rather than only risks."
+      },
+      { q: "Which is an example of salutogenic thinking in HIV programs?", 
+        opts: ["Only studying how the virus damages immunity", "Focusing on peer support and ART adherence to enable long lives", "Ignoring social support", "Focusing solely on vaccine development"],
+        a: 1,
+        exp: "Salutogenic approaches look at support systems, adherence, stigma reduction that enable people with HIV to live well."
+      },
+      { q: "Which is NOT typically listed as a component/dimension of health in the materials provided?", 
+        opts: ["Physical", "Mental", "Social", "Astrological"],
+        a: 3,
+        exp: "Physical, mental and social (also emotional, environmental, spiritual) are recognized; astrological is not a health component."
+      },
+      { q: "Physical health most directly refers to:", 
+        opts: ["Ability to perform routine tasks without physical restriction", "Level of income", "Spiritual beliefs", "Social connections"],
+        a: 0,
+        exp: "Physical health refers to anatomical integrity and physiological functioning allowing routine tasks without restriction."
+      },
+      { q: "Mental health refers to:", 
+        opts: ["Only IQ score", "Ability to learn, think clearly and cope", "Being disease-free", "Financial stability"],
+        a: 1,
+        exp: "Mental health includes the ability to learn, think and cope; it's broader than intelligence alone."
+      },
+      { q: "Social health involves:", 
+        opts: ["Ability to make and maintain acceptable interactions with others", "Only having a large number of friends", "Avoiding all social contact", "Being politically active"],
+        a: 0,
+        exp: "Social health is the capacity for appropriate social interaction and relationships."
+      },
+      { q: "Emotional health is best described as:", 
+        opts: ["Repressing emotions", "Expressing emotions appropriately and coping with stress", "Ignoring stressful situations", "Only positive emotions allowed"],
+        a: 1,
+        exp: "Emotional health implies appropriate expression of emotions and maintaining integrity under stress."
+      },
+      { q: "Spiritual health commonly refers to:", 
+        opts: ["Religious beliefs or personal values that give meaning and satisfaction", "Physical strength", "Biological traits", "Income level"],
+        a: 0,
+        exp: "Spiritual health often relates to beliefs, values and meaning that contribute to overall well-being."
+      },
+      { q: "Which of the following best defines 'determinants of health'?", 
+        opts: ["Random chance events only", "Factors that have a direct bearing on health (social, economic, environmental, genetic, behavioral, health services)", "Only genetics", "Only health care services"],
+        a: 1,
+        exp: "Determinants include a wide range: socioeconomic, environmental, behavioral, biological, and health services."
+      },
+      { q: "According to Dahlgren & Whitehead, which layer is closest to the individual?", 
+        opts: ["General socioeconomic, cultural and environmental conditions", "Individual lifestyle factors", "Social and community networks", "Living and working conditions"],
+        a: 1,
+        exp: "The model places individual lifestyle factors closest to the person, then social networks, living conditions, and broader socioeconomic factors."
+      },
+      { q: "Which of these is a group of determinants of health listed in the slides?", 
+        opts: ["Genetic/biological, lifestyle, environment, health services", "Only lifestyle", "Only environment", "Only genetics"],
+        a: 0,
+        exp: "The slides list four groups: genetic/biological, lifestyle, environment, and health services."
+      },
+      { q: "Which factor illustrates an environmental determinant of health?", 
+        opts: ["Housing quality and overcrowding", "Family history of genetic disease", "Personal smoking habit", "Access to education"],
+        a: 0,
+        exp: "Housing conditions (cold, damp, overcrowding) are environmental determinants that affect respiratory infections and mental health."
+      },
+      { q: "Income influences health by:", 
+        opts: ["Directly causing specific mutations", "Determining standard of living and access to healthy choices", "Only affecting the rich", "Not influencing health at all"],
+        a: 1,
+        exp: "Income affects living conditions, food, heating, stress levels and choices, making it a major determinant of health."
+      },
+      { q: "Which of these is a way low income affects health (select the answer that matches the slide examples)?", 
+        opts: ["Physiological, psychological and behavioral pathways", "Only genetic changes", "Only disease immunity", "Only access to technology"],
+        a: 0,
+        exp: "Low income can lead to poor housing and nutrition (physiological), stress (psychological) and risky behaviors (behavioral)."
+      },
+      { q: "Employment affects health because it:", 
+        opts: ["Only provides free gym access", "Determines income, affects self-esteem and can expose workers to hazards", "Is unrelated to health", "Guarantees good health"],
+        a: 1,
+        exp: "Employment affects income, self-esteem and may directly influence health through workplace safety or hazards."
+      },
+      { q: "Gender and health patterns may be influenced by all of the following EXCEPT:", 
+        opts: ["Biological factors like hormones", "Social roles and reporting patterns", "Access to education and work", "Planetary alignment"],
+        a: 3,
+        exp: "Planetary alignment isn't an evidence-based determinant; the others are meaningful influences on gendered health patterns."
+      },
+      { q: "Health and development have a two-way relationship. Which statement captures this best?", 
+        opts: ["Health only drives development", "Development only determines health", "Health both drives development (productivity) and is determined by development (infrastructure, education)", "They are unrelated"],
+        a: 2,
+        exp: "Healthy populations are productive (drives development) and development provides infrastructure and services that improve health — a bidirectional relationship."
+      },
+      { q: "Which Sustainable Development Goal (SDG) most directly focuses on health?", 
+        opts: ["SDG 1 (No Poverty)", "SDG 3 (Good Health and Well-being)", "SDG 7 (Affordable and Clean Energy)", "SDG 14 (Life Below Water)"],
+        a: 1,
+        exp: "SDG 3 explicitly focuses on Good Health and Well-being, though many SDGs interlink with health."
+      },
+      { q: "Which example shows how development can determine health?", 
+        opts: ["Eradication of disease without any investment", "Improved sanitation and water infrastructure reducing infectious disease", "Health unaffected by roads", "Health only impacted by DNA"],
+        a: 1,
+        exp: "Development like clean water and sanitation directly reduces infectious disease burden."
+      },
+      { q: "Which of these is an example of a social determinant of health?", 
+        opts: ["Genetic mutation", "Access to education and social support networks", "Virus replication rate", "Bacterial cell wall structure"],
+        a: 1,
+        exp: "Education and social/community networks are social determinants shaping health outcomes."
+      },
+      { q: "Which level is NOT one of the 'Levels of Health' listed in the slides?", 
+        opts: ["Global", "Community", "Individual", "Galactic"],
+        a: 3,
+        exp: "Global, international, national, community, family and individual are levels discussed; 'Galactic' is not."
+      }
+    ];
+
+    // Shuffle option letters A-D mapping (but keep correct index)
+    // We'll present options in given order for clarity.
+
+    // State
+    let current = 0;
+    let score = 0;
+    let answered = Array(questions.length).fill(false);
+    let correctFlags = Array(questions.length).fill(false);
+
+    // DOM refs
+    const quizEl = document.getElementById('quiz');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const qcount = document.getElementById('qcount');
+    const progressFill = document.getElementById('progress-fill');
+    const liveScore = document.getElementById('live-score');
+    const finalHint = document.getElementById('finalHint');
+
+    function renderQuestion(i){
+      const item = questions[i];
+      qcount.textContent = (i+1);
+      progressFill.style.width = ((i)/(questions.length))*100 + '%';
+      // Build options
+      const optLetters = ['A','B','C','D'];
+      let html = `
+        <div class="q-card" role="region" aria-labelledby="q${i}">
+          <div class="q-text" id="q${i}">${i+1}. ${item.q}</div>
+          <form class="options" id="form-${i}" aria-describedby="feedback-${i}">
+      `;
+      item.opts.forEach((o, idx) => {
+        const disabled = answered[i] ? 'disabled' : '';
+        html += `
+          <label class="option" for="q${i}_opt${idx}">
+            <input type="radio" name="q${i}" id="q${i}_opt${idx}" value="${idx}" ${disabled} />
+            <div>
+              <div style="font-weight:700">${optLetters[idx]}. ${o}</div>
+            </div>
+          </label>
+        `;
+      });
+      html += `</form>`;
+      if(answered[i]){
+        const wasCorrect = correctFlags[i];
+        html += `<div id="feedback-${i}" class="feedback ${wasCorrect ? 'correct':'wrong'}" role="status" aria-live="polite">
+          ${wasCorrect ? 'Correct' : 'Incorrect'}.
+          <div class="explain">${item.exp}</div>
+        </div>`;
+      } else {
+        html += `<div id="feedback-${i}" class="feedback" style="display:none" role="status" aria-live="polite"></div>`;
+      }
+      html += `</div>`;
+      quizEl.innerHTML = html;
+      // Attach interaction
+      const form = document.getElementById(`form-${i}`);
+      form.addEventListener('change', (e) => {
+        // submit answer when someone selects
+        handleAnswer(i, parseInt(e.target.value,10));
+      });
+      // Enable/disable prev/next
+      prevBtn.disabled = i === 0;
+      nextBtn.textContent = i === questions.length-1 ? 'Finish' : 'Next';
+      // update live status
+      liveScore.textContent = score;
+      finalHint.textContent = `Answer all questions — your final score will appear after finishing.`;
+    }
+
+    function handleAnswer(index, selectedIdx){
+      if(answered[index]) return;
+      const q = questions[index];
+      const isCorrect = selectedIdx === q.a;
+      answered[index] = true;
+      correctFlags[index] = isCorrect;
+      if(isCorrect) score++;
+      // Re-render to show feedback
+      renderQuestion(index);
+      // Update feedback element content
+      const feedback = document.getElementById(`feedback-${index}`);
+      if(feedback){
+        feedback.style.display = 'block';
+        feedback.className = 'feedback ' + (isCorrect ? 'correct':'wrong');
+        feedback.innerHTML = `${isCorrect ? 'Correct' : 'Incorrect'}.<div class="explain">${q.exp}</div>`;
+      }
+      liveScore.textContent = score;
+    }
+
+    prevBtn.addEventListener('click', () => {
+      if(current>0){ current--; renderQuestion(current); }
+    });
+    nextBtn.addEventListener('click', () => {
+      if(current < questions.length-1){
+        current++;
+        renderQuestion(current);
+      } else {
+        // Finish — show summary
+        showSummary();
+      }
+    });
+
+    function showSummary(){
+      // show final progress fill full
+      progressFill.style.width = '100%';
+      const percent = Math.round((score/questions.length)*100);
+      quizEl.innerHTML = `
+        <div class="q-card" role="region" aria-live="polite">
+          <h2 style="margin:0 0 8px 0">Quiz Complete</h2>
+          <div style="font-size:16px;margin-bottom:8px">You scored <strong>${score}</strong> out of <strong>${questions.length}</strong> (${percent}%).</div>
+          <div style="color:var(--muted);margin-bottom:12px">Review each question below — correct answers are highlighted.</div>
+          <div id="review" style="display:flex;flex-direction:column;gap:8px;max-height:48vh;overflow:auto;padding-right:8px"></div>
+          <div style="margin-top:12px;display:flex;gap:8px">
+            <button id="retryBtn" class="ghost">Retry</button>
+            <button id="downloadBtn">Download as HTML</button>
+          </div>
+        </div>
+      `;
+      // populate review
+      const review = document.getElementById('review');
+      questions.forEach((q, idx) => {
+        const optLetters = ['A','B','C','D'];
+        let qhtml = `<div style="padding:10px;border-radius:8px;background:linear-gradient(180deg,#fff,#fbfbff);border:1px solid rgba(0,0,0,0.04)">
+          <div style="font-weight:700">${idx+1}. ${q.q}</div>
+          <div style="margin-top:6px">`;
+        q.opts.forEach((o,i)=>{
+          const isCorrect = i === q.a;
+          const wasChosen = answered[idx] && correctFlags[idx] ? i===q.a : false;
+          qhtml += `<div style="padding:6px;border-radius:6px;margin-top:6px;${isCorrect ? 'background:linear-gradient(90deg,rgba(74,222,128,0.12),rgba(74,222,128,0.02));border:1px solid rgba(74,222,128,0.12);' : ''}">
+            <strong>${optLetters[i]}.</strong> ${o} ${isCorrect ? '<em style="color:var(--success);margin-left:8px">✓ correct answer</em>' : ''}
+          </div>`;
+        });
+        qhtml += `</div><div style="margin-top:8px;color:var(--muted)">${q.exp}</div></div>`;
+        review.insertAdjacentHTML('beforeend', qhtml);
+      });
+
+      document.getElementById('retryBtn').addEventListener('click', () => {
+        // reset
+        current = 0; score = 0; answered.fill(false); correctFlags.fill(false);
+        renderQuestion(0);
+      });
+
+      document.getElementById('downloadBtn').addEventListener('click', () => {
+        // Offer the current page as downloadable HTML
+        const blob = new Blob([document.documentElement.outerHTML], {type:'text/html'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'public-health-test1-preparation.html';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      });
+
+      // Update final hint
+      finalHint.textContent = `Completed — score: ${score}/${questions.length} (${percent}%).`;
+    }
+
+    // Initial render
+    renderQuestion(current);
+
+    // Simple particle animation (Canva-colored particles)
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+    let w = canvas.width = innerWidth;
+    let h = canvas.height = innerHeight;
+    window.addEventListener('resize', () => { w = canvas.width = innerWidth; h = canvas.height = innerHeight; initParticles(); });
+
+    const palette = ['#ff7b7b','#ffd166','#6ee7b7','#6fb3ff','#b692ff','#ff9fdf','#6be5c8','#ffd3a5'];
+    let particles = [];
+    function initParticles(){
+      particles = [];
+      const count = Math.round((w*h)/60000 * 40) + 20; // scale by screen
+      for(let i=0;i<count;i++){
+        particles.push({
+          x: Math.random()*w,
+          y: Math.random()*h,
+          r: Math.random()*6 + 2,
+          vx: (Math.random()-0.5)*0.6,
+          vy: (Math.random()-0.5)*0.6,
+          c: palette[Math.floor(Math.random()*palette.length)],
+          alpha: 0.2 + Math.random()*0.6
+        });
+      }
+    }
+    function draw(){
+      ctx.clearRect(0,0,w,h);
+      // slight gradient overlay for depth
+      const g = ctx.createLinearGradient(0,0,w,h);
+      g.addColorStop(0,'rgba(255,255,255,0.06)');
+      g.addColorStop(1,'rgba(230,240,255,0.06)');
+      ctx.fillStyle = g;
+      ctx.fillRect(0,0,w,h);
+      for(const p of particles){
+        ctx.beginPath();
+        ctx.fillStyle = p.c;
+        ctx.globalAlpha = p.alpha;
+        ctx.shadowColor = p.c;
+        ctx.shadowBlur = 12;
+        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fill();
+        ctx.closePath();
+        ctx.globalAlpha = 1;
+      }
+      // subtle connecting lines
+      for(let i=0;i<particles.length;i++){
+        for(let j=i+1;j<particles.length;j++){
+          const a = particles[i], b = particles[j];
+          const dx = a.x-b.x, dy = a.y-b.y;
+          const d = Math.sqrt(dx*dx+dy*dy);
+          if(d<120){
+            ctx.beginPath();
+            ctx.strokeStyle = a.c;
+            ctx.globalAlpha = (1 - d/120)*0.06;
+            ctx.lineWidth = 1;
+            ctx.moveTo(a.x,a.y);
+            ctx.lineTo(b.x,b.y);
+            ctx.stroke();
+            ctx.closePath();
+            ctx.globalAlpha = 1;
+          }
+        }
+      }
+    }
+    function update(){
+      for(const p of particles){
+        p.x += p.vx;
+        p.y += p.vy;
+        if(p.x < -20) p.x = w+20;
+        if(p.x > w+20) p.x = -20;
+        if(p.y < -20) p.y = h+20;
+        if(p.y > h+20) p.y = -20;
+      }
+    }
+    function loop(){
+      update();
+      draw();
+      requestAnimationFrame(loop);
+    }
+    initParticles();
+    loop();
+
+    // Accessibility: keyboard navigation for next/prev
+    document.addEventListener('keydown', (e) => {
+      if(e.key === 'ArrowRight') nextBtn.click();
+      if(e.key === 'ArrowLeft') prevBtn.click();
+    });
+  </script>
+</body>
+</html>
