@@ -30,6 +30,7 @@
         font-size: 14px;
         text-decoration: none;
         border: 1px solid #ccc;
+        cursor: pointer;
       }
       .take-quiz-btn:hover { background-color: #d5d5d5; }
       .free-quiz-btn {
@@ -151,12 +152,12 @@
           <strong>Histology</strong>
           <ul>
             <li><a class="doc-link" onclick="accessContent('Histology1.html')">📄 Histology Notes</a></li>
-            <a class="take-quiz-btn" onclick="accessContent('Historogy1.html')">📝 Cell structure and Cell Division Quiz</a>
-            <a class="take-quiz-btn" onclick="accessContent('Historogy2.html')">📝 Epithelial tissues Quiz</a>
-            <a class="take-quiz-btn" onclick="accessContent('Historogy3.html')">📝 Anatomy of a skin Quiz</a>
-            <a class="take-quiz-btn" onclick="accessContent('Historogy4.html')">📝 Connective tissues Quiz</a>
-            <a class="take-quiz-btn" onclick="accessContent('Historogy5.html')">📝 Muscle tissues Quiz</a>
-            <a class="take-quiz-btn" onclick="accessContent('Historogy6.html')">📝 Blood Introductions Quiz</a>
+            <li><a class="take-quiz-btn" onclick="accessContent('Historogy1.html')">📝 Cell structure and Cell Division Quiz</a></li>
+            <li><a class="take-quiz-btn" onclick="accessContent('Historogy2.html')">📝 Epithelial tissues Quiz</a></li>
+            <li><a class="take-quiz-btn" onclick="accessContent('Historogy3.html')">📝 Anatomy of a skin Quiz</a></li>
+            <li><a class="take-quiz-btn" onclick="accessContent('Historogy4.html')">📝 Connective tissues Quiz</a></li>
+            <li><a class="take-quiz-btn" onclick="accessContent('Historogy5.html')">📝 Muscle tissues Quiz</a></li>
+            <li><a class="take-quiz-btn" onclick="accessContent('Historogy6.html')">📝 Blood Introductions Quiz</a></li>
           </ul>
         </div>
 
@@ -222,13 +223,16 @@
           <ul>
             <!-- 1.Possible Test One Questions-->
             <li>
-              <a class="take-quiz-btn" onclick="accessContent('ph1.html')">📝 Concepts Of Health(lecture 1)</a>
+              <a class="take-quiz-btn" onclick="accessContent('ph1.html')">📝 Concepts Of Health (lecture 1)</a>
             </li>
-            <a class="take-quiz-btn" onclick="accesscontent('ph2.html')">📝 Defining public health(lecture 2)</a>
+            <li>
+              <a class="take-quiz-btn" onclick="accessContent('ph2.html')">📝 Defining Public Health (lecture 2)</a>
             </li>
-            <a class="take-quiz-btn" onclick="accesscontent('ph3.html')">📝 components of public Health(lecture 3)</a>
+            <li>
+              <a class="take-quiz-btn" onclick="accessContent('ph3.html')">📝 Components of Public Health (lecture 3)</a>
             </li>
-            <a class="take-quiz-btn" onclick="accesscontent('ph4.html')">📝 public Health Vs Clinical Medicine(lecture 4)</a>
+            <li>
+              <a class="take-quiz-btn" onclick="accessContent('ph4.html')">📝 Public Health Vs Clinical Medicine (lecture 4)</a>
             </li>
           </ul>
         </div>
@@ -326,20 +330,30 @@
 
     <script>
       // ✅ All valid passwords in one place (you can add/remove anytime)
-      const validPasswords = ["thrives100", "mbewe", "MASOTOBE", "medicinestudygroup", "Charles23", ];
+      const validPasswords = ["thrives100", "mbewe", "MASOTOBE", "medicinestudygroup", "Charles23"];
+
       function accessContent(link) {
+        console.log('accessContent called with:', link);
         const password = prompt("This content is protected. Please pay K100 to access. Inbox 0762514399.\nIf already registered, enter your password:");
+        if (password === null) {
+          // user cancelled prompt
+          console.log('Access cancelled by user');
+          return;
+        }
         if (validPasswords.includes(password)) {
+          // If it's an external URL (http/https/embed), open in iframe modal; else relative pages also load in iframe.
           document.getElementById('viewerFrame').src = link;
           document.getElementById('modal').style.display = 'block';
         } else {
           alert("Incorrect password or you have not registered.");
         }
       }
+
       function closeModal() {
         document.getElementById('modal').style.display = 'none';
         document.getElementById('viewerFrame').src = '';
       }
+
       window.onclick = function(event) {
         const modal = document.getElementById('modal');
         if (event.target == modal) { closeModal(); }
