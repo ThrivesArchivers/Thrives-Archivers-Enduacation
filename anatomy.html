@@ -1,333 +1,349 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Thrives Archivers Course Access</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-  body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; }
-  header { background-color: #333; color: #fff; text-align: center; padding: 10px; }
-  header img { width: 100%; max-height: 250px; object-fit: cover; }
-  h1 { margin-top: 10px; }
-  .container { max-width: 1200px; margin: auto; padding: 20px; }
-  .course-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-  .course-card { background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-  .course-card h3 { margin-top: 0; }
-  .course-card ul { list-style: none; padding-left: 0; }
-  .course-card li { margin-bottom: 12px; display: flex; flex-direction: column; gap: 5px; }
-  .icon { font-size: 18px; }
-  /* Document links */
-  .doc-link { text-decoration: none; color: #007BFF; cursor: pointer; }
-  .doc-link:hover { text-decoration: underline; }
-  /* Buttons */
-  .take-quiz-btn {
-    display: inline-block;
-    margin-top: 4px;
-    padding: 8px 16px;
-    background-color: #e0e0e0;
-    color: #333;
-    border-radius: 5px;
-    font-size: 14px;
-    text-decoration: none;
-    border: 1px solid #ccc;
-  }
-  .take-quiz-btn:hover { background-color: #d5d5d5; }
-  .free-quiz-btn {
-    display: inline-block;
-    margin-top: 10px;
-    padding: 12px 20px;
-    background: linear-gradient(90deg, #ff7e5f, #feb47b);
-    color: #fff;
-    border-radius: 6px;
-    font-size: 16px;
-    font-weight: bold;
-    text-decoration: none;
-    border: none;
-    cursor: pointer;
-    transition: transform 0.2s;
-  }
-  .free-quiz-btn:hover { transform: scale(1.05); }
-  .whatsapp-button {
-    display: inline-block;
-    margin-top: 10px;
-    padding: 12px 20px;
-    background-color: #25D366;
-    color: #fff;
-    border-radius: 6px;
-    font-size: 16px;
-    font-weight: bold;
-    text-decoration: none;
-    position: relative;
-  }
-  .whatsapp-button .chat-icon {
-    display: inline-block;
-    margin-left: 8px;
-    animation: moveIcon 1s infinite alternate;
-  }
-  @keyframes moveIcon {
-    0% { transform: translateY(0); }
-    100% { transform: translateY(-5px); }
-  }
-  /* Notification Banner */
-  .notification {
-    background: linear-gradient(90deg,#ffe9b5,#ffd1a3);
-    color: #333;
-    padding: 12px 18px;
-    border-radius: 8px;
-    margin: 18px auto;
-    max-width: 1200px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    font-weight: bold;
-    text-align: center;
-  }
-  /* Modal */
-  .modal { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); }
-  .modal-content { background-color: #fff; margin: 5% auto; width: 90%; max-width: 800px; border-radius: 10px; overflow: hidden; position: relative; }
-  .modal-content iframe { width: 100%; height: 500px; border: none; }
-  .close-btn { position: absolute; top: 5px; right: 10px; font-size: 24px; color: #333; cursor: pointer; font-weight: bold; }
-</style>
-</head>
-<body>
-<header>
-  <img src="file_0000000009d461f89d0cb3387f0b7000.png" alt="Header Image">
-  <h1>Thrives Archivers Course Access</h1>
-</header>
+  <head>
+    <meta charset="UTF-8">
+    <title>Thrives Archivers Course Access</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; }
+      header { background-color: #333; color: #fff; text-align: center; padding: 10px; }
+      header img { width: 100%; max-height: 250px; object-fit: cover; }
+      h1 { margin-top: 10px; }
+      .container { max-width: 1200px; margin: auto; padding: 20px; }
+      .course-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+      .course-card { background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+      .course-card h3 { margin-top: 0; }
+      .course-card ul { list-style: none; padding-left: 0; }
+      .course-card li { margin-bottom: 12px; display: flex; flex-direction: column; gap: 5px; }
+      .icon { font-size: 18px; }
+      /* Document links */
+      .doc-link { text-decoration: none; color: #007BFF; cursor: pointer; }
+      .doc-link:hover { text-decoration: underline; }
+      /* Buttons */
+      .take-quiz-btn {
+        display: inline-block;
+        margin-top: 4px;
+        padding: 8px 16px;
+        background-color: #e0e0e0;
+        color: #333;
+        border-radius: 5px;
+        font-size: 14px;
+        text-decoration: none;
+        border: 1px solid #ccc;
+      }
+      .take-quiz-btn:hover { background-color: #d5d5d5; }
+      .free-quiz-btn {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 12px 20px;
+        background: linear-gradient(90deg, #ff7e5f, #feb47b);
+        color: #fff;
+        border-radius: 6px;
+        font-size: 16px;
+        font-weight: bold;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: transform 0.2s;
+      }
+      .free-quiz-btn:hover { transform: scale(1.05); }
+      .whatsapp-button {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 12px 20px;
+        background-color: #25D366;
+        color: #fff;
+        border-radius: 6px;
+        font-size: 16px;
+        font-weight: bold;
+        text-decoration: none;
+        position: relative;
+      }
+      .whatsapp-button .chat-icon {
+        display: inline-block;
+        margin-left: 8px;
+        animation: moveIcon 1s infinite alternate;
+      }
+      @keyframes moveIcon {
+        0% { transform: translateY(0); }
+        100% { transform: translateY(-5px); }
+      }
+      /* Notification Banner */
+      .notification {
+        background: linear-gradient(90deg,#ffe9b5,#ffd1a3);
+        color: #333;
+        padding: 12px 18px;
+        border-radius: 8px;
+        margin: 18px auto;
+        max-width: 1200px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        font-weight: bold;
+        text-align: center;
+      }
+      /* Modal */
+      .modal { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); }
+      .modal-content { background-color: #fff; margin: 5% auto; width: 90%; max-width: 800px; border-radius: 10px; overflow: hidden; position: relative; }
+      .modal-content iframe { width: 100%; height: 500px; border: none; }
+      .close-btn { position: absolute; top: 5px; right: 10px; font-size: 24px; color: #333; cursor: pointer; font-weight: bold; }
+    </style>
+  </head>
 
-<!-- Notification added on top as requested -->
-<div class="notification">
-  Prepare with us: Biochemistry and public health test one. Check the Biochemistry and Public Health section below.
-</div>
+  <body>
+    <header>
+      <img src="file_0000000009d461f89d0cb3387f0b7000.png" alt="Header Image">
+      <h1>Thrives Archivers Course Access</h1>
+    </header>
 
-<div class="container">
-  <div class="course-grid">
-
-    <!-- Anatomy -->
-    <div class="course-card">
-      <h3>Anatomy</h3>
-      <strong>Gross Anatomy</strong>
-      <ul>
-        <li>
-          <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1g-Q9qHfstDZC7dnB_zMGVVbTUuocPFNf/preview')">📄 INTRODUCTIONS TO ANATOMY (Thrives Tutor)</a>
-        </li>
-        <li>
-          <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1feP6JSyE5gFOlGPnLEIch3_xhJgqQyMY/preview')">📄 Ostorogy of Upper Limbs</a>
-          <a class="take-quiz-btn" onclick="accessContent('https://www.youtube.com/embed/vIeuD0pQNr8?si=O6GTaxmEKofYe1RR')">🎥 Video</a>
-          <a class="take-quiz-btn" onclick="accessContent('Gross1.html')">📝 Quiz</a>
-        </li>
-        <li>
-          <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1fgBndheNWEsawjXN8DZ_OQmkmwY5mSLz/preview')">📄 Pectoral Region</a>
-          <a class="take-quiz-btn" onclick="accessContent('https://www.youtube.com/embed/P-kMR5eNoHE?si=tvvGTmEL47p0XDHl')">🎥 Video</a>
-          <a class="take-quiz-btn" onclick="accessContent('gross2.html')">📝 Quiz</a>
-        </li>
-        <li>
-          <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1ftAMb2P5UFYJLYgx1vVnqmHGP3kTjzQx/preview')">📄 ARM, CUBITAL FOSSA & ELBOW JOINT</a>
-          <a class="take-quiz-btn" onclick="accessContent('https://www.youtube.com/embed/RFehGNZPhpA?si=lYtVl-w9Sp3VOKtz')">🎥 Video</a>
-          <a class="take-quiz-btn" onclick="accessContent('Gross3.html')">📝 Quiz</a>
-        </li>
-        <li>
-          <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1ftJgS45NG_tMbpTP1vVnqmHGP3kTjzQx/preview')">📄 Anatomy of a Shoulder</a>
-          <a class="take-quiz-btn" onclick="accessContent('https://www.youtube.com/embed/7QI_owVSwKY?si=w11gETTdWuSiHQTm')">🎥 Video</a>
-          <a class="take-quiz-btn" onclick="accessContent('gross4.html')">📝 Quiz</a>
-        </li>
-        <li>
-          <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1fvvjvjMNQY2CnJjk4SlrH5Ha9cOK2LjR/preview')">📄 Forearm Easy Notes</a>
-          <a class="take-quiz-btn" onclick="accessContent('https://www.youtube.com/embed/9WL_Ds8konc?si=ZUJJg_xLL1ewZNXk')">🎥 Video</a>
-          <a class="take-quiz-btn" onclick="accessContent('Gross5.html')">📝 Quiz</a>
-        </li>
-        <li>
-          <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1fzbshqzmDM2Rtb8gmT2MsEXJIUV6RxeH/preview')">📄 Anatomy of a Hand</a>
-          <a class="take-quiz-btn" onclick="accessContent('https://www.youtube.com/embed/zyl6eoU-3Rg?si=F8LrmHKYG1OyXV1q')">🎥 Video</a>
-          <a class="take-quiz-btn" onclick="accessContent('Gross6.html')">📝 Quiz</a>
-        </li>
-      </ul>
-      <strong>Embryology</strong>
-      <ul>
-        <li><a class="doc-link" onclick="accessContent('Embryology1.html')">📄 Embryology Notes</a></li>
-      </ul>
-      <strong>Histology</strong>
-      <ul>
-        <li><a class="doc-link" onclick="accessContent('Histology1.html')">📄 Histology Notes</a></li>
-        <a class="take-quiz-btn" onclick="accessContent('Historogy1.html')">📝 Cell structure and Cell Division Quiz</a>
-        <a class="take-quiz-btn" onclick="accessContent('Historogy2.html')">📝 Epithelial tissues Quiz</a>
-        <a class="take-quiz-btn" onclick="accessContent('Historogy3.html')">📝 Anatomy of a skin Quiz</a>
-        <a class="take-quiz-btn" onclick="accessContent('Historogy4.html')">📝 Connective tissues Quiz</a>	
-        <a class="take-quiz-btn" onclick="accessContent('Historogy5.html')">📝 Muscle tissues Quiz</a>
-        <a class="take-quiz-btn" onclick="accessContent('Historogy6.html')">📝 Blood Introductions Quiz</a>
-      </ul>
+    <!-- Notification added on top as requested -->
+    <div class="notification">
+      Prepare with us: Biochemistry and public health test one. Check the Biochemistry and Public Health section below.
     </div>
 
-    <!-- Physiology -->
-    <div class="course-card">
-      <h3>PHYSIOLOGY</h3>
-      <ul>
-        <li>
-          <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1nvVcXkV2-Cgf-j4rKYQI9pyNL0yt2CK2/preview')">
-            📄 INTRODUCTIONS TO PHYSIOLOGY (Thrives Tutor)
-          </a>
-          <a class="take-quiz-btn" onclick="accessContent('Physiology1.html')">📝 Quiz</a>
-        </li>
-      </ul>
-      <strong>Cardiovascular System</strong>
-      <ul>
-       <li>
-          <a class="take-quiz-btn" onclick="accessContent('Physiology2.html')">📝 Mitochondrial and Cytoskeleton</a>
-        </li>
-      </ul>
-      <strong>Respiratory System</strong>
-      <ul>
-        <li>
-          <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1phRespiratoryDoc/preview')">📄 Respiratory Physiology</a>
-          <a class="take-quiz-btn" onclick="accessContent('Physiology3.html')">📝 Quiz</a>
-        </li>
-      </ul>
+    <div class="container">
+      <div class="course-grid">
+
+        <!-- Anatomy -->
+        <div class="course-card">
+          <h3>Anatomy</h3>
+
+          <strong>Gross Anatomy</strong>
+          <ul>
+            <li>
+              <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1g-Q9qHfstDZC7dnB_zMGVVbTUuocPFNf/preview')">📄 INTRODUCTIONS TO ANATOMY (Thrives Tutor)</a>
+            </li>
+            <li>
+              <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1feP6JSyE5gFOlGPnLEIch3_xhJgqQyMY/preview')">📄 Ostorogy of Upper Limbs</a>
+              <a class="take-quiz-btn" onclick="accessContent('https://www.youtube.com/embed/vIeuD0pQNr8?si=O6GTaxmEKofYe1RR')">🎥 Video</a>
+              <a class="take-quiz-btn" onclick="accessContent('Gross1.html')">📝 Quiz</a>
+            </li>
+            <li>
+              <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1fgBndheNWEsawjXN8DZ_OQmkmwY5mSLz/preview')">📄 Pectoral Region</a>
+              <a class="take-quiz-btn" onclick="accessContent('https://www.youtube.com/embed/P-kMR5eNoHE?si=tvvGTmEL47p0XDHl')">🎥 Video</a>
+              <a class="take-quiz-btn" onclick="accessContent('gross2.html')">📝 Quiz</a>
+            </li>
+            <li>
+              <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1ftAMb2P5UFYJLYgx1vVnqmHGP3kTjzQx/preview')">📄 ARM, CUBITAL FOSSA & ELBOW JOINT</a>
+              <a class="take-quiz-btn" onclick="accessContent('https://www.youtube.com/embed/RFehGNZPhpA?si=lYtVl-w9Sp3VOKtz')">🎥 Video</a>
+              <a class="take-quiz-btn" onclick="accessContent('Gross3.html')">📝 Quiz</a>
+            </li>
+            <li>
+              <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1ftJgS45NG_tMbpTP1vVnqmHGP3kTjzQx/preview')">📄 Anatomy of a Shoulder</a>
+              <a class="take-quiz-btn" onclick="accessContent('https://www.youtube.com/embed/7QI_owVSwKY?si=w11gETTdWuSiHQTm')">🎥 Video</a>
+              <a class="take-quiz-btn" onclick="accessContent('gross4.html')">📝 Quiz</a>
+            </li>
+            <li>
+              <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1fvvjvjMNQY2CnJjk4SlrH5Ha9cOK2LjR/preview')">📄 Forearm Easy Notes</a>
+              <a class="take-quiz-btn" onclick="accessContent('https://www.youtube.com/embed/9WL_Ds8konc?si=ZUJJg_xLL1ewZNXk')">🎥 Video</a>
+              <a class="take-quiz-btn" onclick="accessContent('Gross5.html')">📝 Quiz</a>
+            </li>
+            <li>
+              <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1fzbshqzmDM2Rtb8gmT2MsEXJIUV6RxeH/preview')">📄 Anatomy of a Hand</a>
+              <a class="take-quiz-btn" onclick="accessContent('https://www.youtube.com/embed/zyl6eoU-3Rg?si=F8LrmHKYG1OyXV1q')">🎥 Video</a>
+              <a class="take-quiz-btn" onclick="accessContent('Gross6.html')">📝 Quiz</a>
+            </li>
+          </ul>
+
+          <strong>Embryology</strong>
+          <ul>
+            <li><a class="doc-link" onclick="accessContent('Embryology1.html')">📄 Embryology Notes</a></li>
+          </ul>
+
+          <strong>Histology</strong>
+          <ul>
+            <li><a class="doc-link" onclick="accessContent('Histology1.html')">📄 Histology Notes</a></li>
+            <a class="take-quiz-btn" onclick="accessContent('Historogy1.html')">📝 Cell structure and Cell Division Quiz</a>
+            <a class="take-quiz-btn" onclick="accessContent('Historogy2.html')">📝 Epithelial tissues Quiz</a>
+            <a class="take-quiz-btn" onclick="accessContent('Historogy3.html')">📝 Anatomy of a skin Quiz</a>
+            <a class="take-quiz-btn" onclick="accessContent('Historogy4.html')">📝 Connective tissues Quiz</a>
+            <a class="take-quiz-btn" onclick="accessContent('Historogy5.html')">📝 Muscle tissues Quiz</a>
+            <a class="take-quiz-btn" onclick="accessContent('Historogy6.html')">📝 Blood Introductions Quiz</a>
+          </ul>
+        </div>
+
+        <!-- Physiology -->
+        <div class="course-card">
+          <h3>PHYSIOLOGY</h3>
+          <ul>
+            <li>
+              <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1nvVcXkV2-Cgf-j4rKYQI9pyNL0yt2CK2/preview')">
+                📄 INTRODUCTIONS TO PHYSIOLOGY (Thrives Tutor)
+              </a>
+              <a class="take-quiz-btn" onclick="accessContent('Physiology1.html')">📝 Quiz</a>
+            </li>
+          </ul>
+
+          <strong>Cardiovascular System</strong>
+          <ul>
+            <li>
+              <a class="take-quiz-btn" onclick="accessContent('Physiology2.html')">📝 Mitochondrial and Cytoskeleton</a>
+            </li>
+          </ul>
+
+          <strong>Respiratory System</strong>
+          <ul>
+            <li>
+              <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1phRespiratoryDoc/preview')">📄 Respiratory Physiology</a>
+              <a class="take-quiz-btn" onclick="accessContent('Physiology3.html')">📝 Quiz</a>
+            </li>
+          </ul>
+
+          <h3>PHARMACOLOGY</h3>
+          <ul>
+            <li>
+              <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1oX_fCGfjZ42BgzvNabyGiLLPzs8E1HZk/preview')">
+                📄 HEART FAILURE PART 1 (Tutor Nerd)
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Public Health -->
+        <div class="course-card">
+          <h3>Public Health</h3>
+
+          <strong>Community Medicine</strong>
+          <ul>
+            <li>
+              <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1phCommunityMedDoc/preview')">📄 Community Medicine Notes</a>
+              <a class="take-quiz-btn" onclick="accessContent('PublicHealth1.html')">📝 Quiz</a>
+            </li>
+          </ul>
+
+          <strong>Environmental Health</strong>
+          <ul>
+            <li>
+              <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1phEnvHealthDoc/preview')">📄 Environmental Health Notes</a>
+              <a class="take-quiz-btn" onclick="accessContent('PublicHealth2.html')">📝 Quiz</a>
+            </li>
+          </ul>
+
+          <!-- New: Public Health test 1 preparation -->
+          <strong>Public Health test 1 preparation</strong>
+          <ul>
+            <!-- 1.Possible Test One Questions-->
+            <li>
+              <a class="take-quiz-btn" onclick="accessContent('ph1.html')">📝 Concepts Of Health(lecture 1)</a>
+            </li>
+            <a class="take-quiz-btn" onclick="accesscontent('ph2.html')">📝 Defining public health(lecture 2)</a>
+            </li>
+            <a class="take-quiz-btn" onclick="accesscontent('ph3.html')">📝 components of public Health(lecture 3)</a>
+            </li>
+            <a class="take-quiz-btn" onclick="accesscontent('ph4.html')">📝 public Health Vs Clinical Medicine(lecture 4)</a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Medical Biochemical -->
+        <div class="course-card">
+          <h3>Medical Biochemical</h3>
+
+          <strong>General Biochemistry</strong>
+          <ul>
+            <li>
+              <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1mbGeneralBiochemDoc/preview')">📄 General Biochemistry</a>
+              <a class="take-quiz-btn" onclick="accessContent('Biochem1.html')">📝 Quiz</a>
+            </li>
+          </ul>
+
+          <strong>Metabolism</strong>
+          <ul>
+            <li>
+              <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1mbMetabolismDoc/preview')">📄 Metabolism Notes</a>
+              <a class="take-quiz-btn" onclick="accessContent('Biochem2.html')">📝 Quiz</a>
+            </li>
+          </ul>
+
+          <!-- New: Biochemistry test 1 preparation -->
+          <strong>Biochemistry test 1 preparation</strong>
+          <ul>
+            <!-- 1. MCQS -->
+            <li>
+              <a class="take-quiz-btn" href="Biotest1.html" target="_blank">📝 Previous tests MCQS (previous tests)</a>
+            </li>
+
+            <!-- 2. Biochemistry introduction summarized notes + Tutorial sheet 1 solutions -->
+            <li>
+              <div><strong>2a.</strong> <a class="doc-link" onclick="accessContent('Biochem_intro_summary.html')">Biochemistry introduction — Summarized notes</a></div>
+              <div><strong>2b.</strong> <a class="doc-link" onclick="accessContent('Biochem_tutorial1_solutions.html')">Tutorial sheet 1 — Solutions</a></div>
+            </li>
+
+            <!-- 3. Enzymes summary + Tutorial sheet 2 -->
+            <li>
+              <div><strong>3a.</strong> <a class="doc-link" onclick="accessContent('Biochem_enzymes_summary.html')">Summarized notes — Enzymes</a></div>
+              <div><strong>3b.</strong> <a class="doc-link" onclick="accessContent('Biochem_tutorial2.html')">Tutorial sheet 2</a></div>
+            </li>
+
+            <!-- 4. Biogenetics summary + Tutorial sheet 4 solutions -->
+            <li>
+              <div><strong>4a.</strong> <a class="doc-link" onclick="accessContent('Biochem_biogenetics_summary.html')">Summarized notes — Biogenetics</a></div>
+              <div><strong>4b.</strong> <a class="doc-link" onclick="accessContent('Biochem_tutorial4_solutions.html')">Tutorial sheet 4 — Solutions</a></div>
+            </li>
+
+            <!-- 5. Carbohydrate metabolism summary + Tutorial sheet 5 solutions -->
+            <li>
+              <div><strong>5a.</strong> <a class="doc-link" onclick="accessContent('Biochem_carbs_summary.html')">Summarized notes — Carbohydrate metabolism</a></div>
+              <div><strong>5b.</strong> <a class="doc-link" onclick="accessContent('Biochem_tutorial5_solutions.html')">Tutorial sheet 5 — Solutions</a></div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Behavioral Science and Communication Skills -->
+        <div class="course-card">
+          <h3>Behavioral Science & Communication Skills</h3>
+
+          <strong>Behavioral Science</strong>
+          <ul>
+            <li>
+              <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1bsBehavioralDoc/preview')">📄 Behavioral Science Notes</a>
+              <a class="take-quiz-btn" onclick="accessContent('Behavioral1.html')">📝 Quiz</a>
+            </li>
+          </ul>
+
+          <strong>Communication Skills</strong>
+          <ul>
+            <li>
+              <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1bsCommSkillsDoc/preview')">📄 Communication Skills</a>
+              <a class="take-quiz-btn" onclick="accessContent('Behavioral2.html')">📝 Quiz</a>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+      <a class="free-quiz-btn" href="anatomyquize.html" target="_blank">Go to Anatomy Quiz</a>
+      <a class="whatsapp-button" href="https://wa.me/260973178100" target="_blank">
+        Chat with Me on WhatsApp <span class="chat-icon">💬</span>
+      </a>
     </div>
-     <h3>PHARMACOLOGY</h3>
-      <ul>
-        <li>
-  <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1oX_fCGfjZ42BgzvNabyGiLLPzs8E1HZk/preview')">
-    📄 HEART FAILURE PART 1 (Tutor Nerd)
-  </a>
-</li>
-      </ul>
-    </div>
-    <!-- Public Health -->
-    <div class="course-card">
-      <h3>Public Health</h3>
-      <strong>Community Medicine</strong>
-      <ul>
-        <li>
-          <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1phCommunityMedDoc/preview')">📄 Community Medicine Notes</a>
-          <a class="take-quiz-btn" onclick="accessContent('PublicHealth1.html')">📝 Quiz</a>
-        </li>
-      </ul>
-      <strong>Environmental Health</strong>
-      <ul>
-        <li>
-          <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1phEnvHealthDoc/preview')">📄 Environmental Health Notes</a>
-          <a class="take-quiz-btn" onclick="accessContent('PublicHealth2.html')">📝 Quiz</a>
-        </li>
-      </ul>
-    </div>
-    <!-- New: Public Health test 1 preparation -->
-      <strong>Public Health test 1 preparation</strong>
-      <ul>
-        <!-- 1.Possible Test One Questions-->
-        <li>
-         <a class="take-quiz-btn" onclick="accessContent('ph1.html')">📝 Concepts Of Health(lecture 1)</a>
-        </li>
-       <a class="take-quiz-btn" onclick="accesscontent('ph2.html')">📝 Defining public health(lecture 2)</a>
-        </li> 
-        <a class="take-quiz-btn" onclick="accesscontent('ph3.html')">📝 components of public Health(lecture 3)</a>
-        </li>
-       <a class="take-quiz-btn" onclick="accesscontent('ph4.html')">📝 public Health Vs Clinical Medicine(lecture 4)</a>
-        </li> 
-      </ul>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <iframe id="viewerFrame" src=""></iframe>
+      </div>
     </div>
 
-    <!-- Medical Biochemical -->
-    <div class="course-card">
-      <h3>Medical Biochemical</h3>
-      <strong>General Biochemistry</strong>
-      <ul>
-        <li>
-          <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1mbGeneralBiochemDoc/preview')">📄 General Biochemistry</a>
-          <a class="take-quiz-btn" onclick="accessContent('Biochem1.html')">📝 Quiz</a>
-        </li>
-      </ul>
-      <strong>Metabolism</strong>
-      <ul>
-        <li>
-          <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1mbMetabolismDoc/preview')">📄 Metabolism Notes</a>
-          <a class="take-quiz-btn" onclick="accessContent('Biochem2.html')">📝 Quiz</a>
-        </li>
-      </ul>
-
-      <!-- New: Biochemistry test 1 preparation -->
-      <strong>Biochemistry test 1 preparation</strong>
-      <ul>
-        <!-- 1. MCQS -->
-        <li>
-          <a class="take-quiz-btn" href="Biotest1.html" target="_blank">📝 Previous tests MCQS (previous tests)</a>
-        </li>
-
-        <!-- 2. Biochemistry introduction summarized notes + Tutorial sheet 1 solutions -->
-        <li>
-          <div><strong>2a.</strong> <a class="doc-link" onclick="accessContent('Biochem_intro_summary.html')">Biochemistry introduction — Summarized notes</a></div>
-          <div><strong>2b.</strong> <a class="doc-link" onclick="accessContent('Biochem_tutorial1_solutions.html')">Tutorial sheet 1 — Solutions</a></div>
-        </li>
-
-        <!-- 3. Enzymes summary + Tutorial sheet 2 -->
-        <li>
-          <div><strong>3a.</strong> <a class="doc-link" onclick="accessContent('Biochem_enzymes_summary.html')">Summarized notes — Enzymes</a></div>
-          <div><strong>3b.</strong> <a class="doc-link" onclick="accessContent('Biochem_tutorial2.html')">Tutorial sheet 2</a></div>
-        </li>
-
-        <!-- 4. Biogenetics summary + Tutorial sheet 4 solutions -->
-        <li>
-          <div><strong>4a.</strong> <a class="doc-link" onclick="accessContent('Biochem_biogenetics_summary.html')">Summarized notes — Biogenetics</a></div>
-          <div><strong>4b.</strong> <a class="doc-link" onclick="accessContent('Biochem_tutorial4_solutions.html')">Tutorial sheet 4 — Solutions</a></div>
-        </li>
-
-        <!-- 5. Carbohydrate metabolism summary + Tutorial sheet 5 solutions -->
-        <li>
-          <div><strong>5a.</strong> <a class="doc-link" onclick="accessContent('Biochem_carbs_summary.html')">Summarized notes — Carbohydrate metabolism</a></div>
-          <div><strong>5b.</strong> <a class="doc-link" onclick="accessContent('Biochem_tutorial5_solutions.html')">Tutorial sheet 5 — Solutions</a></div>
-        </li>
-      </ul>
-    </div>
-
-    <!-- Behavioral Science and Communication Skills -->
-    <div class="course-card">
-      <h3>Behavioral Science & Communication Skills</h3>
-      <strong>Behavioral Science</strong>
-      <ul>
-        <li>
-          <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1bsBehavioralDoc/preview')">📄 Behavioral Science Notes</a>
-          <a class="take-quiz-btn" onclick="accessContent('Behavioral1.html')">📝 Quiz</a>
-        </li>
-      </ul>
-      <strong>Communication Skills</strong>
-      <ul>
-        <li>
-          <a class="doc-link" onclick="accessContent('https://drive.google.com/file/d/1bsCommSkillsDoc/preview')">📄 Communication Skills</a>
-          <a class="take-quiz-btn" onclick="accessContent('Behavioral2.html')">📝 Quiz</a>
-        </li>
-      </ul>
-    </div>
-
-  </div>
-  <a class="free-quiz-btn" href="anatomyquize.html" target="_blank">Go to Anatomy Quiz</a>
-  <a class="whatsapp-button" href="https://wa.me/260973178100" target="_blank">
-    Chat with Me on WhatsApp <span class="chat-icon">💬</span>
-  </a>
-</div>
-<!-- Modal -->
-<div id="modal" class="modal">
-  <div class="modal-content">
-    <span class="close-btn" onclick="closeModal()">&times;</span>
-    <iframe id="viewerFrame" src=""></iframe>
-  </div>
-</div>
-<script>
-  // ✅ All valid passwords in one place (you can add/remove anytime)
-  const validPasswords = ["thrives100", "mbewe", "MASOTOBE", "medicinestudygroup", "Charles23", ];
-  function accessContent(link) {
-    const password = prompt("This content is protected. Please pay K100 to access. Inbox 0762514399.\nIf already registered, enter your password:");
-    if (validPasswords.includes(password)) {
-      document.getElementById('viewerFrame').src = link;
-      document.getElementById('modal').style.display = 'block';
-    } else {
-      alert("Incorrect password or you have not registered.");
-    }
-  }
-  function closeModal() {
-    document.getElementById('modal').style.display = 'none';
-    document.getElementById('viewerFrame').src = '';
-  }
-  window.onclick = function(event) {
-    const modal = document.getElementById('modal');
-    if (event.target == modal) { closeModal(); }
-  }
-</script>
-</body>
+    <script>
+      // ✅ All valid passwords in one place (you can add/remove anytime)
+      const validPasswords = ["thrives100", "mbewe", "MASOTOBE", "medicinestudygroup", "Charles23", ];
+      function accessContent(link) {
+        const password = prompt("This content is protected. Please pay K100 to access. Inbox 0762514399.\nIf already registered, enter your password:");
+        if (validPasswords.includes(password)) {
+          document.getElementById('viewerFrame').src = link;
+          document.getElementById('modal').style.display = 'block';
+        } else {
+          alert("Incorrect password or you have not registered.");
+        }
+      }
+      function closeModal() {
+        document.getElementById('modal').style.display = 'none';
+        document.getElementById('viewerFrame').src = '';
+      }
+      window.onclick = function(event) {
+        const modal = document.getElementById('modal');
+        if (event.target == modal) { closeModal(); }
+      }
+    </script>
+  </body>
 </html>
