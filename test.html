@@ -42,6 +42,10 @@
   .hint{font-size:12px;color:var(--muted)}
   .youtube-download-icon { margin-left:8px; }
 
+  /* Watch button style */
+  .watch-btn{background:none;border:none;color:var(--brand);font-weight:700;cursor:pointer;padding:4px 8px;border-radius:6px}
+  .watch-btn:hover{background:rgba(25,118,210,0.08)}
+
   /* Modal video player styles */
   .modal-video-bg {
     display: none; position: fixed; left: 0; top: 0; width: 100vw; height: 100vh;
@@ -420,6 +424,7 @@ function renderVideos(videos){
         const card = document.createElement('div')
         const unlocked = canAccessVideo(video)
         card.className = 'video-card'
+        // Added "Watch on YouTube" button next to Download.
         card.innerHTML = `
           <span style="display:flex; align-items:center; gap:6px;">
             ${unlocked 
@@ -427,12 +432,15 @@ function renderVideos(videos){
               : '<span>🔒</span>'}
             ${video.title}
           </span>
-          <button class="youtube-download-icon download-btn"
-                  style="background:none; border:none; padding:0; cursor:pointer;"
-                  title="Download from YouTube">
-            <canvas width="32" height="32" class="yt-canvas"></canvas>
-            <span style="font-size:12px; color:#FF0000; font-weight:bold;">Download</span>
-          </button>
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="watch-btn" title="Open on YouTube">Watch on YouTube</button>
+            <button class="youtube-download-icon download-btn"
+                    style="background:none; border:none; padding:0; cursor:pointer;"
+                    title="Download from YouTube">
+              <canvas width="32" height="32" class="yt-canvas"></canvas>
+              <span style="font-size:12px; color:#FF0000; font-weight:bold;">Download</span>
+            </button>
+          </div>
         `
         card.onclick = ()=> handleVideoClick(video, unlocked)
         // Draw YouTube canvas icon for each button
@@ -463,6 +471,29 @@ function renderVideos(videos){
           ctx.fillStyle = "#FFFFFF";
           ctx.fill();
         }
+
+        // Watch button logic - allow subscribers OR correct password holders to open YouTube
+        const watchBtn = card.querySelector('.watch-btn')
+        if (watchBtn) {
+          watchBtn.onclick = (e) => {
+            e.stopPropagation()
+            if (unlocked) {
+              // Open the YouTube watch page in a new tab
+              window.open(`https://www.youtube.com/watch?v=${video['video id']}`, '_blank')
+              return
+            }
+            // Not unlocked — allow if user supplies a correct password for this video
+            const pw = prompt('You are not subscribed to this course. Enter password to watch on YouTube:')
+            if(pw === null) return
+            const passwords = passwordsFor(video).map(s=>s.toLowerCase())
+            if(passwords.includes(pw.trim().toLowerCase())){
+              window.open(`https://www.youtube.com/watch?v=${video['video id']}`, '_blank')
+            } else {
+              alert('Incorrect password or access denied.')
+            }
+          }
+        }
+
         // Download button logic:
         const dlBtn = card.querySelector('.download-btn')
         if(dlBtn){
