@@ -42,9 +42,9 @@
   .hint{font-size:12px;color:var(--muted)}
   .youtube-download-icon { margin-left:8px; }
 
-  /* Watch button style */
-  .watch-btn{background:none;border:none;color:var(--brand);font-weight:700;cursor:pointer;padding:4px 8px;border-radius:6px}
-  .watch-btn:hover{background:rgba(25,118,210,0.08)}
+  /* Watch button style (works for button or anchor) */
+  .watch-btn{display:inline-block;background:var(--brand);color:#fff;text-decoration:none;font-weight:700;cursor:pointer;padding:6px 10px;border-radius:6px}
+  .watch-btn:hover{background:#125ca8}
 
   /* Modal video player styles */
   .modal-video-bg {
@@ -154,7 +154,7 @@
   <!-- Modal Video Player (NEW) -->
   <div class="modal-video-bg" id="modalVideoBg">
     <div class="modal-video-player">
-      <iframe id="modalVideoFrame" src="" allowfullscreen></iframe>
+      <iframe id="modalVideoFrame" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="no-referrer" loading="lazy"></iframe>
       <button class="modal-video-close" id="closeModalVideoBtn">Close</button>
     </div>
   </div>
@@ -210,7 +210,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
 // --- SUPABASE CONFIG ---
 const supabaseUrl = 'https://odwiqajuubcgrrqipyju.supabase.co'
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1dWJjZ3JycWlweWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzA4MjEsImV4cCI6MjA2ODg0NjgyMX0.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A'
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1dWJjZ3JycWlweWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzA4MjEsImV4cCI6MjA2ODg0NjgyMX0.CPyCmqvr0QIx3P[...]
 const supabase = createClient(supabaseUrl, supabaseKey)
 
 // --- CONSTANTS ---
@@ -433,7 +433,7 @@ function renderVideos(videos){
             ${video.title}
           </span>
           <div style="display:flex;gap:8px;align-items:center">
-            <button class="watch-btn" title="Open on YouTube">Watch on YouTube</button>
+            <a class="watch-btn" href="#" title="Open on YouTube" onclick="event.stopPropagation();">Watch on YouTube</a>
             <button class="youtube-download-icon download-btn"
                     style="background:none; border:none; padding:0; cursor:pointer;"
                     title="Download from YouTube">
@@ -476,10 +476,11 @@ function renderVideos(videos){
         const watchBtn = card.querySelector('.watch-btn')
         if (watchBtn) {
           watchBtn.onclick = (e) => {
+            e.preventDefault()
             e.stopPropagation()
             if (unlocked) {
               // Open the YouTube watch page in a new tab
-              window.open(`https://www.youtube.com/watch?v=${video['video id']}`, '_blank')
+              window.open(`https://www.youtube.com/watch?v=${video['video id']}`, '_blank', 'noopener,noreferrer')
               return
             }
             // Not unlocked — allow if user supplies a correct password for this video
@@ -487,7 +488,7 @@ function renderVideos(videos){
             if(pw === null) return
             const passwords = passwordsFor(video).map(s=>s.toLowerCase())
             if(passwords.includes(pw.trim().toLowerCase())){
-              window.open(`https://www.youtube.com/watch?v=${video['video id']}`, '_blank')
+              window.open(`https://www.youtube.com/watch?v=${video['video id']}`, '_blank', 'noopener,noreferrer')
             } else {
               alert('Incorrect password or access denied.')
             }
