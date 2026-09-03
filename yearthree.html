@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Thrives Archivers | Year Three</title>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+        background: #f4f7fb;
+        color: #1f2937;
+    }
+
+    /* HEADER */
+    header {
+        background: linear-gradient(135deg, #0d47a1, #1976d2);
+        color: white;
+        padding: 18px 7%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 3px 15px rgba(0,0,0,0.15);
+    }
+
+    .logo {
+        font-size: 23px;
+        font-weight: bold;
+    }
+
+    .logo span {
+        display: block;
+        font-size: 12px;
+        font-weight: normal;
+        opacity: .85;
+        margin-top: 3px;
+    }
+
+    nav {
+        display: flex;
+        gap: 20px;
+    }
+
+    nav a {
+        color: white;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    nav a:hover {
+        opacity: .75;
+    }
+
+    /* HERO */
+    .hero {
+        min-height: 390px;
+        background: linear-gradient(
+            rgba(13,71,161,.92),
+            rgba(25,118,210,.88)
+        );
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 50px 20px;
+    }
+
+    .hero-content {
+        max-width: 800px;
+    }
+
+    .hero h1 {
+        font-size: 52px;
+        margin-bottom: 12px;
+    }
+
+    .hero h2 {
+        font-size: 25px;
+        font-weight: normal;
+        margin-bottom: 20px;
+    }
+
+    .hero p {
+        font-size: 16px;
+        line-height: 1.7;
+        opacity: .95;
+    }
+
+    .motto {
+        margin-top: 25px;
+        font-style: italic;
+        font-weight: bold;
+    }
+
+    /* MAIN */
+    main {
+        width: 90%;
+        max-width: 1200px;
+        margin: 50px auto;
+    }
+
+    .section-title {
+        text-align: center;
+        margin-bottom: 35px;
+    }
+
+    .section-title h2 {
+        color: #0d47a1;
+        font-size: 32px;
+        margin-bottom: 8px;
+    }
+
+    .section-title p {
+        color: #6b7280;
+    }
+
+    /* COURSE GRID */
+    .courses {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+        gap: 25px;
+    }
+
+    .course-card {
+        background: white;
+        border-radius: 16px;
+        padding: 28px;
+        box-shadow: 0 8px 25px rgba(0,0,0,.08);
+        transition: .3s;
+        border-top: 5px solid #1976d2;
+    }
+
+    .course-card:hover {
+        transform: translateY(-7px);
+        box-shadow: 0 15px 35px rgba(0,0,0,.13);
+    }
+
+    .course-icon {
+        font-size: 45px;
+        margin-bottom: 15px;
+    }
+
+    .course-card h3 {
+        color: #0d47a1;
+        font-size: 22px;
+        margin-bottom: 10px;
+    }
+
+    .course-card p {
+        color: #6b7280;
+        line-height: 1.6;
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+
+    .buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 9px;
+    }
+
+    .btn {
+        border: none;
+        padding: 11px 8px;
+        border-radius: 8px;
+        background: #1976d2;
+        color: white;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: bold;
+        transition: .2s;
+    }
+
+    .btn:hover {
+        background: #0d47a1;
+    }
+
+    .btn.secondary {
+        background: #e8f1ff;
+        color: #0d47a1;
+    }
+
+    .btn.secondary:hover {
+        background: #d5e5ff;
+    }
+
+    /* FEATURES */
+    .features {
+        margin-top: 65px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
+        gap: 20px;
+    }
+
+    .feature {
+        background: white;
+        padding: 25px;
+        text-align: center;
+        border-radius: 14px;
+        box-shadow: 0 5px 20px rgba(0,0,0,.06);
+    }
+
+    .feature-icon {
+        font-size: 35px;
+        margin-bottom: 12px;
+    }
+
+    .feature h3 {
+        color: #0d47a1;
+        margin-bottom: 8px;
+    }
+
+    .feature p {
+        color: #6b7280;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    /* ANNOUNCEMENT */
+    .announcement {
+        margin-top: 60px;
+        background: #0d47a1;
+        color: white;
+        padding: 35px;
+        border-radius: 18px;
+        text-align: center;
+    }
+
+    .announcement h2 {
+        margin-bottom: 12px;
+    }
+
+    .announcement p {
+        opacity: .9;
+        line-height: 1.6;
+    }
+
+    /* FOOTER */
+    footer {
+        margin-top: 70px;
+        background: #111827;
+        color: white;
+        padding: 35px 20px;
+        text-align: center;
+    }
+
+    footer h3 {
+        margin-bottom: 8px;
+    }
+
+    footer p {
+        color: #9ca3af;
+        font-size: 14px;
+        margin: 5px;
+    }
+
+    .footer-links {
+        margin-top: 15px;
+    }
+
+    .footer-links a {
+        color: #90caf9;
+        margin: 0 8px;
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+    /* MOBILE */
+    @media(max-width:700px) {
+
+        header {
+            padding: 15px 5%;
+        }
+
+        nav {
+            display: none;
+        }
+
+        .hero h1 {
+            font-size: 38px;
+        }
+
+        .hero h2 {
+            font-size: 20px;
+        }
+
+        main {
+            width: 92%;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header>
+
+    <div class="logo">
+        THRIVES ARCHIVERS
+        <span>Year Three Learning Hub</span>
+    </div>
+
+    <nav>
+        <a href="#home">Home</a>
+        <a href="#courses">Courses</a>
+        <a href="#resources">Resources</a>
+        <a href="#announcements">Announcements</a>
+    </nav>
+
+</header>
+
+
+<!-- HERO -->
+<section class="hero" id="home">
+
+    <div class="hero-content">
+
+        <h1>YEAR THREE</h1>
+
+        <h2>Thrives Archivers Academic Hub</h2>
+
+        <p>
+            Welcome to the Year Three learning platform.
+            Access your course materials, lecture resources,
+            past examination papers, quizzes and other academic
+            resources in one place.
+        </p>
+
+        <p class="motto">
+            "Everything is possible to achieve if we are together."
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- COURSES -->
+<main id="courses">
+
+    <div class="section-title">
+
+        <h2>Year Three Courses</h2>
+
+        <p>
+            Select a course to access its learning resources.
+        </p>
+
+    </div>
+
+
+    <div class="courses">
+
+        <!-- PATHOLOGY -->
+        <div class="course-card">
+
+            <div class="course-icon">🧬</div>
+
+            <h3>Pathology</h3>
+
+            <p>
+                Study disease processes, causes, mechanisms,
+                tissue changes and clinical manifestations.
+            </p>
+
+            <div class="buttons">
+
+                <button class="btn" onclick="openResource('Pathology Notes')">
+                    Notes
+                </button>
+
+                <button class="btn secondary"
+                    onclick="openResource('Pathology Videos')">
+                    Videos
+                </button>
+
+                <button class="btn secondary"
+                    onclick="openResource('Pathology Past Papers')">
+                    Past Papers
+                </button>
+
+                <button class="btn"
+                    onclick="openResource('Pathology Quizzes')">
+                    Quizzes
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- PUBLIC HEALTH -->
+        <div class="course-card">
+
+            <div class="course-icon">🌍</div>
+
+            <h3>Public Health</h3>
+
+            <p>
+                Explore disease prevention, health promotion,
+                epidemiology, community health and healthcare systems.
+            </p>
+
+            <div class="buttons">
+
+                <button class="btn"
+                    onclick="openResource('Public Health Notes')">
+                    Notes
+                </button>
+
+                <button class="btn secondary"
+                    onclick="openResource('Public Health Videos')">
+                    Videos
+                </button>
+
+                <button class="btn secondary"
+                    onclick="openResource('Public Health Past Papers')">
+                    Past Papers
+                </button>
+
+                <button class="btn"
+                    onclick="openResource('Public Health Quizzes')">
+                    Quizzes
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- PHARMACOLOGY -->
+        <div class="course-card">
+
+            <div class="course-icon">💊</div>
+
+            <h3>Pharmacology</h3>
+
+            <p>
+                Learn about drugs, mechanisms of action,
+                pharmacokinetics, pharmacodynamics and adverse effects.
+            </p>
+
+            <div class="buttons">
+
+                <button class="btn"
+                    onclick="openResource('Pharmacology Notes')">
+                    Notes
+                </button>
+
+                <button class="btn secondary"
+                    onclick="openResource('Pharmacology Videos')">
+                    Videos
+                </button>
+
+                <button class="btn secondary"
+                    onclick="openResource('Pharmacology Past Papers')">
+                    Past Papers
+                </button>
+
+                <button class="btn"
+                    onclick="openResource('Pharmacology Quizzes')">
+                    Quizzes
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- MEDICAL ETHICS -->
+        <div class="course-card">
+
+            <div class="course-icon">⚖️</div>
+
+            <h3>Medical Ethics</h3>
+
+            <p>
+                Understand ethical principles, professional conduct,
+                patient rights, confidentiality and informed consent.
+            </p>
+
+            <div class="buttons">
+
+                <button class="btn"
+                    onclick="openResource('Medical Ethics Notes')">
+                    Notes
+                </button>
+
+                <button class="btn secondary"
+                    onclick="openResource('Medical Ethics Videos')">
+                    Videos
+                </button>
+
+                <button class="btn secondary"
+                    onclick="openResource('Medical Ethics Past Papers')">
+                    Past Papers
+                </button>
+
+                <button class="btn"
+                    onclick="openResource('Medical Ethics Quizzes')">
+                    Quizzes
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- MICROBIOLOGY -->
+        <div class="course-card">
+
+            <div class="course-icon">🦠</div>
+
+            <h3>Microbiology</h3>
+
+            <p>
+                Study microorganisms, bacteria, viruses, fungi,
+                parasites, infection and laboratory diagnosis.
+            </p>
+
+            <div class="buttons">
+
+                <button class="btn"
+                    onclick="openResource('Microbiology Notes')">
+                    Notes
+                </button>
+
+                <button class="btn secondary"
+                    onclick="openResource('Microbiology Videos')">
+                    Videos
+                </button>
+
+                <button class="btn secondary"
+                    onclick="openResource('Microbiology Past Papers')">
+                    Past Papers
+                </button>
+
+                <button class="btn"
+                    onclick="openResource('Microbiology Quizzes')">
+                    Quizzes
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- RESOURCES -->
+    <section id="resources">
+
+        <div class="section-title" style="margin-top:70px;">
+
+            <h2>Learning Resources</h2>
+
+            <p>
+                Everything Year Three students need for effective study.
+            </p>
+
+        </div>
+
+
+        <div class="features">
+
+            <div class="feature">
+
+                <div class="feature-icon">📚</div>
+
+                <h3>Study Notes</h3>
+
+                <p>
+                    Access organized lecture notes and
+                    simplified study materials.
+                </p>
+
+            </div>
+
+
+            <div class="feature">
+
+                <div class="feature-icon">🎥</div>
+
+                <h3>Video Lessons</h3>
+
+                <p>
+                    Watch educational lessons and
+                    topic explanations.
+                </p>
+
+            </div>
+
+
+            <div class="feature">
+
+                <div class="feature-icon">📝</div>
+
+                <h3>Past Papers</h3>
+
+                <p>
+                    Practice using previous examination
+                    questions and revision materials.
+                </p>
+
+            </div>
+
+
+            <div class="feature">
+
+                <div class="feature-icon">❓</div>
+
+                <h3>Quizzes</h3>
+
+                <p>
+                    Test your understanding with
+                    interactive questions.
+                </p>
+
+            </div>
+
+
+            <div class="feature">
+
+                <div class="feature-icon">👨‍🏫</div>
+
+                <h3>Tutors</h3>
+
+                <p>
+                    Connect with tutors and receive
+                    academic assistance.
+                </p>
+
+            </div>
+
+
+            <div class="feature">
+
+                <div class="feature-icon">📢</div>
+
+                <h3>Announcements</h3>
+
+                <p>
+                    Stay updated with important academic
+                    information and lessons.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ANNOUNCEMENT -->
+    <section class="announcement" id="announcements">
+
+        <h2>📢 Year Three Announcements</h2>
+
+        <p>
+            Important announcements, lesson schedules,
+            new study materials and examination updates
+            will appear here.
+        </p>
+
+    </section>
+
+</main>
+
+
+<!-- FOOTER -->
+<footer>
+
+    <h3>THRIVES ARCHIVERS</h3>
+
+    <p>Year Three Learning Hub</p>
+
+    <p>
+        Everything is possible to achieve if we are together.
+    </p>
+
+    <div class="footer-links">
+
+        <a href="#home">Home</a>
+        <a href="#courses">Courses</a>
+        <a href="#resources">Resources</a>
+
+    </div>
+
+    <p style="margin-top:20px;">
+        © 2026 Thrives Archivers. All Rights Reserved.
+    </p>
+
+</footer>
+
+
+<script>
+
+function openResource(resource) {
+
+    alert(
+        resource +
+        " will be available here once the resource is added."
+    );
+
+}
+
+</script>
+
+</body>
+</html>
