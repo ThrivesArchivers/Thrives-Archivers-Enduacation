@@ -11,8 +11,8 @@
 // ============================================================================
 
 const SUPABASE_CONFIG = {
-  url: process.env.REACT_APP_SUPABASE_URL || 'YOUR_SUPABASE_URL_HERE',
-  anon_key: process.env.REACT_APP_SUPABASE_ANON_KEY || 'YOUR_ANON_KEY_HERE'
+  url: 'https://your-project.supabase.co',
+  anon_key: 'your_anon_key_here'
 };
 
 // Initialize Supabase client
@@ -20,13 +20,14 @@ const { createClient } = supabase;
 let supabaseClient = null;
 
 async function initSupabase() {
-  if (!SUPABASE_CONFIG.url || !SUPABASE_CONFIG.anon_key) {
-    console.error('❌ Supabase credentials not configured. Check config.js');
+  if (!SUPABASE_CONFIG.url || !SUPABASE_CONFIG.anon_key || 
+      SUPABASE_CONFIG.url.includes('your-project')) {
+    console.error('❌ Supabase credentials not configured. Update config.js with your credentials.');
     return null;
   }
   
   supabaseClient = createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anon_key);
-  console.log('✅ Supabase initialized');
+  console.log('✅ Supabase initialized successfully');
   return supabaseClient;
 }
 
