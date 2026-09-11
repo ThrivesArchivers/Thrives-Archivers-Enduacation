@@ -840,9 +840,24 @@ input:focus, select:focus, textarea:focus{
 
 <script src="config.js"></script>
 <script src="supabase-service.js">
-   const supabaseUrl = 'https://odwiqajuubcgrrqipyju.supabase.co'
+   <!-- Add after the Supabase script import -->
+<script>
+  // Initialize Supabase
+const supabaseUrl = 'https://odwiqajuubcgrrqipyju.supabase.co'
 const supabaseKey ='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1dWJjZ3JycWlweWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzA4MjEsImV4cCI6MjA2ODg0NjgyMX0.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A'
-const supabase = createClient(supabaseUrl, supabaseKey)
+  const { createClient } = supabase;
+  const client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  
+  // Example: Fetch quizzes from database
+  async function loadQuizzes() {
+    const { data, error } = await client
+      .from('quizzes')
+      .select('*');
+    
+    if (error) console.error('Error:', error);
+    else console.log('Quizzes:', data);
+  }
+  // Call on page load
 </script>
 
 <script>
