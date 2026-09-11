@@ -51,7 +51,7 @@ table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:12px;bor
 </section>
 
 <section id="admin" class="view">
-<div class="hero"><h1>⚙️ Admin Panel</h1><p>Create and manage quizzes, questions, students and results.</p></div>
+<div class="hero"><h1>⚙️ Admin Panel</h1><p>Welcome, Thrives Tutor. Create and manage quizzes, questions, students and results.</p><span class="badge published">ADMIN ACCESS ACTIVE</span></div>
 <div class="tabs">
 <button onclick="adminTab('create')">➕ Create Quiz</button>
 <button onclick="adminTab('question')">📝 Add Questions</button>
@@ -99,12 +99,12 @@ table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:12px;bor
    SUPABASE
    ========================================================== */
 const SUPABASE_URL='https://odwiqajuubcgrrqipyju.supabase.co';
-const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1dWJjZ3JycWlweWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzA4MjEsImV4cCI6MjA2ODg0NjgyMX0.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A'
+const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1YmNncnJx aXB5anUiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc1MzI3MDgyMSwiZXhwIjoyMDY4ODQ2ODIxfQ.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A'.replace(/\s/g,'');
 const {createClient}=supabase;
 const db=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 
 /* ADMIN EMAIL */
-const ADMIN_EMAIL='thrivesarchivers@gmail.com';
+const ADMIN_EMAIL='thrivesarchiver@gmail.com';
 
 let currentUser=null,currentProfile=null,authMode='login';
 let currentQuiz=null,currentQuestions=[],currentQuestionIndex=0,selectedAnswers={},currentAttemptId=null,quizStartedAt=0;
@@ -112,7 +112,10 @@ let currentQuiz=null,currentQuestions=[],currentQuestionIndex=0,selectedAnswers=
 function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';clearTimeout(window.tt);window.tt=setTimeout(()=>t.style.display='none',3500);}
 function initials(n){return(n||'U').split(/\s+/).filter(Boolean).map(x=>x[0]).join('').slice(0,2).toUpperCase();}
-function isAdmin(){return currentProfile?.is_admin===true;}
+function isAdmin(){
+  return currentProfile?.is_admin===true ||
+         currentUser?.email?.toLowerCase()===ADMIN_EMAIL.toLowerCase();
+}
 function requireLogin(){if(!currentUser){openAuth();return false}return true;}
 
 function showView(id){
@@ -160,16 +163,54 @@ if(currentUser)await loadCurrentProfile();else currentProfile=null;
 updateHeader();await loadQuizzes();
 }
 async function loadCurrentProfile(){
-if(!currentUser)return;
-let {data,error}=await db.from('users').select('*').eq('id',currentUser.id).maybeSingle();
-if(error){console.error(error);currentProfile=null;return;}
-if(!data){
-const m=currentUser.user_metadata||{};
-const row={id:currentUser.id,email:currentUser.email,full_name:m.full_name||currentUser.email?.split('@')[0]||'Student',year_level:m.year||'',total_score:0,quizzes_completed:0,is_admin:(currentUser.email||'').toLowerCase()===ADMIN_EMAIL.toLowerCase()};
-const r=await db.from('users').insert(row).select().single();
-if(r.error){console.error(r.error);return;}data=r.data;
-}
-currentProfile=data;
+  if(!currentUser)return;
+
+  const email=currentUser.email||'';
+  const emailIsAdmin=email.toLowerCase()===ADMIN_EMAIL.toLowerCase();
+
+  let {data,error}=await db.from('users').select('*').eq('id',currentUser.id).maybeSingle();
+
+  if(error){
+    console.warn('Profile SELECT:',error.message);
+  }
+
+  if(!data){
+    const m=currentUser.user_metadata||{};
+    const row={
+      id:currentUser.id,
+      email,
+      full_name:m.full_name||email.split('@')[0]||'Student',
+      university:m.university||'',
+      year_level:m.year||'',
+      total_score:0,
+      quizzes_completed:0,
+      is_admin:emailIsAdmin
+    };
+
+    const r=await db.from('users').insert(row).select('*').single();
+
+    if(!r.error){
+      data=r.data;
+    }else{
+      console.warn('Profile INSERT:',r.error.message);
+    }
+  }
+
+  currentProfile=data||{
+    id:currentUser.id,
+    email,
+    full_name:currentUser.user_metadata?.full_name||'Student',
+    university:currentUser.user_metadata?.university||'',
+    year_level:currentUser.user_metadata?.year||'',
+    total_score:0,
+    quizzes_completed:0,
+    is_admin:emailIsAdmin
+  };
+
+  // Never allow the admin email to lose admin status in the UI.
+  if(emailIsAdmin)currentProfile.is_admin=true;
+
+  updateHeader();
 }
 function updateHeader(){document.getElementById('loginBtn').classList.toggle('hidden',!!currentUser);document.getElementById('logoutBtn').classList.toggle('hidden',!currentUser);document.getElementById('na').classList.toggle('hidden',!isAdmin());}
 async function loadProfile(){
@@ -178,13 +219,37 @@ if(!currentUser){b.innerHTML='<p>Please login to view your profile.</p><button o
 if(!currentProfile)await loadCurrentProfile();const p=currentProfile||{};
 const avatar=p.avatar_url?'<img src="'+esc(p.avatar_url)+'" alt="Profile">':esc(initials(p.full_name));
 const {count}=await db.from('quiz_attempts').select('*',{count:'exact',head:true}).eq('user_id',currentUser.id);
-b.innerHTML='<div class="profiletop"><div class="avatar">'+avatar+'</div><div><h2>'+esc(p.full_name||'Student')+'</h2><div class="small">'+esc(p.email||currentUser.email)+'</div></div></div><hr>'+
+b.innerHTML='<div class="profiletop"><div class="avatar">'+avatar+'</div><div><h2>'+esc(p.full_name||'Student')+'</h2><div class="small">'+esc(p.email||currentUser.email)+'</div>'+(isAdmin()?'<span class="badge published">ADMIN</span>':'')+'</div></div><hr>'+
 '<div class="grid"><div><div class="small">Total Points</div><div class="stat">'+Number(p.total_score||0)+'</div></div><div><div class="small">Quizzes Completed</div><div class="stat">'+Number(p.quizzes_completed||0)+'</div></div><div><div class="small">Rank</div><div class="stat">'+(p.rank?'#'+Number(p.rank):'-')+'</div></div></div><hr>'+
-'<label>Full Name</label><input id="editName" value="'+esc(p.full_name||'')+'"><label>University</label><input id="editUniversity" value="'+esc(p.university||'')+'"><label>Year</label><input id="editYear" value="'+esc(p.year_level||'')+'"><label>Profile Picture URL</label><input id="editAvatar" value="'+esc(p.avatar_url||'')+'" placeholder="Optional image URL"><button onclick="saveProfile()">Save Profile</button>';
+'<label>Full Name</label><input id="editName" value="'+esc(p.full_name||'')+'"><label>University</label><input id="editUniversity" value="'+esc(p.university||'')+'"><label>Year</label><input id="editYear" value="'+esc(p.year_level||'')+'"><label>Profile Picture URL</label><input id="editAvatar" value="'+esc(p.avatar_url||'')+'" placeholder="Optional image URL"><label>Or upload a picture</label><input id="avatarFile" type="file" accept="image/*"><button onclick="saveProfile()">Save Profile</button>';
 }
+async function uploadAvatarIfSelected(){
+  const file=document.getElementById('avatarFile')?.files?.[0];
+  if(!file)return document.getElementById('editAvatar')?.value.trim()||'';
+
+  if(file.size>2*1024*1024){
+    toast('Profile picture must be 2 MB or smaller.');
+    return null;
+  }
+
+  const ext=(file.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'');
+  const path=currentUser.id+'/'+Date.now()+'.'+(ext||'jpg');
+
+  const {error}=await db.storage.from('avatars').upload(path,file,{upsert:true,contentType:file.type});
+  if(error){
+    toast('Picture upload failed: '+error.message+' (Create a public Storage bucket named avatars.)');
+    return null;
+  }
+
+  const {data}=db.storage.from('avatars').getPublicUrl(path);
+  return data.publicUrl;
+}
+
 async function saveProfile(){
 if(!requireLogin())return;
-const u={full_name:document.getElementById('editName').value.trim(),university:document.getElementById('editUniversity').value.trim(),year_level:document.getElementById('editYear').value.trim(),avatar_url:document.getElementById('editAvatar').value.trim()};
+const uploaded=await uploadAvatarIfSelected();
+  if(uploaded===null && document.getElementById('avatarFile')?.files?.length)return;
+  const u={full_name:document.getElementById('editName').value.trim(),university:document.getElementById('editUniversity').value.trim(),year_level:document.getElementById('editYear').value.trim(),avatar_url:uploaded||document.getElementById('editAvatar').value.trim()};
 const {data,error}=await db.from('users').update(u).eq('id',currentUser.id).select().single();
 if(error){toast(error.message);return}currentProfile=data;toast('Profile updated.');loadProfile();
 }
@@ -194,7 +259,7 @@ async function loadQuizzes(){
 const g=document.getElementById('quizGrid');if(!g)return;g.innerHTML='<div class="card">Loading quizzes...</div>';
 const {data,error}=await db.from('quizzes').select('*').eq('is_published',true).order('created_at',{ascending:false});
 if(error){g.innerHTML='<div class="card error">'+esc(error.message)+'</div>';return}
-if(!data?.length){g.innerHTML='<div class="card">No published quizzes yet.</div>';return}
+if(!data?.length){g.innerHTML='<div class="card"><h2>No published quizzes yet.</h2><p>The admin has not published a quiz yet. Create your first quiz from the Admin Panel, add questions, then publish it.</p></div>';return}
 g.innerHTML=data.map(q=>'<div class="card"><span class="badge published">PUBLISHED</span><h2>'+esc(q.title)+'</h2><p>'+esc(q.description||'')+'</p><p class="small">Subject: '+esc(q.subject)+' • '+Number(q.total_questions||0)+' questions • '+Number(q.time_limit_minutes||0)+' minutes</p><p class="small">Difficulty: '+esc(q.difficulty||'Medium')+' • Pass: '+Number(q.passing_score||70)+'%</p><button onclick="startQuiz(\''+q.id+'\')">Start Quiz</button></div>').join('');
 }
 async function startQuiz(id){
@@ -233,13 +298,37 @@ function leaveQuiz(){if(confirm('Exit this quiz? Your attempt will remain incomp
 
 /* LEADERBOARD */
 async function loadLeaderboard(){
-const b=document.getElementById('leaderboardBox');b.innerHTML='Loading...';
-const {data,error}=await db.from('leaderboard').select('user_id,total_points,quizzes_taken,average_score,rank_position').order('rank_position',{ascending:true,nullsFirst:false}).limit(100);
-if(error){b.innerHTML='<p class="error">'+esc(error.message)+'</p><p class="small">The leaderboard table needs to be populated by your database logic.</p>';return}
-if(!data?.length){b.innerHTML='<div class="card">No leaderboard records yet.</div>';return}
-b.innerHTML='<div class="tablewrap"><table><thead><tr><th>Rank</th><th>Points</th><th>Quizzes</th><th>Average</th></tr></thead><tbody>'+data.map((x,i)=>'<tr><td>'+(x.rank_position||i+1)+'</td><td><b>'+Number(x.total_points||0)+'</b></td><td>'+Number(x.quizzes_taken||0)+'</td><td>'+Number(x.average_score||0).toFixed(2)+'%</td></tr>').join('')+'</tbody></table></div>';
-}
+  const b=document.getElementById('leaderboardBox');
+  b.innerHTML='Loading...';
 
+  const {data,error}=await db.from('users')
+    .select('full_name,university,year_level,total_score,quizzes_completed')
+    .order('total_score',{ascending:false})
+    .limit(100);
+
+  if(error){
+    b.innerHTML='<p class="error">'+esc(error.message)+'</p>';
+    return;
+  }
+
+  if(!data?.length){
+    b.innerHTML='<p>No students yet.</p>';
+    return;
+  }
+
+  b.innerHTML='<div class="tablewrap"><table><thead><tr>'+
+    '<th>Rank</th><th>Student</th><th>University</th><th>Year</th><th>Quizzes</th><th>Points</th>'+
+    '</tr></thead><tbody>'+
+    data.map((x,i)=>
+      '<tr><td><b>#'+(i+1)+'</b></td>'+
+      '<td><b>'+esc(x.full_name||'Student')+'</b></td>'+
+      '<td>'+esc(x.university||'-')+'</td>'+
+      '<td>'+esc(x.year_level||'-')+'</td>'+
+      '<td>'+Number(x.quizzes_completed||0)+'</td>'+
+      '<td><b>'+Number(x.total_score||0)+'</b></td></tr>'
+    ).join('')+
+    '</tbody></table></div>';
+}
 /* ADMIN */
 function adminTab(tab){if(!isAdmin()){toast('Admin access required.');return}document.querySelectorAll('.adminbox').forEach(x=>x.classList.add('hidden'));document.getElementById('a'+tab.charAt(0).toUpperCase()+tab.slice(1)).classList.remove('hidden');}
 async function loadAdmin(){
