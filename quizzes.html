@@ -99,7 +99,7 @@ table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:12px;bor
    SUPABASE
    ========================================================== */
 const SUPABASE_URL='https://odwiqajuubcgrrqipyju.supabase.co';
-const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1dWJjZ3JycWlweWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzA4MjEsImV4cCI6MjA2ODg0NjgyMX0.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A'
+const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1YmNncnJx aXB5anUiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc1MzI3MDgyMSwiZXhwIjoyMDY4ODQ2ODIxfQ.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A'.replace(/\s/g,'');
 const {createClient}=supabase;
 const db=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 
@@ -113,9 +113,10 @@ function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&l
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';clearTimeout(window.tt);window.tt=setTimeout(()=>t.style.display='none',3500);}
 function initials(n){return(n||'U').split(/\s+/).filter(Boolean).map(x=>x[0]).join('').slice(0,2).toUpperCase();}
 function isAdmin(){
-  const email=String(currentUser?.email||'').trim().toLowerCase();
-  const profileAdmin=currentProfile?.is_admin===true || currentProfile?.is_admin===1 || currentProfile?.is_admin==='true';
-  return profileAdmin || email===ADMIN_EMAIL.toLowerCase();
+  const email=String(currentUser?.email || currentUser?.user_metadata?.email || '').trim().toLowerCase();
+  const profileEmail=String(currentProfile?.email||'').trim().toLowerCase();
+  const profileAdmin=currentProfile?.is_admin===true || currentProfile?.is_admin===1 || String(currentProfile?.is_admin).toLowerCase()==='true';
+  return profileAdmin || email===ADMIN_EMAIL.toLowerCase() || profileEmail===ADMIN_EMAIL.toLowerCase();
 }
 function syncAdminUI(){
   const admin=isAdmin();
@@ -164,10 +165,18 @@ async function logout(){await db.auth.signOut();currentUser=null;currentProfile=
 
 /* PROFILE */
 async function refreshSession(){
-const {data,error}=await db.auth.getSession();if(error)return console.error(error);
+const {data,error}=await db.auth.getSession();
+if(error){console.error('Session error:',error);return;}
 currentUser=data.session?.user||null;
+// Make the administrator button available immediately from the authenticated email.
+// This does not replace database RLS; it only fixes the frontend visibility issue.
+if(currentUser && String(currentUser.email||'').trim().toLowerCase()===ADMIN_EMAIL.toLowerCase()){
+  currentProfile={...(currentProfile||{}),id:currentUser.id,email:currentUser.email,is_admin:true};
+}
+syncAdminUI();
 if(currentUser)await loadCurrentProfile();else currentProfile=null;
-updateHeader();await loadQuizzes();
+updateHeader();
+await loadQuizzes();
 }
 async function loadCurrentProfile(){
 if(!currentUser)return;
@@ -316,7 +325,22 @@ b.innerHTML='<div class="tablewrap"><table><thead><tr><th>Student</th><th>Quiz</
 }
 
 /* START */
-db.auth.onAuthStateChange((_event,session)=>{currentUser=session?.user||null;setTimeout(async()=>{if(currentUser)await loadCurrentProfile();else currentProfile=null;updateHeader();loadQuizzes();},0);});
+db.auth.onAuthStateChange((_event,session)=>{
+  currentUser=session?.user||null;
+  if(currentUser && String(currentUser.email||'').trim().toLowerCase()===ADMIN_EMAIL.toLowerCase()){
+    currentProfile={...(currentProfile||{}),id:currentUser.id,email:currentUser.email,is_admin:true};
+  }
+  // Update navigation immediately; do not wait for the users-table query.
+  updateHeader();
+  setTimeout(async()=>{
+    if(currentUser) await loadCurrentProfile(); else currentProfile=null;
+    updateHeader();
+    await loadQuizzes();
+  },0);
+});
+
+// Restore an existing login when the HTML page is opened or refreshed.
+window.addEventListener('DOMContentLoaded',()=>{ refreshSession(); });
 refreshSession();
 showView('quizzes');
 </script>
