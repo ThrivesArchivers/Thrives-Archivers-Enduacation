@@ -2,384 +2,290 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Thrives Archivers - Quiz Competition</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{--primary:#5b5bea;--primary2:#7667ff;--bg:#f5f6ff;--card:#fff;--text:#20213a;--muted:#73758c;--border:#e7e7f2;--danger:#e74c3c;--success:#20a464}
+:root{--p:#5b5bea;--p2:#7667ff;--bg:#f5f6ff;--card:#fff;--text:#20213a;--muted:#73758c;--border:#e7e7f2;--danger:#e74c3c;--success:#20a464}
 *{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
-header{background:linear-gradient(135deg,var(--primary),var(--primary2));color:white;padding:16px 5%;display:flex;align-items:center;justify-content:space-between;gap:15px;position:sticky;top:0;z-index:20}
-.logo{font-size:21px;font-weight:800}.nav{display:flex;gap:8px;flex-wrap:wrap}.nav button{border:0;background:transparent;color:#fff;padding:10px 13px;border-radius:10px;cursor:pointer}.nav button:hover,.nav button.active{background:#ffffff22}
-.container{max-width:1100px;margin:auto;padding:25px 16px}.view{display:none}.view.active{display:block}
-.hero{background:linear-gradient(135deg,#5b5bea,#8a78ff);color:#fff;padding:30px;border-radius:20px;margin-bottom:22px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;box-shadow:0 5px 18px #34345b0d}
-button,.btn{background:var(--primary);color:#fff;border:0;border-radius:10px;padding:11px 16px;cursor:pointer;font-weight:700}.btn.secondary{background:#eeeef8;color:var(--text)}.btn.danger{background:var(--danger)}button:disabled{opacity:.55;cursor:not-allowed}
-input,select,textarea{width:100%;padding:12px;border:1px solid #dcdceb;border-radius:10px;margin:6px 0 12px;background:#fff;color:var(--text)}label{font-weight:700;font-size:14px}
-.small{font-size:13px;color:var(--muted)}.error{color:var(--danger);font-weight:700}.success{color:var(--success);font-weight:700}
-.modal{position:fixed;inset:0;background:#11112799;display:none;align-items:center;justify-content:center;padding:15px;z-index:50}.modal.show{display:flex}.modalbox{background:#fff;width:min(500px,100%);padding:24px;border-radius:18px;max-height:90vh;overflow:auto}
-.option{display:block;border:1px solid var(--border);padding:14px;border-radius:12px;margin:10px 0;cursor:pointer}.option:hover{border-color:var(--primary)}.option input{width:auto;margin:0 8px 0 0}
-.quiz-head{display:flex;justify-content:space-between;gap:15px;align-items:center;flex-wrap:wrap}.progress{height:8px;background:#e8e8f5;border-radius:20px;overflow:hidden}.progress div{height:100%;background:var(--primary);width:0}
-table{width:100%;border-collapse:collapse;background:#fff;border-radius:14px;overflow:hidden}th,td{text-align:left;padding:13px;border-bottom:1px solid var(--border)}th{background:#f0efff}
-.avatar{width:70px;height:70px;border-radius:50%;object-fit:cover;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:25px;font-weight:800}
-.profiletop{display:flex;gap:16px;align-items:center}.stat{font-size:25px;font-weight:800}.admin-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.hidden{display:none!important}
-.toast{position:fixed;right:18px;bottom:18px;background:#20213a;color:#fff;padding:13px 18px;border-radius:10px;display:none;z-index:100}
-@media(max-width:600px){header{align-items:flex-start;flex-direction:column}.nav{width:100%}.nav button{flex:1}.container{padding:16px}.hero{padding:22px}}
+header{background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;padding:15px 5%;display:flex;justify-content:space-between;align-items:center;gap:15px;position:sticky;top:0;z-index:20}.logo{font-weight:800;font-size:21px}.nav{display:flex;gap:6px;flex-wrap:wrap}.nav button{background:transparent;color:#fff;border:0;padding:10px 12px;border-radius:9px}.nav button:hover,.nav button.active{background:#ffffff22}
+.container{max-width:1150px;margin:auto;padding:25px 16px}.view{display:none}.view.active{display:block}.hero{background:linear-gradient(135deg,var(--p),#8a78ff);color:#fff;padding:30px;border-radius:20px;margin-bottom:22px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:16px}.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;box-shadow:0 5px 18px #34345b0d;margin-bottom:16px}
+button{background:var(--p);color:#fff;border:0;border-radius:10px;padding:11px 16px;cursor:pointer;font-weight:700}.secondary{background:#eeeef8;color:var(--text)}.danger{background:var(--danger)}.success{background:var(--success)}
+input,select,textarea{width:100%;padding:12px;border:1px solid #dcdceb;border-radius:10px;margin:6px 0 12px;background:#fff;color:var(--text)}label{font-weight:700;font-size:14px}.small{font-size:13px;color:var(--muted)}.error{color:var(--danger);font-weight:700}.ok{color:var(--success);font-weight:700}
+.hidden{display:none!important}.modal{position:fixed;inset:0;background:#11112799;display:none;align-items:center;justify-content:center;padding:15px;z-index:50}.modal.show{display:flex}.modalbox{background:#fff;width:min(500px,100%);padding:24px;border-radius:18px;max-height:90vh;overflow:auto}
+.option{display:block;border:1px solid var(--border);padding:14px;border-radius:12px;margin:10px 0;cursor:pointer}.option:hover{border-color:var(--p)}.option input{width:auto;margin:0 8px 0 0}
+.quizhead{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}.progress{height:8px;background:#e8e8f5;border-radius:20px;overflow:hidden}.progress div{height:100%;background:var(--p);width:0}
+table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}th{background:#f0efff}.tablewrap{overflow:auto}
+.avatar{width:78px;height:78px;border-radius:50%;background:var(--p);color:#fff;display:flex;align-items:center;justify-content:center;font-size:25px;font-weight:800;overflow:hidden}.avatar img{width:100%;height:100%;object-fit:cover}.profiletop{display:flex;gap:16px;align-items:center}.stat{font-size:26px;font-weight:800}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.badge{display:inline-block;padding:5px 9px;border-radius:20px;background:#eeeef8;font-size:12px;font-weight:700}.published{background:#dff7e9;color:#137b48}.draft{background:#fff2d6;color:#8a5a00}.toast{position:fixed;right:18px;bottom:18px;background:#20213a;color:#fff;padding:13px 18px;border-radius:10px;display:none;z-index:100;max-width:380px}
+@media(max-width:600px){header{flex-direction:column;align-items:flex-start}.nav{width:100%}.nav button{flex:1}.hero{padding:22px}.container{padding:16px}}
 </style>
 </head>
 <body>
-
 <header>
-  <div class="logo">💜 Thrives Archivers</div>
-  <div class="nav">
-    <button id="navQuizzes" onclick="showView('quizzes')">Quizzes</button>
-    <button id="navLeaderboard" onclick="showView('leaderboard')">Leaderboard</button>
-    <button id="navProfile" onclick="showView('profile')">Profile</button>
-    <button id="navAdmin" class="hidden" onclick="showView('admin')">Admin</button>
-    <button id="authBtn" onclick="openAuth()">Login</button>
-    <button id="logoutBtn" class="hidden" onclick="logout()">Logout</button>
-  </div>
+<div class="logo">💜 Thrives Archivers</div>
+<div class="nav">
+<button id="nq" onclick="showView('quizzes')">Quizzes</button>
+<button id="nl" onclick="showView('leaderboard')">Leaderboard</button>
+<button id="np" onclick="showView('profile')">Profile</button>
+<button id="na" class="hidden" onclick="showView('admin')">⚙️ Admin</button>
+<button id="loginBtn" onclick="openAuth()">Login</button>
+<button id="logoutBtn" class="hidden" onclick="logout()">Logout</button>
+</div>
 </header>
 
 <main class="container">
 <section id="quizzes" class="view active">
-  <div class="hero">
-    <h1>Quiz Competition</h1>
-    <p>Test your knowledge, earn points and climb the Thrives Archivers leaderboard.</p>
-  </div>
-  <div id="quizMessage"></div>
-  <div id="quizGrid" class="grid"></div>
+<div class="hero"><h1>Quiz Competition</h1><p>Test your knowledge, earn points and climb the Thrives Archivers leaderboard.</p></div>
+<div id="quizGrid" class="grid"></div>
 </section>
 
 <section id="leaderboard" class="view">
-  <div class="hero"><h1>🏆 Leaderboard</h1><p>Top students by total points.</p></div>
-  <div class="card"><div id="leaderboardBox">Loading...</div></div>
+<div class="hero"><h1>🏆 Leaderboard</h1><p>Students ranked by total points.</p></div>
+<div class="card"><div id="leaderboardBox">Loading...</div></div>
 </section>
 
 <section id="profile" class="view">
-  <div class="hero"><h1>My Profile</h1><p>Manage your student profile and view your progress.</p></div>
-  <div class="card" id="profileBox">Please login to view your profile.</div>
+<div class="hero"><h1>My Profile</h1><p>Manage your student information and view your progress.</p></div>
+<div class="card" id="profileBox">Please login to view your profile.</div>
 </section>
 
 <section id="admin" class="view">
-  <div class="hero"><h1>⚙️ Admin Panel</h1><p>Create quizzes, questions and answer options.</p></div>
-  <div class="admin-tabs">
-    <button onclick="adminTab('createQuiz')">Create Quiz</button>
-    <button onclick="adminTab('addQuestion')">Add Questions</button>
-    <button onclick="adminTab('manage')">Manage</button>
-  </div>
-  <div id="adminCreateQuiz" class="card adminpanel"></div>
-  <div id="adminAddQuestion" class="card adminpanel hidden"></div>
-  <div id="adminManage" class="card adminpanel hidden"></div>
+<div class="hero"><h1>⚙️ Admin Panel</h1><p>Create and manage quizzes, questions, students and results.</p></div>
+<div class="tabs">
+<button onclick="adminTab('create')">➕ Create Quiz</button>
+<button onclick="adminTab('question')">📝 Add Questions</button>
+<button onclick="adminTab('manage')">📚 Manage Quizzes</button>
+<button onclick="adminTab('students')">👥 Students</button>
+<button onclick="adminTab('attempts')">📊 Attempts</button>
+</div>
+<div id="aCreate" class="card adminbox"></div>
+<div id="aQuestion" class="card adminbox hidden"></div>
+<div id="aManage" class="card adminbox hidden"></div>
+<div id="aStudents" class="card adminbox hidden"></div>
+<div id="aAttempts" class="card adminbox hidden"></div>
 </section>
 
 <section id="playing" class="view">
-  <div class="card">
-    <div class="quiz-head">
-      <div><h2 id="playingTitle"></h2><div class="small" id="questionCounter"></div></div>
-      <div><b id="scorePreview">Score: 0</b></div>
-    </div>
-    <br><div class="progress"><div id="progressBar"></div></div>
-    <div id="questionBox" style="margin-top:22px"></div>
-    <div style="display:flex;justify-content:space-between;margin-top:20px">
-      <button class="btn secondary" onclick="leaveQuiz()">Exit</button>
-      <button id="nextBtn" onclick="nextQuestion()">Next</button>
-    </div>
-  </div>
+<div class="card">
+<div class="quizhead"><div><h2 id="playTitle"></h2><div class="small" id="counter"></div></div><b id="scorePreview">Score: 0</b></div>
+<br><div class="progress"><div id="bar"></div></div>
+<div id="questionBox" style="margin-top:22px"></div>
+<div style="display:flex;justify-content:space-between;margin-top:20px">
+<button class="secondary" onclick="leaveQuiz()">Exit</button><button id="nextBtn" onclick="nextQuestion()">Next</button>
+</div>
+</div>
 </section>
 </main>
 
-<div id="authModal" class="modal">
-<div class="modalbox">
-  <h2 id="authTitle">Login</h2>
-  <div id="authError"></div>
-  <div id="signupFields" class="hidden">
-    <label>Full Name</label><input id="fullName" placeholder="Your full name">
-    <label>University</label><input id="university" placeholder="e.g. Mulungushi University">
-    <label>Year</label><select id="year"><option value="">Select year</option><option>First Year</option><option>Second Year</option><option>Third Year</option><option>Fourth Year</option><option>Other</option></select>
-  </div>
-  <label>Email</label><input id="email" type="email" placeholder="Email">
-  <label>Password</label><input id="password" type="password" placeholder="Password">
-  <button style="width:100%" onclick="submitAuth()">Continue</button>
-  <p class="small" id="switchText">Don't have an account?</p>
-  <button class="btn secondary" style="width:100%" onclick="toggleAuthMode()" id="switchBtn">Create account</button>
-  <br><br><button class="btn secondary" style="width:100%" onclick="closeAuth()">Close</button>
+<div id="authModal" class="modal"><div class="modalbox">
+<h2 id="authTitle">Login</h2><div id="authError"></div>
+<div id="signupFields" class="hidden">
+<label>Full Name</label><input id="fullName" placeholder="Your full name">
+<label>University</label><input id="university" placeholder="e.g. Mulungushi University">
+<label>Year</label><select id="year"><option value="">Select year</option><option>First Year</option><option>Second Year</option><option>Third Year</option><option>Fourth Year</option><option>Other</option></select>
+</div>
+<label>Email</label><input id="email" type="email" placeholder="Email">
+<label>Password</label><input id="password" type="password" placeholder="Password">
+<button style="width:100%" onclick="submitAuth()">Continue</button>
+<p class="small" id="switchText">Don't have an account?</p>
+<button class="secondary" style="width:100%" id="switchBtn" onclick="toggleAuth()">Create account</button>
+<br><br><button class="secondary" style="width:100%" onclick="closeAuth()">Close</button>
 </div></div>
-
 <div id="toast" class="toast"></div>
 
 <script>
-/* =========================================================
-   THRIVES ARCHIVERS - SUPABASE CONFIGURATION
-   Replace ONLY the anon key below with your project's anon key.
-   NEVER put a service_role key in this HTML.
-========================================================= */
-const SUPABASE_URL = 'https://odwiqajuubcgrrqipyju.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1dWJjZ3JycWlweWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzA4MjEsImV4cCI6MjA2ODg0NjgyMX0.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A';
+/* ==========================================================
+   SUPABASE
+   ========================================================== */
+const SUPABASE_URL='https://odwiqajuubcgrrqipyju.supabase.co';
+const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1YmNncnJx aXB5anUiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc1MzI3MDgyMSwiZXhwIjoyMDY4ODQ2ODIxfQ.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A'.replace(/\s/g,'');
+const {createClient}=supabase;
+const db=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 
-const { createClient } = supabase;
-const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+/* ADMIN EMAIL */
+const ADMIN_EMAIL='thrivesarchives@gmail.com';
 
-let currentUser = null;
-let currentProfile = null;
-let authMode = 'login';
-let currentQuiz = null;
-let currentQuestions = [];
-let currentQuestionIndex = 0;
-let selectedAnswers = {};
-let currentAttemptId = null;
+let currentUser=null,currentProfile=null,authMode='login';
+let currentQuiz=null,currentQuestions=[],currentQuestionIndex=0,selectedAnswers={},currentAttemptId=null,quizStartedAt=0;
 
-/* ---------- UTILITIES ---------- */
 function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
-function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',3000);}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';clearTimeout(window.tt);window.tt=setTimeout(()=>t.style.display='none',3500);}
+function initials(n){return(n||'U').split(/\s+/).filter(Boolean).map(x=>x[0]).join('').slice(0,2).toUpperCase();}
+function isAdmin(){return currentProfile?.is_admin===true;}
 function requireLogin(){if(!currentUser){openAuth();return false}return true;}
-function initials(name){return (name||'U').split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase();}
-function showView(id){
-  if(id==='admin' && !isAdmin()){toast('Admin access required');return;}
-  document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  if(id==='quizzes')loadQuizzes();
-  if(id==='leaderboard')loadLeaderboard();
-  if(id==='profile')loadProfile();
-  if(id==='admin')loadAdmin();
-}
-function isAdmin(){return !!currentProfile?.is_admin}
 
-/* ---------- AUTH ---------- */
+function showView(id){
+if(id==='admin'&&!isAdmin()){toast('Admin access required.');return;}
+document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));
+if(id==='quizzes'){document.getElementById('nq').classList.add('active');loadQuizzes();}
+if(id==='leaderboard'){document.getElementById('nl').classList.add('active');loadLeaderboard();}
+if(id==='profile'){document.getElementById('np').classList.add('active');loadProfile();}
+if(id==='admin'){document.getElementById('na').classList.add('active');loadAdmin();}
+}
+
+/* AUTH */
 function openAuth(){if(currentUser){showView('profile');return}document.getElementById('authModal').classList.add('show');}
 function closeAuth(){document.getElementById('authModal').classList.remove('show');}
-function toggleAuthMode(){
-  authMode=authMode==='login'?'signup':'login';
-  document.getElementById('authTitle').textContent=authMode==='login'?'Login':'Create Account';
-  document.getElementById('signupFields').classList.toggle('hidden',authMode!=='signup');
-  document.getElementById('switchText').textContent=authMode==='login'?"Don't have an account?":'Already have an account?';
-  document.getElementById('switchBtn').textContent=authMode==='login'?'Create account':'Login';
-  document.getElementById('authError').innerHTML='';
+function toggleAuth(){
+authMode=authMode==='login'?'signup':'login';
+document.getElementById('authTitle').textContent=authMode==='login'?'Login':'Create Account';
+document.getElementById('signupFields').classList.toggle('hidden',authMode!=='signup');
+document.getElementById('switchText').textContent=authMode==='login'?"Don't have an account?":'Already have an account?';
+document.getElementById('switchBtn').textContent=authMode==='login'?'Create account':'Login';
+document.getElementById('authError').innerHTML='';
 }
 async function submitAuth(){
-  const email=document.getElementById('email').value.trim();
-  const password=document.getElementById('password').value;
-  const err=document.getElementById('authError');err.innerHTML='';
-  if(!email||!password){err.innerHTML='<p class="error">Enter email and password.</p>';return;}
-  let result;
-  if(authMode==='login'){
-    result=await db.auth.signInWithPassword({email,password});
-  }else{
-    const full_name=document.getElementById('fullName').value.trim();
-    const university=document.getElementById('university').value.trim();
-    const year=document.getElementById('year').value;
-    if(!full_name){err.innerHTML='<p class="error">Enter your full name.</p>';return;}
-    result=await db.auth.signUp({email,password,options:{data:{full_name,university,year}}});
-  }
-  if(result.error){err.innerHTML='<p class="error">'+esc(result.error.message)+'</p>';return;}
-  closeAuth();
-  toast(authMode==='login'?'Logged in successfully':'Account created successfully');
-  await refreshSession();
+const email=document.getElementById('email').value.trim(),password=document.getElementById('password').value,err=document.getElementById('authError');err.innerHTML='';
+if(!email||!password){err.innerHTML='<p class="error">Enter email and password.</p>';return;}
+let r;
+if(authMode==='login')r=await db.auth.signInWithPassword({email,password});
+else{
+const full_name=document.getElementById('fullName').value.trim(),university=document.getElementById('university').value.trim(),year=document.getElementById('year').value;
+if(!full_name){err.innerHTML='<p class="error">Enter your full name.</p>';return;}
+r=await db.auth.signUp({email,password,options:{data:{full_name,university,year}}});
 }
-async function logout(){await db.auth.signOut();currentUser=null;currentProfile=null;updateHeader();showView('quizzes');toast('Logged out');}
+if(r.error){err.innerHTML='<p class="error">'+esc(r.error.message)+'</p>';return;}
+closeAuth();toast(authMode==='login'?'Logged in successfully.':'Account created successfully.');await refreshSession();
+}
+async function logout(){await db.auth.signOut();currentUser=null;currentProfile=null;updateHeader();showView('quizzes');toast('Logged out.');}
 
-/* ---------- PROFILE ---------- */
+/* PROFILE */
 async function refreshSession(){
-  const {data:{session}}=await db.auth.getSession();
-  currentUser=session?.user||null;
-  if(currentUser) await loadCurrentProfile();
-  updateHeader();
-  loadQuizzes();
+const {data,error}=await db.auth.getSession();if(error)return console.error(error);
+currentUser=data.session?.user||null;
+if(currentUser)await loadCurrentProfile();else currentProfile=null;
+updateHeader();await loadQuizzes();
 }
 async function loadCurrentProfile(){
-  let {data,error}=await db.from('users').select('*').eq('id',currentUser.id).maybeSingle();
-  if(error){console.error(error);return;}
-  if(!data){
-    const meta=currentUser.user_metadata||{};
-    const insert={id:currentUser.id,full_name:meta.full_name||currentUser.email?.split('@')[0]||'Student',email:currentUser.email,university:meta.university||'',year:meta.year||'',points:0,is_admin:false};
-    const r=await db.from('users').insert(insert).select().single();
-    if(r.error) console.error(r.error); else data=r.data;
-  }
-  currentProfile=data;
+if(!currentUser)return;
+let {data,error}=await db.from('users').select('*').eq('id',currentUser.id).maybeSingle();
+if(error){console.error(error);currentProfile=null;return;}
+if(!data){
+const m=currentUser.user_metadata||{};
+const row={id:currentUser.id,email:currentUser.email,full_name:m.full_name||currentUser.email?.split('@')[0]||'Student',year_level:m.year||'',total_score:0,quizzes_completed:0,is_admin:(currentUser.email||'').toLowerCase()===ADMIN_EMAIL.toLowerCase()};
+const r=await db.from('users').insert(row).select().single();
+if(r.error){console.error(r.error);return;}data=r.data;
 }
-function updateHeader(){
-  document.getElementById('authBtn').classList.toggle('hidden',!!currentUser);
-  document.getElementById('logoutBtn').classList.toggle('hidden',!currentUser);
-  document.getElementById('navAdmin').classList.toggle('hidden',!isAdmin());
+currentProfile=data;
 }
+function updateHeader(){document.getElementById('loginBtn').classList.toggle('hidden',!!currentUser);document.getElementById('logoutBtn').classList.toggle('hidden',!currentUser);document.getElementById('na').classList.toggle('hidden',!isAdmin());}
 async function loadProfile(){
-  const box=document.getElementById('profileBox');
-  if(!currentUser){box.innerHTML='<p>Please login to view your profile.</p><button onclick="openAuth()">Login</button>';return;}
-  if(!currentProfile)await loadCurrentProfile();
-  const p=currentProfile||{};
-  const {count}=await db.from('quiz_attempts').select('*',{count:'exact',head:true}).eq('user_id',currentUser.id);
-  box.innerHTML=`
-  <div class="profiletop">
-    <div class="avatar">${esc(initials(p.full_name))}</div>
-    <div><h2>${esc(p.full_name||'Student')}</h2><div class="small">${esc(p.email||'')}</div></div>
-  </div><hr>
-  <div class="grid">
-    <div><div class="small">Points</div><div class="stat">${Number(p.points||0)}</div></div>
-    <div><div class="small">Quiz Attempts</div><div class="stat">${count||0}</div></div>
-  </div>
-  <hr>
-  <label>Full Name</label><input id="editName" value="${esc(p.full_name)}">
-  <label>University</label><input id="editUniversity" value="${esc(p.university)}">
-  <label>Year</label><input id="editYear" value="${esc(p.year)}">
-  <button onclick="saveProfile()">Save Profile</button>`;
+const b=document.getElementById('profileBox');
+if(!currentUser){b.innerHTML='<p>Please login to view your profile.</p><button onclick="openAuth()">Login</button>';return;}
+if(!currentProfile)await loadCurrentProfile();const p=currentProfile||{};
+const avatar=p.avatar_url?'<img src="'+esc(p.avatar_url)+'" alt="Profile">':esc(initials(p.full_name));
+const {count}=await db.from('quiz_attempts').select('*',{count:'exact',head:true}).eq('user_id',currentUser.id);
+b.innerHTML='<div class="profiletop"><div class="avatar">'+avatar+'</div><div><h2>'+esc(p.full_name||'Student')+'</h2><div class="small">'+esc(p.email||currentUser.email)+'</div></div></div><hr>'+
+'<div class="grid"><div><div class="small">Total Points</div><div class="stat">'+Number(p.total_score||0)+'</div></div><div><div class="small">Quizzes Completed</div><div class="stat">'+Number(p.quizzes_completed||0)+'</div></div><div><div class="small">Rank</div><div class="stat">'+(p.rank?'#'+Number(p.rank):'-')+'</div></div></div><hr>'+
+'<label>Full Name</label><input id="editName" value="'+esc(p.full_name||'')+'"><label>University</label><input id="editUniversity" value="'+esc(p.university||'')+'"><label>Year</label><input id="editYear" value="'+esc(p.year_level||'')+'"><label>Profile Picture URL</label><input id="editAvatar" value="'+esc(p.avatar_url||'')+'" placeholder="Optional image URL"><button onclick="saveProfile()">Save Profile</button>';
 }
 async function saveProfile(){
-  if(!requireLogin())return;
-  const updates={full_name:document.getElementById('editName').value.trim(),university:document.getElementById('editUniversity').value.trim(),year:document.getElementById('editYear').value.trim()};
-  const {data,error}=await db.from('users').update(updates).eq('id',currentUser.id).select().single();
-  if(error){toast(error.message);return;}
-  currentProfile=data;toast('Profile updated');loadProfile();
+if(!requireLogin())return;
+const u={full_name:document.getElementById('editName').value.trim(),university:document.getElementById('editUniversity').value.trim(),year_level:document.getElementById('editYear').value.trim(),avatar_url:document.getElementById('editAvatar').value.trim()};
+const {data,error}=await db.from('users').update(u).eq('id',currentUser.id).select().single();
+if(error){toast(error.message);return}currentProfile=data;toast('Profile updated.');loadProfile();
 }
 
-/* ---------- QUIZZES ---------- */
+/* QUIZZES */
 async function loadQuizzes(){
-  const grid=document.getElementById('quizGrid');
-  grid.innerHTML='<div class="card">Loading quizzes...</div>';
-  const {data,error}=await db.from('quizzes').select('*').eq('is_published',true).order('created_at',{ascending:false});
-  if(error){grid.innerHTML='<div class="card error">'+esc(error.message)+'</div>';return;}
-  if(!data?.length){grid.innerHTML='<div class="card">No published quizzes yet.</div>';return;}
-  grid.innerHTML=data.map(q=>`<div class="card"><h2>${esc(q.title)}</h2><p>${esc(q.description||'')}</p><p class="small">Subject: ${esc(q.subject||'General')} ${q.time_limit_minutes?`• ${q.time_limit_minutes} min`:''}</p><button onclick="startQuiz('${q.id}')">Start Quiz</button></div>`).join('');
+const g=document.getElementById('quizGrid');if(!g)return;g.innerHTML='<div class="card">Loading quizzes...</div>';
+const {data,error}=await db.from('quizzes').select('*').eq('is_published',true).order('created_at',{ascending:false});
+if(error){g.innerHTML='<div class="card error">'+esc(error.message)+'</div>';return}
+if(!data?.length){g.innerHTML='<div class="card">No published quizzes yet.</div>';return}
+g.innerHTML=data.map(q=>'<div class="card"><span class="badge published">PUBLISHED</span><h2>'+esc(q.title)+'</h2><p>'+esc(q.description||'')+'</p><p class="small">Subject: '+esc(q.subject)+' • '+Number(q.total_questions||0)+' questions • '+Number(q.time_limit_minutes||0)+' minutes</p><p class="small">Difficulty: '+esc(q.difficulty||'Medium')+' • Pass: '+Number(q.passing_score||70)+'%</p><button onclick="startQuiz(\''+q.id+'\')">Start Quiz</button></div>').join('');
 }
 async function startQuiz(id){
-  if(!requireLogin())return;
-  const {data:q,error:qerr}=await db.from('quizzes').select('*').eq('id',id).single();
-  if(qerr){toast(qerr.message);return;}
-  const {data:questions,error}=await db.from('questions').select('id,quiz_id,question_text,points,question_order,options(id,option_text,is_correct)').eq('quiz_id',id).order('question_order',{ascending:true});
-  if(error){toast(error.message);return;}
-  if(!questions?.length){toast('This quiz has no questions yet.');return;}
-  currentQuiz=q;currentQuestions=questions;currentQuestionIndex=0;selectedAnswers={};
-  const {data:attempt,error:ae}=await db.from('quiz_attempts').insert({user_id:currentUser.id,quiz_id:id,score:0,total_points:questions.reduce((a,x)=>a+Number(x.points||1),0),completed:false}).select().single();
-  if(ae){toast(ae.message);return;}
-  currentAttemptId=attempt.id;
-  showView('playing');renderQuestion();
+if(!requireLogin())return;
+const {data:q,error:e}=await db.from('quizzes').select('*').eq('id',id).eq('is_published',true).single();if(e){toast(e.message);return}
+const {data:qs,error}=await db.from('questions').select('id,quiz_id,question_text,question_type,order_index,options(id,option_text,is_correct,order_index)').eq('quiz_id',id).order('order_index',{ascending:true});
+if(error){toast(error.message);return}if(!qs?.length){toast('This quiz has no questions yet.');return}
+currentQuiz=q;currentQuestions=qs;currentQuestionIndex=0;selectedAnswers={};quizStartedAt=Date.now();
+const {data:a,error:ae}=await db.from('quiz_attempts').insert({user_id:currentUser.id,quiz_id:id,score:0,total_questions:qs.length,correct_answers:0,passed:false,time_taken_seconds:0}).select().single();
+if(ae){toast(ae.message);return}currentAttemptId=a.id;showView('playing');renderQuestion();
 }
 function renderQuestion(){
-  const q=currentQuestions[currentQuestionIndex];
-  document.getElementById('playingTitle').textContent=currentQuiz.title;
-  document.getElementById('questionCounter').textContent=`Question ${currentQuestionIndex+1} of ${currentQuestions.length}`;
-  document.getElementById('progressBar').style.width=((currentQuestionIndex+1)/currentQuestions.length*100)+'%';
-  const selected=selectedAnswers[q.id];
-  document.getElementById('questionBox').innerHTML=`
-    <h2>${esc(q.question_text)}</h2>
-    ${(q.options||[]).sort((a,b)=>a.id.localeCompare(b.id)).map((o,i)=>`
-      <label class="option"><input type="radio" name="answer" value="${esc(o.id)}" ${selected===o.id?'checked':''} onchange="selectAnswer('${q.id}','${o.id}')"> ${String.fromCharCode(65+i)}. ${esc(o.option_text)}</label>
-    `).join('')}`;
-  document.getElementById('nextBtn').textContent=currentQuestionIndex===currentQuestions.length-1?'Submit Quiz':'Next';
+const q=currentQuestions[currentQuestionIndex],opts=[...(q.options||[])].sort((a,b)=>(a.order_index||0)-(b.order_index||0)),sel=selectedAnswers[q.id];
+document.getElementById('playTitle').textContent=currentQuiz.title;document.getElementById('counter').textContent='Question '+(currentQuestionIndex+1)+' of '+currentQuestions.length;document.getElementById('bar').style.width=((currentQuestionIndex+1)/currentQuestions.length*100)+'%';
+document.getElementById('questionBox').innerHTML='<h2>'+esc(q.question_text)+'</h2>'+opts.map((o,i)=>'<label class="option"><input type="radio" name="answer" '+(sel===o.id?'checked':'')+' onchange="selectAnswer(\''+q.id+'\',\''+o.id+'\')"> '+String.fromCharCode(65+i)+'. '+esc(o.option_text)+'</label>').join('');
+document.getElementById('nextBtn').textContent=currentQuestionIndex===currentQuestions.length-1?'Submit Quiz':'Next';
 }
-function selectAnswer(qid,oid){selectedAnswers[qid]=oid;}
-function nextQuestion(){
-  const q=currentQuestions[currentQuestionIndex];
-  if(!selectedAnswers[q.id]){toast('Please select an answer.');return;}
-  if(currentQuestionIndex<currentQuestions.length-1){currentQuestionIndex++;renderQuestion();}
-  else submitQuiz();
-}
+function selectAnswer(qid,oid){selectedAnswers[qid]=oid;updatePreview();}
+function updatePreview(){let s=0;currentQuestions.forEach(q=>{if((q.options||[]).find(o=>o.id===selectedAnswers[q.id])?.is_correct===true)s++});document.getElementById('scorePreview').textContent='Score: '+s;}
+function nextQuestion(){const q=currentQuestions[currentQuestionIndex];if(!selectedAnswers[q.id]){toast('Please select an answer.');return}if(currentQuestionIndex<currentQuestions.length-1){currentQuestionIndex++;renderQuestion()}else submitQuiz();}
 async function submitQuiz(){
-  let score=0,total=0;
-  for(const q of currentQuestions){
-    const points=Number(q.points||1);total+=points;
-    const chosen=selectedAnswers[q.id];
-    const correct=(q.options||[]).find(o=>o.id===chosen)?.is_correct===true;
-    if(correct)score+=points;
-    await db.from('user_answers').insert({attempt_id:currentAttemptId,question_id:q.id,selected_option_id:chosen||null,is_correct:correct,points_earned:correct?points:0});
-  }
-  await db.from('quiz_attempts').update({score,total_points:total,completed:true,completed_at:new Date().toISOString()}).eq('id',currentAttemptId);
-  const oldPoints=Number(currentProfile?.points||0);
-  const {data:p,error}=await db.from('users').update({points:oldPoints+score}).eq('id',currentUser.id).select().single();
-  if(!error)currentProfile=p;
-  document.getElementById('playing').innerHTML=`<div class="card" style="text-align:center"><h1>🎉 Quiz Complete!</h1><h2>You scored ${score} / ${total}</h2><p>Points earned: <b>${score}</b></p><button onclick="showView('leaderboard')">View Leaderboard</button> <button class="btn secondary" onclick="showView('quizzes')">Back to Quizzes</button></div>`;
+let correct=0;const total=currentQuestions.length;
+for(const q of currentQuestions){
+const chosen=selectedAnswers[q.id],ok=(q.options||[]).find(o=>o.id===chosen)?.is_correct===true;if(ok)correct++;
+const r=await db.from('user_answers').insert({quiz_attempt_id:currentAttemptId,question_id:q.id,selected_option_id:chosen||null,is_correct:ok});if(r.error)console.error(r.error);
 }
-function leaveQuiz(){if(confirm('Exit this quiz? Your current attempt will not be completed.'))showView('quizzes');}
+const pct=total?correct/total*100:0,passed=pct>=Number(currentQuiz.passing_score||70),seconds=Math.floor((Date.now()-quizStartedAt)/1000);
+let r=await db.from('quiz_attempts').update({score:correct,total_questions:total,correct_answers:correct,passed,time_taken_seconds:seconds,completed_at:new Date().toISOString()}).eq('id',currentAttemptId).eq('user_id',currentUser.id);
+if(r.error){toast(r.error.message);return}
+const old=Number(currentProfile?.total_score||0);
+r=await db.from('users').update({total_score:old+correct,quizzes_completed:Number(currentProfile?.quizzes_completed||0)+1}).eq('id',currentUser.id).select().single();
+if(!r.error)currentProfile=r.data;
+document.getElementById('playing').innerHTML='<div class="card" style="text-align:center"><h1>🎉 Quiz Complete!</h1><h2>'+correct+' / '+total+'</h2><p>Percentage: <b>'+pct.toFixed(1)+'%</b></p><p>Result: <b class="'+(passed?'ok':'error')+'">'+(passed?'PASSED':'NOT PASSED')+'</b></p><p>Points earned: <b>'+correct+'</b></p><button onclick="showView(\'leaderboard\')">🏆 View Leaderboard</button> <button class="secondary" onclick="showView(\'quizzes\')">Back to Quizzes</button></div>';
+}
+function leaveQuiz(){if(confirm('Exit this quiz? Your attempt will remain incomplete.'))showView('quizzes');}
 
-/* ---------- LEADERBOARD ---------- */
+/* LEADERBOARD */
 async function loadLeaderboard(){
-  const box=document.getElementById('leaderboardBox');
-  const {data,error}=await db.from('users').select('full_name,university,year,points').order('points',{ascending:false}).limit(100);
-  if(error){box.innerHTML='<p class="error">'+esc(error.message)+'</p>';return;}
-  if(!data?.length){box.innerHTML='<p>No students yet.</p>';return;}
-  box.innerHTML=`<table><thead><tr><th>#</th><th>Student</th><th>University</th><th>Year</th><th>Points</th></tr></thead><tbody>${data.map((x,i)=>`<tr><td>${i+1}</td><td><b>${esc(x.full_name)}</b></td><td>${esc(x.university||'-')}</td><td>${esc(x.year||'-')}</td><td><b>${Number(x.points||0)}</b></td></tr>`).join('')}</tbody></table>`;
+const b=document.getElementById('leaderboardBox');b.innerHTML='Loading...';
+const {data,error}=await db.from('leaderboard').select('user_id,total_points,quizzes_taken,average_score,rank_position').order('rank_position',{ascending:true,nullsFirst:false}).limit(100);
+if(error){b.innerHTML='<p class="error">'+esc(error.message)+'</p><p class="small">The leaderboard table needs to be populated by your database logic.</p>';return}
+if(!data?.length){b.innerHTML='<div class="card">No leaderboard records yet.</div>';return}
+b.innerHTML='<div class="tablewrap"><table><thead><tr><th>Rank</th><th>Points</th><th>Quizzes</th><th>Average</th></tr></thead><tbody>'+data.map((x,i)=>'<tr><td>'+(x.rank_position||i+1)+'</td><td><b>'+Number(x.total_points||0)+'</b></td><td>'+Number(x.quizzes_taken||0)+'</td><td>'+Number(x.average_score||0).toFixed(2)+'%</td></tr>').join('')+'</tbody></table></div>';
 }
 
-/* ---------- ADMIN ---------- */
-function adminTab(tab){
-  document.querySelectorAll('.adminpanel').forEach(x=>x.classList.add('hidden'));
-  document.getElementById('admin'+tab.charAt(0).toUpperCase()+tab.slice(1)).classList.remove('hidden');
-}
+/* ADMIN */
+function adminTab(tab){if(!isAdmin()){toast('Admin access required.');return}document.querySelectorAll('.adminbox').forEach(x=>x.classList.add('hidden'));document.getElementById('a'+tab.charAt(0).toUpperCase()+tab.slice(1)).classList.remove('hidden');}
 async function loadAdmin(){
-  if(!isAdmin())return;
-  document.getElementById('adminCreateQuiz').innerHTML=`
-    <h2>Create Quiz</h2>
-    <label>Title</label><input id="newQuizTitle" placeholder="e.g. Anatomy Quiz 1">
-    <label>Description</label><textarea id="newQuizDesc" placeholder="Quiz description"></textarea>
-    <label>Subject</label><input id="newQuizSubject" placeholder="Anatomy">
-    <label>Time limit (minutes)</label><input id="newQuizTime" type="number" min="0" value="30">
-    <label><input id="newQuizPublished" type="checkbox" style="width:auto"> Publish immediately</label><br>
-    <button onclick="createQuiz()">Create Quiz</button>`;
-  document.getElementById('adminAddQuestion').innerHTML=`
-    <h2>Add Question</h2>
-    <label>Quiz</label><select id="questionQuiz"></select>
-    <label>Question</label><textarea id="questionText" rows="4" placeholder="Enter question"></textarea>
-    <label>Points</label><input id="questionPoints" type="number" min="1" value="1">
-    <h3>Options</h3>
-    <div id="optionFields"></div>
-    <button class="btn secondary" onclick="addOptionField()">+ Add Option</button><br><br>
-    <button onclick="createQuestion()">Save Question</button>`;
-  document.getElementById('adminManage').innerHTML='<h2>Manage Quizzes</h2><div id="manageBox">Loading...</div>';
-  await populateQuizSelect();
-  addOptionField();addOptionField();addOptionField();addOptionField();
-  await manageQuizzes();
+if(!isAdmin())return;
+document.getElementById('aCreate').innerHTML='<h2>➕ Create Quiz</h2><label>Title</label><input id="qt" placeholder="e.g. Anatomy Quiz 1"><label>Subject</label><input id="qs" placeholder="Anatomy"><label>Description</label><textarea id="qd" rows="3"></textarea><label>Total Questions</label><input id="qtotal" type="number" min="1" value="10"><label>Time Limit (minutes)</label><input id="qtime" type="number" min="1" value="30"><label>Difficulty</label><select id="qdiff"><option>Easy</option><option selected>Medium</option><option>Hard</option></select><label>Passing Score (%)</label><input id="qpass" type="number" min="0" max="100" value="70"><label><input id="qpub" type="checkbox" style="width:auto"> Publish immediately</label><br><button onclick="createQuiz()">Create Quiz</button>';
+document.getElementById('aQuestion').innerHTML='<h2>📝 Add Question</h2><label>Quiz</label><select id="questionQuiz"></select><label>Question</label><textarea id="questionText" rows="4"></textarea><h3>Options</h3><div id="optionFields"></div><button class="secondary" onclick="addOptionField()">+ Add Option</button><br><br><button onclick="createQuestion()">Save Question</button>';
+document.getElementById('aManage').innerHTML='<h2>📚 Manage Quizzes</h2><div id="manageBox">Loading...</div>';
+document.getElementById('aStudents').innerHTML='<h2>👥 Students</h2><div id="studentsBox">Loading...</div>';
+document.getElementById('aAttempts').innerHTML='<h2>📊 Attempts</h2><div id="attemptsBox">Loading...</div>';
+await populateQuizSelect();document.getElementById('optionFields').innerHTML='';addOptionField();addOptionField();addOptionField();addOptionField();await manageQuizzes();await loadStudents();await loadAttempts();adminTab('create');
 }
 async function populateQuizSelect(){
-  const {data,error}=await db.from('quizzes').select('id,title').order('created_at',{ascending:false});
-  const s=document.getElementById('questionQuiz');
-  if(error){s.innerHTML='<option>Error loading</option>';return;}
-  s.innerHTML=(data||[]).map(q=>`<option value="${q.id}">${esc(q.title)}</option>`).join('');
+const s=document.getElementById('questionQuiz');if(!s)return;const {data,error}=await db.from('quizzes').select('id,title').order('created_at',{ascending:false});if(error){s.innerHTML='<option>Error</option>';return}s.innerHTML=data?.length?data.map(q=>'<option value="'+q.id+'">'+esc(q.title)+'</option>').join(''):'<option value="">Create a quiz first</option>';
 }
-function addOptionField(){
-  const box=document.getElementById('optionFields');
-  const n=box.children.length+1;
-  box.insertAdjacentHTML('beforeend',`<div style="display:flex;gap:8px;align-items:center"><input class="optText" placeholder="Option ${n}" style="flex:1"><label style="white-space:nowrap"><input class="optCorrect" type="radio" name="correctOption" style="width:auto"> Correct</label></div>`);
-}
+function addOptionField(){const b=document.getElementById('optionFields'),n=b.children.length+1;b.insertAdjacentHTML('beforeend','<div style="display:flex;gap:8px;align-items:center"><input class="optText" placeholder="Option '+n+'" style="flex:1"><label style="white-space:nowrap"><input class="optCorrect" type="radio" name="correctOption" style="width:auto"> Correct</label></div>');}
 async function createQuiz(){
-  const title=document.getElementById('newQuizTitle').value.trim();
-  if(!title){toast('Enter a quiz title');return;}
-  const {error}=await db.from('quizzes').insert({title,description:document.getElementById('newQuizDesc').value.trim(),subject:document.getElementById('newQuizSubject').value.trim(),time_limit_minutes:Number(document.getElementById('newQuizTime').value)||0,is_published:document.getElementById('newQuizPublished').checked,created_by:currentUser.id});
-  if(error){toast(error.message);return;}
-  toast('Quiz created');await loadAdmin();
+if(!isAdmin())return;const title=document.getElementById('qt').value.trim(),subject=document.getElementById('qs').value.trim();if(!title||!subject){toast('Enter title and subject.');return}
+const {error}=await db.from('quizzes').insert({title,subject,description:document.getElementById('qd').value.trim(),total_questions:Number(document.getElementById('qtotal').value)||1,time_limit_minutes:Number(document.getElementById('qtime').value)||30,difficulty:document.getElementById('qdiff').value,passing_score:Number(document.getElementById('qpass').value)||70,created_by:currentUser.id,is_published:document.getElementById('qpub').checked});
+if(error){toast(error.message);return}toast('Quiz created.');loadAdmin();
 }
 async function createQuestion(){
-  const quiz_id=document.getElementById('questionQuiz').value;
-  const question_text=document.getElementById('questionText').value.trim();
-  const points=Number(document.getElementById('questionPoints').value)||1;
-  const texts=[...document.querySelectorAll('.optText')].map(x=>x.value.trim());
-  const radios=[...document.querySelectorAll('.optCorrect')];
-  if(!quiz_id||!question_text){toast('Select quiz and enter question');return;}
-  if(texts.length<2||texts.some(x=>!x)){toast('Complete all options');return;}
-  const correctIndex=radios.findIndex(x=>x.checked);
-  if(correctIndex<0){toast('Select the correct option');return;}
-  const {data:qs}=await db.from('questions').select('question_order').eq('quiz_id',quiz_id).order('question_order',{ascending:false}).limit(1);
-  const order=(qs?.[0]?.question_order||0)+1;
-  const {data:q,error}=await db.from('questions').insert({quiz_id,question_text,points,question_order:order}).select().single();
-  if(error){toast(error.message);return;}
-  const opts=texts.map((text,i)=>({question_id:q.id,option_text:text,is_correct:i===correctIndex}));
-  const {error:oe}=await db.from('options').insert(opts);
-  if(oe){await db.from('questions').delete().eq('id',q.id);toast(oe.message);return;}
-  toast('Question added');
-  document.getElementById('questionText').value='';
-  document.querySelectorAll('.optText').forEach(x=>x.value='');
-  document.querySelectorAll('.optCorrect').forEach(x=>x.checked=false);
+if(!isAdmin())return;const quiz_id=document.getElementById('questionQuiz').value,text=document.getElementById('questionText').value.trim(),texts=[...document.querySelectorAll('.optText')].map(x=>x.value.trim()),radios=[...document.querySelectorAll('.optCorrect')];
+if(!quiz_id||!text){toast('Select a quiz and enter the question.');return}if(texts.some(x=>!x)){toast('Complete all options.');return}const ci=radios.findIndex(x=>x.checked);if(ci<0){toast('Select the correct answer.');return}
+const {data:last,error:oe}=await db.from('questions').select('order_index').eq('quiz_id',quiz_id).order('order_index',{ascending:false}).limit(1);if(oe){toast(oe.message);return}const order=(last?.[0]?.order_index||0)+1;
+const {data:q,error}=await db.from('questions').insert({quiz_id,question_text:text,question_type:'multiple_choice',order_index:order}).select().single();if(error){toast(error.message);return}
+const {error:op}=await db.from('options').insert(texts.map((x,i)=>({question_id:q.id,option_text:x,is_correct:i===ci,order_index:i+1})));if(op){await db.from('questions').delete().eq('id',q.id);toast(op.message);return}
+const {count}=await db.from('questions').select('*',{count:'exact',head:true}).eq('quiz_id',quiz_id);await db.from('quizzes').update({total_questions:count||0}).eq('id',quiz_id);
+toast('Question added.');document.getElementById('questionText').value='';document.querySelectorAll('.optText').forEach(x=>x.value='');document.querySelectorAll('.optCorrect').forEach(x=>x.checked=false);
 }
 async function manageQuizzes(){
-  const box=document.getElementById('manageBox');
-  const {data,error}=await db.from('quizzes').select('*').order('created_at',{ascending:false});
-  if(error){box.innerHTML='<p class="error">'+esc(error.message)+'</p>';return;}
-  box.innerHTML=(data||[]).map(q=>`<div class="card" style="margin:10px 0"><b>${esc(q.title)}</b><span class="small"> — ${q.is_published?'Published':'Draft'}</span><br><button onclick="togglePublish('${q.id}',${!q.is_published})">${q.is_published?'Unpublish':'Publish'}</button> <button class="btn danger" onclick="deleteQuiz('${q.id}')">Delete</button></div>`).join('')||'No quizzes.';
+const b=document.getElementById('manageBox');if(!b)return;const {data,error}=await db.from('quizzes').select('*').order('created_at',{ascending:false});if(error){b.innerHTML='<p class="error">'+esc(error.message)+'</p>';return}if(!data?.length){b.innerHTML='No quizzes yet.';return}
+b.innerHTML=data.map(q=>'<div class="card"><h3>'+esc(q.title)+'</h3><p class="small">'+esc(q.subject)+' • '+Number(q.total_questions||0)+' questions</p><span class="badge '+(q.is_published?'published':'draft')+'">'+(q.is_published?'PUBLISHED':'DRAFT')+'</span><br><br><button onclick="togglePublish(\''+q.id+'\','+(!q.is_published)+')">'+(q.is_published?'Unpublish':'Publish')+'</button> <button class="danger" onclick="deleteQuiz(\''+q.id+'\')">Delete</button></div>').join('');
 }
-async function togglePublish(id,val){const {error}=await db.from('quizzes').update({is_published:val}).eq('id',id);if(error)toast(error.message);else manageQuizzes();}
-async function deleteQuiz(id){if(!confirm('Delete this quiz and its questions?'))return;const {error}=await db.from('quizzes').delete().eq('id',id);if(error)toast(error.message);else{toast('Quiz deleted');manageQuizzes();}}
-/* ---------- STARTUP ---------- */
-db.auth.onAuthStateChange((_event,session)=>{
-  currentUser=session?.user||null;
-  setTimeout(async()=>{if(currentUser)await loadCurrentProfile();updateHeader();loadQuizzes();},0);
-});
+async function togglePublish(id,value){if(!isAdmin())return;const {error}=await db.from('quizzes').update({is_published:value}).eq('id',id);if(error){toast(error.message);return}toast(value?'Quiz published.':'Quiz unpublished.');manageQuizzes();loadQuizzes();}
+async function deleteQuiz(id){if(!isAdmin())return;if(!confirm('Delete this quiz and its questions/options?'))return;const {error}=await db.from('quizzes').delete().eq('id',id);if(error){toast(error.message);return}toast('Quiz deleted.');manageQuizzes();populateQuizSelect();loadQuizzes();}
+async function loadStudents(){
+const b=document.getElementById('studentsBox');if(!b)return;const {data,error}=await db.from('users').select('id,full_name,email,university,year_level,total_score,quizzes_completed,is_admin').order('total_score',{ascending:false});if(error){b.innerHTML='<p class="error">'+esc(error.message)+'</p>';return}
+b.innerHTML='<div class="tablewrap"><table><thead><tr><th>Name</th><th>Email</th><th>University</th><th>Year</th><th>Points</th><th>Quizzes</th><th>Role</th></tr></thead><tbody>'+(data||[]).map(s=>'<tr><td>'+esc(s.full_name||'Student')+'</td><td>'+esc(s.email||'-')+'</td><td>'+esc(s.university||'-')+'</td><td>'+esc(s.year_level||'-')+'</td><td>'+Number(s.total_score||0)+'</td><td>'+Number(s.quizzes_completed||0)+'</td><td>'+(s.is_admin?'👑 Admin':'Student')+'</td></tr>').join('')+'</tbody></table></div>';
+}
+async function loadAttempts(){
+const b=document.getElementById('attemptsBox');if(!b)return;const {data,error}=await db.from('quiz_attempts').select('id,score,total_questions,correct_answers,passed,time_taken_seconds,completed_at,users(full_name,email),quizzes(title,subject)').order('created_at',{ascending:false}).limit(200);if(error){b.innerHTML='<p class="error">'+esc(error.message)+'</p>';return}
+b.innerHTML='<div class="tablewrap"><table><thead><tr><th>Student</th><th>Quiz</th><th>Score</th><th>Result</th><th>Time</th><th>Date</th></tr></thead><tbody>'+(data||[]).map(a=>'<tr><td>'+esc(a.users?.full_name||'Student')+'</td><td>'+esc(a.quizzes?.title||'-')+'</td><td>'+Number(a.correct_answers||0)+' / '+Number(a.total_questions||0)+'</td><td><b class="'+(a.passed?'ok':'error')+'">'+(a.completed_at?(a.passed?'PASSED':'NOT PASSED'):'IN PROGRESS')+'</b></td><td>'+Math.floor(Number(a.time_taken_seconds||0)/60)+'m '+Number(a.time_taken_seconds||0)%60+'s</td><td>'+(a.completed_at?new Date(a.completed_at).toLocaleString():'-')+'</td></tr>').join('')+'</tbody></table></div>';
+}
+
+/* START */
+db.auth.onAuthStateChange((_event,session)=>{currentUser=session?.user||null;setTimeout(async()=>{if(currentUser)await loadCurrentProfile();else currentProfile=null;updateHeader();loadQuizzes();},0);});
 refreshSession();
 showView('quizzes');
 </script>
