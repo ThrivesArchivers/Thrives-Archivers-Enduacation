@@ -99,8 +99,8 @@ table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:12px;bor
    SUPABASE
    ========================================================== */
 const SUPABASE_URL='https://odwiqajuubcgrrqipyju.supabase.co';
-const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1dWJjZ3JycWlweWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzA4MjEsImV4cCI6MjA2ODg0NjgyMX0.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A'
- const {createClient}=supabase;
+const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1YmNncnJx aXB5anUiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc1MzI3MDgyMSwiZXhwIjoyMDY4ODQ2ODIxfQ.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A'.replace(/\s/g,'');
+const {createClient}=supabase;
 const db=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 
 /* ADMIN EMAIL */
@@ -112,7 +112,17 @@ let currentQuiz=null,currentQuestions=[],currentQuestionIndex=0,selectedAnswers=
 function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';clearTimeout(window.tt);window.tt=setTimeout(()=>t.style.display='none',3500);}
 function initials(n){return(n||'U').split(/\s+/).filter(Boolean).map(x=>x[0]).join('').slice(0,2).toUpperCase();}
-function isAdmin(){return currentProfile?.is_admin===true || (currentUser?.email||'').toLowerCase()===ADMIN_EMAIL.toLowerCase();}
+function isAdmin(){
+  const email=String(currentUser?.email||'').trim().toLowerCase();
+  const profileAdmin=currentProfile?.is_admin===true || currentProfile?.is_admin===1 || currentProfile?.is_admin==='true';
+  return profileAdmin || email===ADMIN_EMAIL.toLowerCase();
+}
+function syncAdminUI(){
+  const admin=isAdmin();
+  const btn=document.getElementById('na');
+  if(btn) btn.classList.toggle('hidden',!admin);
+  return admin;
+}
 function requireLogin(){if(!currentUser){openAuth();return false}return true;}
 
 function showView(id){
@@ -162,7 +172,7 @@ updateHeader();await loadQuizzes();
 async function loadCurrentProfile(){
 if(!currentUser)return;
 let {data,error}=await db.from('users').select('*').eq('id',currentUser.id).maybeSingle();
-if(error){console.warn('Profile SELECT:',error.message); currentProfile=null;}
+if(error){console.warn('Profile SELECT:',error.message); currentProfile={id:currentUser.id,email:currentUser.email,full_name:currentUser.user_metadata?.full_name||'Thrives Tutor',is_admin:false};}
 if(data && (currentUser.email||'').toLowerCase()===ADMIN_EMAIL.toLowerCase()) data.is_admin=true;
 if(!data){
 const m=currentUser.user_metadata||{};
@@ -170,10 +180,11 @@ const row={id:currentUser.id,email:currentUser.email,full_name:m.full_name||curr
 const r=await db.from('users').insert(row).select().single();
 if(r.error){console.error(r.error);return;}data=r.data;
 }
-currentProfile=data || {id:currentUser.id,email:currentUser.email,full_name:currentUser.user_metadata?.full_name||'Thrives Tutor',is_admin:isAdmin()};
-if((currentUser.email||'').toLowerCase()===ADMIN_EMAIL.toLowerCase()) currentProfile.is_admin=true;
+currentProfile=data || currentProfile || {id:currentUser.id,email:currentUser.email,full_name:currentUser.user_metadata?.full_name||'Thrives Tutor',is_admin:false};
+if(String(currentUser.email||'').trim().toLowerCase()===ADMIN_EMAIL.toLowerCase()) currentProfile.is_admin=true;
+syncAdminUI();
 }
-function updateHeader(){document.getElementById('authBtn').classList.toggle('hidden',!!currentUser);document.getElementById('logoutBtn').classList.toggle('hidden',!currentUser);document.getElementById('na').classList.toggle('hidden',!isAdmin());}
+function updateHeader(){document.getElementById('authBtn').classList.toggle('hidden',!!currentUser);document.getElementById('logoutBtn').classList.toggle('hidden',!currentUser);syncAdminUI();}
 async function loadProfile(){
 const b=document.getElementById('profileBox');
 if(!currentUser){b.innerHTML='<p>Please login to view your profile.</p><button onclick="openAuth()">Login</button>';return;}
