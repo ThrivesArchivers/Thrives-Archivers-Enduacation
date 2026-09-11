@@ -126,15 +126,6 @@ button{ cursor:pointer; }
     gap:10px;
 }
 
-.year-select{
-    border: 1px solid #dce2f5;
-    border-radius:13px;
-    padding:10px 13px;
-    color:#273c7d;
-    background:white;
-    font-weight:bold;
-}
-
 .user-badge{
     border-left: 1px solid #e2e5f1;
     padding-left:15px;
@@ -541,6 +532,7 @@ main{
     max-width:500px;
     width:90%;
     box-shadow: 0 20px 60px rgba(0,0,0,.3);
+    position:relative;
 }
 
 .modal-header{
@@ -596,18 +588,12 @@ input:focus, select:focus, textarea:focus{
     border: 1px solid #e85d75;
 }
 
-.loading{
-    display:inline-block;
-    width:20px;
-    height:20px;
-    border: 3px solid #e9ecf8;
-    border-top-color:#6862ed;
-    border-radius:50%;
-    animation:spin .8s linear infinite;
-}
-
-@keyframes spin{
-    to{ transform:rotate(360deg); }
+.profile-layout{
+    display:grid;
+    grid-template-columns: 300px 1fr;
+    gap:25px;
+    max-width:1000px;
+    margin:auto;
 }
 
 </style>
@@ -835,16 +821,16 @@ input:focus, select:focus, textarea:focus{
                 <input type="text" id="fullname">
             </div>
 
-            <button type="submit" class="btn btn-primary" style="width:100%;">
+            <button type="submit" class="btn btn-primary" style="width:100%; margin-top:10px;">
                 <span id="auth-submit">Sign In</span>
             </button>
         </form>
 
-        <p style="text-align:center; margin-top:15px; color:#7683a7;">
+        <p style="text-align:center; margin-top:15px; color:#7683a7; font-size:14px;">
             <span id="auth-toggle">Don't have an account? <a href="#" style="color:#6862ed; text-decoration:none; font-weight:bold;">Sign Up</a></span>
         </p>
 
-        <button style="position:absolute; top:15px; right:15px; background:none; border:none; font-size:24px; cursor:pointer;" onclick="closeAuthModal()">×</button>
+        <button style="position:absolute; top:15px; right:15px; background:none; border:none; font-size:24px; cursor:pointer; color:#7683a7;" onclick="closeAuthModal()">×</button>
     </div>
 </div>
 
@@ -867,6 +853,7 @@ let userAnswers = {};
 let quizTimer = null;
 let startTime = null;
 let isSignUp = false;
+let currentQuestionIndex = 0;
 
 // ========================================================================
 // AUTH FUNCTIONS
@@ -875,7 +862,6 @@ let isSignUp = false;
 async function initAuth() {
     await window.supabaseService.initialize();
     
-    // Check if user is already logged in
     const user = await window.supabaseService.getCurrentUser();
     if (user) {
         currentUser = user;
@@ -883,7 +869,6 @@ async function initAuth() {
         loadQuizzes();
     }
 
-    // Listen for auth changes
     window.supabaseService.onAuthStateChange((event, session) => {
         if (session?.user) {
             currentUser = session.user;
@@ -911,7 +896,6 @@ function updateHeader() {
         <button class="btn btn-secondary" id="profile-nav-btn">Profile</button>
     ` : `<button class="btn btn-primary" id="sign-in-btn">Sign In</button>`;
 
-    // Add event listeners
     if (document.getElementById('sign-in-btn')) {
         document.getElementById('sign-in-btn').addEventListener('click', openAuthModal);
     }
@@ -939,6 +923,7 @@ document.getElementById('auth-form').addEventListener('submit', async (e) => {
         if (result.success) {
             alert('Sign up successful! Please check your email to confirm.');
             closeAuthModal();
+            document.getElementById('auth-form').reset();
         } else {
             showAuthMessage(result.error, 'error');
         }
@@ -947,6 +932,7 @@ document.getElementById('auth-form').addEventListener('submit', async (e) => {
         if (result.success) {
             currentUser = result.user;
             closeAuthModal();
+            document.getElementById('auth-form').reset();
             updateHeader();
             loadQuizzes();
         } else {
@@ -958,7 +944,6 @@ document.getElementById('auth-form').addEventListener('submit', async (e) => {
 document.getElementById('auth-toggle').addEventListener('click', (e) => {
     e.preventDefault();
     isSignUp = !isSignUp;
-    const form = document.getElementById('auth-form');
     const title = document.getElementById('auth-title');
     const submit = document.getElementById('auth-submit');
     const nameGroup = document.getElementById('name-group');
@@ -1050,7 +1035,6 @@ async function startQuiz(quizId) {
         return;
     }
 
-    // Get quiz details
     const quizResult = await window.supabaseService.getQuizById(quizId);
     if (!quizResult.success) {
         alert('Error loading quiz');
@@ -1059,14 +1043,12 @@ async function startQuiz(quizId) {
 
     currentQuiz = quizResult.data;
 
-    // Get questions
     const questionsResult = await window.supabaseService.getQuizQuestions(quizId);
     if (!questionsResult.success) {
         alert('Error loading questions');
         return;
     }
 
-    // Start attempt
     const attemptResult = await window.supabaseService.startQuizAttempt(currentUser.id, quizId);
     if (!attemptResult.success) {
         alert('Error starting quiz');
@@ -1077,7 +1059,6 @@ async function startQuiz(quizId) {
     userAnswers = {};
     startTime = Date.now();
 
-    // Display quiz
     document.getElementById('player-quiz-title').textContent = currentQuiz.title;
     const container = document.getElementById('questions-container');
     container.innerHTML = '';
@@ -1106,7 +1087,6 @@ async function startQuiz(quizId) {
         html += '</div>';
         div.innerHTML = html;
 
-        // Add change listener
         div.querySelectorAll('input[type="radio"]').forEach(radio => {
             radio.addEventListener('change', (e) => {
                 userAnswers[question.id] = e.target.value;
@@ -1116,23 +1096,17 @@ async function startQuiz(quizId) {
         container.appendChild(div);
     });
 
-    // Show first question
     container.querySelector('[data-index="0"]').classList.remove('hidden');
     currentQuestionIndex = 0;
     updateQuizProgress(questionsResult.data.length);
 
-    // Start timer
     startQuizTimer(currentQuiz.time_limit_minutes * 60);
 
-    // Show player page
     switchPage('player');
 
-    // Setup controls
     document.getElementById('prev-btn').onclick = () => previousQuestion(questionsResult.data.length);
     document.getElementById('next-btn').onclick = () => nextQuestion(questionsResult.data.length);
 }
-
-let currentQuestionIndex = 0;
 
 function previousQuestion(total) {
     if (currentQuestionIndex > 0) {
@@ -1182,7 +1156,6 @@ async function submitQuiz(total) {
     const timeTaken = Math.floor((Date.now() - startTime) / 1000);
     let correctCount = 0;
 
-    // Get all questions to check answers
     const questionsResult = await window.supabaseService.getQuizQuestions(currentQuiz.id);
     const questions = questionsResult.data;
 
@@ -1193,18 +1166,15 @@ async function submitQuiz(total) {
             if (correctOption && correctOption.id === selectedOptionId) {
                 correctCount++;
             }
-            // Save answer
             await window.supabaseService.submitAnswer(currentAttempt.id, question.id, selectedOptionId);
         }
     }
 
     const score = Math.round((correctCount / questions.length) * 100);
 
-    // Complete attempt
     await window.supabaseService.completeQuizAttempt(currentAttempt.id, score, timeTaken);
     await window.supabaseService.updateLeaderboard(currentUser.id);
 
-    // Show results
     document.getElementById('final-score').textContent = score;
     document.getElementById('correct-count').textContent = correctCount;
     document.getElementById('total-questions').textContent = questions.length;
@@ -1221,7 +1191,7 @@ async function submitQuiz(total) {
     document.getElementById('retake-btn').onclick = () => startQuiz(currentQuiz.id);
     document.getElementById('back-btn').onclick = () => switchPage('quizzes');
 
-    loadQuizzes(); // Refresh stats
+    loadQuizzes();
     switchPage('results');
 }
 
