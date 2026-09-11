@@ -19,7 +19,7 @@ input,select,textarea{width:100%;padding:12px;border:1px solid #dcdceb;border-ra
 table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}th{background:#f0efff}.tablewrap{overflow:auto}
 .avatar{width:78px;height:78px;border-radius:50%;background:var(--p);color:#fff;display:flex;align-items:center;justify-content:center;font-size:25px;font-weight:800;overflow:hidden}.avatar img{width:100%;height:100%;object-fit:cover}.profiletop{display:flex;gap:16px;align-items:center}.stat{font-size:26px;font-weight:800}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.badge{display:inline-block;padding:5px 9px;border-radius:20px;background:#eeeef8;font-size:12px;font-weight:700}.published{background:#dff7e9;color:#137b48}.draft{background:#fff2d6;color:#8a5a00}.toast{position:fixed;right:18px;bottom:18px;background:#20213a;color:#fff;padding:13px 18px;border-radius:10px;display:none;z-index:100;max-width:380px}
 @media(max-width:600px){header{flex-direction:column;align-items:flex-start}.nav{width:100%}.nav button{flex:1}.hero{padding:22px}.container{padding:16px}}
-</style>
+ .explanation{background:#f1efff;border-left:4px solid #5b5bea;padding:12px;border-radius:8px;margin-top:12px}</style>
 </head>
 <body>
 <header>
@@ -29,7 +29,7 @@ table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:12px;bor
 <button id="nl" onclick="showView('leaderboard')">Leaderboard</button>
 <button id="np" onclick="showView('profile')">Profile</button>
 <button id="na" class="hidden" onclick="showView('admin')">⚙️ Admin</button>
-<button id="loginBtn" onclick="openAuth()">Login</button>
+<button id="authBtn" onclick="openAuth()">Login</button>
 <button id="logoutBtn" class="hidden" onclick="logout()">Logout</button>
 </div>
 </header>
@@ -51,7 +51,7 @@ table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:12px;bor
 </section>
 
 <section id="admin" class="view">
-<div class="hero"><h1>⚙️ Admin Panel</h1><p>Welcome, Thrives Tutor. Create and manage quizzes, questions, students and results.</p><span class="badge published">ADMIN ACCESS ACTIVE</span></div>
+<div class="hero"><h1>⚙️ Admin Panel</h1><p>Create and manage quizzes, questions, students and results.</p></div>
 <div class="tabs">
 <button onclick="adminTab('create')">➕ Create Quiz</button>
 <button onclick="adminTab('question')">📝 Add Questions</button>
@@ -99,7 +99,7 @@ table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:12px;bor
    SUPABASE
    ========================================================== */
 const SUPABASE_URL='https://odwiqajuubcgrrqipyju.supabase.co';
-const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1dWJjZ3JycWlweWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzA4MjEsImV4cCI6MjA2ODg0NjgyMX0.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A'
+const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1YmNncnJx aXB5anUiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc1MzI3MDgyMSwiZXhwIjoyMDY4ODQ2ODIxfQ.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A'.replace(/\s/g,'');
 const {createClient}=supabase;
 const db=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 
@@ -112,10 +112,7 @@ let currentQuiz=null,currentQuestions=[],currentQuestionIndex=0,selectedAnswers=
 function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';clearTimeout(window.tt);window.tt=setTimeout(()=>t.style.display='none',3500);}
 function initials(n){return(n||'U').split(/\s+/).filter(Boolean).map(x=>x[0]).join('').slice(0,2).toUpperCase();}
-function isAdmin(){
-  return currentProfile?.is_admin===true ||
-         currentUser?.email?.toLowerCase()===ADMIN_EMAIL.toLowerCase();
-}
+function isAdmin(){return currentProfile?.is_admin===true || (currentUser?.email||'').toLowerCase()===ADMIN_EMAIL.toLowerCase();}
 function requireLogin(){if(!currentUser){openAuth();return false}return true;}
 
 function showView(id){
@@ -163,93 +160,33 @@ if(currentUser)await loadCurrentProfile();else currentProfile=null;
 updateHeader();await loadQuizzes();
 }
 async function loadCurrentProfile(){
-  if(!currentUser)return;
-
-  const email=currentUser.email||'';
-  const emailIsAdmin=email.toLowerCase()===ADMIN_EMAIL.toLowerCase();
-
-  let {data,error}=await db.from('users').select('*').eq('id',currentUser.id).maybeSingle();
-
-  if(error){
-    console.warn('Profile SELECT:',error.message);
-  }
-
-  if(!data){
-    const m=currentUser.user_metadata||{};
-    const row={
-      id:currentUser.id,
-      email,
-      full_name:m.full_name||email.split('@')[0]||'Student',
-      university:m.university||'',
-      year_level:m.year||'',
-      total_score:0,
-      quizzes_completed:0,
-      is_admin:emailIsAdmin
-    };
-
-    const r=await db.from('users').insert(row).select('*').single();
-
-    if(!r.error){
-      data=r.data;
-    }else{
-      console.warn('Profile INSERT:',r.error.message);
-    }
-  }
-
-  currentProfile=data||{
-    id:currentUser.id,
-    email,
-    full_name:currentUser.user_metadata?.full_name||'Student',
-    university:currentUser.user_metadata?.university||'',
-    year_level:currentUser.user_metadata?.year||'',
-    total_score:0,
-    quizzes_completed:0,
-    is_admin:emailIsAdmin
-  };
-
-  // Never allow the admin email to lose admin status in the UI.
-  if(emailIsAdmin)currentProfile.is_admin=true;
-
-  updateHeader();
+if(!currentUser)return;
+let {data,error}=await db.from('users').select('*').eq('id',currentUser.id).maybeSingle();
+if(error){console.warn('Profile SELECT:',error.message); currentProfile=null;}
+if(data && (currentUser.email||'').toLowerCase()===ADMIN_EMAIL.toLowerCase()) data.is_admin=true;
+if(!data){
+const m=currentUser.user_metadata||{};
+const row={id:currentUser.id,email:currentUser.email,full_name:m.full_name||currentUser.email?.split('@')[0]||'Student',year_level:m.year||'',total_score:0,quizzes_completed:0,is_admin:(currentUser.email||'').toLowerCase()===ADMIN_EMAIL.toLowerCase()};
+const r=await db.from('users').insert(row).select().single();
+if(r.error){console.error(r.error);return;}data=r.data;
 }
-function updateHeader(){document.getElementById('loginBtn').classList.toggle('hidden',!!currentUser);document.getElementById('logoutBtn').classList.toggle('hidden',!currentUser);document.getElementById('na').classList.toggle('hidden',!isAdmin());}
+currentProfile=data || {id:currentUser.id,email:currentUser.email,full_name:currentUser.user_metadata?.full_name||'Thrives Tutor',is_admin:isAdmin()};
+if((currentUser.email||'').toLowerCase()===ADMIN_EMAIL.toLowerCase()) currentProfile.is_admin=true;
+}
+function updateHeader(){document.getElementById('authBtn').classList.toggle('hidden',!!currentUser);document.getElementById('logoutBtn').classList.toggle('hidden',!currentUser);document.getElementById('na').classList.toggle('hidden',!isAdmin());}
 async function loadProfile(){
 const b=document.getElementById('profileBox');
 if(!currentUser){b.innerHTML='<p>Please login to view your profile.</p><button onclick="openAuth()">Login</button>';return;}
 if(!currentProfile)await loadCurrentProfile();const p=currentProfile||{};
 const avatar=p.avatar_url?'<img src="'+esc(p.avatar_url)+'" alt="Profile">':esc(initials(p.full_name));
 const {count}=await db.from('quiz_attempts').select('*',{count:'exact',head:true}).eq('user_id',currentUser.id);
-b.innerHTML='<div class="profiletop"><div class="avatar">'+avatar+'</div><div><h2>'+esc(p.full_name||'Student')+'</h2><div class="small">'+esc(p.email||currentUser.email)+'</div>'+(isAdmin()?'<span class="badge published">ADMIN</span>':'')+'</div></div><hr>'+
+b.innerHTML='<div class="profiletop"><div class="avatar">'+avatar+'</div><div><h2>'+esc(p.full_name||'Student')+'</h2><div class="small">'+esc(p.email||currentUser.email)+'</div></div></div><hr>'+
 '<div class="grid"><div><div class="small">Total Points</div><div class="stat">'+Number(p.total_score||0)+'</div></div><div><div class="small">Quizzes Completed</div><div class="stat">'+Number(p.quizzes_completed||0)+'</div></div><div><div class="small">Rank</div><div class="stat">'+(p.rank?'#'+Number(p.rank):'-')+'</div></div></div><hr>'+
-'<label>Full Name</label><input id="editName" value="'+esc(p.full_name||'')+'"><label>University</label><input id="editUniversity" value="'+esc(p.university||'')+'"><label>Year</label><input id="editYear" value="'+esc(p.year_level||'')+'"><label>Profile Picture URL</label><input id="editAvatar" value="'+esc(p.avatar_url||'')+'" placeholder="Optional image URL"><label>Or upload a picture</label><input id="avatarFile" type="file" accept="image/*"><button onclick="saveProfile()">Save Profile</button>';
+'<label>Full Name</label><input id="editName" value="'+esc(p.full_name||'')+'"><label>University</label><input id="editUniversity" value="'+esc(p.university||'')+'"><label>Year</label><input id="editYear" value="'+esc(p.year_level||'')+'"><label>Profile Picture URL</label><input id="editAvatar" value="'+esc(p.avatar_url||'')+'" placeholder="Optional image URL"><button onclick="saveProfile()">Save Profile</button>';
 }
-async function uploadAvatarIfSelected(){
-  const file=document.getElementById('avatarFile')?.files?.[0];
-  if(!file)return document.getElementById('editAvatar')?.value.trim()||'';
-
-  if(file.size>2*1024*1024){
-    toast('Profile picture must be 2 MB or smaller.');
-    return null;
-  }
-
-  const ext=(file.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'');
-  const path=currentUser.id+'/'+Date.now()+'.'+(ext||'jpg');
-
-  const {error}=await db.storage.from('avatars').upload(path,file,{upsert:true,contentType:file.type});
-  if(error){
-    toast('Picture upload failed: '+error.message+' (Create a public Storage bucket named avatars.)');
-    return null;
-  }
-
-  const {data}=db.storage.from('avatars').getPublicUrl(path);
-  return data.publicUrl;
-}
-
 async function saveProfile(){
 if(!requireLogin())return;
-const uploaded=await uploadAvatarIfSelected();
-  if(uploaded===null && document.getElementById('avatarFile')?.files?.length)return;
-  const u={full_name:document.getElementById('editName').value.trim(),university:document.getElementById('editUniversity').value.trim(),year_level:document.getElementById('editYear').value.trim(),avatar_url:uploaded||document.getElementById('editAvatar').value.trim()};
+const u={full_name:document.getElementById('editName').value.trim(),university:document.getElementById('editUniversity').value.trim(),year_level:document.getElementById('editYear').value.trim(),avatar_url:document.getElementById('editAvatar').value.trim()};
 const {data,error}=await db.from('users').update(u).eq('id',currentUser.id).select().single();
 if(error){toast(error.message);return}currentProfile=data;toast('Profile updated.');loadProfile();
 }
@@ -259,13 +196,13 @@ async function loadQuizzes(){
 const g=document.getElementById('quizGrid');if(!g)return;g.innerHTML='<div class="card">Loading quizzes...</div>';
 const {data,error}=await db.from('quizzes').select('*').eq('is_published',true).order('created_at',{ascending:false});
 if(error){g.innerHTML='<div class="card error">'+esc(error.message)+'</div>';return}
-if(!data?.length){g.innerHTML='<div class="card"><h2>No published quizzes yet.</h2><p>The admin has not published a quiz yet. Create your first quiz from the Admin Panel, add questions, then publish it.</p></div>';return}
+if(!data?.length){g.innerHTML='<div class="card">No published quizzes yet.</div>';return}
 g.innerHTML=data.map(q=>'<div class="card"><span class="badge published">PUBLISHED</span><h2>'+esc(q.title)+'</h2><p>'+esc(q.description||'')+'</p><p class="small">Subject: '+esc(q.subject)+' • '+Number(q.total_questions||0)+' questions • '+Number(q.time_limit_minutes||0)+' minutes</p><p class="small">Difficulty: '+esc(q.difficulty||'Medium')+' • Pass: '+Number(q.passing_score||70)+'%</p><button onclick="startQuiz(\''+q.id+'\')">Start Quiz</button></div>').join('');
 }
 async function startQuiz(id){
 if(!requireLogin())return;
 const {data:q,error:e}=await db.from('quizzes').select('*').eq('id',id).eq('is_published',true).single();if(e){toast(e.message);return}
-const {data:qs,error}=await db.from('questions').select('id,quiz_id,question_text,question_type,order_index,options(id,option_text,is_correct,order_index)').eq('quiz_id',id).order('order_index',{ascending:true});
+const {data:qs,error}=await db.from('questions').select('id,quiz_id,question_text,question_type,order_index,explanation,options(id,option_text,is_correct,order_index)').eq('quiz_id',id).order('order_index',{ascending:true});
 if(error){toast(error.message);return}if(!qs?.length){toast('This quiz has no questions yet.');return}
 currentQuiz=q;currentQuestions=qs;currentQuestionIndex=0;selectedAnswers={};quizStartedAt=Date.now();
 const {data:a,error:ae}=await db.from('quiz_attempts').insert({user_id:currentUser.id,quiz_id:id,score:0,total_questions:qs.length,correct_answers:0,passed:false,time_taken_seconds:0}).select().single();
@@ -274,7 +211,7 @@ if(ae){toast(ae.message);return}currentAttemptId=a.id;showView('playing');render
 function renderQuestion(){
 const q=currentQuestions[currentQuestionIndex],opts=[...(q.options||[])].sort((a,b)=>(a.order_index||0)-(b.order_index||0)),sel=selectedAnswers[q.id];
 document.getElementById('playTitle').textContent=currentQuiz.title;document.getElementById('counter').textContent='Question '+(currentQuestionIndex+1)+' of '+currentQuestions.length;document.getElementById('bar').style.width=((currentQuestionIndex+1)/currentQuestions.length*100)+'%';
-document.getElementById('questionBox').innerHTML='<h2>'+esc(q.question_text)+'</h2>'+opts.map((o,i)=>'<label class="option"><input type="radio" name="answer" '+(sel===o.id?'checked':'')+' onchange="selectAnswer(\''+q.id+'\',\''+o.id+'\')"> '+String.fromCharCode(65+i)+'. '+esc(o.option_text)+'</label>').join('');
+document.getElementById('questionBox').innerHTML='<h2>'+esc(q.question_text)+'</h2>'+opts.map((o,i)=>'<label class="option"><input type="radio" name="answer" '+(sel===o.id?'checked':'')+' onchange="selectAnswer(\''+q.id+'\',\''+o.id+'\')"> '+String.fromCharCode(65+i)+'. '+esc(o.option_text)+'</label>').join('')+(sel?'<div class="card" style="margin-top:18px;background:#f5f3ff"><b>Explanation</b><p>'+esc(q.explanation||'')+'</p></div>':'');
 document.getElementById('nextBtn').textContent=currentQuestionIndex===currentQuestions.length-1?'Submit Quiz':'Next';
 }
 function selectAnswer(qid,oid){selectedAnswers[qid]=oid;updatePreview();}
@@ -298,43 +235,19 @@ function leaveQuiz(){if(confirm('Exit this quiz? Your attempt will remain incomp
 
 /* LEADERBOARD */
 async function loadLeaderboard(){
-  const b=document.getElementById('leaderboardBox');
-  b.innerHTML='Loading...';
-
-  const {data,error}=await db.from('users')
-    .select('full_name,university,year_level,total_score,quizzes_completed')
-    .order('total_score',{ascending:false})
-    .limit(100);
-
-  if(error){
-    b.innerHTML='<p class="error">'+esc(error.message)+'</p>';
-    return;
-  }
-
-  if(!data?.length){
-    b.innerHTML='<p>No students yet.</p>';
-    return;
-  }
-
-  b.innerHTML='<div class="tablewrap"><table><thead><tr>'+
-    '<th>Rank</th><th>Student</th><th>University</th><th>Year</th><th>Quizzes</th><th>Points</th>'+
-    '</tr></thead><tbody>'+
-    data.map((x,i)=>
-      '<tr><td><b>#'+(i+1)+'</b></td>'+
-      '<td><b>'+esc(x.full_name||'Student')+'</b></td>'+
-      '<td>'+esc(x.university||'-')+'</td>'+
-      '<td>'+esc(x.year_level||'-')+'</td>'+
-      '<td>'+Number(x.quizzes_completed||0)+'</td>'+
-      '<td><b>'+Number(x.total_score||0)+'</b></td></tr>'
-    ).join('')+
-    '</tbody></table></div>';
+const b=document.getElementById('leaderboardBox');b.innerHTML='Loading...';
+const {data,error}=await db.from('leaderboard').select('user_id,total_points,quizzes_taken,average_score,rank_position').order('rank_position',{ascending:true,nullsFirst:false}).limit(100);
+if(error){b.innerHTML='<p class="error">'+esc(error.message)+'</p><p class="small">The leaderboard table needs to be populated by your database logic.</p>';return}
+if(!data?.length){b.innerHTML='<div class="card">No leaderboard records yet.</div>';return}
+b.innerHTML='<div class="tablewrap"><table><thead><tr><th>Rank</th><th>Points</th><th>Quizzes</th><th>Average</th></tr></thead><tbody>'+data.map((x,i)=>'<tr><td>'+(x.rank_position||i+1)+'</td><td><b>'+Number(x.total_points||0)+'</b></td><td>'+Number(x.quizzes_taken||0)+'</td><td>'+Number(x.average_score||0).toFixed(2)+'%</td></tr>').join('')+'</tbody></table></div>';
 }
+
 /* ADMIN */
 function adminTab(tab){if(!isAdmin()){toast('Admin access required.');return}document.querySelectorAll('.adminbox').forEach(x=>x.classList.add('hidden'));document.getElementById('a'+tab.charAt(0).toUpperCase()+tab.slice(1)).classList.remove('hidden');}
 async function loadAdmin(){
 if(!isAdmin())return;
 document.getElementById('aCreate').innerHTML='<h2>➕ Create Quiz</h2><label>Title</label><input id="qt" placeholder="e.g. Anatomy Quiz 1"><label>Subject</label><input id="qs" placeholder="Anatomy"><label>Description</label><textarea id="qd" rows="3"></textarea><label>Total Questions</label><input id="qtotal" type="number" min="1" value="10"><label>Time Limit (minutes)</label><input id="qtime" type="number" min="1" value="30"><label>Difficulty</label><select id="qdiff"><option>Easy</option><option selected>Medium</option><option>Hard</option></select><label>Passing Score (%)</label><input id="qpass" type="number" min="0" max="100" value="70"><label><input id="qpub" type="checkbox" style="width:auto"> Publish immediately</label><br><button onclick="createQuiz()">Create Quiz</button>';
-document.getElementById('aQuestion').innerHTML='<h2>📝 Add Question</h2><label>Quiz</label><select id="questionQuiz"></select><label>Question</label><textarea id="questionText" rows="4"></textarea><h3>Options</h3><div id="optionFields"></div><button class="secondary" onclick="addOptionField()">+ Add Option</button><br><br><button onclick="createQuestion()">Save Question</button>';
+document.getElementById('aQuestion').innerHTML='<h2>📝 Add Question</h2><label>Quiz</label><select id="questionQuiz"></select><label>Question</label><textarea id="questionText" rows="4" placeholder="Enter the question"></textarea><label>Explanation (shown to students after the quiz)</label><textarea id="questionExplanation" rows="4" placeholder="Explain why the correct answer is correct and help the student learn."></textarea><h3>Exactly 4 Answer Options</h3><div id="optionFields"></div><button class="secondary" onclick="addOptionField()">+ Add Option</button><br><br><button onclick="createQuestion()">Save Question</button>';
 document.getElementById('aManage').innerHTML='<h2>📚 Manage Quizzes</h2><div id="manageBox">Loading...</div>';
 document.getElementById('aStudents').innerHTML='<h2>👥 Students</h2><div id="studentsBox">Loading...</div>';
 document.getElementById('aAttempts').innerHTML='<h2>📊 Attempts</h2><div id="attemptsBox">Loading...</div>';
@@ -343,20 +256,38 @@ await populateQuizSelect();document.getElementById('optionFields').innerHTML='';
 async function populateQuizSelect(){
 const s=document.getElementById('questionQuiz');if(!s)return;const {data,error}=await db.from('quizzes').select('id,title').order('created_at',{ascending:false});if(error){s.innerHTML='<option>Error</option>';return}s.innerHTML=data?.length?data.map(q=>'<option value="'+q.id+'">'+esc(q.title)+'</option>').join(''):'<option value="">Create a quiz first</option>';
 }
-function addOptionField(){const b=document.getElementById('optionFields'),n=b.children.length+1;b.insertAdjacentHTML('beforeend','<div style="display:flex;gap:8px;align-items:center"><input class="optText" placeholder="Option '+n+'" style="flex:1"><label style="white-space:nowrap"><input class="optCorrect" type="radio" name="correctOption" style="width:auto"> Correct</label></div>');}
+function addOptionField(){const b=document.getElementById('optionFields');if(b.children.length>=4){toast('A multiple-choice question must have exactly 4 options.');return;}const n=b.children.length+1;b.insertAdjacentHTML('beforeend','<div style="display:flex;gap:8px;align-items:center;margin:8px 0"><input class="optText" placeholder="Option '+n+'" style="flex:1"><label style="white-space:nowrap"><input class="optCorrect" type="radio" name="correctOption" style="width:auto"> Correct answer</label></div>');}
 async function createQuiz(){
 if(!isAdmin())return;const title=document.getElementById('qt').value.trim(),subject=document.getElementById('qs').value.trim();if(!title||!subject){toast('Enter title and subject.');return}
 const {error}=await db.from('quizzes').insert({title,subject,description:document.getElementById('qd').value.trim(),total_questions:Number(document.getElementById('qtotal').value)||1,time_limit_minutes:Number(document.getElementById('qtime').value)||30,difficulty:document.getElementById('qdiff').value,passing_score:Number(document.getElementById('qpass').value)||70,created_by:currentUser.id,is_published:document.getElementById('qpub').checked});
 if(error){toast(error.message);return}toast('Quiz created.');loadAdmin();
 }
 async function createQuestion(){
-if(!isAdmin())return;const quiz_id=document.getElementById('questionQuiz').value,text=document.getElementById('questionText').value.trim(),texts=[...document.querySelectorAll('.optText')].map(x=>x.value.trim()),radios=[...document.querySelectorAll('.optCorrect')];
-if(!quiz_id||!text){toast('Select a quiz and enter the question.');return}if(texts.some(x=>!x)){toast('Complete all options.');return}const ci=radios.findIndex(x=>x.checked);if(ci<0){toast('Select the correct answer.');return}
-const {data:last,error:oe}=await db.from('questions').select('order_index').eq('quiz_id',quiz_id).order('order_index',{ascending:false}).limit(1);if(oe){toast(oe.message);return}const order=(last?.[0]?.order_index||0)+1;
-const {data:q,error}=await db.from('questions').insert({quiz_id,question_text:text,question_type:'multiple_choice',order_index:order}).select().single();if(error){toast(error.message);return}
-const {error:op}=await db.from('options').insert(texts.map((x,i)=>({question_id:q.id,option_text:x,is_correct:i===ci,order_index:i+1})));if(op){await db.from('questions').delete().eq('id',q.id);toast(op.message);return}
-const {count}=await db.from('questions').select('*',{count:'exact',head:true}).eq('quiz_id',quiz_id);await db.from('quizzes').update({total_questions:count||0}).eq('id',quiz_id);
-toast('Question added.');document.getElementById('questionText').value='';document.querySelectorAll('.optText').forEach(x=>x.value='');document.querySelectorAll('.optCorrect').forEach(x=>x.checked=false);
+if(!isAdmin())return;
+const quiz_id=document.getElementById('questionQuiz').value;
+const text=document.getElementById('questionText').value.trim();
+const explanation=document.getElementById('questionExplanation').value.trim();
+const texts=[...document.querySelectorAll('.optText')].map(x=>x.value.trim());
+const radios=[...document.querySelectorAll('.optCorrect')];
+if(!quiz_id||!text){toast('Select a quiz and enter the question.');return;}
+if(texts.length!==4||texts.some(x=>!x)){toast('Enter exactly 4 complete answer options.');return;}
+const ci=radios.findIndex(x=>x.checked);
+if(ci<0){toast('Mark one option as the correct answer.');return;}
+if(!explanation){toast('Enter an explanation for this question.');return;}
+const {data:last,error:oe}=await db.from('questions').select('order_index').eq('quiz_id',quiz_id).order('order_index',{ascending:false}).limit(1);
+if(oe){toast('Could not get question order: '+oe.message);return;}
+const order=(last?.[0]?.order_index||0)+1;
+const {data:q,error}=await db.from('questions').insert({quiz_id,question_text:text,question_type:'multiple_choice',order_index:order,explanation:explanation}).select().single();
+if(error){toast('Question save failed: '+error.message);return;}
+const {error:op}=await db.from('options').insert(texts.map((x,i)=>({question_id:q.id,option_text:x,is_correct:i===ci,order_index:i+1})));
+if(op){await db.from('questions').delete().eq('id',q.id);toast('Options save failed: '+op.message);return;}
+const {count}=await db.from('questions').select('*',{count:'exact',head:true}).eq('quiz_id',quiz_id);
+await db.from('quizzes').update({total_questions:count||0}).eq('id',quiz_id);
+toast('Question + 4 options + correct answer + explanation saved.');
+document.getElementById('questionText').value='';
+document.getElementById('questionExplanation').value='';
+document.querySelectorAll('.optText').forEach(x=>x.value='');
+document.querySelectorAll('.optCorrect').forEach(x=>x.checked=false);
 }
 async function manageQuizzes(){
 const b=document.getElementById('manageBox');if(!b)return;const {data,error}=await db.from('quizzes').select('*').order('created_at',{ascending:false});if(error){b.innerHTML='<p class="error">'+esc(error.message)+'</p>';return}if(!data?.length){b.innerHTML='No quizzes yet.';return}
