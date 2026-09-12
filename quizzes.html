@@ -100,10 +100,18 @@ table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:12px;bor
 /* ==========================================================
    SUPABASE
    ========================================================== */
-const SUPABASE_URL='https://odwiqajuubcgrrqipyju.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1dWJjZ3JycWlweWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzA4MjEsImV4cCI6MjA2ODg0NjgyMX0.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A' 
-const {createClient}=supabase;
-const db=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+const SUPABASE_URL =
+  'https://odwiqajuubcgrrqipyju.supabase.co';
+
+const SUPABASE_ANON_KEY =
+  'PASTE_THE_EXACT_SUPABASE_PUBLIC_KEY_HERE';
+
+const { createClient } = window.supabase;
+
+const db = createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
 
 /* ADMIN EMAIL */
 const ADMIN_EMAIL = 'thrivesarchivers@gmail.com';
@@ -351,24 +359,40 @@ b.innerHTML='<div class="tablewrap"><table><thead><tr><th>Student</th><th>Quiz</
 }
 
 /* START */
-db.auth.onAuthStateChange((_event,session)=>{
-  currentUser=session?.user||null;
-  if(currentUser && String(currentUser.email||'').trim().toLowerCase()===ADMIN_EMAIL.toLowerCase()){
-    currentProfile={...(currentProfile||{}),id:currentUser.id,email:currentUser.email,is_admin:true};
+db.auth.onAuthStateChange((_event, session) => {
+  currentUser = session?.user || null;
+
+  if (
+    currentUser &&
+    String(currentUser.email || "").trim().toLowerCase() ===
+      ADMIN_EMAIL.toLowerCase()
+  ) {
+    currentProfile = {
+      ...(currentProfile || {}),
+      id: currentUser.id,
+      email: currentUser.email,
+      is_admin: true
+    };
   }
-  // Update navigation immediately; do not wait for the users-table query.
+
   updateHeader();
-  setTimeout(async()=>{
-    if(currentUser) await loadCurrentProfile(); else currentProfile=null;
+
+  setTimeout(async () => {
+    if (currentUser) {
+      await loadCurrentProfile();
+    } else {
+      currentProfile = null;
+    }
+
     updateHeader();
     await loadQuizzes();
-  },0);
+  }, 0);
 });
 
-// Restore an existing login when the HTML page is opened or refreshed.
-window.addEventListener('DOMContentLoaded',()=>{ refreshSession(); });
-refreshSession();
-showView('quizzes');
+window.addEventListener("DOMContentLoaded", async () => {
+  await refreshSession();
+  showView("quizzes");
+});
 </script>
 </body>
 </html>
