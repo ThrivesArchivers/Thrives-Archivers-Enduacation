@@ -4,395 +4,3750 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Thrives Archivers - Quiz Competition</title>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-:root{--p:#5b5bea;--p2:#7667ff;--bg:#f5f6ff;--card:#fff;--text:#20213a;--muted:#73758c;--border:#e7e7f2;--danger:#e74c3c;--success:#20a464}
-*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
-header{background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;padding:15px 5%;display:flex;justify-content:space-between;align-items:center;gap:15px;position:sticky;top:0;z-index:20}.logo{font-weight:800;font-size:21px}.nav{display:flex;gap:6px;flex-wrap:wrap}.nav button{background:transparent;color:#fff;border:0;padding:10px 12px;border-radius:9px}.nav button:hover,.nav button.active{background:#ffffff22}
-.container{max-width:1150px;margin:auto;padding:25px 16px}.view{display:none}.view.active{display:block}.hero{background:linear-gradient(135deg,var(--p),#8a78ff);color:#fff;padding:30px;border-radius:20px;margin-bottom:22px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:16px}.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;box-shadow:0 5px 18px #34345b0d;margin-bottom:16px}
-button{background:var(--p);color:#fff;border:0;border-radius:10px;padding:11px 16px;cursor:pointer;font-weight:700}.secondary{background:#eeeef8;color:var(--text)}.danger{background:var(--danger)}.success{background:var(--success)}
-input,select,textarea{width:100%;padding:12px;border:1px solid #dcdceb;border-radius:10px;margin:6px 0 12px;background:#fff;color:var(--text)}label{font-weight:700;font-size:14px}.small{font-size:13px;color:var(--muted)}.error{color:var(--danger);font-weight:700}.ok{color:var(--success);font-weight:700}
-.hidden{display:none!important}.modal{position:fixed;inset:0;background:#11112799;display:none;align-items:center;justify-content:center;padding:15px;z-index:50}.modal.show{display:flex}.modalbox{background:#fff;width:min(500px,100%);padding:24px;border-radius:18px;max-height:90vh;overflow:auto}
-.option{display:block;border:1px solid var(--border);padding:14px;border-radius:12px;margin:10px 0;cursor:pointer}.option:hover{border-color:var(--p)}.option input{width:auto;margin:0 8px 0 0}
-.quizhead{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}.progress{height:8px;background:#e8e8f5;border-radius:20px;overflow:hidden}.progress div{height:100%;background:var(--p);width:0}
-table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}th{background:#f0efff}.tablewrap{overflow:auto}
-.avatar{width:78px;height:78px;border-radius:50%;background:var(--p);color:#fff;display:flex;align-items:center;justify-content:center;font-size:25px;font-weight:800;overflow:hidden}.avatar img{width:100%;height:100%;object-fit:cover}.profiletop{display:flex;gap:16px;align-items:center}.stat{font-size:26px;font-weight:800}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.badge{display:inline-block;padding:5px 9px;border-radius:20px;background:#eeeef8;font-size:12px;font-weight:700}.published{background:#dff7e9;color:#137b48}.draft{background:#fff2d6;color:#8a5a00}.toast{position:fixed;right:18px;bottom:18px;background:#20213a;color:#fff;padding:13px 18px;border-radius:10px;display:none;z-index:100;max-width:380px}
-@media(max-width:600px){header{flex-direction:column;align-items:flex-start}.nav{width:100%}.nav button{flex:1}.hero{padding:22px}.container{padding:16px}}
- .explanation{background:#f1efff;border-left:4px solid #5b5bea;padding:12px;border-radius:8px;margin-top:12px}
-.leaderboard-profile{display:flex;align-items:center;gap:10px;min-width:220px}.leaderboard-avatar{width:52px;height:52px;border-radius:50%;object-fit:cover;background:var(--p);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;flex-shrink:0}.profile-photo-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px}.profile-photo-actions input[type=file]{max-width:300px;margin:0}.profile-card-header{display:flex;align-items:center;gap:16px;flex-wrap:wrap}.profile-large-avatar{width:100px;height:100px;border-radius:50%;object-fit:cover;background:var(--p);color:white;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:800;overflow:hidden}.profile-large-avatar img{width:100%;height:100%;object-fit:cover}
+:root{
+--p:#5b5bea;
+--p2:#7667ff;
+--bg:#f5f6ff;
+--card:#fff;
+--text:#20213a;
+--muted:#73758c;
+--border:#e7e7f2;
+--danger:#e74c3c;
+--success:#20a464
+}
+
+*{box-sizing:border-box}
+
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:var(--bg);
+color:var(--text)
+}
+
+header{
+background:linear-gradient(135deg,var(--p),var(--p2));
+color:#fff;
+padding:15px 5%;
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:15px;
+position:sticky;
+top:0;
+z-index:20
+}
+
+.logo{
+font-weight:800;
+font-size:21px
+}
+
+.nav{
+display:flex;
+gap:6px;
+flex-wrap:wrap
+}
+
+.nav button{
+background:transparent;
+color:#fff;
+border:0;
+padding:10px 12px;
+border-radius:9px
+}
+
+.nav button:hover,
+.nav button.active{
+background:#ffffff22
+}
+
+.container{
+max-width:1150px;
+margin:auto;
+padding:25px 16px
+}
+
+.view{
+display:none
+}
+
+.view.active{
+display:block
+}
+
+.hero{
+background:linear-gradient(135deg,var(--p),#8a78ff);
+color:#fff;
+padding:30px;
+border-radius:20px;
+margin-bottom:22px
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(245px,1fr));
+gap:16px
+}
+
+.card{
+background:var(--card);
+border:1px solid var(--border);
+border-radius:16px;
+padding:18px;
+box-shadow:0 5px 18px #34345b0d;
+margin-bottom:16px
+}
+
+button{
+background:var(--p);
+color:#fff;
+border:0;
+border-radius:10px;
+padding:11px 16px;
+cursor:pointer;
+font-weight:700
+}
+
+.secondary{
+background:#eeeef8;
+color:var(--text)
+}
+
+.danger{
+background:var(--danger)
+}
+
+.success{
+background:var(--success)
+}
+
+input,select,textarea{
+width:100%;
+padding:12px;
+border:1px solid #dcdceb;
+border-radius:10px;
+margin:6px 0 12px;
+background:#fff;
+color:var(--text)
+}
+
+label{
+font-weight:700;
+font-size:14px
+}
+
+.small{
+font-size:13px;
+color:var(--muted)
+}
+
+.error{
+color:var(--danger);
+font-weight:700
+}
+
+.ok{
+color:var(--success);
+font-weight:700
+}
+
+.hidden{
+display:none!important
+}
+
+.modal{
+position:fixed;
+inset:0;
+background:#11112799;
+display:none;
+align-items:center;
+justify-content:center;
+padding:15px;
+z-index:50
+}
+
+.modal.show{
+display:flex
+}
+
+.modalbox{
+background:#fff;
+width:min(500px,100%);
+padding:24px;
+border-radius:18px;
+max-height:90vh;
+overflow:auto
+}
+
+.option{
+display:block;
+border:1px solid var(--border);
+padding:14px;
+border-radius:12px;
+margin:10px 0;
+cursor:pointer
+}
+
+.option:hover{
+border-color:var(--p)
+}
+
+.option input{
+width:auto;
+margin:0 8px 0 0
+}
+
+/* CORRECT ANSWER */
+.option.answer-correct{
+border-color:#20a464;
+background:#dff7e9;
+color:#137b48;
+}
+
+/* WRONG ANSWER */
+.option.answer-wrong{
+border-color:#e74c3c;
+background:#fde5e2;
+color:#b83227;
+}
+
+.option.answer-correct::after{
+content:" ✓ Correct";
+float:right;
+font-weight:700;
+}
+
+.option.answer-wrong::after{
+content:" ✗ Wrong";
+float:right;
+font-weight:700;
+}
+
+.quizhead{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:15px;
+flex-wrap:wrap
+}
+
+.progress{
+height:8px;
+background:#e8e8f5;
+border-radius:20px;
+overflow:hidden
+}
+
+.progress div{
+height:100%;
+background:var(--p);
+width:0
+}
+
+table{
+width:100%;
+border-collapse:collapse
+}
+
+th,td{
+text-align:left;
+padding:12px;
+border-bottom:1px solid var(--border)
+}
+
+th{
+background:#f0efff
+}
+
+.tablewrap{
+overflow:auto
+}
+
+.avatar{
+width:78px;
+height:78px;
+border-radius:50%;
+background:var(--p);
+color:#fff;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:25px;
+font-weight:800;
+overflow:hidden
+}
+
+.avatar img{
+width:100%;
+height:100%;
+object-fit:cover
+}
+
+.profiletop{
+display:flex;
+gap:16px;
+align-items:center
+}
+
+.stat{
+font-size:26px;
+font-weight:800
+}
+
+.tabs{
+display:flex;
+gap:8px;
+flex-wrap:wrap;
+margin-bottom:18px
+}
+
+.badge{
+display:inline-block;
+padding:5px 9px;
+border-radius:20px;
+background:#eeeef8;
+font-size:12px;
+font-weight:700
+}
+
+.published{
+background:#dff7e9;
+color:#137b48
+}
+
+.draft{
+background:#fff2d6;
+color:#8a5a00
+}
+
+.toast{
+position:fixed;
+right:18px;
+bottom:18px;
+background:#20213a;
+color:#fff;
+padding:13px 18px;
+border-radius:10px;
+display:none;
+z-index:100;
+max-width:380px
+}
+
+@media(max-width:600px){
+
+header{
+flex-direction:column;
+align-items:flex-start
+}
+
+.nav{
+width:100%
+}
+
+.nav button{
+flex:1
+}
+
+.hero{
+padding:22px
+}
+
+.container{
+padding:16px
+}
+
+}
+
+.explanation{
+background:#f1efff;
+border-left:4px solid #5b5bea;
+padding:12px;
+border-radius:8px;
+margin-top:12px
+}
+
+.leaderboard-profile{
+display:flex;
+align-items:center;
+gap:10px;
+min-width:220px
+}
+
+.leaderboard-avatar{
+width:52px;
+height:52px;
+border-radius:50%;
+object-fit:cover;
+background:var(--p);
+color:#fff;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:800;
+font-size:18px;
+flex-shrink:0
+}
+
+.profile-photo-actions{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+align-items:center;
+margin-top:12px
+}
+
+.profile-photo-actions input[type=file]{
+max-width:300px;
+margin:0
+}
+
+.profile-card-header{
+display:flex;
+align-items:center;
+gap:16px;
+flex-wrap:wrap
+}
+
+.profile-large-avatar{
+width:100px;
+height:100px;
+border-radius:50%;
+object-fit:cover;
+background:var(--p);
+color:white;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:32px;
+font-weight:800;
+overflow:hidden
+}
+
+.profile-large-avatar img{
+width:100%;
+height:100%;
+object-fit:cover
+}
 </style>
 </head>
+
 <body>
+
 <header>
-<div class="logo">💜 Thrives Archivers</div>
-<div class="nav">
-<button id="nq" onclick="showView('quizzes')">Quizzes</button>
-<button id="nl" onclick="showView('leaderboard')">Leaderboard</button>
-<button id="np" onclick="showView('profile')">Profile</button>
-<button id="na" class="hidden" onclick="showView('admin')">⚙️ Admin</button>
-<button id="authBtn" onclick="openAuth()">Login</button>
-<button id="logoutBtn" class="hidden" onclick="logout()">Logout</button>
+
+<div class="logo">
+💜 Thrives Archivers
 </div>
+
+<div class="nav">
+
+<button id="nq" onclick="showView('quizzes')">
+Quizzes
+</button>
+
+<button id="nl" onclick="showView('leaderboard')">
+Leaderboard
+</button>
+
+<button id="np" onclick="showView('profile')">
+Profile
+</button>
+
+<button id="na" class="hidden" onclick="showView('admin')">
+⚙️ Admin
+</button>
+
+<button id="authBtn" onclick="openAuth()">
+Login
+</button>
+
+<button id="logoutBtn" class="hidden" onclick="logout()">
+Logout
+</button>
+
+</div>
+
 </header>
 
+
 <main class="container">
+
 <section id="quizzes" class="view active">
-<div class="hero"><h1>Quiz Competition</h1><p>Test your knowledge, earn points and climb the Thrives Archivers leaderboard.</p></div>
+
+<div class="hero">
+
+<h1>
+Quiz Competition
+</h1>
+
+<p>
+Test your knowledge, earn points and climb the Thrives Archivers leaderboard.
+</p>
+
+</div>
+
 <div id="quizGrid" class="grid"></div>
+
 </section>
+
 
 <section id="leaderboard" class="view">
-<div class="hero"><h1>🏆 Leaderboard</h1><p>Students ranked by total points.</p></div>
-<div class="card"><div id="leaderboardBox">Loading...</div></div>
+
+<div class="hero">
+
+<h1>
+🏆 Leaderboard
+</h1>
+
+<p>
+Students ranked by total points.
+</p>
+
+</div>
+
+<div class="card">
+
+<div id="leaderboardBox">
+Loading...
+</div>
+
+</div>
+
 </section>
+
 
 <section id="profile" class="view">
-<div class="hero"><h1>My Profile</h1><p>Manage your student information and view your progress.</p></div>
-<div class="card" id="profileBox">Please login to view your profile.</div>
+
+<div class="hero">
+
+<h1>
+My Profile
+</h1>
+
+<p>
+Manage your student information and view your progress.
+</p>
+
+</div>
+
+<div class="card" id="profileBox">
+Please login to view your profile.
+</div>
+
 </section>
+
 
 <section id="admin" class="view">
-<div class="hero"><h1>⚙️ Admin Panel</h1><p>Create and manage quizzes, questions, students and results.</p></div>
-<div class="tabs">
-<button onclick="adminTab('create')">➕ Create Quiz</button>
-<button onclick="adminTab('question')">📝 Add Questions</button>
-<button onclick="adminTab('manage')">📚 Manage Quizzes</button>
-<button onclick="adminTab('students')">👥 Students</button>
-<button onclick="adminTab('attempts')">📊 Attempts</button>
+
+<div class="hero">
+
+<h1>
+⚙️ Admin Panel
+</h1>
+
+<p>
+Create and manage quizzes, questions, students and results.
+</p>
+
 </div>
+
+<div class="tabs">
+
+<button onclick="adminTab('create')">
+➕ Create Quiz
+</button>
+
+<button onclick="adminTab('question')">
+📝 Add Questions
+</button>
+
+<button onclick="adminTab('manage')">
+📚 Manage Quizzes
+</button>
+
+<button onclick="adminTab('students')">
+👥 Students
+</button>
+
+<button onclick="adminTab('attempts')">
+📊 Attempts
+</button>
+
+</div>
+
 <div id="aCreate" class="card adminbox"></div>
+
 <div id="aQuestion" class="card adminbox hidden"></div>
+
 <div id="aManage" class="card adminbox hidden"></div>
+
 <div id="aStudents" class="card adminbox hidden"></div>
+
 <div id="aAttempts" class="card adminbox hidden"></div>
+
 </section>
+
 
 <section id="playing" class="view">
+
 <div class="card">
-<div class="quizhead"><div><h2 id="playTitle"></h2><div class="small" id="counter"></div></div><b id="scorePreview">Score: 0</b></div>
-<br><div class="progress"><div id="bar"></div></div>
+
+<div class="quizhead">
+
+<div>
+
+<h2 id="playTitle"></h2>
+
+<div class="small" id="counter"></div>
+
+</div>
+
+<b id="scorePreview">
+Score: 0
+</b>
+
+</div>
+
+<br>
+
+<div class="progress">
+
+<div id="bar"></div>
+
+</div>
+
 <div id="questionBox" style="margin-top:22px"></div>
+
 <div style="display:flex;justify-content:space-between;margin-top:20px">
-<button class="secondary" onclick="leaveQuiz()">Exit</button><button id="nextBtn" onclick="nextQuestion()">Next</button>
+
+<button class="secondary" onclick="leaveQuiz()">
+Exit
+</button>
+
+<button id="nextBtn" onclick="nextQuestion()">
+Next
+</button>
+
 </div>
+
 </div>
+
 </section>
+
 </main>
 
-<div id="authModal" class="modal"><div class="modalbox">
-<h2 id="authTitle">Login</h2><div id="authError"></div>
+
+<div id="authModal" class="modal">
+
+<div class="modalbox">
+
+<h2 id="authTitle">
+Login
+</h2>
+
+<div id="authError"></div>
+
 <div id="signupFields" class="hidden">
-<label>Full Name</label><input id="fullName" placeholder="Your full name">
-<label>University</label><input id="university" placeholder="e.g. Mulungushi University">
-<label>Year</label><select id="year"><option value="">Select year</option><option>First Year</option><option>Second Year</option><option>Third Year</option><option>Fourth Year</option><option>Other</option></select>
+
+<label>
+Full Name
+</label>
+
+<input id="fullName" placeholder="Your full name">
+
+<label>
+University
+</label>
+
+<input id="university" placeholder="e.g. Mulungushi University">
+
+<label>
+Year
+</label>
+
+<select id="year">
+
+<option value="">
+Select year
+</option>
+
+<option>
+First Year
+</option>
+
+<option>
+Second Year
+</option>
+
+<option>
+Third Year
+</option>
+
+<option>
+Fourth Year
+</option>
+
+<option>
+Other
+</option>
+
+</select>
+
 </div>
-<label>Email</label><input id="email" type="email" placeholder="Email">
-<label>Password</label><input id="password" type="password" placeholder="Password">
-<button style="width:100%" onclick="submitAuth()">Continue</button>
-<p class="small" id="switchText">Don't have an account?</p>
-<button class="secondary" style="width:100%" id="switchBtn" onclick="toggleAuth()">Create account</button>
-<br><br><button class="secondary" style="width:100%" onclick="closeAuth()">Close</button>
-</div></div>
+
+
+<label>
+Email
+</label>
+
+<input id="email" type="email" placeholder="Email">
+
+
+<label>
+Password
+</label>
+
+<input id="password" type="password" placeholder="Password">
+
+
+<button style="width:100%" onclick="submitAuth()">
+Continue
+</button>
+
+<p class="small" id="switchText">
+Don't have an account?
+</p>
+
+<button class="secondary" style="width:100%" id="switchBtn" onclick="toggleAuth()">
+Create account
+</button>
+
+<br><br>
+
+<button class="secondary" style="width:100%" onclick="closeAuth()">
+Close
+</button>
+
+</div>
+
+</div>
+
+
 <div id="toast" class="toast"></div>
 
+
 <script>
+
 /* ==========================================================
-   SUPABASE
+   SUPABASE CONFIGURATION
    ========================================================== */
+
 const SUPABASE_URL =
-  'https://odwiqajuubcgrrqipyju.supabase.co';
+'https://odwiqajuubcgrrqipyju.supabase.co';
 
 const SUPABASE_ANON_KEY =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1dWJjZ3JycWlweWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzA4MjEsImV4cCI6MjA2ODg0NjgyMX0.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A';
+'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1dWJjZ3JycWlweWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzA4MjEsImV4cCI6MjA2ODg0NjgyMX0.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A';
 
-const { createClient } = window.supabase;
+const { createClient } =
+window.supabase;
 
-const db = createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
+const db =
+createClient(
+SUPABASE_URL,
+SUPABASE_ANON_KEY
 );
 
+
 /* ADMIN EMAIL */
-const ADMIN_EMAIL = 'thrivesarchivers@gmail.com';
 
-let currentUser=null,currentProfile=null,authMode='login';
-let currentQuiz=null,currentQuestions=[],currentQuestionIndex=0,selectedAnswers={},currentAttemptId=null,quizStartedAt=0;
+const ADMIN_EMAIL =
+'thrivesarchivers@gmail.com';
 
-function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
-function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';clearTimeout(window.tt);window.tt=setTimeout(()=>t.style.display='none',3500);}
-function initials(n){return(n||'U').split(/\s+/).filter(Boolean).map(x=>x[0]).join('').slice(0,2).toUpperCase();}
+
+let currentUser=null;
+let currentProfile=null;
+let authMode='login';
+
+let currentQuiz=null;
+let currentQuestions=[];
+let currentQuestionIndex=0;
+let selectedAnswers={};
+let currentAttemptId=null;
+let quizStartedAt=0;
+
+
+/* ==========================================================
+   HELPERS
+   ========================================================== */
+
+function esc(v){
+
+return String(v??'')
+.replace(
+/[&<>"']/g,
+m=>({
+'&':'&amp;',
+'<':'&lt;',
+'>':'&gt;',
+'"':'&quot;',
+"'":'&#039;'
+}[m])
+);
+
+}
+
+
+function toast(m){
+
+const t=
+document.getElementById('toast');
+
+t.textContent=m;
+
+t.style.display='block';
+
+clearTimeout(window.tt);
+
+window.tt=
+setTimeout(
+()=>t.style.display='none',
+3500
+);
+
+}
+
+
+function initials(n){
+
+return (n||'U')
+.split(/\s+/)
+.filter(Boolean)
+.map(x=>x[0])
+.join('')
+.slice(0,2)
+.toUpperCase();
+
+}
+
+
+/* ==========================================================
+   ADMIN CHECK
+   ========================================================== */
+
 function isAdmin(){
-  const email=String(currentUser?.email || currentUser?.user_metadata?.email || '').trim().toLowerCase();
-  const profileEmail=String(currentProfile?.email||'').trim().toLowerCase();
-  const profileAdmin=currentProfile?.is_admin===true || currentProfile?.is_admin===1 || String(currentProfile?.is_admin).toLowerCase()==='true';
-  return profileAdmin || email===ADMIN_EMAIL.toLowerCase() || profileEmail===ADMIN_EMAIL.toLowerCase();
+
+const email=
+String(
+currentUser?.email ||
+currentUser?.user_metadata?.email ||
+''
+)
+.trim()
+.toLowerCase();
+
+const profileEmail=
+String(
+currentProfile?.email||''
+)
+.trim()
+.toLowerCase();
+
+const profileAdmin=
+currentProfile?.is_admin===true ||
+currentProfile?.is_admin===1 ||
+String(
+currentProfile?.is_admin
+).toLowerCase()==='true';
+
+return profileAdmin ||
+email===ADMIN_EMAIL.toLowerCase() ||
+profileEmail===ADMIN_EMAIL.toLowerCase();
+
 }
-function syncAdminUI(){
-  const admin=isAdmin();
-  const btn=document.getElementById('na');
-  if(btn) btn.classList.toggle('hidden',!admin);
-  return admin;
-}
-function requireLogin(){if(!currentUser){openAuth();return false}return true;}
+
+
+/* ==========================================================
+   VIEWS
+   ========================================================== */
 
 function showView(id){
-if(id==='admin'&&!isAdmin()){toast('Admin access required.');return;}
-document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
-document.getElementById(id).classList.add('active');
-document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));
-if(id==='quizzes'){document.getElementById('nq').classList.add('active');loadQuizzes();}
-if(id==='leaderboard'){document.getElementById('nl').classList.add('active');loadLeaderboard();}
-if(id==='profile'){document.getElementById('np').classList.add('active');loadProfile();}
-if(id==='admin'){document.getElementById('na').classList.add('active');loadAdmin();}
+
+document
+.querySelectorAll('.view')
+.forEach(v=>
+v.classList.remove('active')
+);
+
+const el=
+document.getElementById(id);
+
+if(el){
+el.classList.add('active');
 }
 
-/* AUTH */
-function openAuth(){if(currentUser){showView('profile');return}document.getElementById('authModal').classList.add('show');}
-function closeAuth(){document.getElementById('authModal').classList.remove('show');}
+if(id==='leaderboard'){
+loadLeaderboard();
+}
+
+if(id==='profile'){
+loadProfile();
+}
+
+if(id==='admin'){
+loadAdmin();
+}
+
+}
+
+
+/* ==========================================================
+   AUTH MODAL
+   ========================================================== */
+
+function openAuth(){
+
+document
+.getElementById('authModal')
+.classList.add('show');
+
+}
+
+
+function closeAuth(){
+
+document
+.getElementById('authModal')
+.classList.remove('show');
+
+}
+
+
 function toggleAuth(){
-authMode=authMode==='login'?'signup':'login';
-document.getElementById('authTitle').textContent=authMode==='login'?'Login':'Create Account';
-document.getElementById('signupFields').classList.toggle('hidden',authMode!=='signup');
-document.getElementById('switchText').textContent=authMode==='login'?"Don't have an account?":'Already have an account?';
-document.getElementById('switchBtn').textContent=authMode==='login'?'Create account':'Login';
-document.getElementById('authError').innerHTML='';
+
+authMode=
+authMode==='login'
+?'signup'
+:'login';
+
+document
+.getElementById('authTitle')
+.textContent=
+authMode==='login'
+?'Login'
+:'Create Account';
+
+document
+.getElementById('signupFields')
+.classList.toggle(
+'hidden',
+authMode==='login'
+);
+
+document
+.getElementById('switchText')
+.textContent=
+authMode==='login'
+?"Don't have an account?"
+:'Already have an account?';
+
+document
+.getElementById('switchBtn')
+.textContent=
+authMode==='login'
+?'Create account'
+:'Login';
+
 }
+
+
+/* ==========================================================
+   LOGIN / SIGNUP
+   ========================================================== */
+
 async function submitAuth(){
-const email=document.getElementById('email').value.trim(),password=document.getElementById('password').value,err=document.getElementById('authError');err.innerHTML='';
-if(!email||!password){err.innerHTML='<p class="error">Enter email and password.</p>';return;}
-let r;
-if(authMode==='login')r=await db.auth.signInWithPassword({email,password});
-else{
-const full_name=document.getElementById('fullName').value.trim(),university=document.getElementById('university').value.trim(),year=document.getElementById('year').value;
-if(!full_name){err.innerHTML='<p class="error">Enter your full name.</p>';return;}
-r=await db.auth.signUp({email,password,options:{data:{full_name,university,year_level:year}}});
-}
-if(r.error){err.innerHTML='<p class="error">'+esc(r.error.message)+'</p>';return;}
-closeAuth();toast(authMode==='login'?'Logged in successfully.':'Account created successfully.');await refreshSession();
-}
-async function logout(){await db.auth.signOut();currentUser=null;currentProfile=null;updateHeader();showView('quizzes');toast('Logged out.');}
 
-/* PROFILE */
-async function refreshSession(){
-const {data,error}=await db.auth.getSession();
-if(error){console.error('Session error:',error);return;}
-currentUser=data.session?.user||null;
-// Make the administrator button available immediately from the authenticated email.
-// This does not replace database RLS; it only fixes the frontend visibility issue.
-if(currentUser && String(currentUser.email||'').trim().toLowerCase()===ADMIN_EMAIL.toLowerCase()){
-  currentProfile={...(currentProfile||{}),id:currentUser.id,email:currentUser.email,is_admin:true};
+const email=
+document
+.getElementById('email')
+.value.trim();
+
+const password=
+document
+.getElementById('password')
+.value;
+
+const err=
+document
+.getElementById('authError');
+
+err.textContent='';
+
+if(!email||!password){
+
+err.innerHTML=
+'<p class="error">Enter email and password.</p>';
+
+return;
+
 }
-syncAdminUI();
-if(currentUser)await loadCurrentProfile();else currentProfile=null;
+
+
+if(authMode==='signup'){
+
+const fullName=
+document
+.getElementById('fullName')
+.value.trim();
+
+const university=
+document
+.getElementById('university')
+.value.trim();
+
+const year=
+document
+.getElementById('year')
+.value;
+
+if(!fullName){
+
+err.innerHTML=
+'<p class="error">Enter your full name.</p>';
+
+return;
+
+}
+
+
+const {data,error}=
+await db.auth.signUp({
+
+email,
+password,
+
+options:{
+data:{
+full_name:fullName,
+university,
+year_level:year
+}
+}
+
+});
+
+
+if(error){
+
+err.innerHTML=
+'<p class="error">'+
+esc(error.message)+
+'</p>';
+
+return;
+
+}
+
+
+toast(
+'Account created. Check your email if confirmation is required.'
+);
+
+closeAuth();
+
+return;
+
+}
+
+
+/* LOGIN */
+
+const {data,error}=
+await db.auth.signInWithPassword({
+
+email,
+password
+
+});
+
+
+if(error){
+
+err.innerHTML=
+'<p class="error">'+
+esc(error.message)+
+'</p>';
+
+return;
+
+}
+
+
+currentUser=
+data.user;
+
+closeAuth();
+
+toast('Login successful.');
+
+await loadCurrentProfile();
+
 updateHeader();
-await loadQuizzes();
-}
-async function loadCurrentProfile(){
-if(!currentUser)return;
-let {data,error}=await db.from('users').select('*').eq('id',currentUser.id).maybeSingle();
-if(error){console.warn('Profile SELECT:',error.message); currentProfile={id:currentUser.id,email:currentUser.email,full_name:currentUser.user_metadata?.full_name||'Thrives Tutor',is_admin:false};}
-if(data && (currentUser.email||'').toLowerCase()===ADMIN_EMAIL.toLowerCase()) data.is_admin=true;
-if(!data){
-const m=currentUser.user_metadata||{};
-const row = {
-  id: currentUser.id,
-  email: currentUser.email,
-  full_name:
-    m.full_name ||
-    currentUser.email?.split('@')[0] ||
-    'Student',
-  university: m.university || '',
-  year_level: m.year_level || m.year || '',
-  avatar_url: m.avatar_url || null,
-  total_score: 0,
-  quizzes_completed: 0,
-  is_admin:
-    (currentUser.email || '').toLowerCase() ===
-    ADMIN_EMAIL.toLowerCase()
-};
-const r=await db.from('users').insert(row).select().single();
-if(r.error){console.error(r.error);return;}data=r.data;
-}
-currentProfile = data || currentProfile || {
-  id: currentUser.id,
-  email: currentUser.email,
-  full_name:
-    currentUser.user_metadata?.full_name ||
-    currentUser.email?.split('@')[0] ||
-    'Student',
-  university: currentUser.user_metadata?.university || '',
-  year_level:
-    currentUser.user_metadata?.year_level ||
-    currentUser.user_metadata?.year ||
-    '',
-  avatar_url: currentUser.user_metadata?.avatar_url || null,
-  total_score: 0,
-  quizzes_completed: 0,
-  is_admin: false
-};
-if(String(currentUser.email||'').trim().toLowerCase()===ADMIN_EMAIL.toLowerCase()) currentProfile.is_admin=true;
-syncAdminUI();
-}
-function updateHeader(){document.getElementById('authBtn').classList.toggle('hidden',!!currentUser);document.getElementById('logoutBtn').classList.toggle('hidden',!currentUser);syncAdminUI();}
-async function loadProfile(){
-const b=document.getElementById('profileBox');
-if(!currentUser){b.innerHTML='<p>Please login to view your profile.</p><button onclick="openAuth()">Login</button>';return;}
-if(!currentProfile)await loadCurrentProfile();const p=currentProfile||{};
-const profileImage=p.avatar_url?'<img src="'+esc(p.avatar_url)+'" alt="Profile picture">':esc(initials(p.full_name));
-const {count}=await db.from('quiz_attempts').select('*',{count:'exact',head:true}).eq('user_id',currentUser.id).not('completed_at','is',null);
-b.innerHTML='<div class="profile-card-header"><div class="profile-large-avatar">'+profileImage+'</div><div><h2>'+esc(p.full_name||'Student')+'</h2><div class="small">'+esc(p.email||currentUser.email)+'</div><div class="small">'+esc(p.university||'University not provided')+(p.year_level?' • '+esc(p.year_level):'')+'</div></div></div><hr><div class="grid"><div><div class="small">Total Points</div><div class="stat">'+Number(p.total_score||0)+'</div></div><div><div class="small">Quizzes Completed</div><div class="stat">'+Number(p.quizzes_completed||count||0)+'</div></div><div><div class="small">Rank</div><div class="stat">'+(p.rank?'#'+Number(p.rank):'-')+'</div></div></div><hr><h3>Update Profile</h3><label for="editName">Full Name</label><input id="editName" value="'+esc(p.full_name||'')+'" placeholder="Your full name"><label for="editUniversity">University</label><input id="editUniversity" value="'+esc(p.university||'')+'" placeholder="Your university"><label for="editYear">Year Level</label><select id="editYear"><option value="">Select year</option><option '+(p.year_level==='First Year'?'selected':'')+'>First Year</option><option '+(p.year_level==='Second Year'?'selected':'')+'>Second Year</option><option '+(p.year_level==='Third Year'?'selected':'')+'>Third Year</option><option '+(p.year_level==='Fourth Year'?'selected':'')+'>Fourth Year</option><option '+(p.year_level==='Other'?'selected':'')+'>Other</option></select><label for="avatarFile">Profile Picture</label><div class="profile-photo-actions"><input id="avatarFile" type="file" accept="image/*" capture="user"><button type="button" class="secondary" onclick="document.getElementById(&quot;avatarFile&quot;).click()">📷 Choose or Take Photo</button></div><p class="small">On mobile, your browser may offer the camera or device gallery. Maximum file size: 5 MB.</p><div id="avatarPreview">'+(p.avatar_url?'<img src="'+esc(p.avatar_url)+'" alt="Current profile picture" style="width:90px;height:90px;border-radius:50%;object-fit:cover;">':'')+'</div><br><button onclick="saveProfile()">Save Profile</button>';
-document.getElementById('avatarFile')?.addEventListener('change',async function(){const file=this.files?.[0];if(!file)return;const avatarUrl=await uploadAvatar(file);if(avatarUrl){document.getElementById('avatarPreview').innerHTML='<img src="'+esc(avatarUrl)+'" alt="New profile picture" style="width:90px;height:90px;border-radius:50%;object-fit:cover;">';toast('Profile picture uploaded.');}});
-}
-async function uploadAvatar(file){if(!currentUser){toast('You must be logged in first.');return null;}if(!file.type.startsWith('image/')){toast('Please select an image file.');return null;}if(file.size>5*1024*1024){toast('Profile pictures must be smaller than 5 MB.');return null;}const extension=file.name.split('.').pop()?.toLowerCase()||'jpg';const filePath=`${currentUser.id}/avatar-${Date.now()}.${extension}`;toast('Uploading profile picture...');const {error:uploadError}=await db.storage.from('avatars').upload(filePath,file,{cacheControl:'3600',upsert:false,contentType:file.type});if(uploadError){console.error('Avatar upload failed:',uploadError);toast('Profile picture upload failed.');return null;}const {data}=db.storage.from('avatars').getPublicUrl(filePath);const avatarUrl=data.publicUrl;const {data:updatedProfile,error:profileError}=await db.from('users').update({avatar_url:avatarUrl,updated_at:new Date().toISOString()}).eq('id',currentUser.id).select().single();if(profileError){console.error('Profile update failed:',profileError);toast('Picture uploaded, but profile update failed.');return null;}currentProfile=updatedProfile;return avatarUrl;}
-async function saveProfile(){if(!requireLogin())return;const fullName=document.getElementById('editName')?.value.trim()||'';const university=document.getElementById('editUniversity')?.value.trim()||'';const yearLevel=document.getElementById('editYear')?.value||'';if(!fullName){toast('Please enter your full name.');return;}const {data,error}=await db.from('users').update({full_name:fullName,university,year_level:yearLevel,updated_at:new Date().toISOString()}).eq('id',currentUser.id).select().single();if(error){console.error('Profile update failed:',error);toast(error.message);return;}currentProfile=data;toast('Profile updated successfully.');await loadProfile();await loadLeaderboard();}
 
-/* QUIZZES */
-async function loadQuizzes(){
-const g=document.getElementById('quizGrid');if(!g)return;g.innerHTML='<div class="card">Loading quizzes...</div>';
-const {data,error}=await db.from('quizzes').select('*').eq('is_published',true).order('created_at',{ascending:false});
-if(error){g.innerHTML='<div class="card error">'+esc(error.message)+'</div>';return}
-if(!data?.length){g.innerHTML='<div class="card">No published quizzes yet.</div>';return}
-g.innerHTML=data.map(q=>'<div class="card"><span class="badge published">PUBLISHED</span><h2>'+esc(q.title)+'</h2><p>'+esc(q.description||'')+'</p><p class="small">Subject: '+esc(q.subject)+' • '+Number(q.total_questions||0)+' questions • '+Number(q.time_limit_minutes||0)+' minutes</p><p class="small">Difficulty: '+esc(q.difficulty||'Medium')+' • Pass: '+Number(q.passing_score||70)+'%</p><button onclick="startQuiz(\''+q.id+'\')">Start Quiz</button></div>').join('');
+loadQuizzes();
+
 }
-async function startQuiz(id){
-if(!requireLogin())return;
-const {data:q,error:e}=await db.from('quizzes').select('*').eq('id',id).eq('is_published',true).single();if(e){toast(e.message);return}
-const {data:qs,error}=await db.from('questions').select('id,quiz_id,question_text,question_type,order_index,explanation,options(id,option_text,is_correct,order_index)').eq('quiz_id',id).order('order_index',{ascending:true});
-if(error){toast(error.message);return}if(!qs?.length){toast('This quiz has no questions yet.');return}
-currentQuiz=q;currentQuestions=qs;currentQuestionIndex=0;selectedAnswers={};quizStartedAt=Date.now();
-const {data:a,error:ae}=await db.from('quiz_attempts').insert({user_id:currentUser.id,quiz_id:id,score:0,total_questions:qs.length,correct_answers:0,passed:false,time_taken_seconds:0}).select().single();
-if(ae){toast(ae.message);return}currentAttemptId=a.id;showView('playing');renderQuestion();
+
+
+/* ==========================================================
+   LOGOUT
+   ========================================================== */
+
+async function logout(){
+
+await db.auth.signOut();
+
+currentUser=null;
+currentProfile=null;
+
+updateHeader();
+
+showView('quizzes');
+
+toast('Logged out.');
+
 }
-function renderQuestion(){
-const q=currentQuestions[currentQuestionIndex],opts=[...(q.options||[])].sort((a,b)=>(a.order_index||0)-(b.order_index||0)),sel=selectedAnswers[q.id];
-document.getElementById('playTitle').textContent=currentQuiz.title;document.getElementById('counter').textContent='Question '+(currentQuestionIndex+1)+' of '+currentQuestions.length;document.getElementById('bar').style.width=((currentQuestionIndex+1)/currentQuestions.length*100)+'%';
-document.getElementById('questionBox').innerHTML='<h2>'+esc(q.question_text)+'</h2>'+opts.map((o,i)=>'<label class="option"><input type="radio" name="answer" '+(sel===o.id?'checked':'')+' onchange="selectAnswer(\''+q.id+'\',\''+o.id+'\')"> '+String.fromCharCode(65+i)+'. '+esc(o.option_text)+'</label>').join('')+(sel?'<div class="card" style="margin-top:18px;background:#f5f3ff"><b>Explanation</b><p>'+esc(q.explanation||'')+'</p></div>':'');
-document.getElementById('nextBtn').textContent=currentQuestionIndex===currentQuestions.length-1?'Submit Quiz':'Next';
+
+
+/* ==========================================================
+   SESSION
+   ========================================================== */
+
+async function refreshSession(){
+
+const {data}=
+await db.auth.getSession();
+
+currentUser=
+data?.session?.user||null;
+
+if(currentUser){
+
+await loadCurrentProfile();
+
+}else{
+
+currentProfile=null;
+
 }
-function selectAnswer(qid,oid){selectedAnswers[qid]=oid;updatePreview();}
-function updatePreview(){let s=0;currentQuestions.forEach(q=>{if((q.options||[]).find(o=>o.id===selectedAnswers[q.id])?.is_correct===true)s++});document.getElementById('scorePreview').textContent='Score: '+s;}
-function nextQuestion(){const q=currentQuestions[currentQuestionIndex];if(!selectedAnswers[q.id]){toast('Please select an answer.');return}if(currentQuestionIndex<currentQuestions.length-1){currentQuestionIndex++;renderQuestion()}else submitQuiz();}
-async function submitQuiz(){
-let correct=0;const total=currentQuestions.length;
-for(const q of currentQuestions){
-const chosen=selectedAnswers[q.id],ok=(q.options||[]).find(o=>o.id===chosen)?.is_correct===true;if(ok)correct++;
-const r=await db.from('user_answers').insert({quiz_attempt_id:currentAttemptId,question_id:q.id,selected_option_id:chosen||null,is_correct:ok});if(r.error)console.error(r.error);
+
+updateHeader();
+
 }
-const pct=total?correct/total*100:0,passed=pct>=Number(currentQuiz.passing_score||70),seconds=Math.floor((Date.now()-quizStartedAt)/1000);
-let r=await db.from('quiz_attempts').update({score:correct,total_questions:total,correct_answers:correct,passed,time_taken_seconds:seconds,completed_at:new Date().toISOString()}).eq('id',currentAttemptId).eq('user_id',currentUser.id);
-if(r.error){toast(r.error.message);return}
-const old=Number(currentProfile?.total_score||0);
-r=await db.from('users').update({total_score:old+correct,quizzes_completed:Number(currentProfile?.quizzes_completed||0)+1}).eq('id',currentUser.id).select().single();
-if (!r.error) {
-  currentProfile = r.data;
+
+
+/* ==========================================================
+   PROFILE
+   ========================================================== */
+
+async function loadCurrentProfile(){
+
+if(!currentUser){
+
+currentProfile=null;
+
+return;
+
+}
+
+
+const {data,error}=
+await db
+.from('users')
+.select('*')
+.eq('id',currentUser.id)
+.maybeSingle();
+
+if(error){
+
+console.error(error);
+
+return;
+
+}
+
+currentProfile=data;
+
+}
+
+
+async function loadProfile(){
+
+const box=
+document.getElementById('profileBox');
+
+if(!currentUser){
+
+box.innerHTML=
+'<p>Please login to view your profile.</p>';
+
+return;
+
 }
 
 await loadCurrentProfile();
-document.getElementById('playing').innerHTML='<div class="card" style="text-align:center"><h1>🎉 Quiz Complete!</h1><h2>'+correct+' / '+total+'</h2><p>Percentage: <b>'+pct.toFixed(1)+'%</b></p><p>Result: <b class="'+(passed?'ok':'error')+'">'+(passed?'PASSED':'NOT PASSED')+'</b></p><p>Points earned: <b>'+correct+'</b></p><button onclick="showView(\'leaderboard\')">🏆 View Leaderboard</button> <button class="secondary" onclick="showView(\'quizzes\')">Back to Quizzes</button></div>';
+
+const p=
+currentProfile||{};
+
+const avatar=
+p.avatar_url
+?'<img src="'+esc(p.avatar_url)+'">'
+:'<span>'+initials(p.full_name)+'</span>';
+
+box.innerHTML=`
+
+<div class="profile-card-header">
+
+<div class="profile-large-avatar">
+${avatar}
+</div>
+
+<div>
+
+<h2>
+${esc(p.full_name||'Student')}
+</h2>
+
+<p class="small">
+${esc(p.email||currentUser.email||'')}
+</p>
+
+</div>
+
+</div>
+
+<hr>
+
+<label>
+Full Name
+</label>
+
+<input
+id="profileName"
+value="${esc(p.full_name||'')}">
+
+<label>
+University
+</label>
+
+<input
+id="profileUniversity"
+value="${esc(p.university||'')}">
+
+<label>
+Year Level
+</label>
+
+<input
+id="profileYear"
+value="${esc(p.year_level||'')}">
+
+<button onclick="saveProfile()">
+Save Profile
+</button>
+
+<h3>
+Your Statistics
+</h3>
+
+<div class="grid">
+
+<div class="card">
+<div class="stat">
+${Number(p.total_score||0)}
+</div>
+<div class="small">
+Total Points
+</div>
+</div>
+
+<div class="card">
+<div class="stat">
+${Number(p.quizzes_completed||0)}
+</div>
+<div class="small">
+Quizzes Completed
+</div>
+</div>
+
+</div>
+
+<h3>
+Profile Picture
+</h3>
+
+<div class="profile-photo-actions">
+
+<input
+id="avatarFile"
+type="file"
+accept="image/*">
+
+<button
+onclick="uploadAvatar()">
+Upload Picture
+</button>
+
+</div>
+
+`;
+
 }
-function leaveQuiz(){if(confirm('Exit this quiz? Your attempt will remain incomplete.'))showView('quizzes');}
 
-/* LEADERBOARD */
-async function loadLeaderboard(){const b=document.getElementById('leaderboardBox');b.innerHTML='Loading...';const {data,error}=await db.from('leaderboard_public').select('user_id,rank_position,total_points,quizzes_taken,average_score,full_name,university,year_level,avatar_url').order('rank_position',{ascending:true,nullsFirst:false}).limit(100);if(error){console.error('Leaderboard error:',error);b.innerHTML='<p class="error">'+esc(error.message)+'</p>';return}if(!data?.length){b.innerHTML='<div class="card">No leaderboard records yet.</div>';return}b.innerHTML='<div class="tablewrap"><table><thead><tr><th>Rank</th><th>Student</th><th>University</th><th>Year</th><th>Points</th><th>Average</th><th>Quizzes</th></tr></thead><tbody>'+data.map((student,index)=>{const valid=typeof student.avatar_url==='string'&&student.avatar_url.startsWith('https://');const avatar=valid?'<img class="leaderboard-avatar" src="'+esc(student.avatar_url)+'" alt="'+esc(student.full_name||'Student')+'">':'<div class="leaderboard-avatar">'+esc(initials(student.full_name||'Student'))+'</div>';return '<tr><td><strong>#'+Number(student.rank_position||index+1)+'</strong></td><td><div class="leaderboard-profile">'+avatar+'<div><strong>'+esc(student.full_name||'Student')+'</strong><div class="small">'+esc(student.year_level||'')+'</div></div></div></td><td>'+esc(student.university||'Not provided')+'</td><td>'+esc(student.year_level||'Not provided')+'</td><td><strong>'+Number(student.total_points||0)+'</strong></td><td>'+Number(student.average_score||0).toFixed(2)+'%</td><td>'+Number(student.quizzes_taken||0)+'</td></tr>';}).join('')+'</tbody></table></div>';}
 
-/* ADMIN */
-function adminTab(tab){if(!isAdmin()){toast('Admin access required.');return}document.querySelectorAll('.adminbox').forEach(x=>x.classList.add('hidden'));document.getElementById('a'+tab.charAt(0).toUpperCase()+tab.slice(1)).classList.remove('hidden');}
+async function saveProfile(){
+
+if(!currentUser)return;
+
+const full_name=
+document
+.getElementById('profileName')
+.value.trim();
+
+const university=
+document
+.getElementById('profileUniversity')
+.value.trim();
+
+const year_level=
+document
+.getElementById('profileYear')
+.value.trim();
+
+const {error}=
+await db
+.from('users')
+.update({
+full_name,
+university,
+year_level
+})
+.eq('id',currentUser.id);
+
+if(error){
+
+toast(error.message);
+
+return;
+
+}
+
+await loadCurrentProfile();
+
+toast('Profile updated.');
+
+loadProfile();
+
+}
+
+
+async function uploadAvatar(){
+
+if(!currentUser)return;
+
+const input=
+document.getElementById('avatarFile');
+
+const file=
+input?.files?.[0];
+
+if(!file){
+
+toast('Select a picture first.');
+
+return;
+
+}
+
+
+const ext=
+file.name
+.split('.')
+.pop()
+.toLowerCase();
+
+const path=
+currentUser.id+
+'/avatar.'+
+ext;
+
+
+const {error}=
+await db
+.storage
+.from('avatars')
+.upload(
+path,
+file,
+{
+upsert:true,
+contentType:file.type
+}
+);
+
+if(error){
+
+toast(error.message);
+
+return;
+
+}
+
+
+const {data}=
+db
+.storage
+.from('avatars')
+.getPublicUrl(path);
+
+const avatar_url=
+data.publicUrl;
+
+
+const {error:updateError}=
+await db
+.from('users')
+.update({
+avatar_url
+})
+.eq('id',currentUser.id);
+
+if(updateError){
+
+toast(updateError.message);
+
+return;
+
+}
+
+
+await loadCurrentProfile();
+
+toast('Profile picture updated.');
+
+loadProfile();
+
+}
+
+
+/* ==========================================================
+   HEADER
+   ========================================================== */
+
+function updateHeader(){
+
+const adminBtn=
+document.getElementById('na');
+
+const authBtn=
+document.getElementById('authBtn');
+
+const logoutBtn=
+document.getElementById('logoutBtn');
+
+if(currentUser){
+
+authBtn.classList.add('hidden');
+
+logoutBtn.classList.remove('hidden');
+
+}else{
+
+authBtn.classList.remove('hidden');
+
+logoutBtn.classList.add('hidden');
+
+}
+
+if(isAdmin()){
+
+adminBtn.classList.remove('hidden');
+
+}else{
+
+adminBtn.classList.add('hidden');
+
+}
+
+}
+
+
+/* ==========================================================
+   LOAD QUIZZES
+   ========================================================== */
+
+async function loadQuizzes(){
+
+const grid=
+document.getElementById('quizGrid');
+
+if(!grid)return;
+
+grid.innerHTML='Loading...';
+
+
+const {data,error}=
+await db
+.from('quizzes')
+.select('*')
+.eq('is_published',true)
+.order(
+'created_at',
+{ascending:false}
+);
+
+
+if(error){
+
+grid.innerHTML=
+'<p class="error">'+
+esc(error.message)+
+'</p>';
+
+return;
+
+}
+
+
+if(!data?.length){
+
+grid.innerHTML=
+'<div class="card">No published quizzes yet.</div>';
+
+return;
+
+}
+
+
+grid.innerHTML=
+data.map(q=>`
+
+<div class="card">
+
+<span class="badge">
+${esc(q.subject||'Quiz')}
+</span>
+
+<h2>
+${esc(q.title)}
+</h2>
+
+<p>
+${esc(q.description||'Test your knowledge.')}
+</p>
+
+<p class="small">
+
+${Number(q.total_questions||0)}
+questions •
+
+${Number(q.time_limit_minutes||30)}
+minutes
+
+</p>
+
+<button
+onclick="startQuiz('${q.id}')">
+
+Start Quiz
+
+</button>
+
+</div>
+
+`).join('');
+
+}
+
+
+/* ==========================================================
+   START QUIZ
+   ========================================================== */
+
+async function startQuiz(id){
+
+if(!currentUser){
+
+openAuth();
+
+toast('Please login before starting a quiz.');
+
+return;
+
+}
+
+
+const {data:quiz,error:quizError}=
+await db
+.from('quizzes')
+.select('*')
+.eq('id',id)
+.single();
+
+
+if(quizError){
+
+toast(quizError.message);
+
+return;
+
+}
+
+
+const {data:questions,error:questionError}=
+await db
+.from('questions')
+.select(`
+id,
+quiz_id,
+question_text,
+question_type,
+order_index,
+explanation,
+options(
+id,
+question_id,
+option_text,
+is_correct,
+order_index
+)
+`)
+.eq('quiz_id',id)
+.order(
+'order_index',
+{ascending:true}
+);
+
+
+if(questionError){
+
+toast(questionError.message);
+
+return;
+
+}
+
+
+if(!questions?.length){
+
+toast('This quiz has no questions yet.');
+
+return;
+
+}
+
+
+currentQuiz=quiz;
+
+currentQuestions=questions;
+
+currentQuestionIndex=0;
+
+selectedAnswers={};
+
+currentAttemptId=null;
+
+quizStartedAt=Date.now();
+
+showView('playing');
+
+renderQuestion();
+
+}
+
+
+/* ==========================================================
+   UPDATED QUESTION RENDERING
+   ========================================================== */
+
+function renderQuestion(){
+
+const q=
+currentQuestions[currentQuestionIndex];
+
+const opts=
+[...(q.options || [])].sort(
+(a,b)=>
+(a.order_index || 0) -
+(b.order_index || 0)
+);
+
+const selectedId=
+selectedAnswers[q.id];
+
+const selectedOption=
+opts.find(
+o=>o.id===selectedId
+);
+
+const hasSelectedAnswer=
+Boolean(selectedOption);
+
+
+document.getElementById(
+'playTitle'
+).textContent=
+currentQuiz.title;
+
+
+document.getElementById(
+'counter'
+).textContent=
+'Question '+
+(currentQuestionIndex+1)+
+' of '+
+currentQuestions.length;
+
+
+document.getElementById(
+'bar'
+).style.width=
+(
+(currentQuestionIndex+1) /
+currentQuestions.length *
+100
+)+'%';
+
+
+const optionsHtml=
+opts.map((o,i)=>{
+
+let answerClass='';
+
+
+/* Correct answer becomes GREEN */
+
+if(
+hasSelectedAnswer &&
+o.is_correct===true
+){
+
+answerClass=
+'answer-correct';
+
+}
+
+
+/* Selected wrong answer becomes RED */
+
+if(
+hasSelectedAnswer &&
+o.id===selectedId &&
+o.is_correct!==true
+){
+
+answerClass=
+'answer-wrong';
+
+}
+
+
+return `
+
+<label class="option ${answerClass}">
+
+<input
+type="radio"
+name="answer"
+${selectedId===o.id?'checked':''}
+onchange="selectAnswer('${q.id}', '${o.id}')">
+
+${String.fromCharCode(65+i)}.
+${esc(o.option_text)}
+
+</label>
+
+`;
+
+}).join('');
+
+
+/* Explanation only after correct answer */
+
+let explanationHtml='';
+
+
+if(
+selectedOption?.is_correct===true
+){
+
+explanationHtml=`
+
+<div class="explanation">
+
+<b>
+Explanation
+</b>
+
+<p>
+${esc(
+q.explanation ||
+'Well done!'
+)}
+</p>
+
+</div>
+
+`;
+
+}
+
+
+document.getElementById(
+'questionBox'
+).innerHTML=`
+
+<h2>
+${esc(q.question_text)}
+</h2>
+
+${optionsHtml}
+
+${explanationHtml}
+
+`;
+
+
+document.getElementById(
+'nextBtn'
+).textContent=
+currentQuestionIndex ===
+currentQuestions.length-1
+?'Submit Quiz'
+:'Next';
+
+}
+
+
+/* ==========================================================
+   UPDATED SELECT ANSWER
+   ========================================================== */
+
+function selectAnswer(qid,oid){
+
+selectedAnswers[qid]=oid;
+
+updatePreview();
+
+renderQuestion();
+
+}
+
+
+/* ==========================================================
+   SCORE PREVIEW
+   ========================================================== */
+
+function updatePreview(){
+
+let score=0;
+
+currentQuestions.forEach(q=>{
+
+const selected=
+selectedAnswers[q.id];
+
+const correct=
+(q.options||[])
+.find(o=>o.id===selected);
+
+if(correct?.is_correct===true){
+
+score++;
+
+}
+
+});
+
+
+const el=
+document.getElementById('scorePreview');
+
+if(el){
+
+el.textContent=
+'Score: '+
+score;
+
+}
+
+}
+
+
+/* ==========================================================
+   NEXT QUESTION
+   ========================================================== */
+
+async function nextQuestion(){
+
+const q=
+currentQuestions[currentQuestionIndex];
+
+if(!selectedAnswers[q.id]){
+
+toast('Please select an answer.');
+
+return;
+
+}
+
+
+if(
+currentQuestionIndex <
+currentQuestions.length-1
+){
+
+currentQuestionIndex++;
+
+renderQuestion();
+
+return;
+
+}
+
+
+await submitQuiz();
+
+}
+
+
+/* ==========================================================
+   LEAVE QUIZ
+   ========================================================== */
+
+function leaveQuiz(){
+
+if(
+!confirm(
+'Are you sure you want to leave this quiz? Your progress will be lost.'
+)
+){
+
+return;
+
+}
+
+currentQuiz=null;
+
+currentQuestions=[];
+
+selectedAnswers={};
+
+showView('quizzes');
+
+}
+
+
+/* ==========================================================
+   SUBMIT QUIZ
+   ========================================================== */
+
+async function submitQuiz(){
+
+if(!currentUser){
+
+toast('Please login.');
+
+return;
+
+}
+
+
+let correctAnswers=0;
+
+const answers=[];
+
+
+currentQuestions.forEach(q=>{
+
+const selectedId=
+selectedAnswers[q.id];
+
+const option=
+(q.options||[])
+.find(
+o=>o.id===selectedId
+);
+
+const isCorrect=
+option?.is_correct===true;
+
+if(isCorrect){
+
+correctAnswers++;
+
+}
+
+
+answers.push({
+
+question_id:q.id,
+
+selected_option_id:
+selectedId||null,
+
+is_correct:isCorrect
+
+});
+
+});
+
+
+const totalQuestions=
+currentQuestions.length;
+
+const percentage=
+totalQuestions
+?Math.round(
+(correctAnswers/totalQuestions)*100
+)
+:0;
+
+
+const passed=
+percentage >=
+Number(
+currentQuiz.passing_score||70
+);
+
+
+const timeTaken=
+Math.floor(
+(Date.now()-quizStartedAt)/1000
+);
+
+
+/* Create attempt */
+
+const {data:attempt,error:attemptError}=
+await db
+.from('quiz_attempts')
+.insert({
+
+user_id:currentUser.id,
+
+quiz_id:currentQuiz.id,
+
+score:percentage,
+
+total_questions:
+totalQuestions,
+
+correct_answers:
+correctAnswers,
+
+passed,
+
+time_taken_seconds:
+timeTaken,
+
+completed_at:
+new Date().toISOString()
+
+})
+.select()
+.single();
+
+
+if(attemptError){
+
+toast(
+'Could not save attempt: '+
+attemptError.message
+);
+
+return;
+
+}
+
+
+currentAttemptId=
+attempt.id;
+
+
+/* Save user answers */
+
+const rows=
+answers.map(a=>({
+
+attempt_id:
+attempt.id,
+
+question_id:
+a.question_id,
+
+selected_option_id:
+a.selected_option_id,
+
+is_correct:
+a.is_correct
+
+}));
+
+
+const {error:answerError}=
+await db
+.from('user_answers')
+.insert(rows);
+
+
+if(answerError){
+
+console.error(answerError);
+
+}
+
+
+/* Update user score */
+
+const {data:userData}=
+await db
+.from('users')
+.select(
+'total_score,quizzes_completed'
+)
+.eq('id',currentUser.id)
+.single();
+
+
+const oldScore=
+Number(
+userData?.total_score||0
+);
+
+const oldCompleted=
+Number(
+userData?.quizzes_completed||0
+);
+
+
+/*
+Points are based on correct answers.
+*/
+
+const points=
+correctAnswers;
+
+
+await db
+.from('users')
+.update({
+
+total_score:
+oldScore+points,
+
+quizzes_completed:
+oldCompleted+1
+
+})
+.eq('id',currentUser.id);
+
+
+/* Refresh leaderboard */
+
+await updateLeaderboard();
+
+
+alert(
+'Quiz completed!\\n\\n'+
+'Score: '+
+correctAnswers+
+'/'+
+totalQuestions+
+' ('+
+percentage+
+'%)\\n\\n'+
+(passed
+?'PASSED 🎉'
+:'NOT PASSED')
+);
+
+
+currentQuiz=null;
+
+currentQuestions=[];
+
+selectedAnswers={};
+
+showView('quizzes');
+
+loadQuizzes();
+
+}
+
+
+/* ==========================================================
+   LEADERBOARD
+   ========================================================== */
+
+async function loadLeaderboard(){
+
+const box=
+document.getElementById(
+'leaderboardBox'
+);
+
+if(!box)return;
+
+box.innerHTML='Loading...';
+
+
+const {data,error}=
+await db
+.from('leaderboard_public')
+.select('*')
+.order(
+'rank_position',
+{ascending:true}
+);
+
+
+if(error){
+
+box.innerHTML=
+'<p class="error">'+
+esc(error.message)+
+'</p>';
+
+return;
+
+}
+
+
+if(!data?.length){
+
+box.innerHTML=
+'<p>No leaderboard data yet.</p>';
+
+return;
+
+}
+
+
+box.innerHTML=`
+
+<div class="tablewrap">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>
+Rank
+</th>
+
+<th>
+Student
+</th>
+
+<th>
+University
+</th>
+
+<th>
+Year
+</th>
+
+<th>
+Points
+</th>
+
+<th>
+Quizzes
+</th>
+
+<th>
+Average
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+${
+data.map(row=>{
+
+const avatar=
+row.avatar_url
+?'<img src="'+
+esc(row.avatar_url)+
+'" class="leaderboard-avatar">'
+:'<div class="leaderboard-avatar">'+
+initials(row.full_name)+
+'</div>';
+
+return `
+
+<tr>
+
+<td>
+<b>
+#${Number(row.rank_position||0)}
+</b>
+</td>
+
+<td>
+
+<div class="leaderboard-profile">
+
+${avatar}
+
+<div>
+
+<b>
+${esc(row.full_name||'Student')}
+</b>
+
+<div class="small">
+${Number(row.quizzes_taken||0)}
+quizzes
+</div>
+
+</div>
+
+</div>
+
+</td>
+
+<td>
+${esc(row.university||'-')}
+</td>
+
+<td>
+${esc(row.year_level||'-')}
+</td>
+
+<td>
+<b>
+${Number(row.total_points||0)}
+</b>
+</td>
+
+<td>
+${Number(row.quizzes_taken||0)}
+</td>
+
+<td>
+${Number(row.average_score||0)}%
+</td>
+
+</tr>
+
+`;
+
+}).join('')
+}
+
+</tbody>
+
+</table>
+
+</div>
+
+`;
+
+}
+
+
+/* ==========================================================
+   UPDATE LEADERBOARD
+   ========================================================== */
+
+async function updateLeaderboard(){
+
+/*
+The leaderboard_public view calculates
+the displayed ranking from the users/attempts data.
+
+This function simply reloads the data.
+*/
+
+if(
+document
+.getElementById('leaderboard')
+.classList.contains('active')
+){
+
+loadLeaderboard();
+
+}
+
+}
+
+
+/* ==========================================================
+   ADMIN
+   ========================================================== */
+
+function adminTab(tab){
+
+if(!isAdmin()){
+
+toast('Admin access required.');
+
+return;
+
+}
+
+
+document
+.querySelectorAll('.adminbox')
+.forEach(
+x=>x.classList.add('hidden')
+);
+
+
+const id=
+'a'+
+tab.charAt(0).toUpperCase()+
+tab.slice(1);
+
+
+document
+.getElementById(id)
+.classList.remove('hidden');
+
+}
+
+
+/* ==========================================================
+   LOAD ADMIN
+   ========================================================== */
+
 async function loadAdmin(){
+
 if(!isAdmin())return;
-document.getElementById('aCreate').innerHTML='<h2>➕ Create Quiz</h2><label>Title</label><input id="qt" placeholder="e.g. Anatomy Quiz 1"><label>Subject</label><input id="qs" placeholder="Anatomy"><label>Description</label><textarea id="qd" rows="3"></textarea><label>Total Questions</label><input id="qtotal" type="number" min="1" value="10"><label>Time Limit (minutes)</label><input id="qtime" type="number" min="1" value="30"><label>Difficulty</label><select id="qdiff"><option>Easy</option><option selected>Medium</option><option>Hard</option></select><label>Passing Score (%)</label><input id="qpass" type="number" min="0" max="100" value="70"><label><input id="qpub" type="checkbox" style="width:auto"> Publish immediately</label><br><button onclick="createQuiz()">Create Quiz</button>';
-document.getElementById('aQuestion').innerHTML='<h2>📝 Add Question</h2><label>Quiz</label><select id="questionQuiz"></select><label>Question</label><textarea id="questionText" rows="4" placeholder="Enter the question"></textarea><label>Explanation (shown to students after the quiz)</label><textarea id="questionExplanation" rows="4" placeholder="Explain why the correct answer is correct and help the student learn."></textarea><h3>Exactly 4 Answer Options</h3><div id="optionFields"></div><button class="secondary" onclick="addOptionField()">+ Add Option</button><br><br><button onclick="createQuestion()">Save Question</button>';
-document.getElementById('aManage').innerHTML='<h2>📚 Manage Quizzes</h2><div id="manageBox">Loading...</div>';
-document.getElementById('aStudents').innerHTML='<h2>👥 Students</h2><div id="studentsBox">Loading...</div>';
-document.getElementById('aAttempts').innerHTML='<h2>📊 Attempts</h2><div id="attemptsBox">Loading...</div>';
-await populateQuizSelect();document.getElementById('optionFields').innerHTML='';addOptionField();addOptionField();addOptionField();addOptionField();await manageQuizzes();await loadStudents();await loadAttempts();adminTab('create');
+
+
+document.getElementById(
+'aCreate'
+).innerHTML=`
+
+<h2>
+➕ Create Quiz
+</h2>
+
+<label>
+Title
+</label>
+
+<input
+id="qt"
+placeholder="e.g. Anatomy Quiz 1">
+
+<label>
+Subject
+</label>
+
+<input
+id="qs"
+placeholder="Anatomy">
+
+<label>
+Description
+</label>
+
+<textarea
+id="qd"
+rows="3">
+</textarea>
+
+<label>
+Total Questions
+</label>
+
+<input
+id="qtotal"
+type="number"
+min="1"
+value="10">
+
+<label>
+Time Limit (minutes)
+</label>
+
+<input
+id="qtime"
+type="number"
+min="1"
+value="30">
+
+<label>
+Difficulty
+</label>
+
+<select id="qdiff">
+
+<option>
+Easy
+</option>
+
+<option selected>
+Medium
+</option>
+
+<option>
+Hard
+</option>
+
+</select>
+
+<label>
+Passing Score (%)
+</label>
+
+<input
+id="qpass"
+type="number"
+min="0"
+max="100"
+value="70">
+
+<label>
+
+<input
+id="qpub"
+type="checkbox"
+style="width:auto">
+
+Publish immediately
+
+</label>
+
+<br>
+
+<button onclick="createQuiz()">
+Create Quiz
+</button>
+
+`;
+
+
+document.getElementById(
+'aQuestion'
+).innerHTML=`
+
+<h2>
+📝 Add Question
+</h2>
+
+<label>
+Quiz
+</label>
+
+<select id="questionQuiz">
+</select>
+
+<label>
+Question
+</label>
+
+<textarea
+id="questionText"
+rows="4"
+placeholder="Enter the question">
+</textarea>
+
+<label>
+Explanation
+(shown after correct answer)
+</label>
+
+<textarea
+id="questionExplanation"
+rows="4"
+placeholder="Explain why the correct answer is correct and help the student learn.">
+</textarea>
+
+<h3>
+Exactly 4 Answer Options
+</h3>
+
+<div id="optionFields"></div>
+
+<br>
+
+<button
+class="secondary"
+onclick="addOptionField()">
+
++ Add Option
+
+</button>
+
+<br><br>
+
+<button onclick="createQuestion()">
+Save Question
+</button>
+
+`;
+
+
+document.getElementById(
+'aManage'
+).innerHTML=`
+
+<h2>
+📚 Manage Quizzes
+</h2>
+
+<div id="manageBox">
+Loading...
+</div>
+
+`;
+
+
+document.getElementById(
+'aStudents'
+).innerHTML=`
+
+<h2>
+👥 Students
+</h2>
+
+<div id="studentsBox">
+Loading...
+</div>
+
+`;
+
+
+document.getElementById(
+'aAttempts'
+).innerHTML=`
+
+<h2>
+📊 Attempts
+</h2>
+
+<div id="attemptsBox">
+Loading...
+</div>
+
+`;
+
+
+await populateQuizSelect();
+
+
+document.getElementById(
+'optionFields'
+).innerHTML='';
+
+
+addOptionField();
+addOptionField();
+addOptionField();
+addOptionField();
+
+
+await manageQuizzes();
+
+await loadStudents();
+
+await loadAttempts();
+
+adminTab('create');
+
 }
+
+
+/* ==========================================================
+   QUIZ SELECT
+   ========================================================== */
+
 async function populateQuizSelect(){
-const s=document.getElementById('questionQuiz');if(!s)return;const {data,error}=await db.from('quizzes').select('id,title').order('created_at',{ascending:false});if(error){s.innerHTML='<option>Error</option>';return}s.innerHTML=data?.length?data.map(q=>'<option value="'+q.id+'">'+esc(q.title)+'</option>').join(''):'<option value="">Create a quiz first</option>';
+
+const s=
+document.getElementById(
+'questionQuiz'
+);
+
+if(!s)return;
+
+
+const {data,error}=
+await db
+.from('quizzes')
+.select('id,title')
+.order(
+'created_at',
+{ascending:false}
+);
+
+
+if(error){
+
+s.innerHTML=
+'<option>Error</option>';
+
+return;
+
 }
-function addOptionField(){const b=document.getElementById('optionFields');if(b.children.length>=4){toast('A multiple-choice question must have exactly 4 options.');return;}const n=b.children.length+1;b.insertAdjacentHTML('beforeend','<div style="display:flex;gap:8px;align-items:center;margin:8px 0"><input class="optText" placeholder="Option '+n+'" style="flex:1"><label style="white-space:nowrap"><input class="optCorrect" type="radio" name="correctOption" style="width:auto"> Correct answer</label></div>');}
+
+
+s.innerHTML=
+data?.length
+?data.map(q=>
+'<option value="'+
+q.id+
+'">'+
+esc(q.title)+
+'</option>'
+).join('')
+:'<option value="">Create a quiz first</option>';
+
+}
+
+
+/* ==========================================================
+   ADD OPTION
+   ========================================================== */
+
+function addOptionField(){
+
+const b=
+document.getElementById(
+'optionFields'
+);
+
+if(
+b.children.length>=4
+){
+
+toast(
+'A multiple-choice question must have exactly 4 options.'
+);
+
+return;
+
+}
+
+
+const n=
+b.children.length+1;
+
+
+b.insertAdjacentHTML(
+'beforeend',
+
+'<div style="display:flex;gap:8px;align-items:center;margin:8px 0">'+
+
+'<input class="optText" placeholder="Option '+
+n+
+'" style="flex:1">'+
+
+'<label style="white-space:nowrap">'+
+
+'<input class="optCorrect" type="radio" name="correctOption" style="width:auto">'+
+
+' Correct answer'+
+
+'</label>'+
+
+'</div>'
+
+);
+
+}
+
+
+/* ==========================================================
+   CREATE QUIZ
+   ========================================================== */
+
 async function createQuiz(){
-if(!isAdmin())return;const title=document.getElementById('qt').value.trim(),subject=document.getElementById('qs').value.trim();if(!title||!subject){toast('Enter title and subject.');return}
-const {error}=await db.from('quizzes').insert({title,subject,description:document.getElementById('qd').value.trim(),total_questions:Number(document.getElementById('qtotal').value)||1,time_limit_minutes:Number(document.getElementById('qtime').value)||30,difficulty:document.getElementById('qdiff').value,passing_score:Number(document.getElementById('qpass').value)||70,created_by:currentUser.id,is_published:document.getElementById('qpub').checked});
-if(error){toast(error.message);return}toast('Quiz created.');loadAdmin();
-}
-async function createQuestion(){
+
 if(!isAdmin())return;
-const quiz_id=document.getElementById('questionQuiz').value;
-const text=document.getElementById('questionText').value.trim();
-const explanation=document.getElementById('questionExplanation').value.trim();
-const texts=[...document.querySelectorAll('.optText')].map(x=>x.value.trim());
-const radios=[...document.querySelectorAll('.optCorrect')];
-if(!quiz_id||!text){toast('Select a quiz and enter the question.');return;}
-if(texts.length!==4||texts.some(x=>!x)){toast('Enter exactly 4 complete answer options.');return;}
-const ci=radios.findIndex(x=>x.checked);
-if(ci<0){toast('Mark one option as the correct answer.');return;}
-if(!explanation){toast('Enter an explanation for this question.');return;}
-const {data:last,error:oe}=await db.from('questions').select('order_index').eq('quiz_id',quiz_id).order('order_index',{ascending:false}).limit(1);
-if(oe){toast('Could not get question order: '+oe.message);return;}
-const order=(last?.[0]?.order_index||0)+1;
-const {data:q,error}=await db.from('questions').insert({quiz_id,question_text:text,question_type:'multiple_choice',order_index:order,explanation:explanation}).select().single();
-if(error){toast('Question save failed: '+error.message);return;}
-const {error:op}=await db.from('options').insert(texts.map((x,i)=>({question_id:q.id,option_text:x,is_correct:i===ci,order_index:i+1})));
-if(op){await db.from('questions').delete().eq('id',q.id);toast('Options save failed: '+op.message);return;}
-const {count}=await db.from('questions').select('*',{count:'exact',head:true}).eq('quiz_id',quiz_id);
-await db.from('quizzes').update({total_questions:count||0}).eq('id',quiz_id);
-toast('Question + 4 options + correct answer + explanation saved.');
-document.getElementById('questionText').value='';
-document.getElementById('questionExplanation').value='';
-document.querySelectorAll('.optText').forEach(x=>x.value='');
-document.querySelectorAll('.optCorrect').forEach(x=>x.checked=false);
+
+
+const title=
+document.getElementById(
+'qt'
+).value.trim();
+
+const subject=
+document.getElementById(
+'qs'
+).value.trim();
+
+
+if(!title||!subject){
+
+toast(
+'Enter title and subject.'
+);
+
+return;
+
 }
+
+
+const {error}=
+await db
+.from('quizzes')
+.insert({
+
+title,
+
+subject,
+
+description:
+document
+.getElementById('qd')
+.value.trim(),
+
+total_questions:
+Number(
+document
+.getElementById('qtotal')
+.value
+)||1,
+
+time_limit_minutes:
+Number(
+document
+.getElementById('qtime')
+.value
+)||30,
+
+difficulty:
+document
+.getElementById('qdiff')
+.value,
+
+passing_score:
+Number(
+document
+.getElementById('qpass')
+.value
+)||70,
+
+created_by:
+currentUser.id,
+
+is_published:
+document
+.getElementById('qpub')
+.checked
+
+});
+
+
+if(error){
+
+toast(error.message);
+
+return;
+
+}
+
+
+toast('Quiz created.');
+
+loadAdmin();
+
+}
+
+
+/* ==========================================================
+   CREATE QUESTION
+   ========================================================== */
+
+async function createQuestion(){
+
+if(!isAdmin())return;
+
+
+const quiz_id=
+document
+.getElementById(
+'questionQuiz'
+)
+.value;
+
+const text=
+document
+.getElementById(
+'questionText'
+)
+.value.trim();
+
+const explanation=
+document
+.getElementById(
+'questionExplanation'
+)
+.value.trim();
+
+
+const texts=
+[
+...document
+.querySelectorAll('.optText')
+]
+.map(x=>x.value.trim());
+
+
+const radios=
+[
+...document
+.querySelectorAll('.optCorrect')
+];
+
+
+if(!quiz_id||!text){
+
+toast(
+'Select a quiz and enter the question.'
+);
+
+return;
+
+}
+
+
+if(
+texts.length!==4 ||
+texts.some(x=>!x)
+){
+
+toast(
+'Enter exactly 4 complete answer options.'
+);
+
+return;
+
+}
+
+
+const ci=
+radios.findIndex(
+x=>x.checked
+);
+
+
+if(ci<0){
+
+toast(
+'Mark one option as the correct answer.'
+);
+
+return;
+
+}
+
+
+if(!explanation){
+
+toast(
+'Enter an explanation for this question.'
+);
+
+return;
+
+}
+
+
+const {
+data:last,
+error:oe
+}=
+await db
+.from('questions')
+.select('order_index')
+.eq('quiz_id',quiz_id)
+.order(
+'order_index',
+{ascending:false}
+)
+.limit(1);
+
+
+if(oe){
+
+toast(
+'Could not get question order: '+
+oe.message
+);
+
+return;
+
+}
+
+
+const order=
+(last?.[0]?.order_index||0)+1;
+
+
+const {
+data:q,
+error
+}=
+await db
+.from('questions')
+.insert({
+
+quiz_id,
+
+question_text:text,
+
+question_type:
+'multiple_choice',
+
+order_index:
+order,
+
+explanation:
+explanation
+
+})
+.select()
+.single();
+
+
+if(error){
+
+toast(
+'Question save failed: '+
+error.message
+);
+
+return;
+
+}
+
+
+const {
+error:op
+}=
+await db
+.from('options')
+.insert(
+
+texts.map(
+(x,i)=>({
+
+question_id:
+q.id,
+
+option_text:
+x,
+
+is_correct:
+i===ci,
+
+order_index:
+i+1
+
+})
+)
+
+);
+
+
+if(op){
+
+await db
+.from('questions')
+.delete()
+.eq('id',q.id);
+
+toast(
+'Options save failed: '+
+op.message
+);
+
+return;
+
+}
+
+
+const {count}=
+await db
+.from('questions')
+.select(
+'*',
+{
+count:'exact',
+head:true
+}
+)
+.eq(
+'quiz_id',
+quiz_id
+);
+
+
+await db
+.from('quizzes')
+.update({
+
+total_questions:
+count||0
+
+})
+.eq(
+'id',
+quiz_id
+);
+
+
+toast(
+'Question + 4 options + correct answer + explanation saved.'
+);
+
+
+document.getElementById(
+'questionText'
+).value='';
+
+
+document.getElementById(
+'questionExplanation'
+).value='';
+
+
+document
+.querySelectorAll('.optText')
+.forEach(
+x=>x.value=''
+);
+
+
+document
+.querySelectorAll('.optCorrect')
+.forEach(
+x=>x.checked=false
+);
+
+}
+
+
+/* ==========================================================
+   MANAGE QUIZZES
+   ========================================================== */
+
 async function manageQuizzes(){
-const b=document.getElementById('manageBox');if(!b)return;const {data,error}=await db.from('quizzes').select('*').order('created_at',{ascending:false});if(error){b.innerHTML='<p class="error">'+esc(error.message)+'</p>';return}if(!data?.length){b.innerHTML='No quizzes yet.';return}
-b.innerHTML=data.map(q=>'<div class="card"><h3>'+esc(q.title)+'</h3><p class="small">'+esc(q.subject)+' • '+Number(q.total_questions||0)+' questions</p><span class="badge '+(q.is_published?'published':'draft')+'">'+(q.is_published?'PUBLISHED':'DRAFT')+'</span><br><br><button onclick="togglePublish(\''+q.id+'\','+(!q.is_published)+')">'+(q.is_published?'Unpublish':'Publish')+'</button> <button class="danger" onclick="deleteQuiz(\''+q.id+'\')">Delete</button></div>').join('');
+
+const b=
+document.getElementById(
+'manageBox'
+);
+
+if(!b)return;
+
+
+const {data,error}=
+await db
+.from('quizzes')
+.select('*')
+.order(
+'created_at',
+{ascending:false}
+);
+
+
+if(error){
+
+b.innerHTML=
+'<p class="error">'+
+esc(error.message)+
+'</p>';
+
+return;
+
 }
-async function togglePublish(id,value){if(!isAdmin())return;const {error}=await db.from('quizzes').update({is_published:value}).eq('id',id);if(error){toast(error.message);return}toast(value?'Quiz published.':'Quiz unpublished.');manageQuizzes();loadQuizzes();}
-async function deleteQuiz(id){if(!isAdmin())return;if(!confirm('Delete this quiz and its questions/options?'))return;const {error}=await db.from('quizzes').delete().eq('id',id);if(error){toast(error.message);return}toast('Quiz deleted.');manageQuizzes();populateQuizSelect();loadQuizzes();}
+
+
+if(!data?.length){
+
+b.innerHTML=
+'No quizzes yet.';
+
+return;
+
+}
+
+
+b.innerHTML=
+data.map(q=>`
+
+<div class="card">
+
+<h3>
+${esc(q.title)}
+</h3>
+
+<p class="small">
+
+${esc(q.subject)}
+•
+${Number(q.total_questions||0)}
+questions
+
+</p>
+
+<span class="badge ${
+q.is_published
+?'published'
+:'draft'
+}">
+
+${
+q.is_published
+?'PUBLISHED'
+:'DRAFT'
+}
+
+</span>
+
+<br><br>
+
+<button
+onclick="togglePublish(
+'${q.id}',
+${!q.is_published}
+)">
+
+${
+q.is_published
+?'Unpublish'
+:'Publish'
+}
+
+</button>
+
+<button
+class="danger"
+onclick="deleteQuiz('${q.id}')">
+
+Delete
+
+</button>
+
+</div>
+
+`).join('');
+
+}
+
+
+/* ==========================================================
+   PUBLISH / UNPUBLISH
+   ========================================================== */
+
+async function togglePublish(
+id,
+value
+){
+
+if(!isAdmin())return;
+
+
+const {error}=
+await db
+.from('quizzes')
+.update({
+is_published:value
+})
+.eq(
+'id',
+id
+);
+
+
+if(error){
+
+toast(error.message);
+
+return;
+
+}
+
+
+toast(
+value
+?'Quiz published.'
+:'Quiz unpublished.'
+);
+
+
+manageQuizzes();
+
+loadQuizzes();
+
+}
+
+
+/* ==========================================================
+   DELETE QUIZ
+   ========================================================== */
+
+async function deleteQuiz(id){
+
+if(!isAdmin())return;
+
+
+if(
+!confirm(
+'Delete this quiz and its questions/options?'
+)
+){
+
+return;
+
+}
+
+
+const {error}=
+await db
+.from('quizzes')
+.delete()
+.eq(
+'id',
+id
+);
+
+
+if(error){
+
+toast(error.message);
+
+return;
+
+}
+
+
+toast('Quiz deleted.');
+
+manageQuizzes();
+
+populateQuizSelect();
+
+loadQuizzes();
+
+}
+
+
+/* ==========================================================
+   STUDENTS
+   ========================================================== */
+
 async function loadStudents(){
-const b=document.getElementById('studentsBox');if(!b)return;const {data,error}=await db.from('users').select('id,full_name,email,university,year_level,total_score,quizzes_completed,is_admin').order('total_score',{ascending:false});if(error){b.innerHTML='<p class="error">'+esc(error.message)+'</p>';return}
-b.innerHTML='<div class="tablewrap"><table><thead><tr><th>Name</th><th>Email</th><th>University</th><th>Year</th><th>Points</th><th>Quizzes</th><th>Role</th></tr></thead><tbody>'+(data||[]).map(s=>'<tr><td>'+esc(s.full_name||'Student')+'</td><td>'+esc(s.email||'-')+'</td><td>'+esc(s.university||'-')+'</td><td>'+esc(s.year_level||'-')+'</td><td>'+Number(s.total_score||0)+'</td><td>'+Number(s.quizzes_completed||0)+'</td><td>'+(s.is_admin?'👑 Admin':'Student')+'</td></tr>').join('')+'</tbody></table></div>';
+
+const b=
+document.getElementById(
+'studentsBox'
+);
+
+if(!b)return;
+
+
+const {data,error}=
+await db
+.from('users')
+.select(
+'id,full_name,email,university,year_level,total_score,quizzes_completed,is_admin'
+)
+.order(
+'total_score',
+{ascending:false}
+);
+
+
+if(error){
+
+b.innerHTML=
+'<p class="error">'+
+esc(error.message)+
+'</p>';
+
+return;
+
 }
+
+
+b.innerHTML=`
+
+<div class="tablewrap">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>
+Name
+</th>
+
+<th>
+Email
+</th>
+
+<th>
+University
+</th>
+
+<th>
+Year
+</th>
+
+<th>
+Points
+</th>
+
+<th>
+Quizzes
+</th>
+
+<th>
+Role
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+${
+(data||[])
+.map(s=>`
+
+<tr>
+
+<td>
+${esc(s.full_name||'Student')}
+</td>
+
+<td>
+${esc(s.email||'-')}
+</td>
+
+<td>
+${esc(s.university||'-')}
+</td>
+
+<td>
+${esc(s.year_level||'-')}
+</td>
+
+<td>
+${Number(s.total_score||0)}
+</td>
+
+<td>
+${Number(s.quizzes_completed||0)}
+</td>
+
+<td>
+
+${
+s.is_admin
+?'👑 Admin'
+:'Student'
+}
+
+</td>
+
+</tr>
+
+`).join('')
+}
+
+</tbody>
+
+</table>
+
+</div>
+
+`;
+
+}
+
+
+/* ==========================================================
+   ATTEMPTS
+   ========================================================== */
+
 async function loadAttempts(){
-const b=document.getElementById('attemptsBox');if(!b)return;const {data,error}=await db.from('quiz_attempts').select('id,score,total_questions,correct_answers,passed,time_taken_seconds,completed_at,users(full_name,email),quizzes(title,subject)').order('created_at',{ascending:false}).limit(200);if(error){b.innerHTML='<p class="error">'+esc(error.message)+'</p>';return}
-b.innerHTML='<div class="tablewrap"><table><thead><tr><th>Student</th><th>Quiz</th><th>Score</th><th>Result</th><th>Time</th><th>Date</th></tr></thead><tbody>'+(data||[]).map(a=>'<tr><td>'+esc(a.users?.full_name||'Student')+'</td><td>'+esc(a.quizzes?.title||'-')+'</td><td>'+Number(a.correct_answers||0)+' / '+Number(a.total_questions||0)+'</td><td><b class="'+(a.passed?'ok':'error')+'">'+(a.completed_at?(a.passed?'PASSED':'NOT PASSED'):'IN PROGRESS')+'</b></td><td>'+Math.floor(Number(a.time_taken_seconds||0)/60)+'m '+Number(a.time_taken_seconds||0)%60+'s</td><td>'+(a.completed_at?new Date(a.completed_at).toLocaleString():'-')+'</td></tr>').join('')+'</tbody></table></div>';
+
+const b=
+document.getElementById(
+'attemptsBox'
+);
+
+if(!b)return;
+
+
+const {data,error}=
+await db
+.from('quiz_attempts')
+.select(
+`
+id,
+score,
+total_questions,
+correct_answers,
+passed,
+time_taken_seconds,
+completed_at,
+users(full_name,email),
+quizzes(title,subject)
+`
+)
+.order(
+'created_at',
+{ascending:false}
+)
+.limit(200);
+
+
+if(error){
+
+b.innerHTML=
+'<p class="error">'+
+esc(error.message)+
+'</p>';
+
+return;
+
 }
 
-/* START */
-db.auth.onAuthStateChange((_event, session) => {
-  currentUser = session?.user || null;
 
-  if (
-    currentUser &&
-    String(currentUser.email || "").trim().toLowerCase() ===
-      ADMIN_EMAIL.toLowerCase()
-  ) {
-    currentProfile = {
-      ...(currentProfile || {}),
-      id: currentUser.id,
-      email: currentUser.email,
-      is_admin: true
-    };
-  }
+b.innerHTML=`
 
-  updateHeader();
+<div class="tablewrap">
 
-  setTimeout(async () => {
-    if (currentUser) {
-      await loadCurrentProfile();
-    } else {
-      currentProfile = null;
-    }
+<table>
 
-    updateHeader();
-    await loadQuizzes();
-  }, 0);
+<thead>
+
+<tr>
+
+<th>
+Student
+</th>
+
+<th>
+Quiz
+</th>
+
+<th>
+Score
+</th>
+
+<th>
+Result
+</th>
+
+<th>
+Time
+</th>
+
+<th>
+Date
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+${
+(data||[])
+.map(a=>`
+
+<tr>
+
+<td>
+${esc(a.users?.full_name||'Student')}
+</td>
+
+<td>
+${esc(a.quizzes?.title||'-')}
+</td>
+
+<td>
+
+${Number(a.correct_answers||0)}
+/
+${Number(a.total_questions||0)}
+
+</td>
+
+<td>
+
+<b class="${
+a.passed
+?'ok'
+:'error'
+}">
+
+${
+a.completed_at
+?(a.passed
+?'PASSED'
+:'NOT PASSED')
+:'IN PROGRESS'
+}
+
+</b>
+
+</td>
+
+<td>
+
+${Math.floor(
+Number(a.time_taken_seconds||0)/60
+)}m
+
+${
+Number(a.time_taken_seconds||0)%60
+}s
+
+</td>
+
+<td>
+
+${
+a.completed_at
+?new Date(
+a.completed_at
+).toLocaleString()
+:'-'
+}
+
+</td>
+
+</tr>
+
+`).join('')
+}
+
+</tbody>
+
+</table>
+
+</div>
+
+`;
+
+}
+
+
+/* ==========================================================
+   AUTH STATE
+   ========================================================== */
+
+db.auth.onAuthStateChange(
+(_event,session)=>{
+
+currentUser=
+session?.user||null;
+
+
+/*
+If the logged-in email matches
+the configured admin email,
+give the current profile an admin
+flag for the UI.
+*/
+
+if(
+currentUser &&
+String(
+currentUser.email||''
+)
+.trim()
+.toLowerCase()===
+ADMIN_EMAIL.toLowerCase()
+){
+
+currentProfile={
+
+...(currentProfile||{}),
+
+id:
+currentUser.id,
+
+email:
+currentUser.email,
+
+is_admin:true
+
+};
+
+}
+
+
+updateHeader();
+
+
+setTimeout(
+async()=>{
+
+if(currentUser){
+
+await loadCurrentProfile();
+
+}else{
+
+currentProfile=null;
+
+}
+
+updateHeader();
+
+await loadQuizzes();
+
+},
+0
+);
+
 });
 
-window.addEventListener("DOMContentLoaded", async () => {
-  await refreshSession();
-  showView("quizzes");
-});
+
+/* ==========================================================
+   START APPLICATION
+   ========================================================== */
+
+window.addEventListener(
+'DOMContentLoaded',
+async()=>{
+
+await refreshSession();
+
+showView('quizzes');
+
+}
+);
+
 </script>
+
 </body>
 </html>
