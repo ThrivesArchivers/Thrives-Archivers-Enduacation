@@ -19,7 +19,9 @@ input,select,textarea{width:100%;padding:12px;border:1px solid #dcdceb;border-ra
 table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}th{background:#f0efff}.tablewrap{overflow:auto}
 .avatar{width:78px;height:78px;border-radius:50%;background:var(--p);color:#fff;display:flex;align-items:center;justify-content:center;font-size:25px;font-weight:800;overflow:hidden}.avatar img{width:100%;height:100%;object-fit:cover}.profiletop{display:flex;gap:16px;align-items:center}.stat{font-size:26px;font-weight:800}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.badge{display:inline-block;padding:5px 9px;border-radius:20px;background:#eeeef8;font-size:12px;font-weight:700}.published{background:#dff7e9;color:#137b48}.draft{background:#fff2d6;color:#8a5a00}.toast{position:fixed;right:18px;bottom:18px;background:#20213a;color:#fff;padding:13px 18px;border-radius:10px;display:none;z-index:100;max-width:380px}
 @media(max-width:600px){header{flex-direction:column;align-items:flex-start}.nav{width:100%}.nav button{flex:1}.hero{padding:22px}.container{padding:16px}}
- .explanation{background:#f1efff;border-left:4px solid #5b5bea;padding:12px;border-radius:8px;margin-top:12px}</style>
+ .explanation{background:#f1efff;border-left:4px solid #5b5bea;padding:12px;border-radius:8px;margin-top:12px}
+.leaderboard-profile{display:flex;align-items:center;gap:10px;min-width:220px}.leaderboard-avatar{width:52px;height:52px;border-radius:50%;object-fit:cover;background:var(--p);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;flex-shrink:0}.profile-photo-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px}.profile-photo-actions input[type=file]{max-width:300px;margin:0}.profile-card-header{display:flex;align-items:center;gap:16px;flex-wrap:wrap}.profile-large-avatar{width:100px;height:100px;border-radius:50%;object-fit:cover;background:var(--p);color:white;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:800;overflow:hidden}.profile-large-avatar img{width:100%;height:100%;object-fit:cover}
+</style>
 </head>
 <body>
 <header>
@@ -99,12 +101,12 @@ table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:12px;bor
    SUPABASE
    ========================================================== */
 const SUPABASE_URL='https://odwiqajuubcgrrqipyju.supabase.co';
-const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1dWJjZ3JycWlweWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzA4MjEsImV4cCI6MjA2ODg0NjgyMX0.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A'
+const SUPABASE_ANON_KEY = 'PASTE_THE_EXACT_PUBLIC_KEY_HERE';
 const {createClient}=supabase;
 const db=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 
 /* ADMIN EMAIL */
-const ADMIN_EMAIL='thrivesarchivers@gmail.com';
+const ADMIN_EMAIL = 'thrivesarchivers@gmail.com';
 
 let currentUser=null,currentProfile=null,authMode='login';
 let currentQuiz=null,currentQuestions=[],currentQuestionIndex=0,selectedAnswers={},currentAttemptId=null,quizStartedAt=0;
@@ -156,7 +158,7 @@ if(authMode==='login')r=await db.auth.signInWithPassword({email,password});
 else{
 const full_name=document.getElementById('fullName').value.trim(),university=document.getElementById('university').value.trim(),year=document.getElementById('year').value;
 if(!full_name){err.innerHTML='<p class="error">Enter your full name.</p>';return;}
-r=await db.auth.signUp({email,password,options:{data:{full_name,university,year}}});
+r=await db.auth.signUp({email,password,options:{data:{full_name,university,year_level:year}}});
 }
 if(r.error){err.innerHTML='<p class="error">'+esc(r.error.message)+'</p>';return;}
 closeAuth();toast(authMode==='login'?'Logged in successfully.':'Account created successfully.');await refreshSession();
@@ -185,11 +187,42 @@ if(error){console.warn('Profile SELECT:',error.message); currentProfile={id:curr
 if(data && (currentUser.email||'').toLowerCase()===ADMIN_EMAIL.toLowerCase()) data.is_admin=true;
 if(!data){
 const m=currentUser.user_metadata||{};
-const row={id:currentUser.id,email:currentUser.email,full_name:m.full_name||currentUser.email?.split('@')[0]||'Student',year_level:m.year||'',total_score:0,quizzes_completed:0,is_admin:(currentUser.email||'').toLowerCase()===ADMIN_EMAIL.toLowerCase()};
+const row = {
+  id: currentUser.id,
+  email: currentUser.email,
+  full_name:
+    m.full_name ||
+    currentUser.email?.split('@')[0] ||
+    'Student',
+  university: m.university || '',
+  year_level: m.year_level || m.year || '',
+  avatar_url: m.avatar_url || null,
+  total_score: 0,
+  quizzes_completed: 0,
+  is_admin:
+    (currentUser.email || '').toLowerCase() ===
+    ADMIN_EMAIL.toLowerCase()
+};
 const r=await db.from('users').insert(row).select().single();
 if(r.error){console.error(r.error);return;}data=r.data;
 }
-currentProfile=data || currentProfile || {id:currentUser.id,email:currentUser.email,full_name:currentUser.user_metadata?.full_name||'Thrives Tutor',is_admin:false};
+currentProfile = data || currentProfile || {
+  id: currentUser.id,
+  email: currentUser.email,
+  full_name:
+    currentUser.user_metadata?.full_name ||
+    currentUser.email?.split('@')[0] ||
+    'Student',
+  university: currentUser.user_metadata?.university || '',
+  year_level:
+    currentUser.user_metadata?.year_level ||
+    currentUser.user_metadata?.year ||
+    '',
+  avatar_url: currentUser.user_metadata?.avatar_url || null,
+  total_score: 0,
+  quizzes_completed: 0,
+  is_admin: false
+};
 if(String(currentUser.email||'').trim().toLowerCase()===ADMIN_EMAIL.toLowerCase()) currentProfile.is_admin=true;
 syncAdminUI();
 }
@@ -198,18 +231,13 @@ async function loadProfile(){
 const b=document.getElementById('profileBox');
 if(!currentUser){b.innerHTML='<p>Please login to view your profile.</p><button onclick="openAuth()">Login</button>';return;}
 if(!currentProfile)await loadCurrentProfile();const p=currentProfile||{};
-const avatar=p.avatar_url?'<img src="'+esc(p.avatar_url)+'" alt="Profile">':esc(initials(p.full_name));
-const {count}=await db.from('quiz_attempts').select('*',{count:'exact',head:true}).eq('user_id',currentUser.id);
-b.innerHTML='<div class="profiletop"><div class="avatar">'+avatar+'</div><div><h2>'+esc(p.full_name||'Student')+'</h2><div class="small">'+esc(p.email||currentUser.email)+'</div></div></div><hr>'+
-'<div class="grid"><div><div class="small">Total Points</div><div class="stat">'+Number(p.total_score||0)+'</div></div><div><div class="small">Quizzes Completed</div><div class="stat">'+Number(p.quizzes_completed||0)+'</div></div><div><div class="small">Rank</div><div class="stat">'+(p.rank?'#'+Number(p.rank):'-')+'</div></div></div><hr>'+
-'<label>Full Name</label><input id="editName" value="'+esc(p.full_name||'')+'"><label>University</label><input id="editUniversity" value="'+esc(p.university||'')+'"><label>Year</label><input id="editYear" value="'+esc(p.year_level||'')+'"><label>Profile Picture URL</label><input id="editAvatar" value="'+esc(p.avatar_url||'')+'" placeholder="Optional image URL"><button onclick="saveProfile()">Save Profile</button>';
+const profileImage=p.avatar_url?'<img src="'+esc(p.avatar_url)+'" alt="Profile picture">':esc(initials(p.full_name));
+const {count}=await db.from('quiz_attempts').select('*',{count:'exact',head:true}).eq('user_id',currentUser.id).not('completed_at','is',null);
+b.innerHTML='<div class="profile-card-header"><div class="profile-large-avatar">'+profileImage+'</div><div><h2>'+esc(p.full_name||'Student')+'</h2><div class="small">'+esc(p.email||currentUser.email)+'</div><div class="small">'+esc(p.university||'University not provided')+(p.year_level?' • '+esc(p.year_level):'')+'</div></div></div><hr><div class="grid"><div><div class="small">Total Points</div><div class="stat">'+Number(p.total_score||0)+'</div></div><div><div class="small">Quizzes Completed</div><div class="stat">'+Number(p.quizzes_completed||count||0)+'</div></div><div><div class="small">Rank</div><div class="stat">'+(p.rank?'#'+Number(p.rank):'-')+'</div></div></div><hr><h3>Update Profile</h3><label for="editName">Full Name</label><input id="editName" value="'+esc(p.full_name||'')+'" placeholder="Your full name"><label for="editUniversity">University</label><input id="editUniversity" value="'+esc(p.university||'')+'" placeholder="Your university"><label for="editYear">Year Level</label><select id="editYear"><option value="">Select year</option><option '+(p.year_level==='First Year'?'selected':'')+'>First Year</option><option '+(p.year_level==='Second Year'?'selected':'')+'>Second Year</option><option '+(p.year_level==='Third Year'?'selected':'')+'>Third Year</option><option '+(p.year_level==='Fourth Year'?'selected':'')+'>Fourth Year</option><option '+(p.year_level==='Other'?'selected':'')+'>Other</option></select><label for="avatarFile">Profile Picture</label><div class="profile-photo-actions"><input id="avatarFile" type="file" accept="image/*" capture="user"><button type="button" class="secondary" onclick="document.getElementById('avatarFile').click()">📷 Choose or Take Photo</button></div><p class="small">On mobile, your browser may offer the camera or device gallery. Maximum file size: 5 MB.</p><div id="avatarPreview">'+(p.avatar_url?'<img src="'+esc(p.avatar_url)+'" alt="Current profile picture" style="width:90px;height:90px;border-radius:50%;object-fit:cover;">':'')+'</div><br><button onclick="saveProfile()">Save Profile</button>';
+document.getElementById('avatarFile')?.addEventListener('change',async function(){const file=this.files?.[0];if(!file)return;const avatarUrl=await uploadAvatar(file);if(avatarUrl){document.getElementById('avatarPreview').innerHTML='<img src="'+esc(avatarUrl)+'" alt="New profile picture" style="width:90px;height:90px;border-radius:50%;object-fit:cover;">';toast('Profile picture uploaded.');}});
 }
-async function saveProfile(){
-if(!requireLogin())return;
-const u={full_name:document.getElementById('editName').value.trim(),university:document.getElementById('editUniversity').value.trim(),year_level:document.getElementById('editYear').value.trim(),avatar_url:document.getElementById('editAvatar').value.trim()};
-const {data,error}=await db.from('users').update(u).eq('id',currentUser.id).select().single();
-if(error){toast(error.message);return}currentProfile=data;toast('Profile updated.');loadProfile();
-}
+async function uploadAvatar(file){if(!currentUser){toast('You must be logged in first.');return null;}if(!file.type.startsWith('image/')){toast('Please select an image file.');return null;}if(file.size>5*1024*1024){toast('Profile pictures must be smaller than 5 MB.');return null;}const extension=file.name.split('.').pop()?.toLowerCase()||'jpg';const filePath=`${currentUser.id}/avatar-${Date.now()}.${extension}`;toast('Uploading profile picture...');const {error:uploadError}=await db.storage.from('avatars').upload(filePath,file,{cacheControl:'3600',upsert:false,contentType:file.type});if(uploadError){console.error('Avatar upload failed:',uploadError);toast('Profile picture upload failed.');return null;}const {data}=db.storage.from('avatars').getPublicUrl(filePath);const avatarUrl=data.publicUrl;const {data:updatedProfile,error:profileError}=await db.from('users').update({avatar_url:avatarUrl,updated_at:new Date().toISOString()}).eq('id',currentUser.id).select().single();if(profileError){console.error('Profile update failed:',profileError);toast('Picture uploaded, but profile update failed.');return null;}currentProfile=updatedProfile;return avatarUrl;}
+async function saveProfile(){if(!requireLogin())return;const fullName=document.getElementById('editName')?.value.trim()||'';const university=document.getElementById('editUniversity')?.value.trim()||'';const yearLevel=document.getElementById('editYear')?.value||'';if(!fullName){toast('Please enter your full name.');return;}const {data,error}=await db.from('users').update({full_name:fullName,university,year_level:yearLevel,updated_at:new Date().toISOString()}).eq('id',currentUser.id).select().single();if(error){console.error('Profile update failed:',error);toast(error.message);return;}currentProfile=data;toast('Profile updated successfully.');await loadProfile();await loadLeaderboard();}
 
 /* QUIZZES */
 async function loadQuizzes(){
@@ -248,19 +276,17 @@ let r=await db.from('quiz_attempts').update({score:correct,total_questions:total
 if(r.error){toast(r.error.message);return}
 const old=Number(currentProfile?.total_score||0);
 r=await db.from('users').update({total_score:old+correct,quizzes_completed:Number(currentProfile?.quizzes_completed||0)+1}).eq('id',currentUser.id).select().single();
-if(!r.error)currentProfile=r.data;
+if (!r.error) {
+  currentProfile = r.data;
+}
+
+await loadCurrentProfile();
 document.getElementById('playing').innerHTML='<div class="card" style="text-align:center"><h1>🎉 Quiz Complete!</h1><h2>'+correct+' / '+total+'</h2><p>Percentage: <b>'+pct.toFixed(1)+'%</b></p><p>Result: <b class="'+(passed?'ok':'error')+'">'+(passed?'PASSED':'NOT PASSED')+'</b></p><p>Points earned: <b>'+correct+'</b></p><button onclick="showView(\'leaderboard\')">🏆 View Leaderboard</button> <button class="secondary" onclick="showView(\'quizzes\')">Back to Quizzes</button></div>';
 }
 function leaveQuiz(){if(confirm('Exit this quiz? Your attempt will remain incomplete.'))showView('quizzes');}
 
 /* LEADERBOARD */
-async function loadLeaderboard(){
-const b=document.getElementById('leaderboardBox');b.innerHTML='Loading...';
-const {data,error}=await db.from('leaderboard').select('user_id,total_points,quizzes_taken,average_score,rank_position').order('rank_position',{ascending:true,nullsFirst:false}).limit(100);
-if(error){b.innerHTML='<p class="error">'+esc(error.message)+'</p><p class="small">The leaderboard table needs to be populated by your database logic.</p>';return}
-if(!data?.length){b.innerHTML='<div class="card">No leaderboard records yet.</div>';return}
-b.innerHTML='<div class="tablewrap"><table><thead><tr><th>Rank</th><th>Points</th><th>Quizzes</th><th>Average</th></tr></thead><tbody>'+data.map((x,i)=>'<tr><td>'+(x.rank_position||i+1)+'</td><td><b>'+Number(x.total_points||0)+'</b></td><td>'+Number(x.quizzes_taken||0)+'</td><td>'+Number(x.average_score||0).toFixed(2)+'%</td></tr>').join('')+'</tbody></table></div>';
-}
+async function loadLeaderboard(){const b=document.getElementById('leaderboardBox');b.innerHTML='Loading...';const {data,error}=await db.from('leaderboard_public').select('user_id,rank_position,total_points,quizzes_taken,average_score,full_name,university,year_level,avatar_url').order('rank_position',{ascending:true,nullsFirst:false}).limit(100);if(error){console.error('Leaderboard error:',error);b.innerHTML='<p class="error">'+esc(error.message)+'</p>';return}if(!data?.length){b.innerHTML='<div class="card">No leaderboard records yet.</div>';return}b.innerHTML='<div class="tablewrap"><table><thead><tr><th>Rank</th><th>Student</th><th>University</th><th>Year</th><th>Points</th><th>Average</th><th>Quizzes</th></tr></thead><tbody>'+data.map((student,index)=>{const valid=typeof student.avatar_url==='string'&&student.avatar_url.startsWith('https://');const avatar=valid?'<img class="leaderboard-avatar" src="'+esc(student.avatar_url)+'" alt="'+esc(student.full_name||'Student')+'">':'<div class="leaderboard-avatar">'+esc(initials(student.full_name||'Student'))+'</div>';return '<tr><td><strong>#'+Number(student.rank_position||index+1)+'</strong></td><td><div class="leaderboard-profile">'+avatar+'<div><strong>'+esc(student.full_name||'Student')+'</strong><div class="small">'+esc(student.year_level||'')+'</div></div></div></td><td>'+esc(student.university||'Not provided')+'</td><td>'+esc(student.year_level||'Not provided')+'</td><td><strong>'+Number(student.total_points||0)+'</strong></td><td>'+Number(student.average_score||0).toFixed(2)+'%</td><td>'+Number(student.quizzes_taken||0)+'</td></tr>';}).join('')+'</tbody></table></div>';}
 
 /* ADMIN */
 function adminTab(tab){if(!isAdmin()){toast('Admin access required.');return}document.querySelectorAll('.adminbox').forEach(x=>x.classList.add('hidden'));document.getElementById('a'+tab.charAt(0).toUpperCase()+tab.slice(1)).classList.remove('hidden');}
