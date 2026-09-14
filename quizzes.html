@@ -1755,6 +1755,7 @@ return `
 type="radio"
 name="answer"
 ${selectedId===o.id?'checked':''}
+${hasSelectedAnswer?'disabled':''}
 onchange="selectAnswer('${q.id}', '${o.id}')">
 
 ${String.fromCharCode(65+i)}.
@@ -1773,7 +1774,7 @@ let explanationHtml='';
 
 
 if(
-selectedOption?.is_correct===true
+hasSelectedAnswer
 ){
 
 explanationHtml=`
@@ -1781,13 +1782,15 @@ explanationHtml=`
 <div class="explanation">
 
 <b>
-Explanation
+${selectedOption?.is_correct===true
+  ? 'Correct Answer'
+  : 'Wrong Answer — Correct Answer Highlighted'}
 </b>
 
 <p>
 ${esc(
 q.explanation ||
-'Well done!'
+'Review the highlighted answers and read the explanation carefully.'
 )}
 </p>
 
@@ -1829,6 +1832,13 @@ currentQuestions.length-1
    ========================================================== */
 
 function selectAnswer(qid,oid){
+
+/* Lock the answer after the first selection. */
+if(selectedAnswers[qid]){
+
+return;
+
+}
 
 selectedAnswers[qid]=oid;
 
