@@ -22,6 +22,13 @@
 
 *{box-sizing:border-box}
 
+
+/* COURSE / SEMESTER / TERM ORGANIZATION */
+.organization-toolbar{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 20px}
+.organization-toolbar select{min-width:210px}
+.course-heading{grid-column:1/-1;margin:24px 0 10px;padding:18px 20px;border-radius:16px;background:linear-gradient(135deg,#5b4be7,#806cff);color:#fff}
+.period-heading{grid-column:1/-1;margin:14px 0 8px;padding:12px 15px;border-left:5px solid #6557e8;border-radius:9px;background:#efedff;color:#312b78}
+.order-badge{display:inline-block;margin:4px 4px 8px 0;padding:4px 9px;border-radius:999px;background:#eeeaff;color:#5145c7;font-size:12px;font-weight:700}
 body{
 margin:0;
 font-family:Arial,sans-serif;
@@ -1492,88 +1499,71 @@ adminBtn.classList.add('hidden');
    ========================================================== */
 
 async function loadQuizzes(){
-
-const grid=
-document.getElementById('quizGrid');
-
+const grid=document.getElementById('quizGrid');
 if(!grid)return;
+grid.innerHTML='Loading quizzes...';
 
-grid.innerHTML='Loading...';
-
-
-const {data,error}=
-await db
-.from('quizzes')
-.select('*')
+const {data,error}=await db.from('quizzes').select('*')
 .eq('is_published',true)
-.order(
-'created_at',
-{ascending:false}
-);
+.order('course_order',{ascending:true})
+.order('subject',{ascending:true})
+.order('period_order',{ascending:true})
+.order('quiz_order',{ascending:true})
+.order('created_at',{ascending:true});
 
+if(error){grid.innerHTML='<p class="error">'+esc(error.message)+'</p>';return;}
+if(!data||!data.length){grid.innerHTML='<div class="card">No published quizzes yet.</div>';return;}
 
-if(error){
+window.organizedPublishedQuizzes=data;
+const names=[...new Set(data.map(q=>q.subject||'Other Course'))];
 
-grid.innerHTML=
-'<p class="error">'+
-esc(error.message)+
-'</p>';
-
-return;
-
+grid.innerHTML=`<div class="organization-toolbar">
+<select id="studentCourseFilter" onchange="filterOrganizedQuizzes()">
+<option value="">All Courses</option>
+${names.map(n=>`<option value="${esc(n)}">${esc(n)}</option>`).join('')}
+</select>
+<select id="studentPeriodFilter" onchange="filterOrganizedQuizzes()">
+<option value="">All Semesters/Terms</option>
+<option>Semester 1</option><option>Semester 2</option>
+<option>Term 1</option><option>Term 2</option><option>Term 3</option>
+</select></div><div id="organizedQuizResults"></div>`;
+renderOrganizedQuizzes(data);
 }
 
-
-if(!data?.length){
-
-grid.innerHTML=
-'<div class="card">No published quizzes yet.</div>';
-
-return;
-
+function filterOrganizedQuizzes(){
+const c=document.getElementById('studentCourseFilter')?.value||'';
+const p=document.getElementById('studentPeriodFilter')?.value||'';
+renderOrganizedQuizzes((window.organizedPublishedQuizzes||[]).filter(q=>
+(!c||(q.subject||'Other Course')===c)&&(!p||(q.period_name||'Semester 1')===p)));
 }
 
+function renderOrganizedQuizzes(list){
+const target=document.getElementById('organizedQuizResults');
+if(!target)return;
+if(!list.length){target.innerHTML='<div class="card">No quizzes match your selection.</div>';return;}
 
-grid.innerHTML=
-data.map(q=>`
+const courses={};
+list.forEach(q=>{
+const c=q.subject||'Other Course', p=q.period_name||'Semester 1';
+courses[c]??={course_order:Number(q.course_order||9999),periods:{}};
+courses[c].periods[p]??={period_order:Number(q.period_order||9999),quizzes:[]};
+courses[c].periods[p].quizzes.push(q);
+});
 
-<div class="card">
-
-<span class="badge">
-${esc(q.subject||'Quiz')}
-</span>
-
-<h2>
-${esc(q.title)}
-</h2>
-
-<p>
-${esc(q.description||'Test your knowledge.')}
-</p>
-
-<p class="small">
-
-${Number(q.total_questions||0)}
-questions •
-
-${Number(q.time_limit_minutes||30)}
-minutes
-
-</p>
-
-<button
-onclick="startQuiz('${q.id}')">
-
-Start Quiz
-
-</button>
-
-</div>
-
-`).join('');
-
+target.innerHTML=Object.entries(courses).sort((a,b)=>
+a[1].course_order-b[1].course_order||a[0].localeCompare(b[0])).map(([c,course])=>`
+<section><div class="course-heading"><h2>📚 ${esc(c)}</h2><p>Course quizzes</p></div>
+${Object.entries(course.periods).sort((a,b)=>a[1].period_order-b[1].period_order||a[0].localeCompare(b[0])).map(([p,period])=>`
+<h3 class="period-heading">${esc(p)}</h3><div class="grid">
+${period.quizzes.sort((a,b)=>Number(a.quiz_order||9999)-Number(b.quiz_order||9999)).map(q=>`
+<div class="card"><span class="badge published">${esc(p)}</span>
+<span class="order-badge">Quiz ${Number(q.quiz_order||1)}</span>
+<h2>${esc(q.title||'Untitled Quiz')}</h2>
+<p>${esc(q.description||'Test your knowledge.')}</p>
+<p class="small">${Number(q.total_questions||0)} questions • ${Number(q.time_limit_minutes||30)} minutes</p>
+<p class="small">Difficulty: ${esc(q.difficulty||'Medium')}</p>
+<button onclick="startQuiz('${q.id}')">Start Quiz</button></div>`).join('')}</div>`).join('')}</section>`).join('');
 }
-
 
 /* ==========================================================
    START QUIZ
@@ -2458,9 +2448,18 @@ placeholder="e.g. Anatomy Quiz 1">
 Subject
 </label>
 
-<input
-id="qs"
-placeholder="Anatomy">
+<select id="qs">
+<option value="">Select course/subject</option>
+<option>Mathematics</option><option>Physics</option><option>Chemistry</option>
+<option>Biology</option><option>Anatomy</option><option>Biochemistry</option>
+<option>Physiology</option><option>Pharmacology</option><option>Pathology</option>
+</select>
+<label>Course Order</label><input id="qcourseorder" type="number" min="1" value="1">
+<label>Semester or Term</label><select id="qperiod">
+<option>Semester 1</option><option>Semester 2</option><option>Term 1</option><option>Term 2</option><option>Term 3</option>
+</select>
+<label>Semester/Term Order</label><input id="qperiodorder" type="number" min="1" value="1">
+<label>Quiz Order</label><input id="qquizorder" type="number" min="1" value="1">
 
 <label>
 Description
@@ -2690,11 +2689,8 @@ if(!s)return;
 const {data,error}=
 await db
 .from('quizzes')
-.select('id,title')
-.order(
-'created_at',
-{ascending:false}
-);
+.select('id,title,subject,period_name,quiz_order,course_order,period_order')
+.order('course_order',{ascending:true}).order('subject',{ascending:true}).order('period_order',{ascending:true}).order('quiz_order',{ascending:true});
 
 
 if(error){
@@ -2787,10 +2783,11 @@ document.getElementById(
 'qt'
 ).value.trim();
 
-const subject=
-document.getElementById(
-'qs'
-).value.trim();
+const subject=document.getElementById('qs').value.trim();
+const course_order=Number(document.getElementById('qcourseorder').value)||1;
+const period_name=document.getElementById('qperiod').value;
+const period_order=Number(document.getElementById('qperiodorder').value)||1;
+const quiz_order=Number(document.getElementById('qquizorder').value)||1;
 
 
 if(!title||!subject){
@@ -2813,6 +2810,8 @@ title,
 
 subject,
 
+
+course_order, period_name, period_order, quiz_order,
 description:
 document
 .getElementById('qd')
