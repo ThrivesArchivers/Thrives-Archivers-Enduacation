@@ -49,6 +49,34 @@ top:0;
 z-index:20
 }
 
+.header-left{
+display:flex;
+align-items:center;
+gap:12px;
+min-width:0
+}
+
+.header-avatar{
+width:42px;
+height:42px;
+border-radius:50%;
+background:#ffffff33;
+border:2px solid #ffffffaa;
+display:flex;
+align-items:center;
+justify-content:center;
+overflow:hidden;
+font-weight:800;
+font-size:16px;
+flex-shrink:0
+}
+
+.header-avatar img{
+width:100%;
+height:100%;
+object-fit:cover
+}
+
 .logo{
 font-weight:800;
 font-size:21px
@@ -447,8 +475,16 @@ object-fit:cover
 
 <header>
 
+<div class="header-left">
+
+<div id="headerAvatar" class="header-avatar" title="Profile picture">
+TA
+</div>
+
 <div class="logo">
 💜 Thrives Archivers
+</div>
+
 </div>
 
 <div class="nav">
@@ -1457,6 +1493,46 @@ loadProfile();
    ========================================================== */
 
 function updateHeader(){
+
+const headerAvatar=
+document.getElementById('headerAvatar');
+
+if(headerAvatar){
+
+const photo=
+currentProfile?.avatar_url ||
+currentUser?.user_metadata?.avatar_url ||
+currentUser?.user_metadata?.picture ||
+'';
+
+const name=
+currentProfile?.full_name ||
+currentProfile?.name ||
+currentUser?.user_metadata?.full_name ||
+currentUser?.email ||
+'Thrives Archivers';
+
+const initials=
+String(name)
+.trim()
+.split(/\\s+/)
+.filter(Boolean)
+.map(x=>x[0])
+.join('')
+.slice(0,2)
+.toUpperCase();
+
+headerAvatar.innerHTML=
+photo
+? '<img src="'+esc(photo)+'" alt="Profile picture">'
+: esc(initials||'TA');
+
+headerAvatar.title=
+currentUser
+? 'Your profile picture'
+: 'Login to view your profile picture';
+
+}
 
 const adminBtn=
 document.getElementById('na');
