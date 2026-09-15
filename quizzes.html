@@ -23,9 +23,7 @@
 --warning:#f0a000;
 }
 
-*{
-box-sizing:border-box
-}
+*{box-sizing:border-box}
 
 body{
 margin:0;
@@ -34,8 +32,6 @@ background:var(--bg);
 color:var(--text)
 }
 
-/* COURSE ORGANIZATION */
-
 .organization-toolbar{
 display:flex;
 flex-wrap:wrap;
@@ -43,9 +39,7 @@ gap:10px;
 margin:0 0 20px
 }
 
-.organization-toolbar select{
-min-width:210px
-}
+.organization-toolbar select{min-width:210px}
 
 .course-heading{
 grid-column:1/-1;
@@ -76,8 +70,6 @@ color:#5145c7;
 font-size:12px;
 font-weight:700
 }
-
-/* HEADER */
 
 header{
 background:linear-gradient(135deg,var(--p),var(--p2));
@@ -144,21 +136,15 @@ border-radius:9px
 background:#ffffff22
 }
 
-/* GENERAL */
-
 .container{
 max-width:1150px;
 margin:auto;
 padding:25px 16px
 }
 
-.view{
-display:none
-}
+.view{display:none}
 
-.view.active{
-display:block
-}
+.view.active{display:block}
 
 .hero{
 background:linear-gradient(135deg,var(--p),#8a78ff);
@@ -193,8 +179,11 @@ cursor:pointer;
 font-weight:700
 }
 
-button:hover{
-opacity:.92
+button:hover{opacity:.92}
+
+button:disabled{
+opacity:.6;
+cursor:not-allowed
 }
 
 .secondary{
@@ -202,17 +191,11 @@ background:#eeeef8;
 color:var(--text)
 }
 
-.danger{
-background:var(--danger)
-}
+.danger{background:var(--danger)}
 
-.success{
-background:var(--success)
-}
+.success{background:var(--success)}
 
-.warning{
-background:#f0a000
-}
+.warning{background:#f0a000}
 
 input,select,textarea{
 width:100%;
@@ -224,9 +207,7 @@ background:#fff;
 color:var(--text)
 }
 
-textarea{
-resize:vertical
-}
+textarea{resize:vertical}
 
 label{
 font-weight:700;
@@ -248,11 +229,7 @@ color:var(--success);
 font-weight:700
 }
 
-.hidden{
-display:none!important
-}
-
-/* MODAL */
+.hidden{display:none!important}
 
 .modal{
 position:fixed;
@@ -265,9 +242,7 @@ padding:15px;
 z-index:50
 }
 
-.modal.show{
-display:flex
-}
+.modal.show{display:flex}
 
 .modalbox{
 background:#fff;
@@ -278,8 +253,6 @@ max-height:90vh;
 overflow:auto
 }
 
-/* OPTIONS */
-
 .option{
 display:block;
 border:1px solid var(--border);
@@ -289,9 +262,7 @@ margin:10px 0;
 cursor:pointer
 }
 
-.option:hover{
-border-color:var(--p)
-}
+.option:hover{border-color:var(--p)}
 
 .option input{
 width:auto;
@@ -322,8 +293,6 @@ float:right;
 font-weight:700
 }
 
-/* QUIZ */
-
 .quizhead{
 display:flex;
 justify-content:space-between;
@@ -353,8 +322,6 @@ border-radius:8px;
 margin-top:12px
 }
 
-/* TABLE */
-
 table{
 width:100%;
 border-collapse:collapse
@@ -366,15 +333,9 @@ padding:12px;
 border-bottom:1px solid var(--border)
 }
 
-th{
-background:#f0efff
-}
+th{background:#f0efff}
 
-.tablewrap{
-overflow:auto
-}
-
-/* PROFILE */
+.tablewrap{overflow:auto}
 
 .avatar{
 width:78px;
@@ -459,9 +420,7 @@ justify-content:center;
 font-size:23px
 }
 
-.notes-box{
-min-height:220px
-}
+.notes-box{min-height:220px}
 
 .ai-info{
 padding:13px;
@@ -533,7 +492,24 @@ font-weight:600;
 margin-bottom:15px
 }
 
-/* LEADERBOARD */
+.ai-error{
+background:#fde5e2;
+border:1px solid #e74c3c;
+color:#8f2118;
+padding:15px;
+border-radius:12px;
+margin-top:15px;
+word-break:break-word
+}
+
+.ai-success{
+background:#dff7e9;
+border:1px solid #20a464;
+color:#137b48;
+padding:15px;
+border-radius:12px;
+margin-top:15px
+}
 
 .leaderboard-profile{
 display:flex;
@@ -556,8 +532,6 @@ font-weight:800;
 font-size:18px;
 flex-shrink:0
 }
-
-/* PROFILE PHOTO */
 
 .profile-photo-actions{
 display:flex;
@@ -600,8 +574,6 @@ height:100%;
 object-fit:cover
 }
 
-/* TOAST */
-
 .toast{
 position:fixed;
 right:18px;
@@ -614,39 +586,6 @@ display:none;
 z-index:100;
 max-width:380px
 }
-
-/* MOBILE */
-
-@media(max-width:600px){
-
-header{
-flex-direction:column;
-align-items:flex-start
-}
-
-.nav{
-width:100%
-}
-
-.nav button{
-flex:1
-}
-
-.hero{
-padding:22px
-}
-
-.container{
-padding:16px
-}
-
-.ai-title{
-align-items:flex-start
-}
-
-}
-
-/* SPINNER */
 
 .spinner{
 width:22px;
@@ -661,9 +600,26 @@ margin-right:8px
 }
 
 @keyframes spin{
-to{
-transform:rotate(360deg)
+to{transform:rotate(360deg)}
 }
+
+@media(max-width:600px){
+
+header{
+flex-direction:column;
+align-items:flex-start
+}
+
+.nav{width:100%}
+
+.nav button{flex:1}
+
+.hero{padding:22px}
+
+.container{padding:16px}
+
+.ai-title{align-items:flex-start}
+
 }
 
 </style>
@@ -675,7 +631,7 @@ transform:rotate(360deg)
 
 <div class="header-left">
 
-<div id="headerAvatar" class="header-avatar" title="Profile picture">
+<div id="headerAvatar" class="header-avatar">
 TA
 </div>
 
@@ -718,17 +674,11 @@ Logout
 
 <main class="container">
 
-<!-- =====================================================
-     STUDENT QUIZZES
-===================================================== -->
-
 <section id="quizzes" class="view active">
 
 <div class="hero">
 
-<h1>
-Quiz Competition
-</h1>
+<h1>Quiz Competition</h1>
 
 <p>
 Test your knowledge, earn points and climb the Thrives Archivers leaderboard.
@@ -741,21 +691,13 @@ Test your knowledge, earn points and climb the Thrives Archivers leaderboard.
 </section>
 
 
-<!-- =====================================================
-     LEADERBOARD
-===================================================== -->
-
 <section id="leaderboard" class="view">
 
 <div class="hero">
 
-<h1>
-🏆 Leaderboard
-</h1>
+<h1>🏆 Leaderboard</h1>
 
-<p>
-Students ranked by total points.
-</p>
+<p>Students ranked by total points.</p>
 
 </div>
 
@@ -770,17 +712,11 @@ Loading...
 </section>
 
 
-<!-- =====================================================
-     PROFILE
-===================================================== -->
-
 <section id="profile" class="view">
 
 <div class="hero">
 
-<h1>
-My Profile
-</h1>
+<h1>My Profile</h1>
 
 <p>
 Manage your student information and view your progress.
@@ -795,17 +731,11 @@ Please login to view your profile.
 </section>
 
 
-<!-- =====================================================
-     ADMIN PANEL
-===================================================== -->
-
 <section id="admin" class="view">
 
 <div class="hero">
 
-<h1>
-⚙️ Admin Panel
-</h1>
+<h1>⚙️ Admin Panel</h1>
 
 <p>
 Create and manage quizzes, AI-generated quizzes, questions, students and results.
@@ -841,42 +771,20 @@ Create and manage quizzes, AI-generated quizzes, questions, students and results
 
 </div>
 
-
-<!-- MANUAL CREATE -->
-
 <div id="aCreate" class="card adminbox"></div>
-
-
-<!-- AI GENERATOR -->
 
 <div id="aAi" class="card adminbox hidden"></div>
 
-
-<!-- MANUAL QUESTION -->
-
 <div id="aQuestion" class="card adminbox hidden"></div>
-
-
-<!-- MANAGE -->
 
 <div id="aManage" class="card adminbox hidden"></div>
 
-
-<!-- STUDENTS -->
-
 <div id="aStudents" class="card adminbox hidden"></div>
-
-
-<!-- ATTEMPTS -->
 
 <div id="aAttempts" class="card adminbox hidden"></div>
 
 </section>
 
-
-<!-- =====================================================
-     PLAYING
-===================================================== -->
 
 <section id="playing" class="view">
 
@@ -901,9 +809,7 @@ Score: 0
 <br>
 
 <div class="progress">
-
 <div id="bar"></div>
-
 </div>
 
 <div id="questionBox" style="margin-top:22px"></div>
@@ -927,77 +833,44 @@ Next
 </main>
 
 
-<!-- =====================================================
-     AUTH MODAL
-===================================================== -->
-
 <div id="authModal" class="modal">
 
 <div class="modalbox">
 
-<h2 id="authTitle">
-Login
-</h2>
+<h2 id="authTitle">Login</h2>
 
 <div id="authError"></div>
 
 <div id="signupFields" class="hidden">
 
-<label>
-Full Name
-</label>
+<label>Full Name</label>
 
 <input id="fullName" placeholder="Your full name">
 
-<label>
-University
-</label>
+<label>University</label>
 
 <input id="university" placeholder="e.g. Mulungushi University">
 
-<label>
-Year
-</label>
+<label>Year</label>
 
 <select id="year">
 
-<option value="">
-Select year
-</option>
-
-<option>
-First Year
-</option>
-
-<option>
-Second Year
-</option>
-
-<option>
-Third Year
-</option>
-
-<option>
-Fourth Year
-</option>
-
-<option>
-Other
-</option>
+<option value="">Select year</option>
+<option>First Year</option>
+<option>Second Year</option>
+<option>Third Year</option>
+<option>Fourth Year</option>
+<option>Other</option>
 
 </select>
 
 </div>
 
-<label>
-Email
-</label>
+<label>Email</label>
 
 <input id="email" type="email" placeholder="Email">
 
-<label>
-Password
-</label>
+<label>Password</label>
 
 <input id="password" type="password" placeholder="Password">
 
@@ -1030,7 +903,7 @@ Close
 <script>
 
 /* ==========================================================
-   SUPABASE CONFIGURATION
+   SUPABASE
 ========================================================== */
 
 const SUPABASE_URL =
@@ -1039,21 +912,14 @@ const SUPABASE_URL =
 const SUPABASE_ANON_KEY =
 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1dWJjZ3JycWlweWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzA4MjEsImV4cCI6MjA2ODg0NjgyMX0.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A';
 
-const {
-createClient
-} = window.supabase;
+const {createClient}=window.supabase;
 
-const db =
-createClient(
+const db=createClient(
 SUPABASE_URL,
 SUPABASE_ANON_KEY
 );
 
-
-/* ADMIN EMAIL */
-
-const ADMIN_EMAIL =
-'thrivesarchivers@gmail.com';
+const ADMIN_EMAIL='thrivesarchivers@gmail.com';
 
 
 /* ==========================================================
@@ -1097,8 +963,7 @@ m=>({
 
 function toast(m){
 
-const t=
-document.getElementById('toast');
+const t=document.getElementById('toast');
 
 t.textContent=m;
 
@@ -1106,10 +971,9 @@ t.style.display='block';
 
 clearTimeout(window.tt);
 
-window.tt=
-setTimeout(
+window.tt=setTimeout(
 ()=>t.style.display='none',
-3500
+4000
 );
 
 }
@@ -1172,24 +1036,15 @@ function showView(id){
 
 document
 .querySelectorAll('.view')
-.forEach(v=>
-v.classList.remove('active')
-);
+.forEach(v=>v.classList.remove('active'));
 
-const el=
-document.getElementById(id);
+const el=document.getElementById(id);
 
-if(el){
-el.classList.add('active');
-}
+if(el)el.classList.add('active');
 
-if(id==='leaderboard'){
-loadLeaderboard();
-}
+if(id==='leaderboard')loadLeaderboard();
 
-if(id==='profile'){
-loadProfile();
-}
+if(id==='profile')loadProfile();
 
 if(id==='admin'){
 
@@ -1211,7 +1066,7 @@ loadAdmin();
 
 
 /* ==========================================================
-   AUTH MODAL
+   AUTH
 ========================================================== */
 
 function openAuth(){
@@ -1239,30 +1094,23 @@ authMode==='login'
 ?'signup'
 :'login';
 
-document
-.getElementById('authTitle')
-.textContent=
+document.getElementById('authTitle').textContent=
 authMode==='login'
 ?'Login'
 :'Create Account';
 
-document
-.getElementById('signupFields')
+document.getElementById('signupFields')
 .classList.toggle(
 'hidden',
 authMode==='login'
 );
 
-document
-.getElementById('switchText')
-.textContent=
+document.getElementById('switchText').textContent=
 authMode==='login'
 ?"Don't have an account?"
 :'Already have an account?';
 
-document
-.getElementById('switchBtn')
-.textContent=
+document.getElementById('switchBtn').textContent=
 authMode==='login'
 ?'Create account'
 :'Login';
@@ -1277,18 +1125,12 @@ authMode==='login'
 async function submitAuth(){
 
 const email=
-document
-.getElementById('email')
-.value.trim();
+document.getElementById('email').value.trim();
 
 const password=
-document
-.getElementById('password')
-.value;
+document.getElementById('password').value;
 
-const err=
-document
-.getElementById('authError');
+const err=document.getElementById('authError');
 
 err.textContent='';
 
@@ -1305,19 +1147,13 @@ return;
 if(authMode==='signup'){
 
 const fullName=
-document
-.getElementById('fullName')
-.value.trim();
+document.getElementById('fullName').value.trim();
 
 const university=
-document
-.getElementById('university')
-.value.trim();
+document.getElementById('university').value.trim();
 
 const year=
-document
-.getElementById('year')
-.value;
+document.getElementById('year').value;
 
 if(!fullName){
 
@@ -1369,8 +1205,6 @@ return;
 }
 
 
-/* LOGIN */
-
 const {data,error}=
 await db.auth.signInWithPassword({
 
@@ -1392,8 +1226,7 @@ return;
 }
 
 
-currentUser=
-data.user;
+currentUser=data.user;
 
 closeAuth();
 
@@ -1434,8 +1267,14 @@ toast('Logged out.');
 
 async function refreshSession(){
 
-const {data}=
+const {data,error}=
 await db.auth.getSession();
+
+if(error){
+
+console.error('Session error:',error);
+
+}
 
 currentUser=
 data?.session?.user||null;
@@ -1492,8 +1331,7 @@ currentProfile=data;
 
 async function loadProfile(){
 
-const box=
-document.getElementById('profileBox');
+const box=document.getElementById('profileBox');
 
 if(!currentUser){
 
@@ -1506,8 +1344,7 @@ return;
 
 await loadCurrentProfile();
 
-const p=
-currentProfile||{};
+const p=currentProfile||{};
 
 const avatar=
 p.avatar_url
@@ -1524,9 +1361,7 @@ ${avatar}
 
 <div>
 
-<h2>
-${esc(p.full_name||'Student')}
-</h2>
+<h2>${esc(p.full_name||'Student')}</h2>
 
 <p class="small">
 ${esc(p.email||currentUser.email||'')}
@@ -1538,63 +1373,56 @@ ${esc(p.email||currentUser.email||'')}
 
 <hr>
 
-<label>
-Full Name
-</label>
+<label>Full Name</label>
 
-<input
-id="profileName"
+<input id="profileName"
 value="${esc(p.full_name||'')}">
 
-<label>
-University
-</label>
+<label>University</label>
 
-<input
-id="profileUniversity"
+<input id="profileUniversity"
 value="${esc(p.university||'')}">
 
-<label>
-Year Level
-</label>
+<label>Year Level</label>
 
-<input
-id="profileYear"
+<input id="profileYear"
 value="${esc(p.year_level||'')}">
 
 <button onclick="saveProfile()">
 Save Profile
 </button>
 
-<h3>
-Your Statistics
-</h3>
+<h3>Your Statistics</h3>
 
 <div class="grid">
 
 <div class="card">
+
 <div class="stat">
 ${Number(p.total_score||0)}
 </div>
+
 <div class="small">
 Total Points
 </div>
+
 </div>
 
 <div class="card">
+
 <div class="stat">
 ${Number(p.quizzes_completed||0)}
 </div>
+
 <div class="small">
 Quizzes Completed
 </div>
-</div>
 
 </div>
 
-<h3>
-Profile Picture
-</h3>
+</div>
+
+<h3>Profile Picture</h3>
 
 <div class="profile-photo-actions">
 
@@ -1619,19 +1447,13 @@ async function saveProfile(){
 if(!currentUser)return;
 
 const full_name=
-document
-.getElementById('profileName')
-.value.trim();
+document.getElementById('profileName').value.trim();
 
 const university=
-document
-.getElementById('profileUniversity')
-.value.trim();
+document.getElementById('profileUniversity').value.trim();
 
 const year_level=
-document
-.getElementById('profileYear')
-.value.trim();
+document.getElementById('profileYear').value.trim();
 
 const {error}=
 await db
@@ -1664,11 +1486,9 @@ async function uploadAvatar(){
 
 if(!currentUser)return;
 
-const input=
-document.getElementById('avatarFile');
+const input=document.getElementById('avatarFile');
 
-const file=
-input?.files?.[0];
+const file=input?.files?.[0];
 
 if(!file){
 
@@ -1677,7 +1497,6 @@ toast('Select a picture first.');
 return;
 
 }
-
 
 const ext=
 file.name
@@ -1689,7 +1508,6 @@ const path=
 currentUser.id+
 '/avatar.'+
 ext;
-
 
 const {error}=
 await db
@@ -1712,23 +1530,17 @@ return;
 
 }
 
-
-const {data}=
-db
+const {data}=db
 .storage
 .from('avatars')
 .getPublicUrl(path);
 
-const avatar_url=
-data.publicUrl;
-
+const avatar_url=data.publicUrl;
 
 const {error:updateError}=
 await db
 .from('users')
-.update({
-avatar_url
-})
+.update({avatar_url})
 .eq('id',currentUser.id);
 
 if(updateError){
@@ -1738,7 +1550,6 @@ toast(updateError.message);
 return;
 
 }
-
 
 await loadCurrentProfile();
 
@@ -1785,35 +1596,28 @@ String(name)
 
 headerAvatar.innerHTML=
 photo
-? '<img src="'+esc(photo)+'" alt="Profile picture">'
-: esc(initialLetters||'TA');
+?'<img src="'+esc(photo)+'" alt="Profile picture">'
+:esc(initialLetters||'TA');
 
 headerAvatar.title=
 currentUser
-? 'Your profile picture'
-: 'Login to view your profile picture';
+?'Your profile picture'
+:'Login to view your profile picture';
 
 }
 
-const adminBtn=
-document.getElementById('na');
-
-const authBtn=
-document.getElementById('authBtn');
-
-const logoutBtn=
-document.getElementById('logoutBtn');
+const adminBtn=document.getElementById('na');
+const authBtn=document.getElementById('authBtn');
+const logoutBtn=document.getElementById('logoutBtn');
 
 if(currentUser){
 
 authBtn.classList.add('hidden');
-
 logoutBtn.classList.remove('hidden');
 
 }else{
 
 authBtn.classList.remove('hidden');
-
 logoutBtn.classList.add('hidden');
 
 }
@@ -1837,13 +1641,11 @@ adminBtn.classList.add('hidden');
 
 async function loadQuizzes(){
 
-const grid=
-document.getElementById('quizGrid');
+const grid=document.getElementById('quizGrid');
 
 if(!grid)return;
 
 grid.innerHTML='Loading quizzes...';
-
 
 const {data,error}=
 await db
@@ -1856,7 +1658,6 @@ await db
 .order('quiz_order',{ascending:true})
 .order('created_at',{ascending:true});
 
-
 if(error){
 
 grid.innerHTML=
@@ -1868,7 +1669,6 @@ return;
 
 }
 
-
 if(!data||!data.length){
 
 grid.innerHTML=
@@ -1878,14 +1678,12 @@ return;
 
 }
 
-
 window.organizedPublishedQuizzes=data;
 
 const names=
 [...new Set(
 data.map(q=>q.subject||'Other Course')
 )];
-
 
 grid.innerHTML=`
 
@@ -1895,14 +1693,10 @@ grid.innerHTML=`
 id="studentCourseFilter"
 onchange="filterOrganizedQuizzes()">
 
-<option value="">
-All Courses
-</option>
+<option value="">All Courses</option>
 
 ${names.map(n=>
-`<option value="${esc(n)}">
-${esc(n)}
-</option>`
+`<option value="${esc(n)}">${esc(n)}</option>`
 ).join('')}
 
 </select>
@@ -1911,10 +1705,7 @@ ${esc(n)}
 id="studentPeriodFilter"
 onchange="filterOrganizedQuizzes()">
 
-<option value="">
-All Semesters/Terms
-</option>
-
+<option value="">All Semesters/Terms</option>
 <option>Semester 1</option>
 <option>Semester 2</option>
 <option>Term 1</option>
@@ -1937,15 +1728,10 @@ renderOrganizedQuizzes(data);
 function filterOrganizedQuizzes(){
 
 const c=
-document
-.getElementById('studentCourseFilter')
-?.value||'';
+document.getElementById('studentCourseFilter')?.value||'';
 
 const p=
-document
-.getElementById('studentPeriodFilter')
-?.value||'';
-
+document.getElementById('studentPeriodFilter')?.value||'';
 
 renderOrganizedQuizzes(
 (window.organizedPublishedQuizzes||[])
@@ -1961,8 +1747,7 @@ renderOrganizedQuizzes(
 function renderOrganizedQuizzes(list){
 
 const target=
-document
-.getElementById('organizedQuizResults');
+document.getElementById('organizedQuizResults');
 
 if(!target)return;
 
@@ -1975,16 +1760,12 @@ return;
 
 }
 
-
 const courses={};
 
 list.forEach(q=>{
 
-const c=
-q.subject||'Other Course';
-
-const p=
-q.period_name||'Semester 1';
+const c=q.subject||'Other Course';
+const p=q.period_name||'Semester 1';
 
 courses[c]??={
 course_order:Number(q.course_order||9999),
@@ -2000,7 +1781,6 @@ courses[c].periods[p].quizzes.push(q);
 
 });
 
-
 target.innerHTML=
 Object.entries(courses)
 .sort((a,b)=>
@@ -2013,13 +1793,9 @@ a[0].localeCompare(b[0])
 
 <div class="course-heading">
 
-<h2>
-📚 ${esc(c)}
-</h2>
+<h2>📚 ${esc(c)}</h2>
 
-<p>
-Course quizzes
-</p>
+<p>Course quizzes</p>
 
 </div>
 
@@ -2053,19 +1829,13 @@ ${esc(p)}
 Quiz ${Number(q.quiz_order||1)}
 </span>
 
-<h2>
-${esc(q.title||'Untitled Quiz')}
-</h2>
+<h2>${esc(q.title||'Untitled Quiz')}</h2>
 
-<p>
-${esc(q.description||'Test your knowledge.')}
-</p>
+<p>${esc(q.description||'Test your knowledge.')}</p>
 
 <p class="small">
-${Number(q.total_questions||0)}
-questions •
-${Number(q.time_limit_minutes||30)}
-minutes
+${Number(q.total_questions||0)} questions •
+${Number(q.time_limit_minutes||30)} minutes
 </p>
 
 <p class="small">
@@ -2108,14 +1878,12 @@ return;
 
 }
 
-
 const {data:quiz,error:quizError}=
 await db
 .from('quizzes')
 .select('*')
 .eq('id',id)
 .single();
-
 
 if(quizError){
 
@@ -2124,7 +1892,6 @@ toast(quizError.message);
 return;
 
 }
-
 
 const {data:questions,error:questionError}=
 await db
@@ -2145,11 +1912,7 @@ order_index
 )
 `)
 .eq('quiz_id',id)
-.order(
-'order_index',
-{ascending:true}
-);
-
+.order('order_index',{ascending:true});
 
 if(questionError){
 
@@ -2159,7 +1922,6 @@ return;
 
 }
 
-
 if(!questions?.length){
 
 toast('This quiz has no questions yet.');
@@ -2168,17 +1930,11 @@ return;
 
 }
 
-
 currentQuiz=quiz;
-
 currentQuestions=questions;
-
 currentQuestionIndex=0;
-
 selectedAnswers={};
-
 currentAttemptId=null;
-
 quizStartedAt=Date.now();
 
 showView('playing');
@@ -2188,72 +1944,48 @@ renderQuestion();
 }
 
 
-/* ==========================================================
-   QUESTION RENDERING
-========================================================== */
-
 function renderQuestion(){
 
-const q=
-currentQuestions[currentQuestionIndex];
+const q=currentQuestions[currentQuestionIndex];
 
 const opts=
-[...(q.options || [])]
+[...(q.options||[])]
 .sort(
 (a,b)=>
-(a.order_index || 0)-
-(b.order_index || 0)
+(a.order_index||0)-
+(b.order_index||0)
 );
 
-const selectedId=
-selectedAnswers[q.id];
+const selectedId=selectedAnswers[q.id];
 
 const selectedOption=
-opts.find(
-o=>o.id===selectedId
-);
+opts.find(o=>o.id===selectedId);
 
-const hasSelectedAnswer=
-Boolean(selectedOption);
+const hasSelectedAnswer=Boolean(selectedOption);
 
-
-document.getElementById(
-'playTitle'
-).textContent=
+document.getElementById('playTitle').textContent=
 currentQuiz.title;
 
-
-document.getElementById(
-'counter'
-).textContent=
+document.getElementById('counter').textContent=
 'Question '+
 (currentQuestionIndex+1)+
 ' of '+
 currentQuestions.length;
 
-
-document.getElementById(
-'bar'
-).style.width=
+document.getElementById('bar').style.width=
 (
 (currentQuestionIndex+1)/
 currentQuestions.length*
 100
 )+'%';
 
-
 const optionsHtml=
 opts.map((o,i)=>{
 
 let answerClass='';
 
-if(
-hasSelectedAnswer &&
-o.is_correct===true
-){
-
+if(hasSelectedAnswer&&o.is_correct===true){
 answerClass='answer-correct';
-
 }
 
 if(
@@ -2261,11 +1993,8 @@ hasSelectedAnswer &&
 o.id===selectedId &&
 o.is_correct!==true
 ){
-
 answerClass='answer-wrong';
-
 }
-
 
 return `
 
@@ -2286,7 +2015,6 @@ ${esc(o.option_text)}
 `;
 
 }).join('');
-
 
 let explanationHtml='';
 
@@ -2317,14 +2045,9 @@ q.explanation||
 
 }
 
+document.getElementById('questionBox').innerHTML=`
 
-document.getElementById(
-'questionBox'
-).innerHTML=`
-
-<h2>
-${esc(q.question_text)}
-</h2>
+<h2>${esc(q.question_text)}</h2>
 
 ${optionsHtml}
 
@@ -2332,10 +2055,7 @@ ${explanationHtml}
 
 `;
 
-
-document.getElementById(
-'nextBtn'
-).textContent=
+document.getElementById('nextBtn').textContent=
 currentQuestionIndex===
 currentQuestions.length-1
 ?'Submit Quiz'
@@ -2344,17 +2064,9 @@ currentQuestions.length-1
 }
 
 
-/* ==========================================================
-   SELECT ANSWER
-========================================================== */
-
 function selectAnswer(qid,oid){
 
-if(selectedAnswers[qid]){
-
-return;
-
-}
+if(selectedAnswers[qid])return;
 
 selectedAnswers[qid]=oid;
 
@@ -2365,53 +2077,31 @@ renderQuestion();
 }
 
 
-/* ==========================================================
-   SCORE PREVIEW
-========================================================== */
-
 function updatePreview(){
 
 let score=0;
 
 currentQuestions.forEach(q=>{
 
-const selected=
-selectedAnswers[q.id];
+const selected=selectedAnswers[q.id];
 
 const correct=
-(q.options||[])
-.find(o=>o.id===selected);
+(q.options||[]).find(o=>o.id===selected);
 
-if(correct?.is_correct===true){
-
-score++;
-
-}
+if(correct?.is_correct===true)score++;
 
 });
 
+const el=document.getElementById('scorePreview');
 
-const el=
-document.getElementById('scorePreview');
-
-if(el){
-
-el.textContent=
-'Score: '+score;
+if(el)el.textContent='Score: '+score;
 
 }
 
-}
-
-
-/* ==========================================================
-   NEXT QUESTION
-========================================================== */
 
 async function nextQuestion(){
 
-const q=
-currentQuestions[currentQuestionIndex];
+const q=currentQuestions[currentQuestionIndex];
 
 if(!selectedAnswers[q.id]){
 
@@ -2421,11 +2111,7 @@ return;
 
 }
 
-
-if(
-currentQuestionIndex<
-currentQuestions.length-1
-){
+if(currentQuestionIndex<currentQuestions.length-1){
 
 currentQuestionIndex++;
 
@@ -2435,32 +2121,19 @@ return;
 
 }
 
-
 await submitQuiz();
 
 }
 
 
-/* ==========================================================
-   LEAVE QUIZ
-========================================================== */
-
 function leaveQuiz(){
 
-if(
-!confirm(
+if(!confirm(
 'Are you sure you want to leave this quiz? Your progress will be lost.'
-)
-){
-
-return;
-
-}
+))return;
 
 currentQuiz=null;
-
 currentQuestions=[];
-
 selectedAnswers={};
 
 showView('quizzes');
@@ -2482,48 +2155,32 @@ return;
 
 }
 
-
 let correctAnswers=0;
 
 const answers=[];
 
-
 currentQuestions.forEach(q=>{
 
-const selectedId=
-selectedAnswers[q.id];
+const selectedId=selectedAnswers[q.id];
 
 const option=
-(q.options||[])
-.find(
+(q.options||[]).find(
 o=>o.id===selectedId
 );
 
-const isCorrect=
-option?.is_correct===true;
+const isCorrect=option?.is_correct===true;
 
-if(isCorrect){
-
-correctAnswers++;
-
-}
+if(isCorrect)correctAnswers++;
 
 answers.push({
-
 question_id:q.id,
-
-selected_option_id:
-selectedId||null,
-
+selected_option_id:selectedId||null,
 is_correct:isCorrect
-
 });
 
 });
 
-
-const totalQuestions=
-currentQuestions.length;
+const totalQuestions=currentQuestions.length;
 
 const percentage=
 totalQuestions
@@ -2532,21 +2189,15 @@ totalQuestions
 )
 :0;
 
-
 const passed=
-percentage>=
-Number(
+percentage>=Number(
 currentQuiz.passing_score||70
 );
-
 
 const timeTaken=
 Math.floor(
 (Date.now()-quizStartedAt)/1000
 );
-
-
-/* CREATE ATTEMPT */
 
 const {
 data:attempt,
@@ -2557,29 +2208,17 @@ await db
 .insert({
 
 user_id:currentUser.id,
-
 quiz_id:currentQuiz.id,
-
 score:percentage,
-
-total_questions:
-totalQuestions,
-
-correct_answers:
-correctAnswers,
-
+total_questions:totalQuestions,
+correct_answers:correctAnswers,
 passed,
-
-time_taken_seconds:
-timeTaken,
-
-completed_at:
-new Date().toISOString()
+time_taken_seconds:timeTaken,
+completed_at:new Date().toISOString()
 
 })
 .select()
 .single();
-
 
 if(attemptError){
 
@@ -2592,86 +2231,49 @@ return;
 
 }
 
-
-currentAttemptId=
-attempt.id;
-
-
-/* SAVE ANSWERS */
+currentAttemptId=attempt.id;
 
 const rows=
 answers.map(a=>({
 
-attempt_id:
-attempt.id,
-
-question_id:
-a.question_id,
-
-selected_option_id:
-a.selected_option_id,
-
-is_correct:
-a.is_correct
+attempt_id:attempt.id,
+question_id:a.question_id,
+selected_option_id:a.selected_option_id,
+is_correct:a.is_correct
 
 }));
-
 
 const {error:answerError}=
 await db
 .from('user_answers')
 .insert(rows);
 
-
-if(answerError){
-
-console.error(answerError);
-
-}
-
-
-/* UPDATE SCORE */
+if(answerError)console.error(answerError);
 
 const {data:userData}=
 await db
 .from('users')
-.select(
-'total_score,quizzes_completed'
-)
+.select('total_score,quizzes_completed')
 .eq('id',currentUser.id)
 .single();
 
-
 const oldScore=
-Number(
-userData?.total_score||0
-);
+Number(userData?.total_score||0);
 
 const oldCompleted=
-Number(
-userData?.quizzes_completed||0
-);
-
-const points=
-correctAnswers;
-
+Number(userData?.quizzes_completed||0);
 
 await db
 .from('users')
 .update({
 
-total_score:
-oldScore+points,
-
-quizzes_completed:
-oldCompleted+1
+total_score:oldScore+correctAnswers,
+quizzes_completed:oldCompleted+1
 
 })
 .eq('id',currentUser.id);
 
-
 await updateLeaderboard();
-
 
 alert(
 'Quiz completed!\n\n'+
@@ -2682,16 +2284,11 @@ totalQuestions+
 ' ('+
 percentage+
 '%)\n\n'+
-(passed
-?'PASSED 🎉'
-:'NOT PASSED')
+(passed?'PASSED 🎉':'NOT PASSED')
 );
 
-
 currentQuiz=null;
-
 currentQuestions=[];
-
 selectedAnswers={};
 
 showView('quizzes');
@@ -2707,25 +2304,17 @@ loadQuizzes();
 
 async function loadLeaderboard(){
 
-const box=
-document.getElementById(
-'leaderboardBox'
-);
+const box=document.getElementById('leaderboardBox');
 
 if(!box)return;
 
 box.innerHTML='Loading...';
 
-
 const {data,error}=
 await db
 .from('leaderboard_public')
 .select('*')
-.order(
-'rank_position',
-{ascending:true}
-);
-
+.order('rank_position',{ascending:true});
 
 if(error){
 
@@ -2738,7 +2327,6 @@ return;
 
 }
 
-
 if(!data?.length){
 
 box.innerHTML=
@@ -2747,7 +2335,6 @@ box.innerHTML=
 return;
 
 }
-
 
 box.innerHTML=`
 
@@ -2758,7 +2345,6 @@ box.innerHTML=`
 <thead>
 
 <tr>
-
 <th>Rank</th>
 <th>Student</th>
 <th>University</th>
@@ -2766,7 +2352,6 @@ box.innerHTML=`
 <th>Points</th>
 <th>Quizzes</th>
 <th>Average</th>
-
 </tr>
 
 </thead>
@@ -2778,9 +2363,7 @@ data.map(row=>{
 
 const avatar=
 row.avatar_url
-?'<img src="'+
-esc(row.avatar_url)+
-'" class="leaderboard-avatar">'
+?'<img src="'+esc(row.avatar_url)+'" class="leaderboard-avatar">'
 :'<div class="leaderboard-avatar">'+
 initials(row.full_name)+
 '</div>';
@@ -2789,11 +2372,7 @@ return `
 
 <tr>
 
-<td>
-<b>
-#${Number(row.rank_position||0)}
-</b>
-</td>
+<td><b>#${Number(row.rank_position||0)}</b></td>
 
 <td>
 
@@ -2803,13 +2382,10 @@ ${avatar}
 
 <div>
 
-<b>
-${esc(row.full_name||'Student')}
-</b>
+<b>${esc(row.full_name||'Student')}</b>
 
 <div class="small">
-${Number(row.quizzes_taken||0)}
-quizzes
+${Number(row.quizzes_taken||0)} quizzes
 </div>
 
 </div>
@@ -2818,27 +2394,15 @@ quizzes
 
 </td>
 
-<td>
-${esc(row.university||'-')}
-</td>
+<td>${esc(row.university||'-')}</td>
 
-<td>
-${esc(row.year_level||'-')}
-</td>
+<td>${esc(row.year_level||'-')}</td>
 
-<td>
-<b>
-${Number(row.total_points||0)}
-</b>
-</td>
+<td><b>${Number(row.total_points||0)}</b></td>
 
-<td>
-${Number(row.quizzes_taken||0)}
-</td>
+<td>${Number(row.quizzes_taken||0)}</td>
 
-<td>
-${Number(row.average_score||0)}%
-</td>
+<td>${Number(row.average_score||0)}%</td>
 
 </tr>
 
@@ -2857,10 +2421,6 @@ ${Number(row.average_score||0)}%
 
 }
 
-
-/* ==========================================================
-   UPDATE LEADERBOARD
-========================================================== */
 
 async function updateLeaderboard(){
 
@@ -2892,28 +2452,20 @@ return;
 
 }
 
-
 document
 .querySelectorAll('.adminbox')
 .forEach(
 x=>x.classList.add('hidden')
 );
 
-
 const id=
 'a'+
 tab.charAt(0).toUpperCase()+
 tab.slice(1);
 
+const target=document.getElementById(id);
 
-const target=
-document.getElementById(id);
-
-if(target){
-
-target.classList.remove('hidden');
-
-}
+if(target)target.classList.remove('hidden');
 
 }
 
@@ -2926,41 +2478,23 @@ async function loadAdmin(){
 
 if(!isAdmin())return;
 
+document.getElementById('aCreate').innerHTML=`
 
-/* =====================================================
-   MANUAL CREATE QUIZ
-===================================================== */
-
-document.getElementById(
-'aCreate'
-).innerHTML=`
-
-<h2>
-➕ Create Quiz Manually
-</h2>
+<h2>➕ Create Quiz Manually</h2>
 
 <p class="small">
 Your existing manual quiz system is unchanged.
 </p>
 
-<label>
-Title
-</label>
+<label>Title</label>
 
-<input
-id="qt"
-placeholder="e.g. Anatomy Quiz 1">
+<input id="qt" placeholder="e.g. Anatomy Quiz 1">
 
-<label>
-Subject
-</label>
+<label>Subject</label>
 
 <select id="qs">
 
-<option value="">
-Select course/subject
-</option>
-
+<option value="">Select course/subject</option>
 <option>Mathematics</option>
 <option>Physics</option>
 <option>Chemistry</option>
@@ -2973,19 +2507,11 @@ Select course/subject
 
 </select>
 
-<label>
-Course Order
-</label>
+<label>Course Order</label>
 
-<input
-id="qcourseorder"
-type="number"
-min="1"
-value="1">
+<input id="qcourseorder" type="number" min="1" value="1">
 
-<label>
-Semester or Term
-</label>
+<label>Semester or Term</label>
 
 <select id="qperiod">
 
@@ -2997,85 +2523,39 @@ Semester or Term
 
 </select>
 
-<label>
-Semester/Term Order
-</label>
+<label>Semester/Term Order</label>
 
-<input
-id="qperiodorder"
-type="number"
-min="1"
-value="1">
+<input id="qperiodorder" type="number" min="1" value="1">
 
-<label>
-Quiz Order
-</label>
+<label>Quiz Order</label>
 
-<input
-id="qquizorder"
-type="number"
-min="1"
-value="1">
+<input id="qquizorder" type="number" min="1" value="1">
 
-<label>
-Description
-</label>
+<label>Description</label>
 
-<textarea
-id="qd"
-rows="3">
-</textarea>
+<textarea id="qd" rows="3"></textarea>
 
-<label>
-Total Questions
-</label>
+<label>Total Questions</label>
 
-<input
-id="qtotal"
-type="number"
-min="1"
-value="10">
+<input id="qtotal" type="number" min="1" value="10">
 
-<label>
-Time Limit (minutes)
-</label>
+<label>Time Limit (minutes)</label>
 
-<input
-id="qtime"
-type="number"
-min="1"
-value="30">
+<input id="qtime" type="number" min="1" value="30">
 
-<label>
-Difficulty
-</label>
+<label>Difficulty</label>
 
 <select id="qdiff">
 
-<option>
-Easy
-</option>
-
-<option selected>
-Medium
-</option>
-
-<option>
-Hard
-</option>
+<option>Easy</option>
+<option selected>Medium</option>
+<option>Hard</option>
 
 </select>
 
-<label>
-Passing Score (%)
-</label>
+<label>Passing Score (%)</label>
 
-<input
-id="qpass"
-type="number"
-min="0"
-max="100"
-value="70">
+<input id="qpass" type="number" min="0" max="100" value="70">
 
 <label>
 
@@ -3101,17 +2581,13 @@ Create Quiz
    AI GENERATOR
 ===================================================== */
 
-document.getElementById(
-'aAi'
-).innerHTML=`
+document.getElementById('aAi').innerHTML=`
 
 <div class="ai-card card">
 
 <div class="ai-title">
 
-<div class="ai-icon">
-🤖
-</div>
+<div class="ai-icon">🤖</div>
 
 <div>
 
@@ -3138,33 +2614,27 @@ Generate multiple-choice questions from your study notes using Gemini.
 <br>
 2. Gemini creates multiple-choice questions.
 <br>
-3. The quiz is saved as a <b>DRAFT</b>.
+3. The quiz is automatically saved as a <b>DRAFT</b>.
 <br>
-4. You review every question and answer.
+4. You review every question, option, answer and explanation.
 <br>
 5. Publish only when you are satisfied.
 
 </div>
 
 
-<label>
-Quiz Title
-</label>
+<label>Quiz Title</label>
 
 <input
 id="aiTitle"
 placeholder="e.g. Anatomy - Upper Limb Revision Quiz">
 
 
-<label>
-Subject / Course
-</label>
+<label>Subject / Course</label>
 
 <select id="aiSubject">
 
-<option value="">
-Select course/subject
-</option>
+<option value="">Select course/subject</option>
 
 <option>Mathematics</option>
 <option>Physics</option>
@@ -3179,9 +2649,7 @@ Select course/subject
 </select>
 
 
-<label>
-Course Order
-</label>
+<label>Course Order</label>
 
 <input
 id="aiCourseOrder"
@@ -3190,9 +2658,7 @@ min="1"
 value="1">
 
 
-<label>
-Semester / Term
-</label>
+<label>Semester / Term</label>
 
 <select id="aiPeriod">
 
@@ -3205,9 +2671,7 @@ Semester / Term
 </select>
 
 
-<label>
-Semester / Term Order
-</label>
+<label>Semester / Term Order</label>
 
 <input
 id="aiPeriodOrder"
@@ -3216,9 +2680,7 @@ min="1"
 value="1">
 
 
-<label>
-Quiz Order
-</label>
+<label>Quiz Order</label>
 
 <input
 id="aiQuizOrder"
@@ -3227,14 +2689,12 @@ min="1"
 value="1">
 
 
-<label>
-Description
-</label>
+<label>Description</label>
 
 <textarea
 id="aiDescription"
 rows="3"
-placeholder="Short description of this quiz">
+placeholder="Test your knowledge of basic cell structure, organelles, and cellular processes through multiple-choice questions.">
 </textarea>
 
 
@@ -3242,9 +2702,7 @@ placeholder="Short description of this quiz">
 
 <div>
 
-<label>
-Number of Questions
-</label>
+<label>Number of Questions</label>
 
 <input
 id="aiNumber"
@@ -3255,37 +2713,23 @@ value="10">
 
 </div>
 
-
 <div>
 
-<label>
-Difficulty
-</label>
+<label>Difficulty</label>
 
 <select id="aiDifficulty">
 
-<option>
-Easy
-</option>
-
-<option selected>
-Medium
-</option>
-
-<option>
-Hard
-</option>
+<option>Easy</option>
+<option selected>Medium</option>
+<option>Hard</option>
 
 </select>
 
 </div>
 
-
 <div>
 
-<label>
-Time Limit (minutes)
-</label>
+<label>Time Limit (minutes)</label>
 
 <input
 id="aiTime"
@@ -3295,12 +2739,9 @@ value="30">
 
 </div>
 
-
 <div>
 
-<label>
-Passing Score (%)
-</label>
+<label>Passing Score (%)</label>
 
 <input
 id="aiPassing"
@@ -3314,18 +2755,21 @@ value="70">
 </div>
 
 
-<label>
-📚 Paste Your Study Notes
-</label>
+<label>📚 Paste Your Study Notes</label>
 
 <textarea
 id="aiNotes"
 class="notes-box"
-placeholder="Paste your Biology, Anatomy, Chemistry, Physics or other study notes here...
+placeholder="Paste your study notes here...
 
 Example:
 
-The elbow joint is a synovial hinge joint. It is formed by the articulation of the trochlea of the humerus with the trochlear notch of the ulna...
+The cell is the basic structural and functional unit of life.
+Prokaryotic cells lack a membrane-bound nucleus.
+Eukaryotic cells contain a membrane-bound nucleus.
+Mitochondria are involved in ATP production.
+Ribosomes are responsible for protein synthesis.
+The plasma membrane controls movement of substances into and out of the cell.
 ">
 </textarea>
 
@@ -3333,7 +2777,7 @@ The elbow joint is a synovial hinge joint. It is formed by the articulation of t
 <div class="review-warning">
 
 ⚠️ <b>Important:</b>
-AI-generated questions should always be reviewed by the administrator before publishing. Check the question, four options, correct answer and explanation.
+AI-generated questions should always be reviewed by the administrator before publishing. Check every question, four options, correct answer and explanation.
 
 </div>
 
@@ -3347,8 +2791,7 @@ onclick="generateAIQuiz()">
 </button>
 
 
-<div id="aiResult">
-</div>
+<div id="aiResult"></div>
 
 </div>
 
@@ -3359,24 +2802,15 @@ onclick="generateAIQuiz()">
    MANUAL QUESTION
 ===================================================== */
 
-document.getElementById(
-'aQuestion'
-).innerHTML=`
+document.getElementById('aQuestion').innerHTML=`
 
-<h2>
-📝 Add Question Manually
-</h2>
+<h2>📝 Add Question Manually</h2>
 
-<label>
-Quiz
-</label>
+<label>Quiz</label>
 
-<select id="questionQuiz">
-</select>
+<select id="questionQuiz"></select>
 
-<label>
-Question
-</label>
+<label>Question</label>
 
 <textarea
 id="questionText"
@@ -3395,20 +2829,14 @@ rows="4"
 placeholder="Explain why the correct answer is correct and help the student learn.">
 </textarea>
 
-<h3>
-Exactly 4 Answer Options
-</h3>
+<h3>Exactly 4 Answer Options</h3>
 
 <div id="optionFields"></div>
 
 <br>
 
-<button
-class="secondary"
-onclick="addOptionField()">
-
+<button class="secondary" onclick="addOptionField()">
 + Add Option
-
 </button>
 
 <br><br>
@@ -3420,17 +2848,11 @@ Save Question
 `;
 
 
-/* =====================================================
-   MANAGE
-===================================================== */
+/* MANAGE */
 
-document.getElementById(
-'aManage'
-).innerHTML=`
+document.getElementById('aManage').innerHTML=`
 
-<h2>
-📚 Manage Quizzes
-</h2>
+<h2>📚 Manage Quizzes</h2>
 
 <div id="manageBox">
 Loading...
@@ -3439,17 +2861,11 @@ Loading...
 `;
 
 
-/* =====================================================
-   STUDENTS
-===================================================== */
+/* STUDENTS */
 
-document.getElementById(
-'aStudents'
-).innerHTML=`
+document.getElementById('aStudents').innerHTML=`
 
-<h2>
-👥 Students
-</h2>
+<h2>👥 Students</h2>
 
 <div id="studentsBox">
 Loading...
@@ -3458,17 +2874,11 @@ Loading...
 `;
 
 
-/* =====================================================
-   ATTEMPTS
-===================================================== */
+/* ATTEMPTS */
 
-document.getElementById(
-'aAttempts'
-).innerHTML=`
+document.getElementById('aAttempts').innerHTML=`
 
-<h2>
-📊 Attempts
-</h2>
+<h2>📊 Attempts</h2>
 
 <div id="attemptsBox">
 Loading...
@@ -3476,25 +2886,17 @@ Loading...
 
 `;
 
-
 await populateQuizSelect();
 
-
-document.getElementById(
-'optionFields'
-).innerHTML='';
-
+document.getElementById('optionFields').innerHTML='';
 
 addOptionField();
 addOptionField();
 addOptionField();
 addOptionField();
-
 
 await manageQuizzes();
-
 await loadStudents();
-
 await loadAttempts();
 
 adminTab('create');
@@ -3503,18 +2905,14 @@ adminTab('create');
 
 
 /* ==========================================================
-   POPULATE QUIZ SELECT
+   QUIZ SELECT
 ========================================================== */
 
 async function populateQuizSelect(){
 
-const s=
-document.getElementById(
-'questionQuiz'
-);
+const s=document.getElementById('questionQuiz');
 
 if(!s)return;
-
 
 const {data,error}=
 await db
@@ -3527,16 +2925,13 @@ await db
 .order('period_order',{ascending:true})
 .order('quiz_order',{ascending:true});
 
-
 if(error){
 
-s.innerHTML=
-'<option>Error</option>';
+s.innerHTML='<option>Error</option>';
 
 return;
 
 }
-
 
 s.innerHTML=
 data?.length
@@ -3553,19 +2948,14 @@ esc(q.title)+
 
 
 /* ==========================================================
-   ADD OPTION
+   OPTIONS
 ========================================================== */
 
 function addOptionField(){
 
-const b=
-document.getElementById(
-'optionFields'
-);
+const b=document.getElementById('optionFields');
 
-if(
-b.children.length>=4
-){
+if(b.children.length>=4){
 
 toast(
 'A multiple-choice question must have exactly 4 options.'
@@ -3575,10 +2965,7 @@ return;
 
 }
 
-
-const n=
-b.children.length+1;
-
+const n=b.children.length+1;
 
 b.insertAdjacentHTML(
 'beforeend',
@@ -3605,55 +2992,38 @@ n+
 
 
 /* ==========================================================
-   CREATE QUIZ MANUALLY
+   CREATE QUIZ
 ========================================================== */
 
 async function createQuiz(){
 
 if(!isAdmin())return;
 
-
 const title=
-document
-.getElementById('qt')
-.value.trim();
+document.getElementById('qt').value.trim();
 
 const subject=
-document
-.getElementById('qs')
-.value.trim();
+document.getElementById('qs').value.trim();
 
 const course_order=
-Number(
-document.getElementById('qcourseorder').value
-)||1;
+Number(document.getElementById('qcourseorder').value)||1;
 
 const period_name=
-document
-.getElementById('qperiod')
-.value;
+document.getElementById('qperiod').value;
 
 const period_order=
-Number(
-document.getElementById('qperiodorder').value
-)||1;
+Number(document.getElementById('qperiodorder').value)||1;
 
 const quiz_order=
-Number(
-document.getElementById('qquizorder').value
-)||1;
-
+Number(document.getElementById('qquizorder').value)||1;
 
 if(!title||!subject){
 
-toast(
-'Enter title and subject.'
-);
+toast('Enter title and subject.');
 
 return;
 
 }
-
 
 const {error}=
 await db
@@ -3661,58 +3031,34 @@ await db
 .insert({
 
 title,
-
 subject,
-
 course_order,
-
 period_name,
-
 period_order,
-
 quiz_order,
 
 description:
-document
-.getElementById('qd')
-.value.trim(),
+document.getElementById('qd').value.trim(),
 
 total_questions:
-Number(
-document
-.getElementById('qtotal')
-.value
-)||1,
+Number(document.getElementById('qtotal').value)||1,
 
 time_limit_minutes:
-Number(
-document
-.getElementById('qtime')
-.value
-)||30,
+Number(document.getElementById('qtime').value)||30,
 
 difficulty:
-document
-.getElementById('qdiff')
-.value,
+document.getElementById('qdiff').value,
 
 passing_score:
-Number(
-document
-.getElementById('qpass')
-.value
-)||70,
+Number(document.getElementById('qpass').value)||70,
 
 created_by:
 currentUser.id,
 
 is_published:
-document
-.getElementById('qpub')
-.checked
+document.getElementById('qpub').checked
 
 });
-
 
 if(error){
 
@@ -3722,7 +3068,6 @@ return;
 
 }
 
-
 toast('Quiz created.');
 
 loadAdmin();
@@ -3731,50 +3076,28 @@ loadAdmin();
 
 
 /* ==========================================================
-   CREATE QUESTION MANUALLY
+   CREATE QUESTION
 ========================================================== */
 
 async function createQuestion(){
 
 if(!isAdmin())return;
 
-
 const quiz_id=
-document
-.getElementById(
-'questionQuiz'
-)
-.value;
+document.getElementById('questionQuiz').value;
 
 const text=
-document
-.getElementById(
-'questionText'
-)
-.value.trim();
+document.getElementById('questionText').value.trim();
 
 const explanation=
-document
-.getElementById(
-'questionExplanation'
-)
-.value.trim();
-
+document.getElementById('questionExplanation').value.trim();
 
 const texts=
-[
-...document
-.querySelectorAll('.optText')
-]
+[...document.querySelectorAll('.optText')]
 .map(x=>x.value.trim());
 
-
 const radios=
-[
-...document
-.querySelectorAll('.optCorrect')
-];
-
+[...document.querySelectorAll('.optCorrect')];
 
 if(!quiz_id||!text){
 
@@ -3786,11 +3109,7 @@ return;
 
 }
 
-
-if(
-texts.length!==4 ||
-texts.some(x=>!x)
-){
+if(texts.length!==4||texts.some(x=>!x)){
 
 toast(
 'Enter exactly 4 complete answer options.'
@@ -3800,12 +3119,7 @@ return;
 
 }
 
-
-const ci=
-radios.findIndex(
-x=>x.checked
-);
-
+const ci=radios.findIndex(x=>x.checked);
 
 if(ci<0){
 
@@ -3817,7 +3131,6 @@ return;
 
 }
 
-
 if(!explanation){
 
 toast(
@@ -3828,7 +3141,6 @@ return;
 
 }
 
-
 const {
 data:last,
 error:oe
@@ -3837,12 +3149,8 @@ await db
 .from('questions')
 .select('order_index')
 .eq('quiz_id',quiz_id)
-.order(
-'order_index',
-{ascending:false}
-)
+.order('order_index',{ascending:false})
 .limit(1);
-
 
 if(oe){
 
@@ -3855,10 +3163,8 @@ return;
 
 }
 
-
 const order=
 (last?.[0]?.order_index||0)+1;
-
 
 const {
 data:q,
@@ -3869,22 +3175,14 @@ await db
 .insert({
 
 quiz_id,
-
 question_text:text,
-
-question_type:
-'multiple_choice',
-
-order_index:
-order,
-
-explanation:
+question_type:'multiple_choice',
+order_index:order,
 explanation
 
 })
 .select()
 .single();
-
 
 if(error){
 
@@ -3897,34 +3195,21 @@ return;
 
 }
 
-
-const {
-error:op
-}=
+const {error:op}=
 await db
 .from('options')
 .insert(
-
 texts.map(
 (x,i)=>({
 
-question_id:
-q.id,
-
-option_text:
-x,
-
-is_correct:
-i===ci,
-
-order_index:
-i+1
+question_id:q.id,
+option_text:x,
+is_correct:i===ci,
+order_index:i+1
 
 })
 )
-
 );
-
 
 if(op){
 
@@ -3942,61 +3227,105 @@ return;
 
 }
 
-
 const {count}=
 await db
 .from('questions')
-.select(
-'*',
-{
-count:'exact',
-head:true
-}
-)
-.eq(
-'quiz_id',
-quiz_id
-);
-
+.select('*',{count:'exact',head:true})
+.eq('quiz_id',quiz_id);
 
 await db
 .from('quizzes')
 .update({
-
-total_questions:
-count||0
-
+total_questions:count||0
 })
-.eq(
-'id',
-quiz_id
-);
-
+.eq('id',quiz_id);
 
 toast(
 'Question + 4 options + correct answer + explanation saved.'
 );
 
-
-document.getElementById(
-'questionText'
-).value='';
-
-document.getElementById(
-'questionExplanation'
-).value='';
+document.getElementById('questionText').value='';
+document.getElementById('questionExplanation').value='';
 
 document
 .querySelectorAll('.optText')
-.forEach(
-x=>x.value=''
-);
+.forEach(x=>x.value='');
 
 document
 .querySelectorAll('.optCorrect')
-.forEach(
-x=>x.checked=false
+.forEach(x=>x.checked=false);
+
+}
+
+
+/* ==========================================================
+   🔐 GET VALID AUTH SESSION
+========================================================== */
+
+async function getValidAuthSession(){
+
+/*
+First try the current session.
+*/
+
+let {
+data,
+error
+}=
+await db.auth.getSession();
+
+if(error){
+
+console.error(
+'getSession error:',
+error
 );
+
+}
+
+
+/*
+If a session exists and has an access token,
+use it.
+*/
+
+if(data?.session?.access_token){
+
+return data.session;
+
+}
+
+
+/*
+No usable session.
+Try refreshing it.
+*/
+
+console.log(
+'No active access token. Attempting session refresh...'
+);
+
+const refresh=
+await db.auth.refreshSession();
+
+if(refresh.error){
+
+console.error(
+'refreshSession error:',
+refresh.error
+);
+
+return null;
+
+}
+
+if(refresh.data?.session?.access_token){
+
+return refresh.data.session;
+
+}
+
+return null;
 
 }
 
@@ -4015,53 +3344,35 @@ return;
 
 }
 
-
 const notes=
-document
-.getElementById('aiNotes')
-.value.trim();
+document.getElementById('aiNotes').value.trim();
 
 const title=
-document
-.getElementById('aiTitle')
-.value.trim();
+document.getElementById('aiTitle').value.trim();
 
 const subject=
-document
-.getElementById('aiSubject')
-.value.trim();
+document.getElementById('aiSubject').value.trim();
 
 const description=
-document
-.getElementById('aiDescription')
-.value.trim();
+document.getElementById('aiDescription').value.trim();
 
 const number_questions=
 Number(
-document
-.getElementById('aiNumber')
-.value
+document.getElementById('aiNumber').value
 )||10;
 
 const difficulty=
-document
-.getElementById('aiDifficulty')
-.value;
+document.getElementById('aiDifficulty').value;
 
 const time_limit_minutes=
 Number(
-document
-.getElementById('aiTime')
-.value
+document.getElementById('aiTime').value
 )||30;
 
 const passing_score=
 Number(
-document
-.getElementById('aiPassing')
-.value
+document.getElementById('aiPassing').value
 )||70;
-
 
 if(!title){
 
@@ -4071,7 +3382,6 @@ return;
 
 }
 
-
 if(!subject){
 
 toast('Select a subject.');
@@ -4080,7 +3390,6 @@ return;
 
 }
 
-
 if(!notes){
 
 toast('Paste your study notes first.');
@@ -4088,7 +3397,6 @@ toast('Paste your study notes first.');
 return;
 
 }
-
 
 if(notes.length<30){
 
@@ -4099,12 +3407,43 @@ return;
 }
 
 
+/*
+==========================================================
+GET CURRENT AUTH SESSION
+==========================================================
+*/
+
+const session=
+await getValidAuthSession();
+
+if(!session){
+
+toast(
+'Your login session is missing or expired. Please logout and login again.'
+);
+
+openAuth();
+
+return;
+
+}
+
+console.log(
+'AI request authenticated user:',
+session.user?.id
+);
+
+console.log(
+'Access token available:',
+Boolean(session.access_token)
+);
+
+
 const btn=
 document.getElementById('generateAiBtn');
 
 const result=
 document.getElementById('aiResult');
-
 
 btn.disabled=true;
 
@@ -4117,9 +3456,7 @@ result.innerHTML=`
 
 <div class="spinner"></div>
 
-<b>
-Generating your quiz...
-</b>
+<b>Generating your quiz...</b>
 
 <p class="small">
 Gemini is reading your notes and creating multiple-choice questions.
@@ -4133,71 +3470,161 @@ Gemini is reading your notes and creating multiple-choice questions.
 try{
 
 /*
-IMPORTANT:
+==========================================================
+CALL EDGE FUNCTION
+==========================================================
 
-The Gemini API key is NOT placed here.
+The Gemini key is NEVER placed here.
 
-Supabase automatically sends the
-logged-in user's authentication token
-when functions.invoke() is used.
+The access token belongs to the signed-in
+Supabase user.
+
+The Edge Function performs the admin check.
+==========================================================
 */
 
 const {data,error}=
 await db.functions.invoke(
 'generate-quiz-from-notes',
 {
+
 body:{
 
 notes,
-
 title,
-
 subject,
-
 description,
 
 number_questions,
-
 difficulty,
-
 time_limit_minutes,
-
 passing_score,
 
 course_order:
 Number(
-document
-.getElementById('aiCourseOrder')
-.value
+document.getElementById('aiCourseOrder').value
 )||1,
 
 period_name:
-document
-.getElementById('aiPeriod')
-.value,
+document.getElementById('aiPeriod').value,
 
 period_order:
 Number(
-document
-.getElementById('aiPeriodOrder')
-.value
+document.getElementById('aiPeriodOrder').value
 )||1,
 
 quiz_order:
 Number(
-document
-.getElementById('aiQuizOrder')
-.value
+document.getElementById('aiQuizOrder').value
 )||1
 
+},
+
+headers:{
+
+Authorization:
+`Bearer ${session.access_token}`
+
 }
+
 }
+);
+
+
+console.log(
+'Edge Function data:',
+data
+);
+
+console.log(
+'Edge Function error:',
+error
 );
 
 
 if(error){
 
-throw error;
+/*
+Try to extract the actual response returned
+by the Edge Function.
+*/
+
+let serverMessage='';
+
+try{
+
+if(error.context){
+
+const response=error.context;
+
+/*
+Clone the response so we don't interfere
+with Supabase's own response handling.
+*/
+
+const cloned=response.clone();
+
+serverMessage=
+await cloned.text();
+
+}
+
+}catch(readError){
+
+console.warn(
+'Could not read Edge Function error response:',
+readError
+);
+
+}
+
+
+/*
+Create a useful diagnostic error.
+*/
+
+if(
+error.name==='FunctionsHttpError' &&
+error.status===401
+){
+
+throw new Error(
+'401 Unauthorized: Supabase rejected the authentication token before the Edge Function ran. Please logout and login again.'
++
+(
+serverMessage
+?' Server response: '+serverMessage
+:''
+)
+);
+
+}
+
+if(
+error.name==='FunctionsHttpError' &&
+error.status===403
+){
+
+throw new Error(
+'403 Forbidden: You are authenticated, but the Edge Function did not authorize your account as an administrator.'
++
+(
+serverMessage
+?' Server response: '+serverMessage
+:''
+)
+);
+
+}
+
+throw new Error(
+(error.message||'Edge Function failed')+
+(
+serverMessage
+?' — '+serverMessage
+:''
+)
+);
 
 }
 
@@ -4209,11 +3636,9 @@ data
 
 
 /*
-Different versions of the Edge Function
-may return the quiz ID using different
-property names.
-
-We support several possibilities.
+==========================================================
+GET QUIZ ID
+==========================================================
 */
 
 const quizId=
@@ -4222,15 +3647,13 @@ data?.quizId||
 data?.id||
 data?.quiz?.id;
 
-
 if(!quizId){
 
 throw new Error(
-'Quiz was generated but the Edge Function did not return a quiz ID.'
+'The AI generated a response, but no quiz ID was returned by the Edge Function.'
 );
 
 }
-
 
 aiGeneratedQuizId=quizId;
 
@@ -4240,17 +3663,12 @@ toast(
 
 
 /*
-Load the generated quiz and show
-it to the administrator for review.
+==========================================================
+LOAD DRAFT FOR ADMIN REVIEW
+==========================================================
 */
 
 await previewAIGeneratedQuiz(quizId);
-
-
-/*
-Refresh management section so the new
-draft appears there too.
-*/
 
 await manageQuizzes();
 
@@ -4260,16 +3678,20 @@ await populateQuizSelect();
 }catch(error){
 
 console.error(
-'AI generation error:',
+'AI generation failed:',
 error
 );
 
 result.innerHTML=`
 
-<div class="card">
+<div class="ai-error">
 
-<p class="error">
-AI quiz generation failed.
+<h3>
+❌ AI Quiz Generation Failed
+</h3>
+
+<p>
+<b>Error:</b>
 </p>
 
 <p>
@@ -4279,20 +3701,39 @@ error?.message||
 )}
 </p>
 
-<p class="small">
+<hr>
 
-Make sure:
+<p>
+<b>Authentication checklist:</b>
+</p>
 
-<br>
-• You are logged in as an admin.
-<br>
-• GEMINI_API_KEY exists in Supabase Secrets.
-<br>
-• GEMINI_MODEL exists in Supabase Secrets.
-<br>
-• The Edge Function is deployed as
+<ul>
+
+<li>
+You must be logged in.
+</li>
+
+<li>
+Your Supabase session must still be valid.
+</li>
+
+<li>
+Your account must have
+<code>is_admin = true</code>
+in the <code>users</code> table.
+</li>
+
+<li>
+The Edge Function must be named
 <code>generate-quiz-from-notes</code>.
+</li>
 
+</ul>
+
+<p>
+If the error is 401, logout and login again.
+If it is 403, check your admin status.
+If it is 500, inspect the Edge Function logs.
 </p>
 
 </div>
@@ -4300,7 +3741,7 @@ Make sure:
 `;
 
 toast(
-'AI generation failed.'
+'AI generation failed. See the error details below.'
 );
 
 }finally{
@@ -4316,7 +3757,7 @@ btn.innerHTML=
 
 
 /* ==========================================================
-   AI QUIZ PREVIEW
+   AI PREVIEW
 ========================================================== */
 
 async function previewAIGeneratedQuiz(quizId){
@@ -4325,7 +3766,6 @@ const result=
 document.getElementById('aiResult');
 
 if(!result)return;
-
 
 result.innerHTML=`
 
@@ -4339,7 +3779,6 @@ Loading generated questions...
 
 `;
 
-
 const {
 data:quiz,
 error:quizError
@@ -4349,7 +3788,6 @@ await db
 .select('*')
 .eq('id',quizId)
 .single();
-
 
 if(quizError){
 
@@ -4361,7 +3799,6 @@ esc(quizError.message)+
 return;
 
 }
-
 
 const {
 data:questions,
@@ -4383,11 +3820,7 @@ order_index
 )
 `)
 .eq('quiz_id',quizId)
-.order(
-'order_index',
-{ascending:true}
-);
-
+.order('order_index',{ascending:true});
 
 if(questionError){
 
@@ -4399,7 +3832,6 @@ esc(questionError.message)+
 return;
 
 }
-
 
 if(!questions?.length){
 
@@ -4419,7 +3851,6 @@ return;
 
 }
 
-
 result.innerHTML=`
 
 <div class="ai-preview">
@@ -4428,9 +3859,7 @@ result.innerHTML=`
 
 <div>
 
-<h2>
-🔎 Review AI Generated Quiz
-</h2>
+<h2>🔎 Review AI Generated Quiz</h2>
 
 <p class="small">
 This quiz is currently a <b>DRAFT</b>.
@@ -4448,18 +3877,15 @@ DRAFT
 
 <div class="review-warning">
 
-⚠️ Review all questions before publishing.
-The AI can make mistakes. Check the correct answer,
-options and explanations carefully.
+⚠️ <b>Review all questions before publishing.</b>
+The AI can make mistakes. Check the question, four options, correct answer and explanation carefully.
 
 </div>
 
 
 <div class="card">
 
-<h2>
-${esc(quiz.title)}
-</h2>
+<h2>${esc(quiz.title)}</h2>
 
 <p>
 ${esc(quiz.description||'AI generated quiz')}
@@ -4485,14 +3911,17 @@ Difficulty:
 Time:
 <b>${Number(quiz.time_limit_minutes||30)} minutes</b>
 
+•
+
+Passing:
+<b>${Number(quiz.passing_score||70)}%</b>
+
 </p>
 
 </div>
 
 
-<h3>
-Generated Questions
-</h3>
+<h3>Generated Questions</h3>
 
 
 ${questions.map((q,index)=>{
@@ -4505,7 +3934,6 @@ Number(a.order_index||0)-
 Number(b.order_index||0)
 );
 
-
 return `
 
 <div class="ai-question">
@@ -4513,9 +3941,7 @@ return `
 <div class="ai-question-header">
 
 <h3 style="margin:0">
-
 Question ${index+1}
-
 </h3>
 
 <span class="badge">
@@ -4540,9 +3966,7 @@ o.is_correct===true
 :''
 }">
 
-<b>
-${String.fromCharCode(65+i)}.
-</b>
+<b>${String.fromCharCode(65+i)}.</b>
 
 ${esc(o.option_text)}
 
@@ -4561,9 +3985,7 @@ o.is_correct===true
 
 <div class="explanation">
 
-<b>
-Explanation
-</b>
+<b>Explanation</b>
 
 <p>
 ${esc(
@@ -4573,7 +3995,6 @@ q.explanation||
 </p>
 
 </div>
-
 
 </div>
 
@@ -4592,7 +4013,6 @@ onclick="publishAIGeneratedQuiz('${quiz.id}')">
 
 </button>
 
-
 <button
 class="secondary"
 onclick="keepAIDraft('${quiz.id}')">
@@ -4600,7 +4020,6 @@ onclick="keepAIDraft('${quiz.id}')">
 💾 Keep as Draft
 
 </button>
-
 
 <button
 class="danger"
@@ -4633,15 +4052,9 @@ return;
 
 }
 
-
 if(!confirm(
 'Have you reviewed all questions, options, correct answers and explanations?\n\nPublish this quiz for students?'
-)){
-
-return;
-
-}
-
+))return;
 
 const {error}=
 await db
@@ -4650,7 +4063,6 @@ await db
 is_published:true
 })
 .eq('id',id);
-
 
 if(error){
 
@@ -4663,34 +4075,23 @@ return;
 
 }
 
-
 toast(
 'AI quiz approved and published! 🎉'
 );
 
+document.getElementById('aiResult').innerHTML=`
 
-/*
-Clear preview.
-*/
+<div class="ai-success">
 
-document.getElementById(
-'aiResult'
-).innerHTML=`
-
-<div class="card">
-
-<p class="ok">
-✓ Quiz has been approved and published successfully.
-</p>
+<h3>✅ Quiz Approved & Published</h3>
 
 <p>
-Students can now see it in the Quiz section.
+The quiz is now available to students.
 </p>
 
 </div>
 
 `;
-
 
 await manageQuizzes();
 
@@ -4700,13 +4101,12 @@ await loadQuizzes();
 
 
 /* ==========================================================
-   KEEP AI QUIZ AS DRAFT
+   KEEP DRAFT
 ========================================================== */
 
 async function keepAIDraft(id){
 
 if(!isAdmin())return;
-
 
 const {error}=
 await db
@@ -4716,7 +4116,6 @@ is_published:false
 })
 .eq('id',id);
 
-
 if(error){
 
 toast(error.message);
@@ -4724,7 +4123,6 @@ toast(error.message);
 return;
 
 }
-
 
 toast(
 'Quiz remains unpublished as a draft.'
@@ -4734,29 +4132,22 @@ toast(
 
 
 /* ==========================================================
-   DELETE AI GENERATED QUIZ
+   DELETE AI QUIZ
 ========================================================== */
 
 async function deleteAIGeneratedQuiz(id){
 
 if(!isAdmin())return;
 
-
 if(!confirm(
 'Delete this AI-generated quiz and its questions/options?'
-)){
-
-return;
-
-}
-
+))return;
 
 const {error}=
 await db
 .from('quizzes')
 .delete()
 .eq('id',id);
-
 
 if(error){
 
@@ -4769,34 +4160,22 @@ return;
 
 }
 
-
 aiGeneratedQuizId=null;
 
+document.getElementById('aiResult').innerHTML=`
 
-document.getElementById(
-'aiResult'
-).innerHTML=`
+<div class="ai-success">
 
-<div class="card">
-
-<p class="ok">
 AI quiz deleted.
-</p>
 
 </div>
 
 `;
 
-
-toast(
-'AI quiz deleted.'
-);
-
+toast('AI quiz deleted.');
 
 await manageQuizzes();
-
 await populateQuizSelect();
-
 await loadQuizzes();
 
 }
@@ -4808,23 +4187,15 @@ await loadQuizzes();
 
 async function manageQuizzes(){
 
-const b=
-document.getElementById(
-'manageBox'
-);
+const b=document.getElementById('manageBox');
 
 if(!b)return;
-
 
 const {data,error}=
 await db
 .from('quizzes')
 .select('*')
-.order(
-'created_at',
-{ascending:false}
-);
-
+.order('created_at',{ascending:false});
 
 if(error){
 
@@ -4837,16 +4208,13 @@ return;
 
 }
 
-
 if(!data?.length){
 
-b.innerHTML=
-'No quizzes yet.';
+b.innerHTML='No quizzes yet.';
 
 return;
 
 }
-
 
 b.innerHTML=
 data.map(q=>`
@@ -4857,9 +4225,7 @@ data.map(q=>`
 
 <div>
 
-<h3>
-${esc(q.title)}
-</h3>
+<h3>${esc(q.title)}</h3>
 
 <p class="small">
 
@@ -4890,9 +4256,7 @@ q.is_published
 
 </div>
 
-
 <br>
-
 
 <button
 onclick="togglePublish(
@@ -4937,26 +4301,17 @@ Delete
    PUBLISH / UNPUBLISH
 ========================================================== */
 
-async function togglePublish(
-id,
-value
-){
+async function togglePublish(id,value){
 
 if(!isAdmin())return;
-
 
 if(value){
 
 if(!confirm(
 'Are you sure you have reviewed this quiz before publishing it?'
-)){
-
-return;
+))return;
 
 }
-
-}
-
 
 const {error}=
 await db
@@ -4964,11 +4319,7 @@ await db
 .update({
 is_published:value
 })
-.eq(
-'id',
-id
-);
-
+.eq('id',id);
 
 if(error){
 
@@ -4978,16 +4329,13 @@ return;
 
 }
 
-
 toast(
 value
 ?'Quiz published.'
 :'Quiz unpublished.'
 );
 
-
 await manageQuizzes();
-
 await loadQuizzes();
 
 }
@@ -5001,27 +4349,15 @@ async function deleteQuiz(id){
 
 if(!isAdmin())return;
 
-
-if(
-!confirm(
+if(!confirm(
 'Delete this quiz and its questions/options?'
-)
-){
-
-return;
-
-}
-
+))return;
 
 const {error}=
 await db
 .from('quizzes')
 .delete()
-.eq(
-'id',
-id
-);
-
+.eq('id',id);
 
 if(error){
 
@@ -5031,13 +4367,10 @@ return;
 
 }
 
-
 toast('Quiz deleted.');
 
 await manageQuizzes();
-
 await populateQuizSelect();
-
 await loadQuizzes();
 
 }
@@ -5049,13 +4382,9 @@ await loadQuizzes();
 
 async function loadStudents(){
 
-const b=
-document.getElementById(
-'studentsBox'
-);
+const b=document.getElementById('studentsBox');
 
 if(!b)return;
-
 
 const {data,error}=
 await db
@@ -5063,11 +4392,7 @@ await db
 .select(
 'id,full_name,email,university,year_level,total_score,quizzes_completed,is_admin'
 )
-.order(
-'total_score',
-{ascending:false}
-);
-
+.order('total_score',{ascending:false});
 
 if(error){
 
@@ -5079,7 +4404,6 @@ esc(error.message)+
 return;
 
 }
-
 
 b.innerHTML=`
 
@@ -5111,38 +4435,20 @@ ${
 
 <tr>
 
-<td>
-${esc(s.full_name||'Student')}
-</td>
+<td>${esc(s.full_name||'Student')}</td>
+
+<td>${esc(s.email||'-')}</td>
+
+<td>${esc(s.university||'-')}</td>
+
+<td>${esc(s.year_level||'-')}</td>
+
+<td>${Number(s.total_score||0)}</td>
+
+<td>${Number(s.quizzes_completed||0)}</td>
 
 <td>
-${esc(s.email||'-')}
-</td>
-
-<td>
-${esc(s.university||'-')}
-</td>
-
-<td>
-${esc(s.year_level||'-')}
-</td>
-
-<td>
-${Number(s.total_score||0)}
-</td>
-
-<td>
-${Number(s.quizzes_completed||0)}
-</td>
-
-<td>
-
-${
-s.is_admin
-?'👑 Admin'
-:'Student'
-}
-
+${s.is_admin?'👑 Admin':'Student'}
 </td>
 
 </tr>
@@ -5167,13 +4473,9 @@ s.is_admin
 
 async function loadAttempts(){
 
-const b=
-document.getElementById(
-'attemptsBox'
-);
+const b=document.getElementById('attemptsBox');
 
 if(!b)return;
-
 
 const {data,error}=
 await db
@@ -5191,12 +4493,8 @@ users(full_name,email),
 quizzes(title,subject)
 `
 )
-.order(
-'created_at',
-{ascending:false}
-)
+.order('created_at',{ascending:false})
 .limit(200);
-
 
 if(error){
 
@@ -5208,7 +4506,6 @@ esc(error.message)+
 return;
 
 }
-
 
 b.innerHTML=`
 
@@ -5248,26 +4545,18 @@ ${esc(a.quizzes?.title||'-')}
 </td>
 
 <td>
-
 ${Number(a.correct_answers||0)}
 /
 ${Number(a.total_questions||0)}
-
 </td>
 
 <td>
 
-<b class="${
-a.passed
-?'ok'
-:'error'
-}">
+<b class="${a.passed?'ok':'error'}">
 
 ${
 a.completed_at
-?(a.passed
-?'PASSED'
-:'NOT PASSED')
+?(a.passed?'PASSED':'NOT PASSED')
 :'IN PROGRESS'
 }
 
@@ -5281,9 +4570,7 @@ ${Math.floor(
 Number(a.time_taken_seconds||0)/60
 )}m
 
-${
-Number(a.time_taken_seconds||0)%60
-}s
+${Number(a.time_taken_seconds||0)%60}s
 
 </td>
 
@@ -5291,9 +4578,7 @@ Number(a.time_taken_seconds||0)%60
 
 ${
 a.completed_at
-?new Date(
-a.completed_at
-).toLocaleString()
+?new Date(a.completed_at).toLocaleString()
 :'-'
 }
 
@@ -5325,44 +4610,7 @@ db.auth.onAuthStateChange(
 currentUser=
 session?.user||null;
 
-
-/*
-UI admin fallback.
-
-Real security should still come
-from your Supabase RLS and the
-Edge Function admin check.
-*/
-
-if(
-currentUser &&
-String(
-currentUser.email||''
-)
-.trim()
-.toLowerCase()===
-ADMIN_EMAIL.toLowerCase()
-){
-
-currentProfile={
-
-...(currentProfile||{}),
-
-id:
-currentUser.id,
-
-email:
-currentUser.email,
-
-is_admin:true
-
-};
-
-}
-
-
 updateHeader();
-
 
 setTimeout(
 async()=>{
@@ -5397,6 +4645,10 @@ window.addEventListener(
 async()=>{
 
 await refreshSession();
+
+updateHeader();
+
+await loadQuizzes();
 
 showView('quizzes');
 
