@@ -3,11 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
 <title>Thrives Archivers - Quiz Competition</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
+
 :root{
 --p:#5b5bea;
 --p2:#7667ff;
@@ -17,24 +19,65 @@
 --muted:#73758c;
 --border:#e7e7f2;
 --danger:#e74c3c;
---success:#20a464
+--success:#20a464;
+--warning:#f0a000;
 }
 
-*{box-sizing:border-box}
+*{
+box-sizing:border-box
+}
 
-
-/* COURSE / SEMESTER / TERM ORGANIZATION */
-.organization-toolbar{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 20px}
-.organization-toolbar select{min-width:210px}
-.course-heading{grid-column:1/-1;margin:24px 0 10px;padding:18px 20px;border-radius:16px;background:linear-gradient(135deg,#5b4be7,#806cff);color:#fff}
-.period-heading{grid-column:1/-1;margin:14px 0 8px;padding:12px 15px;border-left:5px solid #6557e8;border-radius:9px;background:#efedff;color:#312b78}
-.order-badge{display:inline-block;margin:4px 4px 8px 0;padding:4px 9px;border-radius:999px;background:#eeeaff;color:#5145c7;font-size:12px;font-weight:700}
 body{
 margin:0;
 font-family:Arial,sans-serif;
 background:var(--bg);
 color:var(--text)
 }
+
+/* COURSE ORGANIZATION */
+
+.organization-toolbar{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+margin:0 0 20px
+}
+
+.organization-toolbar select{
+min-width:210px
+}
+
+.course-heading{
+grid-column:1/-1;
+margin:24px 0 10px;
+padding:18px 20px;
+border-radius:16px;
+background:linear-gradient(135deg,#5b4be7,#806cff);
+color:#fff
+}
+
+.period-heading{
+grid-column:1/-1;
+margin:14px 0 8px;
+padding:12px 15px;
+border-left:5px solid #6557e8;
+border-radius:9px;
+background:#efedff;
+color:#312b78
+}
+
+.order-badge{
+display:inline-block;
+margin:4px 4px 8px 0;
+padding:4px 9px;
+border-radius:999px;
+background:#eeeaff;
+color:#5145c7;
+font-size:12px;
+font-weight:700
+}
+
+/* HEADER */
 
 header{
 background:linear-gradient(135deg,var(--p),var(--p2));
@@ -101,6 +144,8 @@ border-radius:9px
 background:#ffffff22
 }
 
+/* GENERAL */
+
 .container{
 max-width:1150px;
 margin:auto;
@@ -148,6 +193,10 @@ cursor:pointer;
 font-weight:700
 }
 
+button:hover{
+opacity:.92
+}
+
 .secondary{
 background:#eeeef8;
 color:var(--text)
@@ -161,6 +210,10 @@ background:var(--danger)
 background:var(--success)
 }
 
+.warning{
+background:#f0a000
+}
+
 input,select,textarea{
 width:100%;
 padding:12px;
@@ -169,6 +222,10 @@ border-radius:10px;
 margin:6px 0 12px;
 background:#fff;
 color:var(--text)
+}
+
+textarea{
+resize:vertical
 }
 
 label{
@@ -195,6 +252,8 @@ font-weight:700
 display:none!important
 }
 
+/* MODAL */
+
 .modal{
 position:fixed;
 inset:0;
@@ -212,12 +271,14 @@ display:flex
 
 .modalbox{
 background:#fff;
-width:min(500px,100%);
+width:min(700px,100%);
 padding:24px;
 border-radius:18px;
 max-height:90vh;
 overflow:auto
 }
+
+/* OPTIONS */
 
 .option{
 display:block;
@@ -237,31 +298,31 @@ width:auto;
 margin:0 8px 0 0
 }
 
-/* CORRECT ANSWER */
 .option.answer-correct{
 border-color:#20a464;
 background:#dff7e9;
-color:#137b48;
+color:#137b48
 }
 
-/* WRONG ANSWER */
 .option.answer-wrong{
 border-color:#e74c3c;
 background:#fde5e2;
-color:#b83227;
+color:#b83227
 }
 
 .option.answer-correct::after{
 content:" ✓ Correct";
 float:right;
-font-weight:700;
+font-weight:700
 }
 
 .option.answer-wrong::after{
 content:" ✗ Wrong";
 float:right;
-font-weight:700;
+font-weight:700
 }
+
+/* QUIZ */
 
 .quizhead{
 display:flex;
@@ -284,6 +345,16 @@ background:var(--p);
 width:0
 }
 
+.explanation{
+background:#f1efff;
+border-left:4px solid #5b5bea;
+padding:12px;
+border-radius:8px;
+margin-top:12px
+}
+
+/* TABLE */
+
 table{
 width:100%;
 border-collapse:collapse
@@ -302,6 +373,8 @@ background:#f0efff
 .tablewrap{
 overflow:auto
 }
+
+/* PROFILE */
 
 .avatar{
 width:78px;
@@ -360,51 +433,107 @@ background:#fff2d6;
 color:#8a5a00
 }
 
-.toast{
-position:fixed;
-right:18px;
-bottom:18px;
-background:#20213a;
+/* AI */
+
+.ai-card{
+border:2px solid #7667ff;
+background:linear-gradient(135deg,#faf9ff,#f1efff)
+}
+
+.ai-title{
+display:flex;
+align-items:center;
+gap:10px;
+flex-wrap:wrap
+}
+
+.ai-icon{
+width:45px;
+height:45px;
+border-radius:13px;
+background:linear-gradient(135deg,#5b5bea,#8a78ff);
 color:#fff;
-padding:13px 18px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:23px
+}
+
+.notes-box{
+min-height:220px
+}
+
+.ai-info{
+padding:13px;
 border-radius:10px;
-display:none;
-z-index:100;
-max-width:380px
+background:#eeeaff;
+color:#40358f;
+margin:12px 0
 }
 
-@media(max-width:600px){
-
-header{
-flex-direction:column;
-align-items:flex-start
+.ai-loading{
+text-align:center;
+padding:25px;
+background:#f5f3ff;
+border-radius:12px;
+margin-top:15px
 }
 
-.nav{
-width:100%
+.ai-question{
+border:1px solid var(--border);
+border-radius:14px;
+padding:18px;
+margin:15px 0;
+background:#fff
 }
 
-.nav button{
-flex:1
+.ai-question-header{
+display:flex;
+justify-content:space-between;
+gap:10px;
+align-items:center;
+flex-wrap:wrap
 }
 
-.hero{
-padding:22px
+.ai-option{
+padding:10px 12px;
+border-radius:9px;
+margin:7px 0;
+background:#f6f6fb;
+border:1px solid #e3e3ee
 }
 
-.container{
-padding:16px
+.ai-option.correct{
+background:#dff7e9;
+border-color:#20a464;
+color:#137b48;
+font-weight:700
 }
 
+.ai-preview{
+border:2px solid #e8e3ff;
+border-radius:15px;
+padding:18px;
+margin-top:18px
 }
 
-.explanation{
-background:#f1efff;
-border-left:4px solid #5b5bea;
-padding:12px;
-border-radius:8px;
-margin-top:12px
+.ai-actions{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+margin-top:15px
 }
+
+.review-warning{
+padding:14px;
+border-radius:10px;
+background:#fff2d6;
+color:#795300;
+font-weight:600;
+margin-bottom:15px
+}
+
+/* LEADERBOARD */
 
 .leaderboard-profile{
 display:flex;
@@ -427,6 +556,8 @@ font-weight:800;
 font-size:18px;
 flex-shrink:0
 }
+
+/* PROFILE PHOTO */
 
 .profile-photo-actions{
 display:flex;
@@ -468,6 +599,73 @@ width:100%;
 height:100%;
 object-fit:cover
 }
+
+/* TOAST */
+
+.toast{
+position:fixed;
+right:18px;
+bottom:18px;
+background:#20213a;
+color:#fff;
+padding:13px 18px;
+border-radius:10px;
+display:none;
+z-index:100;
+max-width:380px
+}
+
+/* MOBILE */
+
+@media(max-width:600px){
+
+header{
+flex-direction:column;
+align-items:flex-start
+}
+
+.nav{
+width:100%
+}
+
+.nav button{
+flex:1
+}
+
+.hero{
+padding:22px
+}
+
+.container{
+padding:16px
+}
+
+.ai-title{
+align-items:flex-start
+}
+
+}
+
+/* SPINNER */
+
+.spinner{
+width:22px;
+height:22px;
+border:3px solid #ddd;
+border-top-color:var(--p);
+border-radius:50%;
+animation:spin .8s linear infinite;
+display:inline-block;
+vertical-align:middle;
+margin-right:8px
+}
+
+@keyframes spin{
+to{
+transform:rotate(360deg)
+}
+}
+
 </style>
 </head>
 
@@ -520,6 +718,10 @@ Logout
 
 <main class="container">
 
+<!-- =====================================================
+     STUDENT QUIZZES
+===================================================== -->
+
 <section id="quizzes" class="view active">
 
 <div class="hero">
@@ -538,6 +740,10 @@ Test your knowledge, earn points and climb the Thrives Archivers leaderboard.
 
 </section>
 
+
+<!-- =====================================================
+     LEADERBOARD
+===================================================== -->
 
 <section id="leaderboard" class="view">
 
@@ -564,6 +770,10 @@ Loading...
 </section>
 
 
+<!-- =====================================================
+     PROFILE
+===================================================== -->
+
 <section id="profile" class="view">
 
 <div class="hero">
@@ -585,6 +795,10 @@ Please login to view your profile.
 </section>
 
 
+<!-- =====================================================
+     ADMIN PANEL
+===================================================== -->
+
 <section id="admin" class="view">
 
 <div class="hero">
@@ -594,7 +808,7 @@ Please login to view your profile.
 </h1>
 
 <p>
-Create and manage quizzes, questions, students and results.
+Create and manage quizzes, AI-generated quizzes, questions, students and results.
 </p>
 
 </div>
@@ -603,6 +817,10 @@ Create and manage quizzes, questions, students and results.
 
 <button onclick="adminTab('create')">
 ➕ Create Quiz
+</button>
+
+<button onclick="adminTab('ai')">
+🤖 AI Quiz Generator
 </button>
 
 <button onclick="adminTab('question')">
@@ -623,18 +841,42 @@ Create and manage quizzes, questions, students and results.
 
 </div>
 
+
+<!-- MANUAL CREATE -->
+
 <div id="aCreate" class="card adminbox"></div>
+
+
+<!-- AI GENERATOR -->
+
+<div id="aAi" class="card adminbox hidden"></div>
+
+
+<!-- MANUAL QUESTION -->
 
 <div id="aQuestion" class="card adminbox hidden"></div>
 
+
+<!-- MANAGE -->
+
 <div id="aManage" class="card adminbox hidden"></div>
 
+
+<!-- STUDENTS -->
+
 <div id="aStudents" class="card adminbox hidden"></div>
+
+
+<!-- ATTEMPTS -->
 
 <div id="aAttempts" class="card adminbox hidden"></div>
 
 </section>
 
+
+<!-- =====================================================
+     PLAYING
+===================================================== -->
 
 <section id="playing" class="view">
 
@@ -684,6 +926,10 @@ Next
 
 </main>
 
+
+<!-- =====================================================
+     AUTH MODAL
+===================================================== -->
 
 <div id="authModal" class="modal">
 
@@ -743,20 +989,17 @@ Other
 
 </div>
 
-
 <label>
 Email
 </label>
 
 <input id="email" type="email" placeholder="Email">
 
-
 <label>
 Password
 </label>
 
 <input id="password" type="password" placeholder="Password">
-
 
 <button style="width:100%" onclick="submitAuth()">
 Continue
@@ -788,7 +1031,7 @@ Close
 
 /* ==========================================================
    SUPABASE CONFIGURATION
-   ========================================================== */
+========================================================== */
 
 const SUPABASE_URL =
 'https://odwiqajuubcgrrqipyju.supabase.co';
@@ -796,8 +1039,9 @@ const SUPABASE_URL =
 const SUPABASE_ANON_KEY =
 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1dWJjZ3JycWlweWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzA4MjEsImV4cCI6MjA2ODg0NjgyMX0.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A';
 
-const { createClient } =
-window.supabase;
+const {
+createClient
+} = window.supabase;
 
 const db =
 createClient(
@@ -812,6 +1056,10 @@ const ADMIN_EMAIL =
 'thrivesarchivers@gmail.com';
 
 
+/* ==========================================================
+   GLOBAL VARIABLES
+========================================================== */
+
 let currentUser=null;
 let currentProfile=null;
 let authMode='login';
@@ -823,10 +1071,12 @@ let selectedAnswers={};
 let currentAttemptId=null;
 let quizStartedAt=0;
 
+let aiGeneratedQuizId=null;
+
 
 /* ==========================================================
    HELPERS
-   ========================================================== */
+========================================================== */
 
 function esc(v){
 
@@ -880,7 +1130,7 @@ return (n||'U')
 
 /* ==========================================================
    ADMIN CHECK
-   ========================================================== */
+========================================================== */
 
 function isAdmin(){
 
@@ -916,7 +1166,7 @@ profileEmail===ADMIN_EMAIL.toLowerCase();
 
 /* ==========================================================
    VIEWS
-   ========================================================== */
+========================================================== */
 
 function showView(id){
 
@@ -942,7 +1192,19 @@ loadProfile();
 }
 
 if(id==='admin'){
+
+if(!isAdmin()){
+
+toast('Admin access required.');
+
+showView('quizzes');
+
+return;
+
+}
+
 loadAdmin();
+
 }
 
 }
@@ -950,7 +1212,7 @@ loadAdmin();
 
 /* ==========================================================
    AUTH MODAL
-   ========================================================== */
+========================================================== */
 
 function openAuth(){
 
@@ -1010,7 +1272,7 @@ authMode==='login'
 
 /* ==========================================================
    LOGIN / SIGNUP
-   ========================================================== */
+========================================================== */
 
 async function submitAuth(){
 
@@ -1148,7 +1410,7 @@ loadQuizzes();
 
 /* ==========================================================
    LOGOUT
-   ========================================================== */
+========================================================== */
 
 async function logout(){
 
@@ -1168,7 +1430,7 @@ toast('Logged out.');
 
 /* ==========================================================
    SESSION
-   ========================================================== */
+========================================================== */
 
 async function refreshSession(){
 
@@ -1195,7 +1457,7 @@ updateHeader();
 
 /* ==========================================================
    PROFILE
-   ========================================================== */
+========================================================== */
 
 async function loadCurrentProfile(){
 
@@ -1341,8 +1603,7 @@ id="avatarFile"
 type="file"
 accept="image/*">
 
-<button
-onclick="uploadAvatar()">
+<button onclick="uploadAvatar()">
 Upload Picture
 </button>
 
@@ -1490,7 +1751,7 @@ loadProfile();
 
 /* ==========================================================
    HEADER
-   ========================================================== */
+========================================================== */
 
 function updateHeader(){
 
@@ -1512,10 +1773,10 @@ currentUser?.user_metadata?.full_name ||
 currentUser?.email ||
 'Thrives Archivers';
 
-const initials=
+const initialLetters=
 String(name)
 .trim()
-.split(/\\s+/)
+.split(/\s+/)
 .filter(Boolean)
 .map(x=>x[0])
 .join('')
@@ -1525,7 +1786,7 @@ String(name)
 headerAvatar.innerHTML=
 photo
 ? '<img src="'+esc(photo)+'" alt="Profile picture">'
-: esc(initials||'TA');
+: esc(initialLetters||'TA');
 
 headerAvatar.title=
 currentUser
@@ -1572,14 +1833,22 @@ adminBtn.classList.add('hidden');
 
 /* ==========================================================
    LOAD QUIZZES
-   ========================================================== */
+========================================================== */
 
 async function loadQuizzes(){
-const grid=document.getElementById('quizGrid');
+
+const grid=
+document.getElementById('quizGrid');
+
 if(!grid)return;
+
 grid.innerHTML='Loading quizzes...';
 
-const {data,error}=await db.from('quizzes').select('*')
+
+const {data,error}=
+await db
+.from('quizzes')
+.select('*')
 .eq('is_published',true)
 .order('course_order',{ascending:true})
 .order('subject',{ascending:true})
@@ -1587,63 +1856,245 @@ const {data,error}=await db.from('quizzes').select('*')
 .order('quiz_order',{ascending:true})
 .order('created_at',{ascending:true});
 
-if(error){grid.innerHTML='<p class="error">'+esc(error.message)+'</p>';return;}
-if(!data||!data.length){grid.innerHTML='<div class="card">No published quizzes yet.</div>';return;}
+
+if(error){
+
+grid.innerHTML=
+'<p class="error">'+
+esc(error.message)+
+'</p>';
+
+return;
+
+}
+
+
+if(!data||!data.length){
+
+grid.innerHTML=
+'<div class="card">No published quizzes yet.</div>';
+
+return;
+
+}
+
 
 window.organizedPublishedQuizzes=data;
-const names=[...new Set(data.map(q=>q.subject||'Other Course'))];
 
-grid.innerHTML=`<div class="organization-toolbar">
-<select id="studentCourseFilter" onchange="filterOrganizedQuizzes()">
-<option value="">All Courses</option>
-${names.map(n=>`<option value="${esc(n)}">${esc(n)}</option>`).join('')}
+const names=
+[...new Set(
+data.map(q=>q.subject||'Other Course')
+)];
+
+
+grid.innerHTML=`
+
+<div class="organization-toolbar">
+
+<select
+id="studentCourseFilter"
+onchange="filterOrganizedQuizzes()">
+
+<option value="">
+All Courses
+</option>
+
+${names.map(n=>
+`<option value="${esc(n)}">
+${esc(n)}
+</option>`
+).join('')}
+
 </select>
-<select id="studentPeriodFilter" onchange="filterOrganizedQuizzes()">
-<option value="">All Semesters/Terms</option>
-<option>Semester 1</option><option>Semester 2</option>
-<option>Term 1</option><option>Term 2</option><option>Term 3</option>
-</select></div><div id="organizedQuizResults"></div>`;
+
+<select
+id="studentPeriodFilter"
+onchange="filterOrganizedQuizzes()">
+
+<option value="">
+All Semesters/Terms
+</option>
+
+<option>Semester 1</option>
+<option>Semester 2</option>
+<option>Term 1</option>
+<option>Term 2</option>
+<option>Term 3</option>
+
+</select>
+
+</div>
+
+<div id="organizedQuizResults"></div>
+
+`;
+
 renderOrganizedQuizzes(data);
+
 }
+
 
 function filterOrganizedQuizzes(){
-const c=document.getElementById('studentCourseFilter')?.value||'';
-const p=document.getElementById('studentPeriodFilter')?.value||'';
-renderOrganizedQuizzes((window.organizedPublishedQuizzes||[]).filter(q=>
-(!c||(q.subject||'Other Course')===c)&&(!p||(q.period_name||'Semester 1')===p)));
+
+const c=
+document
+.getElementById('studentCourseFilter')
+?.value||'';
+
+const p=
+document
+.getElementById('studentPeriodFilter')
+?.value||'';
+
+
+renderOrganizedQuizzes(
+(window.organizedPublishedQuizzes||[])
+.filter(q=>
+(!c||(q.subject||'Other Course')===c)&&
+(!p||(q.period_name||'Semester 1')===p)
+)
+);
+
 }
+
 
 function renderOrganizedQuizzes(list){
-const target=document.getElementById('organizedQuizResults');
+
+const target=
+document
+.getElementById('organizedQuizResults');
+
 if(!target)return;
-if(!list.length){target.innerHTML='<div class="card">No quizzes match your selection.</div>';return;}
+
+if(!list.length){
+
+target.innerHTML=
+'<div class="card">No quizzes match your selection.</div>';
+
+return;
+
+}
+
 
 const courses={};
+
 list.forEach(q=>{
-const c=q.subject||'Other Course', p=q.period_name||'Semester 1';
-courses[c]??={course_order:Number(q.course_order||9999),periods:{}};
-courses[c].periods[p]??={period_order:Number(q.period_order||9999),quizzes:[]};
+
+const c=
+q.subject||'Other Course';
+
+const p=
+q.period_name||'Semester 1';
+
+courses[c]??={
+course_order:Number(q.course_order||9999),
+periods:{}
+};
+
+courses[c].periods[p]??={
+period_order:Number(q.period_order||9999),
+quizzes:[]
+};
+
 courses[c].periods[p].quizzes.push(q);
+
 });
 
-target.innerHTML=Object.entries(courses).sort((a,b)=>
-a[1].course_order-b[1].course_order||a[0].localeCompare(b[0])).map(([c,course])=>`
-<section><div class="course-heading"><h2>📚 ${esc(c)}</h2><p>Course quizzes</p></div>
-${Object.entries(course.periods).sort((a,b)=>a[1].period_order-b[1].period_order||a[0].localeCompare(b[0])).map(([p,period])=>`
-<h3 class="period-heading">${esc(p)}</h3><div class="grid">
-${period.quizzes.sort((a,b)=>Number(a.quiz_order||9999)-Number(b.quiz_order||9999)).map(q=>`
-<div class="card"><span class="badge published">${esc(p)}</span>
-<span class="order-badge">Quiz ${Number(q.quiz_order||1)}</span>
-<h2>${esc(q.title||'Untitled Quiz')}</h2>
-<p>${esc(q.description||'Test your knowledge.')}</p>
-<p class="small">${Number(q.total_questions||0)} questions • ${Number(q.time_limit_minutes||30)} minutes</p>
-<p class="small">Difficulty: ${esc(q.difficulty||'Medium')}</p>
-<button onclick="startQuiz('${q.id}')">Start Quiz</button></div>`).join('')}</div>`).join('')}</section>`).join('');
+
+target.innerHTML=
+Object.entries(courses)
+.sort((a,b)=>
+a[1].course_order-b[1].course_order||
+a[0].localeCompare(b[0])
+)
+.map(([c,course])=>`
+
+<section>
+
+<div class="course-heading">
+
+<h2>
+📚 ${esc(c)}
+</h2>
+
+<p>
+Course quizzes
+</p>
+
+</div>
+
+${Object.entries(course.periods)
+.sort((a,b)=>
+a[1].period_order-b[1].period_order||
+a[0].localeCompare(b[0])
+)
+.map(([p,period])=>`
+
+<h3 class="period-heading">
+${esc(p)}
+</h3>
+
+<div class="grid">
+
+${period.quizzes
+.sort((a,b)=>
+Number(a.quiz_order||9999)-
+Number(b.quiz_order||9999)
+)
+.map(q=>`
+
+<div class="card">
+
+<span class="badge published">
+${esc(p)}
+</span>
+
+<span class="order-badge">
+Quiz ${Number(q.quiz_order||1)}
+</span>
+
+<h2>
+${esc(q.title||'Untitled Quiz')}
+</h2>
+
+<p>
+${esc(q.description||'Test your knowledge.')}
+</p>
+
+<p class="small">
+${Number(q.total_questions||0)}
+questions •
+${Number(q.time_limit_minutes||30)}
+minutes
+</p>
+
+<p class="small">
+Difficulty:
+${esc(q.difficulty||'Medium')}
+</p>
+
+<button onclick="startQuiz('${q.id}')">
+Start Quiz
+</button>
+
+</div>
+
+`).join('')}
+
+</div>
+
+`).join('')}
+
+</section>
+
+`).join('');
+
 }
+
 
 /* ==========================================================
    START QUIZ
-   ========================================================== */
+========================================================== */
 
 async function startQuiz(id){
 
@@ -1738,8 +2189,8 @@ renderQuestion();
 
 
 /* ==========================================================
-   UPDATED QUESTION RENDERING
-   ========================================================== */
+   QUESTION RENDERING
+========================================================== */
 
 function renderQuestion(){
 
@@ -1747,9 +2198,10 @@ const q=
 currentQuestions[currentQuestionIndex];
 
 const opts=
-[...(q.options || [])].sort(
+[...(q.options || [])]
+.sort(
 (a,b)=>
-(a.order_index || 0) -
+(a.order_index || 0)-
 (b.order_index || 0)
 );
 
@@ -1784,8 +2236,8 @@ document.getElementById(
 'bar'
 ).style.width=
 (
-(currentQuestionIndex+1) /
-currentQuestions.length *
+(currentQuestionIndex+1)/
+currentQuestions.length*
 100
 )+'%';
 
@@ -1795,21 +2247,14 @@ opts.map((o,i)=>{
 
 let answerClass='';
 
-
-/* Correct answer becomes GREEN */
-
 if(
 hasSelectedAnswer &&
 o.is_correct===true
 ){
 
-answerClass=
-'answer-correct';
+answerClass='answer-correct';
 
 }
-
-
-/* Selected wrong answer becomes RED */
 
 if(
 hasSelectedAnswer &&
@@ -1817,8 +2262,7 @@ o.id===selectedId &&
 o.is_correct!==true
 ){
 
-answerClass=
-'answer-wrong';
+answerClass='answer-wrong';
 
 }
 
@@ -1832,7 +2276,7 @@ type="radio"
 name="answer"
 ${selectedId===o.id?'checked':''}
 ${hasSelectedAnswer?'disabled':''}
-onchange="selectAnswer('${q.id}', '${o.id}')">
+onchange="selectAnswer('${q.id}','${o.id}')">
 
 ${String.fromCharCode(65+i)}.
 ${esc(o.option_text)}
@@ -1844,28 +2288,25 @@ ${esc(o.option_text)}
 }).join('');
 
 
-/* Explanation only after correct answer */
-
 let explanationHtml='';
 
-
-if(
-hasSelectedAnswer
-){
+if(hasSelectedAnswer){
 
 explanationHtml=`
 
 <div class="explanation">
 
 <b>
-${selectedOption?.is_correct===true
-  ? 'Correct Answer'
-  : 'Wrong Answer — Correct Answer Highlighted'}
+${
+selectedOption?.is_correct===true
+?'Correct Answer'
+:'Wrong Answer — Correct Answer Highlighted'
+}
 </b>
 
 <p>
 ${esc(
-q.explanation ||
+q.explanation||
 'Review the highlighted answers and read the explanation carefully.'
 )}
 </p>
@@ -1895,7 +2336,7 @@ ${explanationHtml}
 document.getElementById(
 'nextBtn'
 ).textContent=
-currentQuestionIndex ===
+currentQuestionIndex===
 currentQuestions.length-1
 ?'Submit Quiz'
 :'Next';
@@ -1904,12 +2345,11 @@ currentQuestions.length-1
 
 
 /* ==========================================================
-   UPDATED SELECT ANSWER
-   ========================================================== */
+   SELECT ANSWER
+========================================================== */
 
 function selectAnswer(qid,oid){
 
-/* Lock the answer after the first selection. */
 if(selectedAnswers[qid]){
 
 return;
@@ -1927,7 +2367,7 @@ renderQuestion();
 
 /* ==========================================================
    SCORE PREVIEW
-   ========================================================== */
+========================================================== */
 
 function updatePreview(){
 
@@ -1957,8 +2397,7 @@ document.getElementById('scorePreview');
 if(el){
 
 el.textContent=
-'Score: '+
-score;
+'Score: '+score;
 
 }
 
@@ -1967,7 +2406,7 @@ score;
 
 /* ==========================================================
    NEXT QUESTION
-   ========================================================== */
+========================================================== */
 
 async function nextQuestion(){
 
@@ -1984,7 +2423,7 @@ return;
 
 
 if(
-currentQuestionIndex <
+currentQuestionIndex<
 currentQuestions.length-1
 ){
 
@@ -2004,7 +2443,7 @@ await submitQuiz();
 
 /* ==========================================================
    LEAVE QUIZ
-   ========================================================== */
+========================================================== */
 
 function leaveQuiz(){
 
@@ -2031,7 +2470,7 @@ showView('quizzes');
 
 /* ==========================================================
    SUBMIT QUIZ
-   ========================================================== */
+========================================================== */
 
 async function submitQuiz(){
 
@@ -2069,7 +2508,6 @@ correctAnswers++;
 
 }
 
-
 answers.push({
 
 question_id:q.id,
@@ -2096,7 +2534,7 @@ totalQuestions
 
 
 const passed=
-percentage >=
+percentage>=
 Number(
 currentQuiz.passing_score||70
 );
@@ -2108,9 +2546,12 @@ Math.floor(
 );
 
 
-/* Create attempt */
+/* CREATE ATTEMPT */
 
-const {data:attempt,error:attemptError}=
+const {
+data:attempt,
+error:attemptError
+}=
 await db
 .from('quiz_attempts')
 .insert({
@@ -2156,7 +2597,7 @@ currentAttemptId=
 attempt.id;
 
 
-/* Save user answers */
+/* SAVE ANSWERS */
 
 const rows=
 answers.map(a=>({
@@ -2189,7 +2630,7 @@ console.error(answerError);
 }
 
 
-/* Update user score */
+/* UPDATE SCORE */
 
 const {data:userData}=
 await db
@@ -2211,11 +2652,6 @@ Number(
 userData?.quizzes_completed||0
 );
 
-
-/*
-Points are based on correct answers.
-*/
-
 const points=
 correctAnswers;
 
@@ -2234,20 +2670,18 @@ oldCompleted+1
 .eq('id',currentUser.id);
 
 
-/* Refresh leaderboard */
-
 await updateLeaderboard();
 
 
 alert(
-'Quiz completed!\\n\\n'+
+'Quiz completed!\n\n'+
 'Score: '+
 correctAnswers+
 '/'+
 totalQuestions+
 ' ('+
 percentage+
-'%)\\n\\n'+
+'%)\n\n'+
 (passed
 ?'PASSED 🎉'
 :'NOT PASSED')
@@ -2269,7 +2703,7 @@ loadQuizzes();
 
 /* ==========================================================
    LEADERBOARD
-   ========================================================== */
+========================================================== */
 
 async function loadLeaderboard(){
 
@@ -2325,33 +2759,13 @@ box.innerHTML=`
 
 <tr>
 
-<th>
-Rank
-</th>
-
-<th>
-Student
-</th>
-
-<th>
-University
-</th>
-
-<th>
-Year
-</th>
-
-<th>
-Points
-</th>
-
-<th>
-Quizzes
-</th>
-
-<th>
-Average
-</th>
+<th>Rank</th>
+<th>Student</th>
+<th>University</th>
+<th>Year</th>
+<th>Points</th>
+<th>Quizzes</th>
+<th>Average</th>
 
 </tr>
 
@@ -2446,21 +2860,15 @@ ${Number(row.average_score||0)}%
 
 /* ==========================================================
    UPDATE LEADERBOARD
-   ========================================================== */
+========================================================== */
 
 async function updateLeaderboard(){
-
-/*
-The leaderboard_public view calculates
-the displayed ranking from the users/attempts data.
-
-This function simply reloads the data.
-*/
 
 if(
 document
 .getElementById('leaderboard')
-.classList.contains('active')
+.classList
+.contains('active')
 ){
 
 loadLeaderboard();
@@ -2471,8 +2879,8 @@ loadLeaderboard();
 
 
 /* ==========================================================
-   ADMIN
-   ========================================================== */
+   ADMIN TABS
+========================================================== */
 
 function adminTab(tab){
 
@@ -2498,29 +2906,42 @@ tab.charAt(0).toUpperCase()+
 tab.slice(1);
 
 
-document
-.getElementById(id)
-.classList.remove('hidden');
+const target=
+document.getElementById(id);
+
+if(target){
+
+target.classList.remove('hidden');
+
+}
 
 }
 
 
 /* ==========================================================
    LOAD ADMIN
-   ========================================================== */
+========================================================== */
 
 async function loadAdmin(){
 
 if(!isAdmin())return;
 
 
+/* =====================================================
+   MANUAL CREATE QUIZ
+===================================================== */
+
 document.getElementById(
 'aCreate'
 ).innerHTML=`
 
 <h2>
-➕ Create Quiz
+➕ Create Quiz Manually
 </h2>
+
+<p class="small">
+Your existing manual quiz system is unchanged.
+</p>
 
 <label>
 Title
@@ -2535,17 +2956,66 @@ Subject
 </label>
 
 <select id="qs">
-<option value="">Select course/subject</option>
-<option>Mathematics</option><option>Physics</option><option>Chemistry</option>
-<option>Biology</option><option>Anatomy</option><option>Biochemistry</option>
-<option>Physiology</option><option>Pharmacology</option><option>Pathology</option>
+
+<option value="">
+Select course/subject
+</option>
+
+<option>Mathematics</option>
+<option>Physics</option>
+<option>Chemistry</option>
+<option>Biology</option>
+<option>Anatomy</option>
+<option>Biochemistry</option>
+<option>Physiology</option>
+<option>Pharmacology</option>
+<option>Pathology</option>
+
 </select>
-<label>Course Order</label><input id="qcourseorder" type="number" min="1" value="1">
-<label>Semester or Term</label><select id="qperiod">
-<option>Semester 1</option><option>Semester 2</option><option>Term 1</option><option>Term 2</option><option>Term 3</option>
+
+<label>
+Course Order
+</label>
+
+<input
+id="qcourseorder"
+type="number"
+min="1"
+value="1">
+
+<label>
+Semester or Term
+</label>
+
+<select id="qperiod">
+
+<option>Semester 1</option>
+<option>Semester 2</option>
+<option>Term 1</option>
+<option>Term 2</option>
+<option>Term 3</option>
+
 </select>
-<label>Semester/Term Order</label><input id="qperiodorder" type="number" min="1" value="1">
-<label>Quiz Order</label><input id="qquizorder" type="number" min="1" value="1">
+
+<label>
+Semester/Term Order
+</label>
+
+<input
+id="qperiodorder"
+type="number"
+min="1"
+value="1">
+
+<label>
+Quiz Order
+</label>
+
+<input
+id="qquizorder"
+type="number"
+min="1"
+value="1">
 
 <label>
 Description
@@ -2627,12 +3097,274 @@ Create Quiz
 `;
 
 
+/* =====================================================
+   AI GENERATOR
+===================================================== */
+
+document.getElementById(
+'aAi'
+).innerHTML=`
+
+<div class="ai-card card">
+
+<div class="ai-title">
+
+<div class="ai-icon">
+🤖
+</div>
+
+<div>
+
+<h2 style="margin:0">
+AI Quiz Generator
+</h2>
+
+<p class="small" style="margin:5px 0 0">
+Generate multiple-choice questions from your study notes using Gemini.
+</p>
+
+</div>
+
+</div>
+
+
+<div class="ai-info">
+
+<b>How it works:</b>
+
+<br><br>
+
+1. Paste your notes below.
+<br>
+2. Gemini creates multiple-choice questions.
+<br>
+3. The quiz is saved as a <b>DRAFT</b>.
+<br>
+4. You review every question and answer.
+<br>
+5. Publish only when you are satisfied.
+
+</div>
+
+
+<label>
+Quiz Title
+</label>
+
+<input
+id="aiTitle"
+placeholder="e.g. Anatomy - Upper Limb Revision Quiz">
+
+
+<label>
+Subject / Course
+</label>
+
+<select id="aiSubject">
+
+<option value="">
+Select course/subject
+</option>
+
+<option>Mathematics</option>
+<option>Physics</option>
+<option>Chemistry</option>
+<option>Biology</option>
+<option>Anatomy</option>
+<option>Biochemistry</option>
+<option>Physiology</option>
+<option>Pharmacology</option>
+<option>Pathology</option>
+
+</select>
+
+
+<label>
+Course Order
+</label>
+
+<input
+id="aiCourseOrder"
+type="number"
+min="1"
+value="1">
+
+
+<label>
+Semester / Term
+</label>
+
+<select id="aiPeriod">
+
+<option>Semester 1</option>
+<option>Semester 2</option>
+<option>Term 1</option>
+<option>Term 2</option>
+<option>Term 3</option>
+
+</select>
+
+
+<label>
+Semester / Term Order
+</label>
+
+<input
+id="aiPeriodOrder"
+type="number"
+min="1"
+value="1">
+
+
+<label>
+Quiz Order
+</label>
+
+<input
+id="aiQuizOrder"
+type="number"
+min="1"
+value="1">
+
+
+<label>
+Description
+</label>
+
+<textarea
+id="aiDescription"
+rows="3"
+placeholder="Short description of this quiz">
+</textarea>
+
+
+<div class="grid">
+
+<div>
+
+<label>
+Number of Questions
+</label>
+
+<input
+id="aiNumber"
+type="number"
+min="1"
+max="50"
+value="10">
+
+</div>
+
+
+<div>
+
+<label>
+Difficulty
+</label>
+
+<select id="aiDifficulty">
+
+<option>
+Easy
+</option>
+
+<option selected>
+Medium
+</option>
+
+<option>
+Hard
+</option>
+
+</select>
+
+</div>
+
+
+<div>
+
+<label>
+Time Limit (minutes)
+</label>
+
+<input
+id="aiTime"
+type="number"
+min="1"
+value="30">
+
+</div>
+
+
+<div>
+
+<label>
+Passing Score (%)
+</label>
+
+<input
+id="aiPassing"
+type="number"
+min="0"
+max="100"
+value="70">
+
+</div>
+
+</div>
+
+
+<label>
+📚 Paste Your Study Notes
+</label>
+
+<textarea
+id="aiNotes"
+class="notes-box"
+placeholder="Paste your Biology, Anatomy, Chemistry, Physics or other study notes here...
+
+Example:
+
+The elbow joint is a synovial hinge joint. It is formed by the articulation of the trochlea of the humerus with the trochlear notch of the ulna...
+">
+</textarea>
+
+
+<div class="review-warning">
+
+⚠️ <b>Important:</b>
+AI-generated questions should always be reviewed by the administrator before publishing. Check the question, four options, correct answer and explanation.
+
+</div>
+
+
+<button
+id="generateAiBtn"
+onclick="generateAIQuiz()">
+
+🤖 Generate Quiz with Gemini
+
+</button>
+
+
+<div id="aiResult">
+</div>
+
+</div>
+
+`;
+
+
+/* =====================================================
+   MANUAL QUESTION
+===================================================== */
+
 document.getElementById(
 'aQuestion'
 ).innerHTML=`
 
 <h2>
-📝 Add Question
+📝 Add Question Manually
 </h2>
 
 <label>
@@ -2654,7 +3386,7 @@ placeholder="Enter the question">
 
 <label>
 Explanation
-(shown after correct answer)
+(shown after answer)
 </label>
 
 <textarea
@@ -2688,6 +3420,10 @@ Save Question
 `;
 
 
+/* =====================================================
+   MANAGE
+===================================================== */
+
 document.getElementById(
 'aManage'
 ).innerHTML=`
@@ -2703,6 +3439,10 @@ Loading...
 `;
 
 
+/* =====================================================
+   STUDENTS
+===================================================== */
+
 document.getElementById(
 'aStudents'
 ).innerHTML=`
@@ -2717,6 +3457,10 @@ Loading...
 
 `;
 
+
+/* =====================================================
+   ATTEMPTS
+===================================================== */
 
 document.getElementById(
 'aAttempts'
@@ -2759,8 +3503,8 @@ adminTab('create');
 
 
 /* ==========================================================
-   QUIZ SELECT
-   ========================================================== */
+   POPULATE QUIZ SELECT
+========================================================== */
 
 async function populateQuizSelect(){
 
@@ -2775,8 +3519,13 @@ if(!s)return;
 const {data,error}=
 await db
 .from('quizzes')
-.select('id,title,subject,period_name,quiz_order,course_order,period_order')
-.order('course_order',{ascending:true}).order('subject',{ascending:true}).order('period_order',{ascending:true}).order('quiz_order',{ascending:true});
+.select(
+'id,title,subject,period_name,quiz_order,course_order,period_order'
+)
+.order('course_order',{ascending:true})
+.order('subject',{ascending:true})
+.order('period_order',{ascending:true})
+.order('quiz_order',{ascending:true});
 
 
 if(error){
@@ -2805,7 +3554,7 @@ esc(q.title)+
 
 /* ==========================================================
    ADD OPTION
-   ========================================================== */
+========================================================== */
 
 function addOptionField(){
 
@@ -2856,8 +3605,8 @@ n+
 
 
 /* ==========================================================
-   CREATE QUIZ
-   ========================================================== */
+   CREATE QUIZ MANUALLY
+========================================================== */
 
 async function createQuiz(){
 
@@ -2865,15 +3614,34 @@ if(!isAdmin())return;
 
 
 const title=
-document.getElementById(
-'qt'
-).value.trim();
+document
+.getElementById('qt')
+.value.trim();
 
-const subject=document.getElementById('qs').value.trim();
-const course_order=Number(document.getElementById('qcourseorder').value)||1;
-const period_name=document.getElementById('qperiod').value;
-const period_order=Number(document.getElementById('qperiodorder').value)||1;
-const quiz_order=Number(document.getElementById('qquizorder').value)||1;
+const subject=
+document
+.getElementById('qs')
+.value.trim();
+
+const course_order=
+Number(
+document.getElementById('qcourseorder').value
+)||1;
+
+const period_name=
+document
+.getElementById('qperiod')
+.value;
+
+const period_order=
+Number(
+document.getElementById('qperiodorder').value
+)||1;
+
+const quiz_order=
+Number(
+document.getElementById('qquizorder').value
+)||1;
 
 
 if(!title||!subject){
@@ -2896,8 +3664,14 @@ title,
 
 subject,
 
+course_order,
 
-course_order, period_name, period_order, quiz_order,
+period_name,
+
+period_order,
+
+quiz_order,
+
 description:
 document
 .getElementById('qd')
@@ -2957,8 +3731,8 @@ loadAdmin();
 
 
 /* ==========================================================
-   CREATE QUESTION
-   ========================================================== */
+   CREATE QUESTION MANUALLY
+========================================================== */
 
 async function createQuestion(){
 
@@ -3208,18 +3982,15 @@ document.getElementById(
 'questionText'
 ).value='';
 
-
 document.getElementById(
 'questionExplanation'
 ).value='';
-
 
 document
 .querySelectorAll('.optText')
 .forEach(
 x=>x.value=''
 );
-
 
 document
 .querySelectorAll('.optCorrect')
@@ -3231,8 +4002,809 @@ x=>x.checked=false
 
 
 /* ==========================================================
+   🤖 AI QUIZ GENERATOR
+========================================================== */
+
+async function generateAIQuiz(){
+
+if(!isAdmin()){
+
+toast('Admin access required.');
+
+return;
+
+}
+
+
+const notes=
+document
+.getElementById('aiNotes')
+.value.trim();
+
+const title=
+document
+.getElementById('aiTitle')
+.value.trim();
+
+const subject=
+document
+.getElementById('aiSubject')
+.value.trim();
+
+const description=
+document
+.getElementById('aiDescription')
+.value.trim();
+
+const number_questions=
+Number(
+document
+.getElementById('aiNumber')
+.value
+)||10;
+
+const difficulty=
+document
+.getElementById('aiDifficulty')
+.value;
+
+const time_limit_minutes=
+Number(
+document
+.getElementById('aiTime')
+.value
+)||30;
+
+const passing_score=
+Number(
+document
+.getElementById('aiPassing')
+.value
+)||70;
+
+
+if(!title){
+
+toast('Enter a quiz title.');
+
+return;
+
+}
+
+
+if(!subject){
+
+toast('Select a subject.');
+
+return;
+
+}
+
+
+if(!notes){
+
+toast('Paste your study notes first.');
+
+return;
+
+}
+
+
+if(notes.length<30){
+
+toast('Please provide more study notes.');
+
+return;
+
+}
+
+
+const btn=
+document.getElementById('generateAiBtn');
+
+const result=
+document.getElementById('aiResult');
+
+
+btn.disabled=true;
+
+btn.innerHTML=
+'<span class="spinner"></span> Gemini is generating...';
+
+result.innerHTML=`
+
+<div class="ai-loading">
+
+<div class="spinner"></div>
+
+<b>
+Generating your quiz...
+</b>
+
+<p class="small">
+Gemini is reading your notes and creating multiple-choice questions.
+</p>
+
+</div>
+
+`;
+
+
+try{
+
+/*
+IMPORTANT:
+
+The Gemini API key is NOT placed here.
+
+Supabase automatically sends the
+logged-in user's authentication token
+when functions.invoke() is used.
+*/
+
+const {data,error}=
+await db.functions.invoke(
+'generate-quiz-from-notes',
+{
+body:{
+
+notes,
+
+title,
+
+subject,
+
+description,
+
+number_questions,
+
+difficulty,
+
+time_limit_minutes,
+
+passing_score,
+
+course_order:
+Number(
+document
+.getElementById('aiCourseOrder')
+.value
+)||1,
+
+period_name:
+document
+.getElementById('aiPeriod')
+.value,
+
+period_order:
+Number(
+document
+.getElementById('aiPeriodOrder')
+.value
+)||1,
+
+quiz_order:
+Number(
+document
+.getElementById('aiQuizOrder')
+.value
+)||1
+
+}
+}
+);
+
+
+if(error){
+
+throw error;
+
+}
+
+
+console.log(
+'AI generator response:',
+data
+);
+
+
+/*
+Different versions of the Edge Function
+may return the quiz ID using different
+property names.
+
+We support several possibilities.
+*/
+
+const quizId=
+data?.quiz_id||
+data?.quizId||
+data?.id||
+data?.quiz?.id;
+
+
+if(!quizId){
+
+throw new Error(
+'Quiz was generated but the Edge Function did not return a quiz ID.'
+);
+
+}
+
+
+aiGeneratedQuizId=quizId;
+
+toast(
+'AI quiz generated successfully as a draft.'
+);
+
+
+/*
+Load the generated quiz and show
+it to the administrator for review.
+*/
+
+await previewAIGeneratedQuiz(quizId);
+
+
+/*
+Refresh management section so the new
+draft appears there too.
+*/
+
+await manageQuizzes();
+
+await populateQuizSelect();
+
+
+}catch(error){
+
+console.error(
+'AI generation error:',
+error
+);
+
+result.innerHTML=`
+
+<div class="card">
+
+<p class="error">
+AI quiz generation failed.
+</p>
+
+<p>
+${esc(
+error?.message||
+'Unknown error occurred.'
+)}
+</p>
+
+<p class="small">
+
+Make sure:
+
+<br>
+• You are logged in as an admin.
+<br>
+• GEMINI_API_KEY exists in Supabase Secrets.
+<br>
+• GEMINI_MODEL exists in Supabase Secrets.
+<br>
+• The Edge Function is deployed as
+<code>generate-quiz-from-notes</code>.
+
+</p>
+
+</div>
+
+`;
+
+toast(
+'AI generation failed.'
+);
+
+}finally{
+
+btn.disabled=false;
+
+btn.innerHTML=
+'🤖 Generate Quiz with Gemini';
+
+}
+
+}
+
+
+/* ==========================================================
+   AI QUIZ PREVIEW
+========================================================== */
+
+async function previewAIGeneratedQuiz(quizId){
+
+const result=
+document.getElementById('aiResult');
+
+if(!result)return;
+
+
+result.innerHTML=`
+
+<div class="ai-loading">
+
+<div class="spinner"></div>
+
+Loading generated questions...
+
+</div>
+
+`;
+
+
+const {
+data:quiz,
+error:quizError
+}=
+await db
+.from('quizzes')
+.select('*')
+.eq('id',quizId)
+.single();
+
+
+if(quizError){
+
+result.innerHTML=
+'<p class="error">'+
+esc(quizError.message)+
+'</p>';
+
+return;
+
+}
+
+
+const {
+data:questions,
+error:questionError
+}=
+await db
+.from('questions')
+.select(`
+id,
+question_text,
+question_type,
+order_index,
+explanation,
+options(
+id,
+option_text,
+is_correct,
+order_index
+)
+`)
+.eq('quiz_id',quizId)
+.order(
+'order_index',
+{ascending:true}
+);
+
+
+if(questionError){
+
+result.innerHTML=
+'<p class="error">'+
+esc(questionError.message)+
+'</p>';
+
+return;
+
+}
+
+
+if(!questions?.length){
+
+result.innerHTML=`
+
+<div class="card">
+
+<p class="error">
+The AI created the quiz, but no questions were found.
+</p>
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+result.innerHTML=`
+
+<div class="ai-preview">
+
+<div class="ai-title">
+
+<div>
+
+<h2>
+🔎 Review AI Generated Quiz
+</h2>
+
+<p class="small">
+This quiz is currently a <b>DRAFT</b>.
+Students cannot see it until you publish it.
+</p>
+
+</div>
+
+<span class="badge draft">
+DRAFT
+</span>
+
+</div>
+
+
+<div class="review-warning">
+
+⚠️ Review all questions before publishing.
+The AI can make mistakes. Check the correct answer,
+options and explanations carefully.
+
+</div>
+
+
+<div class="card">
+
+<h2>
+${esc(quiz.title)}
+</h2>
+
+<p>
+${esc(quiz.description||'AI generated quiz')}
+</p>
+
+<p class="small">
+
+Subject:
+<b>${esc(quiz.subject||'-')}</b>
+
+•
+
+Questions:
+<b>${questions.length}</b>
+
+•
+
+Difficulty:
+<b>${esc(quiz.difficulty||'-')}</b>
+
+•
+
+Time:
+<b>${Number(quiz.time_limit_minutes||30)} minutes</b>
+
+</p>
+
+</div>
+
+
+<h3>
+Generated Questions
+</h3>
+
+
+${questions.map((q,index)=>{
+
+const opts=
+[...(q.options||[])]
+.sort(
+(a,b)=>
+Number(a.order_index||0)-
+Number(b.order_index||0)
+);
+
+
+return `
+
+<div class="ai-question">
+
+<div class="ai-question-header">
+
+<h3 style="margin:0">
+
+Question ${index+1}
+
+</h3>
+
+<span class="badge">
+Multiple Choice
+</span>
+
+</div>
+
+
+<h3>
+${esc(q.question_text)}
+</h3>
+
+
+<div>
+
+${opts.map((o,i)=>`
+
+<div class="ai-option ${
+o.is_correct===true
+?'correct'
+:''
+}">
+
+<b>
+${String.fromCharCode(65+i)}.
+</b>
+
+${esc(o.option_text)}
+
+${
+o.is_correct===true
+?'<strong> ✓ Correct Answer</strong>'
+:''
+}
+
+</div>
+
+`).join('')}
+
+</div>
+
+
+<div class="explanation">
+
+<b>
+Explanation
+</b>
+
+<p>
+${esc(
+q.explanation||
+'No explanation provided.'
+)}
+</p>
+
+</div>
+
+
+</div>
+
+`;
+
+}).join('')}
+
+
+<div class="ai-actions">
+
+<button
+class="success"
+onclick="publishAIGeneratedQuiz('${quiz.id}')">
+
+🚀 Approve & Publish Quiz
+
+</button>
+
+
+<button
+class="secondary"
+onclick="keepAIDraft('${quiz.id}')">
+
+💾 Keep as Draft
+
+</button>
+
+
+<button
+class="danger"
+onclick="deleteAIGeneratedQuiz('${quiz.id}')">
+
+🗑️ Delete AI Quiz
+
+</button>
+
+</div>
+
+</div>
+
+`;
+
+}
+
+
+/* ==========================================================
+   PUBLISH AI QUIZ
+========================================================== */
+
+async function publishAIGeneratedQuiz(id){
+
+if(!isAdmin()){
+
+toast('Admin access required.');
+
+return;
+
+}
+
+
+if(!confirm(
+'Have you reviewed all questions, options, correct answers and explanations?\n\nPublish this quiz for students?'
+)){
+
+return;
+
+}
+
+
+const {error}=
+await db
+.from('quizzes')
+.update({
+is_published:true
+})
+.eq('id',id);
+
+
+if(error){
+
+toast(
+'Could not publish quiz: '+
+error.message
+);
+
+return;
+
+}
+
+
+toast(
+'AI quiz approved and published! 🎉'
+);
+
+
+/*
+Clear preview.
+*/
+
+document.getElementById(
+'aiResult'
+).innerHTML=`
+
+<div class="card">
+
+<p class="ok">
+✓ Quiz has been approved and published successfully.
+</p>
+
+<p>
+Students can now see it in the Quiz section.
+</p>
+
+</div>
+
+`;
+
+
+await manageQuizzes();
+
+await loadQuizzes();
+
+}
+
+
+/* ==========================================================
+   KEEP AI QUIZ AS DRAFT
+========================================================== */
+
+async function keepAIDraft(id){
+
+if(!isAdmin())return;
+
+
+const {error}=
+await db
+.from('quizzes')
+.update({
+is_published:false
+})
+.eq('id',id);
+
+
+if(error){
+
+toast(error.message);
+
+return;
+
+}
+
+
+toast(
+'Quiz remains unpublished as a draft.'
+);
+
+}
+
+
+/* ==========================================================
+   DELETE AI GENERATED QUIZ
+========================================================== */
+
+async function deleteAIGeneratedQuiz(id){
+
+if(!isAdmin())return;
+
+
+if(!confirm(
+'Delete this AI-generated quiz and its questions/options?'
+)){
+
+return;
+
+}
+
+
+const {error}=
+await db
+.from('quizzes')
+.delete()
+.eq('id',id);
+
+
+if(error){
+
+toast(
+'Could not delete quiz: '+
+error.message
+);
+
+return;
+
+}
+
+
+aiGeneratedQuizId=null;
+
+
+document.getElementById(
+'aiResult'
+).innerHTML=`
+
+<div class="card">
+
+<p class="ok">
+AI quiz deleted.
+</p>
+
+</div>
+
+`;
+
+
+toast(
+'AI quiz deleted.'
+);
+
+
+await manageQuizzes();
+
+await populateQuizSelect();
+
+await loadQuizzes();
+
+}
+
+
+/* ==========================================================
    MANAGE QUIZZES
-   ========================================================== */
+========================================================== */
 
 async function manageQuizzes(){
 
@@ -3281,18 +4853,26 @@ data.map(q=>`
 
 <div class="card">
 
+<div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap">
+
+<div>
+
 <h3>
 ${esc(q.title)}
 </h3>
 
 <p class="small">
 
-${esc(q.subject)}
+${esc(q.subject||'-')}
 •
 ${Number(q.total_questions||0)}
 questions
+•
+${esc(q.period_name||'-')}
 
 </p>
+
+</div>
 
 <span class="badge ${
 q.is_published
@@ -3308,7 +4888,11 @@ q.is_published
 
 </span>
 
-<br><br>
+</div>
+
+
+<br>
+
 
 <button
 onclick="togglePublish(
@@ -3323,6 +4907,16 @@ q.is_published
 }
 
 </button>
+
+
+<button
+class="secondary"
+onclick="previewAIGeneratedQuiz('${q.id}')">
+
+👁️ Review
+
+</button>
+
 
 <button
 class="danger"
@@ -3341,7 +4935,7 @@ Delete
 
 /* ==========================================================
    PUBLISH / UNPUBLISH
-   ========================================================== */
+========================================================== */
 
 async function togglePublish(
 id,
@@ -3349,6 +4943,19 @@ value
 ){
 
 if(!isAdmin())return;
+
+
+if(value){
+
+if(!confirm(
+'Are you sure you have reviewed this quiz before publishing it?'
+)){
+
+return;
+
+}
+
+}
 
 
 const {error}=
@@ -3379,16 +4986,16 @@ value
 );
 
 
-manageQuizzes();
+await manageQuizzes();
 
-loadQuizzes();
+await loadQuizzes();
 
 }
 
 
 /* ==========================================================
    DELETE QUIZ
-   ========================================================== */
+========================================================== */
 
 async function deleteQuiz(id){
 
@@ -3427,18 +5034,18 @@ return;
 
 toast('Quiz deleted.');
 
-manageQuizzes();
+await manageQuizzes();
 
-populateQuizSelect();
+await populateQuizSelect();
 
-loadQuizzes();
+await loadQuizzes();
 
 }
 
 
 /* ==========================================================
    STUDENTS
-   ========================================================== */
+========================================================== */
 
 async function loadStudents(){
 
@@ -3484,33 +5091,13 @@ b.innerHTML=`
 
 <tr>
 
-<th>
-Name
-</th>
-
-<th>
-Email
-</th>
-
-<th>
-University
-</th>
-
-<th>
-Year
-</th>
-
-<th>
-Points
-</th>
-
-<th>
-Quizzes
-</th>
-
-<th>
-Role
-</th>
+<th>Name</th>
+<th>Email</th>
+<th>University</th>
+<th>Year</th>
+<th>Points</th>
+<th>Quizzes</th>
+<th>Role</th>
 
 </tr>
 
@@ -3576,7 +5163,7 @@ s.is_admin
 
 /* ==========================================================
    ATTEMPTS
-   ========================================================== */
+========================================================== */
 
 async function loadAttempts(){
 
@@ -3633,29 +5220,12 @@ b.innerHTML=`
 
 <tr>
 
-<th>
-Student
-</th>
-
-<th>
-Quiz
-</th>
-
-<th>
-Score
-</th>
-
-<th>
-Result
-</th>
-
-<th>
-Time
-</th>
-
-<th>
-Date
-</th>
+<th>Student</th>
+<th>Quiz</th>
+<th>Score</th>
+<th>Result</th>
+<th>Time</th>
+<th>Date</th>
 
 </tr>
 
@@ -3747,7 +5317,7 @@ a.completed_at
 
 /* ==========================================================
    AUTH STATE
-   ========================================================== */
+========================================================== */
 
 db.auth.onAuthStateChange(
 (_event,session)=>{
@@ -3757,10 +5327,11 @@ session?.user||null;
 
 
 /*
-If the logged-in email matches
-the configured admin email,
-give the current profile an admin
-flag for the UI.
+UI admin fallback.
+
+Real security should still come
+from your Supabase RLS and the
+Edge Function admin check.
 */
 
 if(
@@ -3819,7 +5390,7 @@ await loadQuizzes();
 
 /* ==========================================================
    START APPLICATION
-   ========================================================== */
+========================================================== */
 
 window.addEventListener(
 'DOMContentLoaded',
