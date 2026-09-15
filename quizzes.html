@@ -1,0 +1,5344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Thrives Archivers - Quiz Competition</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+:root{
+--p:#5b5bea;
+--p2:#7667ff;
+--bg:#f5f6ff;
+--card:#fff;
+--text:#20213a;
+--muted:#73758c;
+--border:#e7e7f2;
+--danger:#e74c3c;
+--success:#20a464;
+--warning:#f0a000;
+}
+
+*{box-sizing:border-box}
+
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:var(--bg);
+color:var(--text)
+}
+
+.organization-toolbar{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+margin:0 0 20px
+}
+
+.organization-toolbar select{min-width:210px}
+
+.course-heading{
+grid-column:1/-1;
+margin:24px 0 10px;
+padding:18px 20px;
+border-radius:16px;
+background:linear-gradient(135deg,#5b4be7,#806cff);
+color:#fff
+}
+
+.period-heading{
+grid-column:1/-1;
+margin:14px 0 8px;
+padding:12px 15px;
+border-left:5px solid #6557e8;
+border-radius:9px;
+background:#efedff;
+color:#312b78
+}
+
+.order-badge{
+display:inline-block;
+margin:4px 4px 8px 0;
+padding:4px 9px;
+border-radius:999px;
+background:#eeeaff;
+color:#5145c7;
+font-size:12px;
+font-weight:700
+}
+
+header{
+background:linear-gradient(135deg,var(--p),var(--p2));
+color:#fff;
+padding:15px 5%;
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:15px;
+position:sticky;
+top:0;
+z-index:20
+}
+
+.header-left{
+display:flex;
+align-items:center;
+gap:12px;
+min-width:0
+}
+
+.header-avatar{
+width:42px;
+height:42px;
+border-radius:50%;
+background:#ffffff33;
+border:2px solid #ffffffaa;
+display:flex;
+align-items:center;
+justify-content:center;
+overflow:hidden;
+font-weight:800;
+font-size:16px;
+flex-shrink:0
+}
+
+.header-avatar img{
+width:100%;
+height:100%;
+object-fit:cover
+}
+
+.logo{
+font-weight:800;
+font-size:21px
+}
+
+.nav{
+display:flex;
+gap:6px;
+flex-wrap:wrap
+}
+
+.nav button{
+background:transparent;
+color:#fff;
+border:0;
+padding:10px 12px;
+border-radius:9px
+}
+
+.nav button:hover,
+.nav button.active{
+background:#ffffff22
+}
+
+.container{
+max-width:1150px;
+margin:auto;
+padding:25px 16px
+}
+
+.view{display:none}
+
+.view.active{display:block}
+
+.hero{
+background:linear-gradient(135deg,var(--p),#8a78ff);
+color:#fff;
+padding:30px;
+border-radius:20px;
+margin-bottom:22px
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(245px,1fr));
+gap:16px
+}
+
+.card{
+background:var(--card);
+border:1px solid var(--border);
+border-radius:16px;
+padding:18px;
+box-shadow:0 5px 18px #34345b0d;
+margin-bottom:16px
+}
+
+button{
+background:var(--p);
+color:#fff;
+border:0;
+border-radius:10px;
+padding:11px 16px;
+cursor:pointer;
+font-weight:700
+}
+
+button:hover{opacity:.92}
+
+button:disabled{
+opacity:.6;
+cursor:not-allowed
+}
+
+.secondary{
+background:#eeeef8;
+color:var(--text)
+}
+
+.danger{background:var(--danger)}
+
+.success{background:var(--success)}
+
+.warning{background:#f0a000}
+
+input,select,textarea{
+width:100%;
+padding:12px;
+border:1px solid #dcdceb;
+border-radius:10px;
+margin:6px 0 12px;
+background:#fff;
+color:var(--text)
+}
+
+textarea{resize:vertical}
+
+label{
+font-weight:700;
+font-size:14px
+}
+
+.small{
+font-size:13px;
+color:var(--muted)
+}
+
+.error{
+color:var(--danger);
+font-weight:700
+}
+
+.ok{
+color:var(--success);
+font-weight:700
+}
+
+.hidden{display:none!important}
+
+.modal{
+position:fixed;
+inset:0;
+background:#11112799;
+display:none;
+align-items:center;
+justify-content:center;
+padding:15px;
+z-index:50
+}
+
+.modal.show{display:flex}
+
+.modalbox{
+background:#fff;
+width:min(700px,100%);
+padding:24px;
+border-radius:18px;
+max-height:90vh;
+overflow:auto
+}
+
+.option{
+display:block;
+border:1px solid var(--border);
+padding:14px;
+border-radius:12px;
+margin:10px 0;
+cursor:pointer
+}
+
+.option:hover{border-color:var(--p)}
+
+.option input{
+width:auto;
+margin:0 8px 0 0
+}
+
+.option.answer-correct{
+border-color:#20a464;
+background:#dff7e9;
+color:#137b48
+}
+
+.option.answer-wrong{
+border-color:#e74c3c;
+background:#fde5e2;
+color:#b83227
+}
+
+.option.answer-correct::after{
+content:" ✓ Correct";
+float:right;
+font-weight:700
+}
+
+.option.answer-wrong::after{
+content:" ✗ Wrong";
+float:right;
+font-weight:700
+}
+
+.quizhead{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:15px;
+flex-wrap:wrap
+}
+
+.progress{
+height:8px;
+background:#e8e8f5;
+border-radius:20px;
+overflow:hidden
+}
+
+.progress div{
+height:100%;
+background:var(--p);
+width:0
+}
+
+.explanation{
+background:#f1efff;
+border-left:4px solid #5b5bea;
+padding:12px;
+border-radius:8px;
+margin-top:12px
+}
+
+table{
+width:100%;
+border-collapse:collapse
+}
+
+th,td{
+text-align:left;
+padding:12px;
+border-bottom:1px solid var(--border)
+}
+
+th{background:#f0efff}
+
+.tablewrap{overflow:auto}
+
+.avatar{
+width:78px;
+height:78px;
+border-radius:50%;
+background:var(--p);
+color:#fff;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:25px;
+font-weight:800;
+overflow:hidden
+}
+
+.avatar img{
+width:100%;
+height:100%;
+object-fit:cover
+}
+
+.profiletop{
+display:flex;
+gap:16px;
+align-items:center
+}
+
+.stat{
+font-size:26px;
+font-weight:800
+}
+
+.tabs{
+display:flex;
+gap:8px;
+flex-wrap:wrap;
+margin-bottom:18px
+}
+
+.badge{
+display:inline-block;
+padding:5px 9px;
+border-radius:20px;
+background:#eeeef8;
+font-size:12px;
+font-weight:700
+}
+
+.published{
+background:#dff7e9;
+color:#137b48
+}
+
+.draft{
+background:#fff2d6;
+color:#8a5a00
+}
+
+/* AI */
+
+.ai-card{
+border:2px solid #7667ff;
+background:linear-gradient(135deg,#faf9ff,#f1efff)
+}
+
+.ai-title{
+display:flex;
+align-items:center;
+gap:10px;
+flex-wrap:wrap
+}
+
+.ai-icon{
+width:45px;
+height:45px;
+border-radius:13px;
+background:linear-gradient(135deg,#5b5bea,#8a78ff);
+color:#fff;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:23px
+}
+
+.notes-box{min-height:220px}
+
+.ai-info{
+padding:13px;
+border-radius:10px;
+background:#eeeaff;
+color:#40358f;
+margin:12px 0
+}
+
+.ai-loading{
+text-align:center;
+padding:25px;
+background:#f5f3ff;
+border-radius:12px;
+margin-top:15px
+}
+
+.ai-question{
+border:1px solid var(--border);
+border-radius:14px;
+padding:18px;
+margin:15px 0;
+background:#fff
+}
+
+.ai-question-header{
+display:flex;
+justify-content:space-between;
+gap:10px;
+align-items:center;
+flex-wrap:wrap
+}
+
+.ai-option{
+padding:10px 12px;
+border-radius:9px;
+margin:7px 0;
+background:#f6f6fb;
+border:1px solid #e3e3ee
+}
+
+.ai-option.correct{
+background:#dff7e9;
+border-color:#20a464;
+color:#137b48;
+font-weight:700
+}
+
+.ai-preview{
+border:2px solid #e8e3ff;
+border-radius:15px;
+padding:18px;
+margin-top:18px
+}
+
+.ai-actions{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+margin-top:15px
+}
+
+.review-warning{
+padding:14px;
+border-radius:10px;
+background:#fff2d6;
+color:#795300;
+font-weight:600;
+margin-bottom:15px
+}
+
+.ai-error{
+background:#fde5e2;
+border:1px solid #e74c3c;
+color:#8f2118;
+padding:15px;
+border-radius:12px;
+margin-top:15px;
+word-break:break-word
+}
+
+.ai-success{
+background:#dff7e9;
+border:1px solid #20a464;
+color:#137b48;
+padding:15px;
+border-radius:12px;
+margin-top:15px
+}
+
+/* AUTH DIAGNOSTIC */
+
+.auth-diagnostic{
+margin-top:18px;
+border:2px solid #7667ff;
+border-radius:15px;
+padding:18px;
+background:linear-gradient(135deg,#faf9ff,#f1efff)
+}
+
+.auth-diagnostic h3{
+margin-top:0
+}
+
+.auth-status-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:12px;
+margin-top:15px
+}
+
+.auth-status-item{
+background:#fff;
+border:1px solid var(--border);
+border-radius:12px;
+padding:13px
+}
+
+.auth-status-item .label{
+font-size:12px;
+color:var(--muted);
+font-weight:700;
+margin-bottom:5px
+}
+
+.auth-status-item .value{
+font-weight:700;
+word-break:break-word
+}
+
+.auth-good{
+color:#137b48
+}
+
+.auth-bad{
+color:#b83227
+}
+
+.auth-warning{
+color:#8a5a00
+}
+
+.auth-code{
+display:block;
+background:#20213a;
+color:#fff;
+padding:10px;
+border-radius:8px;
+font-family:monospace;
+font-size:12px;
+word-break:break-all;
+margin-top:5px
+}
+
+.auth-diagnosis{
+margin-top:15px;
+padding:14px;
+border-radius:10px
+}
+
+.auth-diagnosis.good{
+background:#dff7e9;
+color:#137b48
+}
+
+.auth-diagnosis.warning{
+background:#fff2d6;
+color:#795300
+}
+
+.auth-diagnosis.bad{
+background:#fde5e2;
+color:#8f2118
+}
+
+.leaderboard-profile{
+display:flex;
+align-items:center;
+gap:10px;
+min-width:220px
+}
+
+.leaderboard-avatar{
+width:52px;
+height:52px;
+border-radius:50%;
+object-fit:cover;
+background:var(--p);
+color:#fff;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:800;
+font-size:18px;
+flex-shrink:0
+}
+
+.profile-photo-actions{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+align-items:center;
+margin-top:12px
+}
+
+.profile-photo-actions input[type=file]{
+max-width:300px;
+margin:0
+}
+
+.profile-card-header{
+display:flex;
+align-items:center;
+gap:16px;
+flex-wrap:wrap
+}
+
+.profile-large-avatar{
+width:100px;
+height:100px;
+border-radius:50%;
+object-fit:cover;
+background:var(--p);
+color:white;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:32px;
+font-weight:800;
+overflow:hidden
+}
+
+.profile-large-avatar img{
+width:100%;
+height:100%;
+object-fit:cover
+}
+
+.toast{
+position:fixed;
+right:18px;
+bottom:18px;
+background:#20213a;
+color:#fff;
+padding:13px 18px;
+border-radius:10px;
+display:none;
+z-index:100;
+max-width:380px
+}
+
+.spinner{
+width:22px;
+height:22px;
+border:3px solid #ddd;
+border-top-color:var(--p);
+border-radius:50%;
+animation:spin .8s linear infinite;
+display:inline-block;
+vertical-align:middle;
+margin-right:8px
+}
+
+@keyframes spin{
+to{transform:rotate(360deg)}
+}
+
+@media(max-width:600px){
+
+header{
+flex-direction:column;
+align-items:flex-start
+}
+
+.nav{width:100%}
+
+.nav button{flex:1}
+
+.hero{padding:22px}
+
+.container{padding:16px}
+
+.ai-title{align-items:flex-start}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+<div class="header-left">
+
+<div id="headerAvatar" class="header-avatar">
+TA
+</div>
+
+<div class="logo">
+💜 Thrives Archivers
+</div>
+
+</div>
+
+<div class="nav">
+
+<button id="nq" onclick="showView('quizzes')">
+Quizzes
+</button>
+
+<button id="nl" onclick="showView('leaderboard')">
+Leaderboard
+</button>
+
+<button id="np" onclick="showView('profile')">
+Profile
+</button>
+
+<button id="na" class="hidden" onclick="showView('admin')">
+⚙️ Admin
+</button>
+
+<button id="authBtn" onclick="openAuth()">
+Login
+</button>
+
+<button id="logoutBtn" class="hidden" onclick="logout()">
+Logout
+</button>
+
+</div>
+
+</header>
+
+
+<main class="container">
+
+<section id="quizzes" class="view active">
+
+<div class="hero">
+
+<h1>Quiz Competition</h1>
+
+<p>
+Test your knowledge, earn points and climb the Thrives Archivers leaderboard.
+</p>
+
+</div>
+
+<div id="quizGrid" class="grid"></div>
+
+</section>
+
+
+<section id="leaderboard" class="view">
+
+<div class="hero">
+
+<h1>🏆 Leaderboard</h1>
+
+<p>Students ranked by total points.</p>
+
+</div>
+
+<div class="card">
+
+<div id="leaderboardBox">
+Loading...
+</div>
+
+</div>
+
+</section>
+
+
+<section id="profile" class="view">
+
+<div class="hero">
+
+<h1>My Profile</h1>
+
+<p>
+Manage your student information and view your progress.
+</p>
+
+</div>
+
+<div class="card" id="profileBox">
+Please login to view your profile.
+</div>
+
+</section>
+
+
+<section id="admin" class="view">
+
+<div class="hero">
+
+<h1>⚙️ Admin Panel</h1>
+
+<p>
+Create and manage quizzes, AI-generated quizzes, questions, students and results.
+</p>
+
+</div>
+
+<div class="tabs">
+
+<button onclick="adminTab('create')">
+➕ Create Quiz
+</button>
+
+<button onclick="adminTab('ai')">
+🤖 AI Quiz Generator
+</button>
+
+<button onclick="adminTab('question')">
+📝 Add Questions
+</button>
+
+<button onclick="adminTab('manage')">
+📚 Manage Quizzes
+</button>
+
+<button onclick="adminTab('students')">
+👥 Students
+</button>
+
+<button onclick="adminTab('attempts')">
+📊 Attempts
+</button>
+
+<!-- NEW AUTHENTICATION BUTTON -->
+<button class="warning" onclick="checkAuthentication()">
+🔐 Check Authentication
+</button>
+
+</div>
+
+<!-- NEW AUTHENTICATION DIAGNOSTIC PANEL -->
+<div
+id="authDiagnostic"
+class="card hidden"
+>
+</div>
+
+<div id="aCreate" class="card adminbox"></div>
+
+<div id="aAi" class="card adminbox hidden"></div>
+
+<div id="aQuestion" class="card adminbox hidden"></div>
+
+<div id="aManage" class="card adminbox hidden"></div>
+
+<div id="aStudents" class="card adminbox hidden"></div>
+
+<div id="aAttempts" class="card adminbox hidden"></div>
+
+</section>
+
+
+<section id="playing" class="view">
+
+<div class="card">
+
+<div class="quizhead">
+
+<div>
+
+<h2 id="playTitle"></h2>
+
+<div class="small" id="counter"></div>
+
+</div>
+
+<b id="scorePreview">
+Score: 0
+</b>
+
+</div>
+
+<br>
+
+<div class="progress">
+<div id="bar"></div>
+</div>
+
+<div id="questionBox" style="margin-top:22px"></div>
+
+<div style="display:flex;justify-content:space-between;margin-top:20px">
+
+<button class="secondary" onclick="leaveQuiz()">
+Exit
+</button>
+
+<button id="nextBtn" onclick="nextQuestion()">
+Next
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+</main>
+
+
+<div id="authModal" class="modal">
+
+<div class="modalbox">
+
+<h2 id="authTitle">Login</h2>
+
+<div id="authError"></div>
+
+<div id="signupFields" class="hidden">
+
+<label>Full Name</label>
+
+<input id="fullName" placeholder="Your full name">
+
+<label>University</label>
+
+<input id="university" placeholder="e.g. Mulungushi University">
+
+<label>Year</label>
+
+<select id="year">
+
+<option value="">Select year</option>
+<option>First Year</option>
+<option>Second Year</option>
+<option>Third Year</option>
+<option>Fourth Year</option>
+<option>Other</option>
+
+</select>
+
+</div>
+
+<label>Email</label>
+
+<input id="email" type="email" placeholder="Email">
+
+<label>Password</label>
+
+<input id="password" type="password" placeholder="Password">
+
+<button style="width:100%" onclick="submitAuth()">
+Continue
+</button>
+
+<p class="small" id="switchText">
+Don't have an account?
+</p>
+
+<button class="secondary" style="width:100%" id="switchBtn" onclick="toggleAuth()">
+Create account
+</button>
+
+<br><br>
+
+<button class="secondary" style="width:100%" onclick="closeAuth()">
+Close
+</button>
+
+</div>
+
+</div>
+
+
+<div id="toast" class="toast"></div>
+
+
+<script>
+
+/* ==========================================================
+   SUPABASE
+========================================================== */
+
+const SUPABASE_URL =
+'https://odwiqajuubcgrrqipyju.supabase.co';
+
+const SUPABASE_ANON_KEY =
+'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1YmNncnJxaXB5anU2Y29udHlwZSIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzUzMjcwODIxLCJleHAiOjIwNjg4NDY4MjJ9.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A';
+
+const {createClient}=window.supabase;
+
+const db=createClient(
+SUPABASE_URL,
+SUPABASE_ANON_KEY
+);
+
+const ADMIN_EMAIL='thrivesarchivers@gmail.com';
+
+
+/* ==========================================================
+   GLOBAL VARIABLES
+========================================================== */
+
+let currentUser=null;
+let currentProfile=null;
+let authMode='login';
+
+let currentQuiz=null;
+let currentQuestions=[];
+let currentQuestionIndex=0;
+let selectedAnswers={};
+let currentAttemptId=null;
+let quizStartedAt=0;
+
+let aiGeneratedQuizId=null;
+
+
+/* ==========================================================
+   HELPERS
+========================================================== */
+
+function esc(v){
+
+return String(v??'')
+.replace(
+/[&<>"']/g,
+m=>({
+'&':'&amp;',
+'<':'&lt;',
+'>':'&gt;',
+'"':'&quot;',
+"'":'&#039;'
+}[m])
+);
+
+}
+
+
+function toast(m){
+
+const t=document.getElementById('toast');
+
+t.textContent=m;
+
+t.style.display='block';
+
+clearTimeout(window.tt);
+
+window.tt=setTimeout(
+()=>t.style.display='none',
+4000
+);
+
+}
+
+
+function initials(n){
+
+return (n||'U')
+.split(/\s+/)
+.filter(Boolean)
+.map(x=>x[0])
+.join('')
+.slice(0,2)
+.toUpperCase();
+
+}
+
+
+/* ==========================================================
+   ADMIN CHECK
+========================================================== */
+
+function isAdmin(){
+
+const email=
+String(
+currentUser?.email ||
+currentUser?.user_metadata?.email ||
+''
+)
+.trim()
+.toLowerCase();
+
+const profileEmail=
+String(
+currentProfile?.email||''
+)
+.trim()
+.toLowerCase();
+
+const profileAdmin=
+currentProfile?.is_admin===true ||
+currentProfile?.is_admin===1 ||
+String(
+currentProfile?.is_admin
+).toLowerCase()==='true';
+
+return profileAdmin ||
+email===ADMIN_EMAIL.toLowerCase() ||
+profileEmail===ADMIN_EMAIL.toLowerCase();
+
+}
+
+
+/* ==========================================================
+   VIEWS
+========================================================== */
+
+function showView(id){
+
+document
+.querySelectorAll('.view')
+.forEach(v=>v.classList.remove('active'));
+
+const el=document.getElementById(id);
+
+if(el)el.classList.add('active');
+
+if(id==='leaderboard')loadLeaderboard();
+
+if(id==='profile')loadProfile();
+
+if(id==='admin'){
+
+if(!isAdmin()){
+
+toast('Admin access required.');
+
+showView('quizzes');
+
+return;
+
+}
+
+loadAdmin();
+
+}
+
+}
+
+
+/* ==========================================================
+   AUTH
+========================================================== */
+
+function openAuth(){
+
+document
+.getElementById('authModal')
+.classList.add('show');
+
+}
+
+
+function closeAuth(){
+
+document
+.getElementById('authModal')
+.classList.remove('show');
+
+}
+
+
+function toggleAuth(){
+
+authMode=
+authMode==='login'
+?'signup'
+:'login';
+
+document.getElementById('authTitle').textContent=
+authMode==='login'
+?'Login'
+:'Create Account';
+
+document.getElementById('signupFields')
+.classList.toggle(
+'hidden',
+authMode==='login'
+);
+
+document.getElementById('switchText').textContent=
+authMode==='login'
+?"Don't have an account?"
+:'Already have an account?';
+
+document.getElementById('switchBtn').textContent=
+authMode==='login'
+?'Create account'
+:'Login';
+
+}
+
+
+/* ==========================================================
+   LOGIN / SIGNUP
+========================================================== */
+
+async function submitAuth(){
+
+const email=
+document.getElementById('email').value.trim();
+
+const password=
+document.getElementById('password').value;
+
+const err=document.getElementById('authError');
+
+err.textContent='';
+
+if(!email||!password){
+
+err.innerHTML=
+'<p class="error">Enter email and password.</p>';
+
+return;
+
+}
+
+
+if(authMode==='signup'){
+
+const fullName=
+document.getElementById('fullName').value.trim();
+
+const university=
+document.getElementById('university').value.trim();
+
+const year=
+document.getElementById('year').value;
+
+if(!fullName){
+
+err.innerHTML=
+'<p class="error">Enter your full name.</p>';
+
+return;
+
+}
+
+
+const {data,error}=
+await db.auth.signUp({
+
+email,
+password,
+
+options:{
+data:{
+full_name:fullName,
+university,
+year_level:year
+}
+}
+
+});
+
+
+if(error){
+
+err.innerHTML=
+'<p class="error">'+
+esc(error.message)+
+'</p>';
+
+return;
+
+}
+
+
+toast(
+'Account created. Check your email if confirmation is required.'
+);
+
+closeAuth();
+
+return;
+
+}
+
+
+const {data,error}=
+await db.auth.signInWithPassword({
+
+email,
+password
+
+});
+
+
+if(error){
+
+err.innerHTML=
+'<p class="error">'+
+esc(error.message)+
+'</p>';
+
+return;
+
+}
+
+
+currentUser=data.user;
+
+closeAuth();
+
+toast('Login successful.');
+
+await loadCurrentProfile();
+
+updateHeader();
+
+loadQuizzes();
+
+}
+
+
+/* ==========================================================
+   LOGOUT
+========================================================== */
+
+async function logout(){
+
+await db.auth.signOut();
+
+currentUser=null;
+currentProfile=null;
+
+updateHeader();
+
+showView('quizzes');
+
+toast('Logged out.');
+
+}
+
+
+/* ==========================================================
+   SESSION
+========================================================== */
+
+async function refreshSession(){
+
+const {data,error}=
+await db.auth.getSession();
+
+if(error){
+
+console.error('Session error:',error);
+
+}
+
+currentUser=
+data?.session?.user||null;
+
+if(currentUser){
+
+await loadCurrentProfile();
+
+}else{
+
+currentProfile=null;
+
+}
+
+updateHeader();
+
+}
+
+
+/* ==========================================================
+   PROFILE
+========================================================== */
+
+async function loadCurrentProfile(){
+
+if(!currentUser){
+
+currentProfile=null;
+
+return;
+
+}
+
+
+const {data,error}=
+await db
+.from('users')
+.select('*')
+.eq('id',currentUser.id)
+.maybeSingle();
+
+if(error){
+
+console.error(error);
+
+return;
+
+}
+
+currentProfile=data;
+
+}
+
+
+async function loadProfile(){
+
+const box=document.getElementById('profileBox');
+
+if(!currentUser){
+
+box.innerHTML=
+'<p>Please login to view your profile.</p>';
+
+return;
+
+}
+
+await loadCurrentProfile();
+
+const p=currentProfile||{};
+
+const avatar=
+p.avatar_url
+?'<img src="'+esc(p.avatar_url)+'">'
+:'<span>'+initials(p.full_name)+'</span>';
+
+box.innerHTML=`
+
+<div class="profile-card-header">
+
+<div class="profile-large-avatar">
+${avatar}
+</div>
+
+<div>
+
+<h2>${esc(p.full_name||'Student')}</h2>
+
+<p class="small">
+${esc(p.email||currentUser.email||'')}
+</p>
+
+</div>
+
+</div>
+
+<hr>
+
+<label>Full Name</label>
+
+<input id="profileName"
+value="${esc(p.full_name||'')}">
+
+<label>University</label>
+
+<input id="profileUniversity"
+value="${esc(p.university||'')}">
+
+<label>Year Level</label>
+
+<input id="profileYear"
+value="${esc(p.year_level||'')}">
+
+<button onclick="saveProfile()">
+Save Profile
+</button>
+
+<h3>Your Statistics</h3>
+
+<div class="grid">
+
+<div class="card">
+
+<div class="stat">
+${Number(p.total_score||0)}
+</div>
+
+<div class="small">
+Total Points
+</div>
+
+</div>
+
+<div class="card">
+
+<div class="stat">
+${Number(p.quizzes_completed||0)}
+</div>
+
+<div class="small">
+Quizzes Completed
+</div>
+
+</div>
+
+</div>
+
+<h3>Profile Picture</h3>
+
+<div class="profile-photo-actions">
+
+<input
+id="avatarFile"
+type="file"
+accept="image/*">
+
+<button onclick="uploadAvatar()">
+Upload Picture
+</button>
+
+</div>
+
+`;
+
+}
+
+
+async function saveProfile(){
+
+if(!currentUser)return;
+
+const full_name=
+document.getElementById('profileName').value.trim();
+
+const university=
+document.getElementById('profileUniversity').value.trim();
+
+const year_level=
+document.getElementById('profileYear').value.trim();
+
+const {error}=
+await db
+.from('users')
+.update({
+full_name,
+university,
+year_level
+})
+.eq('id',currentUser.id);
+
+if(error){
+
+toast(error.message);
+
+return;
+
+}
+
+await loadCurrentProfile();
+
+toast('Profile updated.');
+
+loadProfile();
+
+}
+
+
+async function uploadAvatar(){
+
+if(!currentUser)return;
+
+const input=document.getElementById('avatarFile');
+
+const file=input?.files?.[0];
+
+if(!file){
+
+toast('Select a picture first.');
+
+return;
+
+}
+
+const ext=
+file.name
+.split('.')
+.pop()
+.toLowerCase();
+
+const path=
+currentUser.id+
+'/avatar.'+
+ext;
+
+const {error}=
+await db
+.storage
+.from('avatars')
+.upload(
+path,
+file,
+{
+upsert:true,
+contentType:file.type
+}
+);
+
+if(error){
+
+toast(error.message);
+
+return;
+
+}
+
+const {data}=db
+.storage
+.from('avatars')
+.getPublicUrl(path);
+
+const avatar_url=data.publicUrl;
+
+const {error:updateError}=
+await db
+.from('users')
+.update({avatar_url})
+.eq('id',currentUser.id);
+
+if(updateError){
+
+toast(updateError.message);
+
+return;
+
+}
+
+await loadCurrentProfile();
+
+toast('Profile picture updated.');
+
+loadProfile();
+
+}
+
+
+/* ==========================================================
+   HEADER
+========================================================== */
+
+function updateHeader(){
+
+const headerAvatar=
+document.getElementById('headerAvatar');
+
+if(headerAvatar){
+
+const photo=
+currentProfile?.avatar_url ||
+currentUser?.user_metadata?.avatar_url ||
+currentUser?.user_metadata?.picture ||
+'';
+
+const name=
+currentProfile?.full_name ||
+currentProfile?.name ||
+currentUser?.user_metadata?.full_name ||
+currentUser?.email ||
+'Thrives Archivers';
+
+const initialLetters=
+String(name)
+.trim()
+.split(/\s+/)
+.filter(Boolean)
+.map(x=>x[0])
+.join('')
+.slice(0,2)
+.toUpperCase();
+
+headerAvatar.innerHTML=
+photo
+?'<img src="'+esc(photo)+'" alt="Profile picture">'
+:esc(initialLetters||'TA');
+
+headerAvatar.title=
+currentUser
+?'Your profile picture'
+:'Login to view your profile picture';
+
+}
+
+const adminBtn=document.getElementById('na');
+const authBtn=document.getElementById('authBtn');
+const logoutBtn=document.getElementById('logoutBtn');
+
+if(currentUser){
+
+authBtn.classList.add('hidden');
+logoutBtn.classList.remove('hidden');
+
+}else{
+
+authBtn.classList.remove('hidden');
+logoutBtn.classList.add('hidden');
+
+}
+
+if(isAdmin()){
+
+adminBtn.classList.remove('hidden');
+
+}else{
+
+adminBtn.classList.add('hidden');
+
+}
+
+}
+
+
+/* ==========================================================
+   LOAD QUIZZES
+========================================================== */
+
+async function loadQuizzes(){
+
+const grid=document.getElementById('quizGrid');
+
+if(!grid)return;
+
+grid.innerHTML='Loading quizzes...';
+
+const {data,error}=
+await db
+.from('quizzes')
+.select('*')
+.eq('is_published',true)
+.order('course_order',{ascending:true})
+.order('subject',{ascending:true})
+.order('period_order',{ascending:true})
+.order('quiz_order',{ascending:true})
+.order('created_at',{ascending:true});
+
+if(error){
+
+grid.innerHTML=
+'<p class="error">'+
+esc(error.message)+
+'</p>';
+
+return;
+
+}
+
+if(!data||!data.length){
+
+grid.innerHTML=
+'<div class="card">No published quizzes yet.</div>';
+
+return;
+
+}
+
+window.organizedPublishedQuizzes=data;
+
+const names=
+[...new Set(
+data.map(q=>q.subject||'Other Course')
+)];
+
+grid.innerHTML=`
+
+<div class="organization-toolbar">
+
+<select
+id="studentCourseFilter"
+onchange="filterOrganizedQuizzes()">
+
+<option value="">All Courses</option>
+
+${names.map(n=>
+`<option value="${esc(n)}">${esc(n)}</option>`
+).join('')}
+
+</select>
+
+<select
+id="studentPeriodFilter"
+onchange="filterOrganizedQuizzes()">
+
+<option value="">All Semesters/Terms</option>
+<option>Semester 1</option>
+<option>Semester 2</option>
+<option>Term 1</option>
+<option>Term 2</option>
+<option>Term 3</option>
+
+</select>
+
+</div>
+
+<div id="organizedQuizResults"></div>
+
+`;
+
+renderOrganizedQuizzes(data);
+
+}
+
+
+function filterOrganizedQuizzes(){
+
+const c=
+document.getElementById('studentCourseFilter')?.value||'';
+
+const p=
+document.getElementById('studentPeriodFilter')?.value||'';
+
+renderOrganizedQuizzes(
+(window.organizedPublishedQuizzes||[])
+.filter(q=>
+(!c||(q.subject||'Other Course')===c)&&
+(!p||(q.period_name||'Semester 1')===p)
+)
+);
+
+}
+
+
+function renderOrganizedQuizzes(list){
+
+const target=
+document.getElementById('organizedQuizResults');
+
+if(!target)return;
+
+if(!list.length){
+
+target.innerHTML=
+'<div class="card">No quizzes match your selection.</div>';
+
+return;
+
+}
+
+const courses={};
+
+list.forEach(q=>{
+
+const c=q.subject||'Other Course';
+const p=q.period_name||'Semester 1';
+
+courses[c]??={
+course_order:Number(q.course_order||9999),
+periods:{}
+};
+
+courses[c].periods[p]??={
+period_order:Number(q.period_order||9999),
+quizzes:[]
+};
+
+courses[c].periods[p].quizzes.push(q);
+
+});
+
+target.innerHTML=
+Object.entries(courses)
+.sort((a,b)=>
+a[1].course_order-b[1].course_order||
+a[0].localeCompare(b[0])
+)
+.map(([c,course])=>`
+
+<section>
+
+<div class="course-heading">
+
+<h2>📚 ${esc(c)}</h2>
+
+<p>Course quizzes</p>
+
+</div>
+
+${Object.entries(course.periods)
+.sort((a,b)=>
+a[1].period_order-b[1].period_order||
+a[0].localeCompare(b[0])
+)
+.map(([p,period])=>`
+
+<h3 class="period-heading">
+${esc(p)}
+</h3>
+
+<div class="grid">
+
+${period.quizzes
+.sort((a,b)=>
+Number(a.quiz_order||9999)-
+Number(b.quiz_order||9999)
+)
+.map(q=>`
+
+<div class="card">
+
+<span class="badge published">
+${esc(p)}
+</span>
+
+<span class="order-badge">
+Quiz ${Number(q.quiz_order||1)}
+</span>
+
+<h2>${esc(q.title||'Untitled Quiz')}</h2>
+
+<p>${esc(q.description||'Test your knowledge.')}</p>
+
+<p class="small">
+${Number(q.total_questions||0)} questions •
+${Number(q.time_limit_minutes||30)} minutes
+</p>
+
+<p class="small">
+Difficulty:
+${esc(q.difficulty||'Medium')}
+</p>
+
+<button onclick="startQuiz('${q.id}')">
+Start Quiz
+</button>
+
+</div>
+
+`).join('')}
+
+</div>
+
+`).join('')}
+
+</section>
+
+`).join('');
+
+}
+
+
+/* ==========================================================
+   START QUIZ
+========================================================== */
+
+async function startQuiz(id){
+
+if(!currentUser){
+
+openAuth();
+
+toast('Please login before starting a quiz.');
+
+return;
+
+}
+
+const {data:quiz,error:quizError}=
+await db
+.from('quizzes')
+.select('*')
+.eq('id',id)
+.single();
+
+if(quizError){
+
+toast(quizError.message);
+
+return;
+
+}
+
+const {data:questions,error:questionError}=
+await db
+.from('questions')
+.select(`
+id,
+quiz_id,
+question_text,
+question_type,
+order_index,
+explanation,
+options(
+id,
+question_id,
+option_text,
+is_correct,
+order_index
+)
+`)
+.eq('quiz_id',id)
+.order('order_index',{ascending:true});
+
+if(questionError){
+
+toast(questionError.message);
+
+return;
+
+}
+
+if(!questions?.length){
+
+toast('This quiz has no questions yet.');
+
+return;
+
+}
+
+currentQuiz=quiz;
+currentQuestions=questions;
+currentQuestionIndex=0;
+selectedAnswers={};
+currentAttemptId=null;
+quizStartedAt=Date.now();
+
+showView('playing');
+
+renderQuestion();
+
+}
+
+
+function renderQuestion(){
+
+const q=currentQuestions[currentQuestionIndex];
+
+const opts=
+[...(q.options||[])]
+.sort(
+(a,b)=>
+(a.order_index||0)-
+(b.order_index||0)
+);
+
+const selectedId=selectedAnswers[q.id];
+
+const selectedOption=
+opts.find(o=>o.id===selectedId);
+
+const hasSelectedAnswer=Boolean(selectedOption);
+
+document.getElementById('playTitle').textContent=
+currentQuiz.title;
+
+document.getElementById('counter').textContent=
+'Question '+
+(currentQuestionIndex+1)+
+' of '+
+currentQuestions.length;
+
+document.getElementById('bar').style.width=
+(
+(currentQuestionIndex+1)/
+currentQuestions.length*
+100
+)+'%';
+
+const optionsHtml=
+opts.map((o,i)=>{
+
+let answerClass='';
+
+if(hasSelectedAnswer&&o.is_correct===true){
+answerClass='answer-correct';
+}
+
+if(
+hasSelectedAnswer &&
+o.id===selectedId &&
+o.is_correct!==true
+){
+answerClass='answer-wrong';
+}
+
+return `
+
+<label class="option ${answerClass}">
+
+<input
+type="radio"
+name="answer"
+${selectedId===o.id?'checked':''}
+${hasSelectedAnswer?'disabled':''}
+onchange="selectAnswer('${q.id}','${o.id}')">
+
+${String.fromCharCode(65+i)}.
+${esc(o.option_text)}
+
+</label>
+
+`;
+
+}).join('');
+
+let explanationHtml='';
+
+if(hasSelectedAnswer){
+
+explanationHtml=`
+
+<div class="explanation">
+
+<b>
+${
+selectedOption?.is_correct===true
+?'Correct Answer'
+:'Wrong Answer — Correct Answer Highlighted'
+}
+</b>
+
+<p>
+${esc(
+q.explanation||
+'Review the highlighted answers and read the explanation carefully.'
+)}
+</p>
+
+</div>
+
+`;
+
+}
+
+document.getElementById('questionBox').innerHTML=`
+
+<h2>${esc(q.question_text)}</h2>
+
+${optionsHtml}
+
+${explanationHtml}
+
+`;
+
+document.getElementById('nextBtn').textContent=
+currentQuestionIndex===
+currentQuestions.length-1
+?'Submit Quiz'
+:'Next';
+
+}
+
+
+function selectAnswer(qid,oid){
+
+if(selectedAnswers[qid])return;
+
+selectedAnswers[qid]=oid;
+
+updatePreview();
+
+renderQuestion();
+
+}
+
+
+function updatePreview(){
+
+let score=0;
+
+currentQuestions.forEach(q=>{
+
+const selected=selectedAnswers[q.id];
+
+const correct=
+(q.options||[]).find(o=>o.id===selected);
+
+if(correct?.is_correct===true)score++;
+
+});
+
+const el=document.getElementById('scorePreview');
+
+if(el)el.textContent='Score: '+score;
+
+}
+
+
+async function nextQuestion(){
+
+const q=currentQuestions[currentQuestionIndex];
+
+if(!selectedAnswers[q.id]){
+
+toast('Please select an answer.');
+
+return;
+
+}
+
+if(currentQuestionIndex<currentQuestions.length-1){
+
+currentQuestionIndex++;
+
+renderQuestion();
+
+return;
+
+}
+
+await submitQuiz();
+
+}
+
+
+function leaveQuiz(){
+
+if(!confirm(
+'Are you sure you want to leave this quiz? Your progress will be lost.'
+))return;
+
+currentQuiz=null;
+currentQuestions=[];
+selectedAnswers={};
+
+showView('quizzes');
+
+}
+
+
+/* ==========================================================
+   SUBMIT QUIZ
+========================================================== */
+
+async function submitQuiz(){
+
+if(!currentUser){
+
+toast('Please login.');
+
+return;
+
+}
+
+let correctAnswers=0;
+
+const answers=[];
+
+currentQuestions.forEach(q=>{
+
+const selectedId=selectedAnswers[q.id];
+
+const option=
+(q.options||[]).find(
+o=>o.id===selectedId
+);
+
+const isCorrect=option?.is_correct===true;
+
+if(isCorrect)correctAnswers++;
+
+answers.push({
+question_id:q.id,
+selected_option_id:selectedId||null,
+is_correct:isCorrect
+});
+
+});
+
+const totalQuestions=currentQuestions.length;
+
+const percentage=
+totalQuestions
+?Math.round(
+(correctAnswers/totalQuestions)*100
+)
+:0;
+
+const passed=
+percentage>=Number(
+currentQuiz.passing_score||70
+);
+
+const timeTaken=
+Math.floor(
+(Date.now()-quizStartedAt)/1000
+);
+
+const {
+data:attempt,
+error:attemptError
+}=
+await db
+.from('quiz_attempts')
+.insert({
+
+user_id:currentUser.id,
+quiz_id:currentQuiz.id,
+score:percentage,
+total_questions:totalQuestions,
+correct_answers:correctAnswers,
+passed,
+time_taken_seconds:timeTaken,
+completed_at:new Date().toISOString()
+
+})
+.select()
+.single();
+
+if(attemptError){
+
+toast(
+'Could not save attempt: '+
+attemptError.message
+);
+
+return;
+
+}
+
+currentAttemptId=attempt.id;
+
+const rows=
+answers.map(a=>({
+
+attempt_id:attempt.id,
+question_id:a.question_id,
+selected_option_id:a.selected_option_id,
+is_correct:a.is_correct
+
+}));
+
+const {error:answerError}=
+await db
+.from('user_answers')
+.insert(rows);
+
+if(answerError)console.error(answerError);
+
+const {data:userData}=
+await db
+.from('users')
+.select('total_score,quizzes_completed')
+.eq('id',currentUser.id)
+.single();
+
+const oldScore=
+Number(userData?.total_score||0);
+
+const oldCompleted=
+Number(userData?.quizzes_completed||0);
+
+await db
+.from('users')
+.update({
+
+total_score:oldScore+correctAnswers,
+quizzes_completed:oldCompleted+1
+
+})
+.eq('id',currentUser.id);
+
+await updateLeaderboard();
+
+alert(
+'Quiz completed!\n\n'+
+'Score: '+
+correctAnswers+
+'/'+
+totalQuestions+
+' ('+
+percentage+
+'%)\n\n'+
+(passed?'PASSED 🎉':'NOT PASSED')
+);
+
+currentQuiz=null;
+currentQuestions=[];
+selectedAnswers={};
+
+showView('quizzes');
+
+loadQuizzes();
+
+}
+
+
+/* ==========================================================
+   LEADERBOARD
+========================================================== */
+
+async function loadLeaderboard(){
+
+const box=document.getElementById('leaderboardBox');
+
+if(!box)return;
+
+box.innerHTML='Loading...';
+
+const {data,error}=
+await db
+.from('leaderboard_public')
+.select('*')
+.order('rank_position',{ascending:true});
+
+if(error){
+
+box.innerHTML=
+'<p class="error">'+
+esc(error.message)+
+'</p>';
+
+return;
+
+}
+
+if(!data?.length){
+
+box.innerHTML=
+'<p>No leaderboard data yet.</p>';
+
+return;
+
+}
+
+box.innerHTML=`
+
+<div class="tablewrap">
+
+<table>
+
+<thead>
+
+<tr>
+<th>Rank</th>
+<th>Student</th>
+<th>University</th>
+<th>Year</th>
+<th>Points</th>
+<th>Quizzes</th>
+<th>Average</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+${
+data.map(row=>{
+
+const avatar=
+row.avatar_url
+?'<img src="'+esc(row.avatar_url)+'" class="leaderboard-avatar">'
+:'<div class="leaderboard-avatar">'+
+initials(row.full_name)+
+'</div>';
+
+return `
+
+<tr>
+
+<td><b>#${Number(row.rank_position||0)}</b></td>
+
+<td>
+
+<div class="leaderboard-profile">
+
+${avatar}
+
+<div>
+
+<b>${esc(row.full_name||'Student')}</b>
+
+<div class="small">
+${Number(row.quizzes_taken||0)} quizzes
+</div>
+
+</div>
+
+</div>
+
+</td>
+
+<td>${esc(row.university||'-')}</td>
+
+<td>${esc(row.year_level||'-')}</td>
+
+<td><b>${Number(row.total_points||0)}</b></td>
+
+<td>${Number(row.quizzes_taken||0)}</td>
+
+<td>${Number(row.average_score||0)}%</td>
+
+</tr>
+
+`;
+
+}).join('')
+}
+
+</tbody>
+
+</table>
+
+</div>
+
+`;
+
+}
+
+
+async function updateLeaderboard(){
+
+if(
+document
+.getElementById('leaderboard')
+.classList
+.contains('active')
+){
+
+loadLeaderboard();
+
+}
+
+}
+
+
+/* ==========================================================
+   ADMIN TABS
+========================================================== */
+
+function adminTab(tab){
+
+if(!isAdmin()){
+
+toast('Admin access required.');
+
+return;
+
+}
+
+document
+.querySelectorAll('.adminbox')
+.forEach(
+x=>x.classList.add('hidden')
+);
+
+const id=
+'a'+
+tab.charAt(0).toUpperCase()+
+tab.slice(1);
+
+const target=document.getElementById(id);
+
+if(target)target.classList.remove('hidden');
+
+}
+
+
+/* ==========================================================
+   LOAD ADMIN
+========================================================== */
+
+async function loadAdmin(){
+
+if(!isAdmin())return;
+
+document.getElementById('aCreate').innerHTML=`
+
+<h2>➕ Create Quiz Manually</h2>
+
+<p class="small">
+Your existing manual quiz system is unchanged.
+</p>
+
+<label>Title</label>
+
+<input id="qt" placeholder="e.g. Anatomy Quiz 1">
+
+<label>Subject</label>
+
+<select id="qs">
+
+<option value="">Select course/subject</option>
+<option>Mathematics</option>
+<option>Physics</option>
+<option>Chemistry</option>
+<option>Biology</option>
+<option>Anatomy</option>
+<option>Biochemistry</option>
+<option>Physiology</option>
+<option>Pharmacology</option>
+<option>Pathology</option>
+
+</select>
+
+<label>Course Order</label>
+
+<input id="qcourseorder" type="number" min="1" value="1">
+
+<label>Semester or Term</label>
+
+<select id="qperiod">
+
+<option>Semester 1</option>
+<option>Semester 2</option>
+<option>Term 1</option>
+<option>Term 2</option>
+<option>Term 3</option>
+
+</select>
+
+<label>Semester/Term Order</label>
+
+<input id="qperiodorder" type="number" min="1" value="1">
+
+<label>Quiz Order</label>
+
+<input id="qquizorder" type="number" min="1" value="1">
+
+<label>Description</label>
+
+<textarea id="qd" rows="3"></textarea>
+
+<label>Total Questions</label>
+
+<input id="qtotal" type="number" min="1" value="10">
+
+<label>Time Limit (minutes)</label>
+
+<input id="qtime" type="number" min="1" value="30">
+
+<label>Difficulty</label>
+
+<select id="qdiff">
+
+<option>Easy</option>
+<option selected>Medium</option>
+<option>Hard</option>
+
+</select>
+
+<label>Passing Score (%)</label>
+
+<input id="qpass" type="number" min="0" max="100" value="70">
+
+<label>
+
+<input
+id="qpub"
+type="checkbox"
+style="width:auto">
+
+Publish immediately
+
+</label>
+
+<br>
+
+<button onclick="createQuiz()">
+Create Quiz
+</button>
+
+`;
+
+
+/* =====================================================
+   AI GENERATOR
+===================================================== */
+
+document.getElementById('aAi').innerHTML=`
+
+<div class="ai-card card">
+
+<div class="ai-title">
+
+<div class="ai-icon">🤖</div>
+
+<div>
+
+<h2 style="margin:0">
+AI Quiz Generator
+</h2>
+
+<p class="small" style="margin:5px 0 0">
+Generate multiple-choice questions from your study notes using Gemini.
+</p>
+
+</div>
+
+</div>
+
+
+<div class="ai-info">
+
+<b>How it works:</b>
+
+<br><br>
+
+1. Paste your notes below.
+<br>
+2. Gemini creates multiple-choice questions.
+<br>
+3. The quiz is automatically saved as a <b>DRAFT</b>.
+<br>
+4. You review every question, option, answer and explanation.
+<br>
+5. Publish only when you are satisfied.
+
+</div>
+
+
+<label>Quiz Title</label>
+
+<input
+id="aiTitle"
+placeholder="e.g. Anatomy - Upper Limb Revision Quiz">
+
+
+<label>Subject / Course</label>
+
+<select id="aiSubject">
+
+<option value="">Select course/subject</option>
+
+<option>Mathematics</option>
+<option>Physics</option>
+<option>Chemistry</option>
+<option>Biology</option>
+<option>Anatomy</option>
+<option>Biochemistry</option>
+<option>Physiology</option>
+<option>Pharmacology</option>
+<option>Pathology</option>
+
+</select>
+
+
+<label>Course Order</label>
+
+<input
+id="aiCourseOrder"
+type="number"
+min="1"
+value="1">
+
+
+<label>Semester / Term</label>
+
+<select id="aiPeriod">
+
+<option>Semester 1</option>
+<option>Semester 2</option>
+<option>Term 1</option>
+<option>Term 2</option>
+<option>Term 3</option>
+
+</select>
+
+
+<label>Semester / Term Order</label>
+
+<input
+id="aiPeriodOrder"
+type="number"
+min="1"
+value="1">
+
+
+<label>Quiz Order</label>
+
+<input
+id="aiQuizOrder"
+type="number"
+min="1"
+value="1">
+
+
+<label>Description</label>
+
+<textarea
+id="aiDescription"
+rows="3"
+placeholder="Test your knowledge of basic cell structure, organelles, and cellular processes through multiple-choice questions.">
+</textarea>
+
+
+<div class="grid">
+
+<div>
+
+<label>Number of Questions</label>
+
+<input
+id="aiNumber"
+type="number"
+min="1"
+max="50"
+value="10">
+
+</div>
+
+<div>
+
+<label>Difficulty</label>
+
+<select id="aiDifficulty">
+
+<option>Easy</option>
+<option selected>Medium</option>
+<option>Hard</option>
+
+</select>
+
+</div>
+
+<div>
+
+<label>Time Limit (minutes)</label>
+
+<input
+id="aiTime"
+type="number"
+min="1"
+value="30">
+
+</div>
+
+<div>
+
+<label>Passing Score (%)</label>
+
+<input
+id="aiPassing"
+type="number"
+min="0"
+max="100"
+value="70">
+
+</div>
+
+</div>
+
+
+<label>📚 Paste Your Study Notes</label>
+
+<textarea
+id="aiNotes"
+class="notes-box"
+placeholder="Paste your study notes here...
+
+Example:
+
+The cell is the basic structural and functional unit of life.
+Prokaryotic cells lack a membrane-bound nucleus.
+Eukaryotic cells contain a membrane-bound nucleus.
+Mitochondria are involved in ATP production.
+Ribosomes are responsible for protein synthesis.
+The plasma membrane controls movement of substances into and out of the cell.
+">
+</textarea>
+
+
+<div class="review-warning">
+
+⚠️ <b>Important:</b>
+AI-generated questions should always be reviewed by the administrator before publishing. Check every question, four options, correct answer and explanation.
+
+</div>
+
+
+<button
+id="generateAiBtn"
+onclick="generateAIQuiz()">
+
+🤖 Generate Quiz with Gemini
+
+</button>
+
+
+<div id="aiResult"></div>
+
+</div>
+
+`;
+
+
+/* =====================================================
+   MANUAL QUESTION
+===================================================== */
+
+document.getElementById('aQuestion').innerHTML=`
+
+<h2>📝 Add Question Manually</h2>
+
+<label>Quiz</label>
+
+<select id="questionQuiz"></select>
+
+<label>Question</label>
+
+<textarea
+id="questionText"
+rows="4"
+placeholder="Enter the question">
+</textarea>
+
+<label>
+Explanation
+(shown after answer)
+</label>
+
+<textarea
+id="questionExplanation"
+rows="4"
+placeholder="Explain why the correct answer is correct and help the student learn.">
+</textarea>
+
+<h3>Exactly 4 Answer Options</h3>
+
+<div id="optionFields"></div>
+
+<br>
+
+<button class="secondary" onclick="addOptionField()">
++ Add Option
+</button>
+
+<br><br>
+
+<button onclick="createQuestion()">
+Save Question
+</button>
+
+`;
+
+
+/* MANAGE */
+
+document.getElementById('aManage').innerHTML=`
+
+<h2>📚 Manage Quizzes</h2>
+
+<div id="manageBox">
+Loading...
+</div>
+
+`;
+
+
+/* STUDENTS */
+
+document.getElementById('aStudents').innerHTML=`
+
+<h2>👥 Students</h2>
+
+<div id="studentsBox">
+Loading...
+</div>
+
+`;
+
+
+/* ATTEMPTS */
+
+document.getElementById('aAttempts').innerHTML=`
+
+<h2>📊 Attempts</h2>
+
+<div id="attemptsBox">
+Loading...
+</div>
+
+`;
+
+await populateQuizSelect();
+
+document.getElementById('optionFields').innerHTML='';
+
+addOptionField();
+addOptionField();
+addOptionField();
+addOptionField();
+
+await manageQuizzes();
+await loadStudents();
+await loadAttempts();
+
+adminTab('create');
+
+}
+
+
+/* ==========================================================
+   QUIZ SELECT
+========================================================== */
+
+async function populateQuizSelect(){
+
+const s=document.getElementById('questionQuiz');
+
+if(!s)return;
+
+const {data,error}=
+await db
+.from('quizzes')
+.select(
+'id,title,subject,period_name,quiz_order,course_order,period_order'
+)
+.order('course_order',{ascending:true})
+.order('subject',{ascending:true})
+.order('period_order',{ascending:true})
+.order('quiz_order',{ascending:true});
+
+if(error){
+
+s.innerHTML='<option>Error</option>';
+
+return;
+
+}
+
+s.innerHTML=
+data?.length
+?data.map(q=>
+'<option value="'+
+q.id+
+'">'+
+esc(q.title)+
+'</option>'
+).join('')
+:'<option value="">Create a quiz first</option>';
+
+}
+
+
+/* ==========================================================
+   OPTIONS
+========================================================== */
+
+function addOptionField(){
+
+const b=document.getElementById('optionFields');
+
+if(b.children.length>=4){
+
+toast(
+'A multiple-choice question must have exactly 4 options.'
+);
+
+return;
+
+}
+
+const n=b.children.length+1;
+
+b.insertAdjacentHTML(
+'beforeend',
+
+'<div style="display:flex;gap:8px;align-items:center;margin:8px 0">'+
+
+'<input class="optText" placeholder="Option '+
+n+
+'" style="flex:1">'+
+
+'<label style="white-space:nowrap">'+
+
+'<input class="optCorrect" type="radio" name="correctOption" style="width:auto">'+
+
+' Correct answer'+
+
+'</label>'+
+
+'</div>'
+
+);
+
+}
+
+
+/* ==========================================================
+   CREATE QUIZ
+========================================================== */
+
+async function createQuiz(){
+
+if(!isAdmin())return;
+
+const title=
+document.getElementById('qt').value.trim();
+
+const subject=
+document.getElementById('qs').value.trim();
+
+const course_order=
+Number(document.getElementById('qcourseorder').value)||1;
+
+const period_name=
+document.getElementById('qperiod').value;
+
+const period_order=
+Number(document.getElementById('qperiodorder').value)||1;
+
+const quiz_order=
+Number(document.getElementById('qquizorder').value)||1;
+
+if(!title||!subject){
+
+toast('Enter title and subject.');
+
+return;
+
+}
+
+const {error}=
+await db
+.from('quizzes')
+.insert({
+
+title,
+subject,
+course_order,
+period_name,
+period_order,
+quiz_order,
+
+description:
+document.getElementById('qd').value.trim(),
+
+total_questions:
+Number(document.getElementById('qtotal').value)||1,
+
+time_limit_minutes:
+Number(document.getElementById('qtime').value)||30,
+
+difficulty:
+document.getElementById('qdiff').value,
+
+passing_score:
+Number(document.getElementById('qpass').value)||70,
+
+created_by:
+currentUser.id,
+
+is_published:
+document.getElementById('qpub').checked
+
+});
+
+if(error){
+
+toast(error.message);
+
+return;
+
+}
+
+toast('Quiz created.');
+
+loadAdmin();
+
+}
+
+
+/* ==========================================================
+   CREATE QUESTION
+========================================================== */
+
+async function createQuestion(){
+
+if(!isAdmin())return;
+
+const quiz_id=
+document.getElementById('questionQuiz').value;
+
+const text=
+document.getElementById('questionText').value.trim();
+
+const explanation=
+document.getElementById('questionExplanation').value.trim();
+
+const texts=
+[...document.querySelectorAll('.optText')]
+.map(x=>x.value.trim());
+
+const radios=
+[...document.querySelectorAll('.optCorrect')];
+
+if(!quiz_id||!text){
+
+toast(
+'Select a quiz and enter the question.'
+);
+
+return;
+
+}
+
+if(texts.length!==4||texts.some(x=>!x)){
+
+toast(
+'Enter exactly 4 complete answer options.'
+);
+
+return;
+
+}
+
+const ci=radios.findIndex(x=>x.checked);
+
+if(ci<0){
+
+toast(
+'Mark one option as the correct answer.'
+);
+
+return;
+
+}
+
+if(!explanation){
+
+toast(
+'Enter an explanation for this question.'
+);
+
+return;
+
+}
+
+const {
+data:last,
+error:oe
+}=
+await db
+.from('questions')
+.select('order_index')
+.eq('quiz_id',quiz_id)
+.order('order_index',{ascending:false})
+.limit(1);
+
+if(oe){
+
+toast(
+'Could not get question order: '+
+oe.message
+);
+
+return;
+
+}
+
+const order=
+(last?.[0]?.order_index||0)+1;
+
+const {
+data:q,
+error
+}=
+await db
+.from('questions')
+.insert({
+
+quiz_id,
+question_text:text,
+question_type:'multiple_choice',
+order_index:order,
+explanation
+
+})
+.select()
+.single();
+
+if(error){
+
+toast(
+'Question save failed: '+
+error.message
+);
+
+return;
+
+}
+
+const {error:op}=
+await db
+.from('options')
+.insert(
+texts.map(
+(x,i)=>({
+
+question_id:q.id,
+option_text:x,
+is_correct:i===ci,
+order_index:i+1
+
+})
+)
+);
+
+if(op){
+
+await db
+.from('questions')
+.delete()
+.eq('id',q.id);
+
+toast(
+'Options save failed: '+
+op.message
+);
+
+return;
+
+}
+
+const {count}=
+await db
+.from('questions')
+.select('*',{count:'exact',head:true})
+.eq('quiz_id',quiz_id);
+
+await db
+.from('quizzes')
+.update({
+total_questions:count||0
+})
+.eq('id',quiz_id);
+
+toast(
+'Question + 4 options + correct answer + explanation saved.'
+);
+
+document.getElementById('questionText').value='';
+document.getElementById('questionExplanation').value='';
+
+document
+.querySelectorAll('.optText')
+.forEach(x=>x.value='');
+
+document
+.querySelectorAll('.optCorrect')
+.forEach(x=>x.checked=false);
+
+}
+
+
+/* ==========================================================
+   🔐 AUTHENTICATION DIAGNOSTIC
+========================================================== */
+
+function decodeBase64Url(value){
+
+let base64=value
+.replace(/-/g,'+')
+.replace(/_/g,'/');
+
+while(base64.length%4){
+base64+='=';
+}
+
+return atob(base64);
+
+}
+
+
+function decodeJWTPart(part){
+
+return JSON.parse(
+decodeBase64Url(part)
+);
+
+}
+
+
+async function checkAuthentication(){
+
+if(!isAdmin()){
+
+toast('Admin access required.');
+
+return;
+
+}
+
+const box=
+document.getElementById('authDiagnostic');
+
+box.classList.remove('hidden');
+
+box.innerHTML=`
+
+<div class="auth-diagnostic">
+
+<h3>🔐 Supabase Authentication Diagnostic</h3>
+
+<p>
+Checking your Supabase login session and JWT...
+</p>
+
+<div class="ai-loading">
+
+<div class="spinner"></div>
+
+Checking authentication...
+
+</div>
+
+</div>
+
+`;
+
+try{
+
+/* -----------------------------------------
+   GET SESSION
+----------------------------------------- */
+
+const {
+data,
+error
+}=
+await db.auth.getSession();
+
+if(error){
+
+throw new Error(
+'Could not read Supabase session: '+
+error.message
+);
+
+}
+
+const session=data?.session;
+
+if(!session){
+
+box.innerHTML=`
+
+<div class="auth-diagnostic">
+
+<h3>❌ No Active Supabase Session</h3>
+
+<div class="auth-diagnosis bad">
+
+<p>
+Your browser does not currently have a valid Supabase login session.
+</p>
+
+<p>
+Please logout and login again.
+</p>
+
+</div>
+
+<button onclick="openAuth()">
+🔑 Login Again
+</button>
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+const user=session.user;
+
+const accessToken=session.access_token;
+
+
+/* -----------------------------------------
+   DECODE JWT HEADER
+----------------------------------------- */
+
+let header=null;
+let payload=null;
+
+try{
+
+const parts=accessToken.split('.');
+
+if(parts.length!==3){
+
+throw new Error('Invalid JWT format.');
+
+}
+
+header=
+decodeJWTPart(parts[0]);
+
+payload=
+decodeJWTPart(parts[1]);
+
+}catch(jwtError){
+
+console.error(
+'JWT decode error:',
+jwtError
+);
+
+}
+
+
+/* -----------------------------------------
+   CHECK USER PROFILE
+----------------------------------------- */
+
+const {
+data:profile,
+error:profileError
+}=
+await db
+.from('users')
+.select('id,email,is_admin')
+.eq('id',user.id)
+.maybeSingle();
+
+
+/* -----------------------------------------
+   TOKEN EXPIRATION
+----------------------------------------- */
+
+let expiration='Unknown';
+
+let expired=false;
+
+if(payload?.exp){
+
+const expirationDate=
+new Date(payload.exp*1000);
+
+expiration=
+expirationDate.toLocaleString();
+
+expired=
+expirationDate.getTime()<=Date.now();
+
+}
+
+
+/* -----------------------------------------
+   JWT INFORMATION
+----------------------------------------- */
+
+const algorithm=
+header?.alg||
+'Unknown';
+
+const keyId=
+header?.kid||
+'No kid';
+
+
+/* -----------------------------------------
+   ADMIN STATUS
+----------------------------------------- */
+
+const databaseAdmin=
+profile?.is_admin===true ||
+profile?.is_admin===1 ||
+String(profile?.is_admin).toLowerCase()==='true';
+
+
+/* -----------------------------------------
+   SESSION STATUS
+----------------------------------------- */
+
+const sessionStatus=
+expired
+?'❌ Expired'
+:'✅ Active';
+
+const sessionClass=
+expired
+?'auth-bad'
+:'auth-good';
+
+const adminStatus=
+databaseAdmin
+?'✅ TRUE'
+:'❌ FALSE';
+
+const adminClass=
+databaseAdmin
+?'auth-good'
+:'auth-bad';
+
+
+/* -----------------------------------------
+   JWT STATUS
+----------------------------------------- */
+
+let jwtClass='auth-good';
+
+let jwtMessage='';
+
+if(algorithm==='HS256'){
+
+jwtClass='auth-warning';
+
+jwtMessage=`
+
+<div class="auth-diagnosis warning">
+
+<h4>⚠️ HS256 JWT Detected</h4>
+
+<p>
+Your current Supabase access token is using
+<strong>HS256</strong>.
+</p>
+
+<p>
+Your previous Edge Function error reported:
+
+</p>
+
+<code class="auth-code">
+no HS256 key in the JWKS matches the token's "kid"
+</code>
+
+<p>
+This means the Edge Function's JWT verifier may not
+have the signing key required to verify this token.
+</p>
+
+</div>
+
+`;
+
+}else{
+
+jwtMessage=`
+
+<div class="auth-diagnosis good">
+
+<h4>✅ JWT Algorithm Detected</h4>
+
+<p>
+The browser received a
+<strong>${esc(algorithm)}</strong>
+JWT.
+</p>
+
+</div>
+
+`;
+
+}
+
+
+/* -----------------------------------------
+   PROFILE ERROR
+----------------------------------------- */
+
+let profileErrorHtml='';
+
+if(profileError){
+
+profileErrorHtml=`
+
+<div class="auth-diagnosis bad">
+
+<h4>❌ Users Table Check Failed</h4>
+
+<p>
+${esc(profileError.message)}
+</p>
+
+</div>
+
+`;
+
+}
+
+
+/* -----------------------------------------
+   FINAL DIAGNOSIS
+----------------------------------------- */
+
+let finalDiagnosis='';
+
+if(expired){
+
+finalDiagnosis=`
+
+<div class="auth-diagnosis bad">
+
+<h4>❌ Session Expired</h4>
+
+<p>
+Your Supabase access token has expired.
+Please logout and login again.
+</p>
+
+</div>
+
+`;
+
+}else if(!databaseAdmin){
+
+finalDiagnosis=`
+
+<div class="auth-diagnosis bad">
+
+<h4>❌ Admin Permission Not Confirmed</h4>
+
+<p>
+Your login session is active, but the
+<strong>users.is_admin</strong>
+value is not true.
+</p>
+
+<p>
+Check the user's record in the Supabase
+<strong>users</strong> table.
+</p>
+
+</div>
+
+`;
+
+}else if(algorithm==='HS256'){
+
+finalDiagnosis=`
+
+<div class="auth-diagnosis warning">
+
+<h4>⚠️ Browser Authentication Looks Valid</h4>
+
+<p>
+Your browser session is active and your database
+profile says you are an administrator.
+</p>
+
+<p>
+However, your JWT is using
+<strong>HS256</strong>.
+</p>
+
+<p>
+Because the Edge Function previously returned
+<strong>INVALID_JWT / no HS256 key in JWKS</strong>,
+the remaining problem is most likely the
+Edge Function's JWT verification configuration.
+</p>
+
+</div>
+
+`;
+
+}else{
+
+finalDiagnosis=`
+
+<div class="auth-diagnosis good">
+
+<h4>✅ Browser Authentication Looks Good</h4>
+
+<p>
+Your session is active, your account is marked
+as an administrator, and your JWT is using
+<strong>${esc(algorithm)}</strong>.
+</p>
+
+<p>
+If the AI generator still returns 401,
+the problem is likely inside the Edge Function
+authentication configuration.
+</p>
+
+</div>
+
+`;
+
+}
+
+
+/* -----------------------------------------
+   DISPLAY RESULT
+----------------------------------------- */
+
+box.innerHTML=`
+
+<div class="auth-diagnostic">
+
+<h3>🔐 Supabase Authentication Diagnostic</h3>
+
+<p class="small">
+This diagnostic does not display your private access token.
+</p>
+
+<div class="auth-status-grid">
+
+<div class="auth-status-item">
+
+<div class="label">
+SESSION
+</div>
+
+<div class="value ${sessionClass}">
+${sessionStatus}
+</div>
+
+</div>
+
+
+<div class="auth-status-item">
+
+<div class="label">
+USER EMAIL
+</div>
+
+<div class="value">
+${esc(user.email||'Unknown')}
+</div>
+
+</div>
+
+
+<div class="auth-status-item">
+
+<div class="label">
+SUPABASE USER ID
+</div>
+
+<div class="value">
+<span class="auth-code">
+${esc(user.id||'Unknown')}
+</span>
+</div>
+
+</div>
+
+
+<div class="auth-status-item">
+
+<div class="label">
+DATABASE ADMIN STATUS
+</div>
+
+<div class="value ${adminClass}">
+${adminStatus}
+</div>
+
+</div>
+
+
+<div class="auth-status-item">
+
+<div class="label">
+JWT ALGORITHM
+</div>
+
+<div class="value ${jwtClass}">
+${esc(algorithm)}
+</div>
+
+</div>
+
+
+<div class="auth-status-item">
+
+<div class="label">
+JWT KEY ID (kid)
+</div>
+
+<div class="value">
+<span class="auth-code">
+${esc(keyId)}
+</span>
+</div>
+
+</div>
+
+
+<div class="auth-status-item">
+
+<div class="label">
+TOKEN EXPIRATION
+</div>
+
+<div class="value">
+${esc(expiration)}
+</div>
+
+</div>
+
+
+<div class="auth-status-item">
+
+<div class="label">
+SUPABASE PROJECT
+</div>
+
+<div class="value">
+<span class="auth-code">
+${esc(SUPABASE_URL)}
+</span>
+</div>
+
+</div>
+
+</div>
+
+${jwtMessage}
+
+${profileErrorHtml}
+
+${finalDiagnosis}
+
+<div style="margin-top:15px;display:flex;gap:10px;flex-wrap:wrap;">
+
+<button onclick="checkAuthentication()">
+🔄 Check Again
+</button>
+
+<button
+class="secondary"
+onclick="logout();setTimeout(openAuth,500);">
+
+🔑 Logout & Login Again
+
+</button>
+
+</div>
+
+</div>
+
+`;
+
+console.log(
+'Authentication diagnostic:',
+{
+userId:user.id,
+email:user.email,
+algorithm,
+kid:keyId,
+isAdmin:databaseAdmin,
+expired
+}
+);
+
+}catch(error){
+
+console.error(
+'Authentication diagnostic error:',
+error
+);
+
+box.innerHTML=`
+
+<div class="auth-diagnostic">
+
+<h3>❌ Authentication Check Failed</h3>
+
+<div class="auth-diagnosis bad">
+
+<p>
+<strong>Error:</strong>
+</p>
+
+<p>
+${esc(
+error?.message||
+'Unknown authentication error.'
+)}
+</p>
+
+</div>
+
+<button onclick="checkAuthentication()">
+🔄 Try Again
+</button>
+
+</div>
+
+`;
+
+}
+
+}
+
+
+/* ==========================================================
+   GET VALID AUTH SESSION
+========================================================== */
+
+async function getValidAuthSession(){
+
+let {
+data,
+error
+}=
+await db.auth.getSession();
+
+if(error){
+
+console.error(
+'getSession error:',
+error
+);
+
+}
+
+
+/*
+If a session exists and has an access token,
+use it.
+*/
+
+if(data?.session?.access_token){
+
+return data.session;
+
+}
+
+
+/*
+No usable session.
+Try refreshing it.
+*/
+
+console.log(
+'No active access token. Attempting session refresh...'
+);
+
+const refresh=
+await db.auth.refreshSession();
+
+if(refresh.error){
+
+console.error(
+'refreshSession error:',
+refresh.error
+);
+
+return null;
+
+}
+
+if(refresh.data?.session?.access_token){
+
+return refresh.data.session;
+
+}
+
+return null;
+
+}
+
+
+/* ==========================================================
+   🤖 AI QUIZ GENERATOR
+========================================================== */
+
+async function generateAIQuiz(){
+
+if(!isAdmin()){
+
+toast('Admin access required.');
+
+return;
+
+}
+
+const notes=
+document.getElementById('aiNotes').value.trim();
+
+const title=
+document.getElementById('aiTitle').value.trim();
+
+const subject=
+document.getElementById('aiSubject').value.trim();
+
+const description=
+document.getElementById('aiDescription').value.trim();
+
+const number_questions=
+Number(
+document.getElementById('aiNumber').value
+)||10;
+
+const difficulty=
+document.getElementById('aiDifficulty').value;
+
+const time_limit_minutes=
+Number(
+document.getElementById('aiTime').value
+)||30;
+
+const passing_score=
+Number(
+document.getElementById('aiPassing').value
+)||70;
+
+if(!title){
+
+toast('Enter a quiz title.');
+
+return;
+
+}
+
+if(!subject){
+
+toast('Select a subject.');
+
+return;
+
+}
+
+if(!notes){
+
+toast('Paste your study notes first.');
+
+return;
+
+}
+
+if(notes.length<30){
+
+toast('Please provide more study notes.');
+
+return;
+
+}
+
+
+/*
+GET CURRENT AUTH SESSION
+*/
+
+const session=
+await getValidAuthSession();
+
+if(!session){
+
+toast(
+'Your login session is missing or expired. Please logout and login again.'
+);
+
+openAuth();
+
+return;
+
+}
+
+console.log(
+'AI request authenticated user:',
+session.user?.id
+);
+
+console.log(
+'Access token available:',
+Boolean(session.access_token)
+);
+
+
+const btn=
+document.getElementById('generateAiBtn');
+
+const result=
+document.getElementById('aiResult');
+
+btn.disabled=true;
+
+btn.innerHTML=
+'<span class="spinner"></span> Gemini is generating...';
+
+result.innerHTML=`
+
+<div class="ai-loading">
+
+<div class="spinner"></div>
+
+<b>Generating your quiz...</b>
+
+<p class="small">
+Gemini is reading your notes and creating multiple-choice questions.
+</p>
+
+</div>
+
+`;
+
+
+try{
+
+const {data,error}=
+await db.functions.invoke(
+'generate-quiz-from-notes',
+{
+
+body:{
+
+notes,
+title,
+subject,
+description,
+
+number_questions,
+difficulty,
+time_limit_minutes,
+passing_score,
+
+course_order:
+Number(
+document.getElementById('aiCourseOrder').value
+)||1,
+
+period_name:
+document.getElementById('aiPeriod').value,
+
+period_order:
+Number(
+document.getElementById('aiPeriodOrder').value
+)||1,
+
+quiz_order:
+Number(
+document.getElementById('aiQuizOrder').value
+)||1
+
+},
+
+headers:{
+
+Authorization:
+`Bearer ${session.access_token}`
+
+}
+
+}
+);
+
+
+console.log(
+'Edge Function data:',
+data
+);
+
+console.log(
+'Edge Function error:',
+error
+);
+
+
+if(error){
+
+let serverMessage='';
+
+try{
+
+if(error.context){
+
+const response=error.context;
+
+const cloned=response.clone();
+
+serverMessage=
+await cloned.text();
+
+}
+
+}catch(readError){
+
+console.warn(
+'Could not read Edge Function error response:',
+readError
+);
+
+}
+
+
+if(
+error.name==='FunctionsHttpError' &&
+error.status===401
+){
+
+throw new Error(
+'401 Unauthorized: Supabase rejected the authentication token before the Edge Function ran.'
++
+(
+serverMessage
+?' Server response: '+serverMessage
+:''
+)
+);
+
+}
+
+if(
+error.name==='FunctionsHttpError' &&
+error.status===403
+){
+
+throw new Error(
+'403 Forbidden: You are authenticated, but the Edge Function did not authorize your account as an administrator.'
++
+(
+serverMessage
+?' Server response: '+serverMessage
+:''
+)
+);
+
+}
+
+throw new Error(
+(error.message||'Edge Function failed')+
+(
+serverMessage
+?' — '+serverMessage
+:''
+)
+);
+
+}
+
+
+const quizId=
+data?.quiz_id||
+data?.quizId||
+data?.id||
+data?.quiz?.id;
+
+if(!quizId){
+
+throw new Error(
+'The AI generated a response, but no quiz ID was returned by the Edge Function.'
+);
+
+}
+
+aiGeneratedQuizId=quizId;
+
+toast(
+'AI quiz generated successfully as a draft.'
+);
+
+await previewAIGeneratedQuiz(quizId);
+
+await manageQuizzes();
+
+await populateQuizSelect();
+
+
+}catch(error){
+
+console.error(
+'AI generation failed:',
+error
+);
+
+result.innerHTML=`
+
+<div class="ai-error">
+
+<h3>
+❌ AI Quiz Generation Failed
+</h3>
+
+<p>
+<b>Error:</b>
+</p>
+
+<p>
+${esc(
+error?.message||
+'Unknown error occurred.'
+)}
+</p>
+
+<hr>
+
+<p>
+<b>Authentication checklist:</b>
+</p>
+
+<ul>
+
+<li>
+You must be logged in.
+</li>
+
+<li>
+Your Supabase session must still be valid.
+</li>
+
+<li>
+Your account must have
+<code>is_admin = true</code>
+in the <code>users</code> table.
+</li>
+
+<li>
+The Edge Function must be named
+<code>generate-quiz-from-notes</code>.
+</li>
+
+</ul>
+
+<p>
+Click
+<strong>🔐 Check Authentication</strong>
+in the Admin panel to diagnose the current session.
+</p>
+
+</div>
+
+`;
+
+toast(
+'AI generation failed. See the error details below.'
+);
+
+}finally{
+
+btn.disabled=false;
+
+btn.innerHTML=
+'🤖 Generate Quiz with Gemini';
+
+}
+
+}
+
+
+/* ==========================================================
+   AI PREVIEW
+========================================================== */
+
+async function previewAIGeneratedQuiz(quizId){
+
+const result=
+document.getElementById('aiResult');
+
+if(!result)return;
+
+result.innerHTML=`
+
+<div class="ai-loading">
+
+<div class="spinner"></div>
+
+Loading generated questions...
+
+</div>
+
+`;
+
+const {
+data:quiz,
+error:quizError
+}=
+await db
+.from('quizzes')
+.select('*')
+.eq('id',quizId)
+.single();
+
+if(quizError){
+
+result.innerHTML=
+'<p class="error">'+
+esc(quizError.message)+
+'</p>';
+
+return;
+
+}
+
+const {
+data:questions,
+error:questionError
+}=
+await db
+.from('questions')
+.select(`
+id,
+question_text,
+question_type,
+order_index,
+explanation,
+options(
+id,
+option_text,
+is_correct,
+order_index
+)
+`)
+.eq('quiz_id',quizId)
+.order('order_index',{ascending:true});
+
+if(questionError){
+
+result.innerHTML=
+'<p class="error">'+
+esc(questionError.message)+
+'</p>';
+
+return;
+
+}
+
+if(!questions?.length){
+
+result.innerHTML=`
+
+<div class="card">
+
+<p class="error">
+The AI created the quiz, but no questions were found.
+</p>
+
+</div>
+
+`;
+
+return;
+
+}
+
+result.innerHTML=`
+
+<div class="ai-preview">
+
+<div class="ai-title">
+
+<div>
+
+<h2>🔎 Review AI Generated Quiz</h2>
+
+<p class="small">
+This quiz is currently a <b>DRAFT</b>.
+Students cannot see it until you publish it.
+</p>
+
+</div>
+
+<span class="badge draft">
+DRAFT
+</span>
+
+</div>
+
+
+<div class="review-warning">
+
+⚠️ <b>Review all questions before publishing.</b>
+The AI can make mistakes. Check the question, four options, correct answer and explanation carefully.
+
+</div>
+
+
+<div class="card">
+
+<h2>${esc(quiz.title)}</h2>
+
+<p>
+${esc(quiz.description||'AI generated quiz')}
+</p>
+
+<p class="small">
+
+Subject:
+<b>${esc(quiz.subject||'-')}</b>
+
+•
+
+Questions:
+<b>${questions.length}</b>
+
+•
+
+Difficulty:
+<b>${esc(quiz.difficulty||'-')}</b>
+
+•
+
+Time:
+<b>${Number(quiz.time_limit_minutes||30)} minutes</b>
+
+•
+
+Passing:
+<b>${Number(quiz.passing_score||70)}%</b>
+
+</p>
+
+</div>
+
+
+<h3>Generated Questions</h3>
+
+
+${questions.map((q,index)=>{
+
+const opts=
+[...(q.options||[])]
+.sort(
+(a,b)=>
+Number(a.order_index||0)-
+Number(b.order_index||0)
+);
+
+return `
+
+<div class="ai-question">
+
+<div class="ai-question-header">
+
+<h3 style="margin:0">
+Question ${index+1}
+</h3>
+
+<span class="badge">
+Multiple Choice
+</span>
+
+</div>
+
+
+<h3>
+${esc(q.question_text)}
+</h3>
+
+
+<div>
+
+${opts.map((o,i)=>`
+
+<div class="ai-option ${
+o.is_correct===true
+?'correct'
+:''
+}">
+
+<b>${String.fromCharCode(65+i)}.</b>
+
+${esc(o.option_text)}
+
+${
+o.is_correct===true
+?'<strong> ✓ Correct Answer</strong>'
+:''
+}
+
+</div>
+
+`).join('')}
+
+</div>
+
+
+<div class="explanation">
+
+<b>Explanation</b>
+
+<p>
+${esc(
+q.explanation||
+'No explanation provided.'
+)}
+</p>
+
+</div>
+
+</div>
+
+`;
+
+}).join('')}
+
+
+<div class="ai-actions">
+
+<button
+class="success"
+onclick="publishAIGeneratedQuiz('${quiz.id}')">
+
+🚀 Approve & Publish Quiz
+
+</button>
+
+<button
+class="secondary"
+onclick="keepAIDraft('${quiz.id}')">
+
+💾 Keep as Draft
+
+</button>
+
+<button
+class="danger"
+onclick="deleteAIGeneratedQuiz('${quiz.id}')">
+
+🗑️ Delete AI Quiz
+
+</button>
+
+</div>
+
+</div>
+
+`;
+
+}
+
+
+/* ==========================================================
+   PUBLISH AI QUIZ
+========================================================== */
+
+async function publishAIGeneratedQuiz(id){
+
+if(!isAdmin()){
+
+toast('Admin access required.');
+
+return;
+
+}
+
+if(!confirm(
+'Have you reviewed all questions, options, correct answers and explanations?\n\nPublish this quiz for students?'
+))return;
+
+const {error}=
+await db
+.from('quizzes')
+.update({
+is_published:true
+})
+.eq('id',id);
+
+if(error){
+
+toast(
+'Could not publish quiz: '+
+error.message
+);
+
+return;
+
+}
+
+toast(
+'AI quiz approved and published! 🎉'
+);
+
+document.getElementById('aiResult').innerHTML=`
+
+<div class="ai-success">
+
+<h3>✅ Quiz Approved & Published</h3>
+
+<p>
+The quiz is now available to students.
+</p>
+
+</div>
+
+`;
+
+await manageQuizzes();
+
+await loadQuizzes();
+
+}
+
+
+/* ==========================================================
+   KEEP DRAFT
+========================================================== */
+
+async function keepAIDraft(id){
+
+if(!isAdmin())return;
+
+const {error}=
+await db
+.from('quizzes')
+.update({
+is_published:false
+})
+.eq('id',id);
+
+if(error){
+
+toast(error.message);
+
+return;
+
+}
+
+toast(
+'Quiz remains unpublished as a draft.'
+);
+
+}
+
+
+/* ==========================================================
+   DELETE AI QUIZ
+========================================================== */
+
+async function deleteAIGeneratedQuiz(id){
+
+if(!isAdmin())return;
+
+if(!confirm(
+'Delete this AI-generated quiz and its questions/options?'
+))return;
+
+const {error}=
+await db
+.from('quizzes')
+.delete()
+.eq('id',id);
+
+if(error){
+
+toast(
+'Could not delete quiz: '+
+error.message
+);
+
+return;
+
+}
+
+aiGeneratedQuizId=null;
+
+document.getElementById('aiResult').innerHTML=`
+
+<div class="ai-success">
+
+AI quiz deleted.
+
+</div>
+
+`;
+
+toast('AI quiz deleted.');
+
+await manageQuizzes();
+await populateQuizSelect();
+await loadQuizzes();
+
+}
+
+
+/* ==========================================================
+   MANAGE QUIZZES
+========================================================== */
+
+async function manageQuizzes(){
+
+const b=document.getElementById('manageBox');
+
+if(!b)return;
+
+const {data,error}=
+await db
+.from('quizzes')
+.select('*')
+.order('created_at',{ascending:false});
+
+if(error){
+
+b.innerHTML=
+'<p class="error">'+
+esc(error.message)+
+'</p>';
+
+return;
+
+}
+
+if(!data?.length){
+
+b.innerHTML='No quizzes yet.';
+
+return;
+
+}
+
+b.innerHTML=
+data.map(q=>`
+
+<div class="card">
+
+<div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap">
+
+<div>
+
+<h3>${esc(q.title)}</h3>
+
+<p class="small">
+
+${esc(q.subject||'-')}
+•
+${Number(q.total_questions||0)}
+questions
+•
+${esc(q.period_name||'-')}
+
+</p>
+
+</div>
+
+<span class="badge ${
+q.is_published
+?'published'
+:'draft'
+}">
+
+${
+q.is_published
+?'PUBLISHED'
+:'DRAFT'
+}
+
+</span>
+
+</div>
+
+<br>
+
+<button
+onclick="togglePublish(
+'${q.id}',
+${!q.is_published}
+)">
+
+${
+q.is_published
+?'Unpublish'
+:'Publish'
+}
+
+</button>
+
+
+<button
+class="secondary"
+onclick="previewAIGeneratedQuiz('${q.id}')">
+
+👁️ Review
+
+</button>
+
+
+<button
+class="danger"
+onclick="deleteQuiz('${q.id}')">
+
+Delete
+
+</button>
+
+</div>
+
+`).join('');
+
+}
+
+
+/* ==========================================================
+   PUBLISH / UNPUBLISH
+========================================================== */
+
+async function togglePublish(id,value){
+
+if(!isAdmin())return;
+
+if(value){
+
+if(!confirm(
+'Are you sure you have reviewed this quiz before publishing it?'
+))return;
+
+}
+
+const {error}=
+await db
+.from('quizzes')
+.update({
+is_published:value
+})
+.eq('id',id);
+
+if(error){
+
+toast(error.message);
+
+return;
+
+}
+
+toast(
+value
+?'Quiz published.'
+:'Quiz unpublished.'
+);
+
+await manageQuizzes();
+await loadQuizzes();
+
+}
+
+
+/* ==========================================================
+   DELETE QUIZ
+========================================================== */
+
+async function deleteQuiz(id){
+
+if(!isAdmin())return;
+
+if(!confirm(
+'Delete this quiz and its questions/options?'
+))return;
+
+const {error}=
+await db
+.from('quizzes')
+.delete()
+.eq('id',id);
+
+if(error){
+
+toast(error.message);
+
+return;
+
+}
+
+toast('Quiz deleted.');
+
+await manageQuizzes();
+await populateQuizSelect();
+await loadQuizzes();
+
+}
+
+
+/* ==========================================================
+   STUDENTS
+========================================================== */
+
+async function loadStudents(){
+
+const b=document.getElementById('studentsBox');
+
+if(!b)return;
+
+const {data,error}=
+await db
+.from('users')
+.select(
+'id,full_name,email,university,year_level,total_score,quizzes_completed,is_admin'
+)
+.order('total_score',{ascending:false});
+
+if(error){
+
+b.innerHTML=
+'<p class="error">'+
+esc(error.message)+
+'</p>';
+
+return;
+
+}
+
+b.innerHTML=`
+
+<div class="tablewrap">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Name</th>
+<th>Email</th>
+<th>University</th>
+<th>Year</th>
+<th>Points</th>
+<th>Quizzes</th>
+<th>Role</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+${
+(data||[])
+.map(s=>`
+
+<tr>
+
+<td>${esc(s.full_name||'Student')}</td>
+
+<td>${esc(s.email||'-')}</td>
+
+<td>${esc(s.university||'-')}</td>
+
+<td>${esc(s.year_level||'-')}</td>
+
+<td>${Number(s.total_score||0)}</td>
+
+<td>${Number(s.quizzes_completed||0)}</td>
+
+<td>
+${s.is_admin?'👑 Admin':'Student'}
+</td>
+
+</tr>
+
+`).join('')
+}
+
+</tbody>
+
+</table>
+
+</div>
+
+`;
+
+}
+
+
+/* ==========================================================
+   ATTEMPTS
+========================================================== */
+
+async function loadAttempts(){
+
+const b=document.getElementById('attemptsBox');
+
+if(!b)return;
+
+const {data,error}=
+await db
+.from('quiz_attempts')
+.select(
+`
+id,
+score,
+total_questions,
+correct_answers,
+passed,
+time_taken_seconds,
+completed_at,
+users(full_name,email),
+quizzes(title,subject)
+`
+)
+.order('created_at',{ascending:false})
+.limit(200);
+
+if(error){
+
+b.innerHTML=
+'<p class="error">'+
+esc(error.message)+
+'</p>';
+
+return;
+
+}
+
+b.innerHTML=`
+
+<div class="tablewrap">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Student</th>
+<th>Quiz</th>
+<th>Score</th>
+<th>Result</th>
+<th>Time</th>
+<th>Date</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+${
+(data||[])
+.map(a=>`
+
+<tr>
+
+<td>
+${esc(a.users?.full_name||'Student')}
+</td>
+
+<td>
+${esc(a.quizzes?.title||'-')}
+</td>
+
+<td>
+${Number(a.correct_answers||0)}
+/
+${Number(a.total_questions||0)}
+</td>
+
+<td>
+
+<b class="${a.passed?'ok':'error'}">
+
+${
+a.completed_at
+?(a.passed?'PASSED':'NOT PASSED')
+:'IN PROGRESS'
+}
+
+</b>
+
+</td>
+
+<td>
+
+${Math.floor(
+Number(a.time_taken_seconds||0)/60
+)}m
+
+${Number(a.time_taken_seconds||0)%60}s
+
+</td>
+
+<td>
+
+${
+a.completed_at
+?new Date(a.completed_at).toLocaleString()
+:'-'
+}
+
+</td>
+
+</tr>
+
+`).join('')
+}
+
+</tbody>
+
+</table>
+
+</div>
+
+`;
+
+}
+
+
+/* ==========================================================
+   AUTH STATE
+========================================================== */
+
+db.auth.onAuthStateChange(
+(_event,session)=>{
+
+currentUser=
+session?.user||null;
+
+updateHeader();
+
+setTimeout(
+async()=>{
+
+if(currentUser){
+
+await loadCurrentProfile();
+
+}else{
+
+currentProfile=null;
+
+}
+
+updateHeader();
+
+await loadQuizzes();
+
+},
+0
+);
+
+});
+
+
+/* ==========================================================
+   START APPLICATION
+========================================================== */
+
+window.addEventListener(
+'DOMContentLoaded',
+async()=>{
+
+await refreshSession();
+
+updateHeader();
+
+await loadQuizzes();
+
+showView('quizzes');
+
+}
+);
+
+</script>
+
+</body>
+</html>
