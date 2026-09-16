@@ -1,0 +1,1023 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Thrives Archivers - Video Streaming</title>
+<style>
+  :root{
+    --brand:#1976d2;--ink:#333;--bg:#f4f4f4;--card:#fff;--muted:#777;--danger:#e53935;--youtube:#FF0000;
+  }
+  *{box-sizing:border-box}
+  body{font-family:Arial,Helvetica,sans-serif;background:var(--bg);margin:0}
+  h2{background:#333;color:#fff;padding:15px;margin:0;text-align:center}
+  .topbar{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:10px 16px;background:#222;color:#fff}
+  .topbar .left{font-weight:bold}
+  .topbar .right{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .pill{background:#111;padding:6px 10px;border-radius:999px;font-size:12px;border:1px solid #444}
+  .btn{cursor:pointer;background:var(--brand);color:#fff;border:none;border-radius:6px;padding:8px 12px}
+  .btn.ghost{background:#444}
+  .btn.danger{background:var(--danger)}
+  .status-bar{margin:10px auto;padding:10px;font-weight:bold;text-align:center}
+  .container{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;padding:20px}
+  .section{background:#fff;padding:15px;border-radius:12px;box-shadow:0 0 15px rgba(0,0,0,.08)}
+  .section h3{margin-top:0;background:var(--brand);color:#fff;padding:10px;border-radius:6px}
+  .semester-title{font-weight:bold;margin-top:10px;color:#333;font-size:14px}
+  .video-card{background:#f1f1f1;padding:10px;margin:8px 0;border-radius:8px;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .video-card:hover{background:#e6e6e6}
+  .lock{font-size:18px}
+  /* Remove old .video-player styling, replaced by modal */
+  .admin-panel{background:#fff;padding:20px;margin:20px auto;width:92%;max-width:1000px;border-radius:12px;box-shadow:0 0 15px rgba(0,0,0,.15);display:none}
+  .admin-panel h3{margin-top:0}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+  input, select{width:100%;padding:10px;border:1px solid #ccc;border-radius:8px}
+  label{font-size:12px;color:var(--muted)}
+  table{width:100%;border-collapse:collapse;margin-top:10px}
+  th,td{border:1px solid #ddd;padding:8px;text-align:left}
+  th{background:#fafafa}
+  .login-modal,.modal-bg{display:none;position:fixed;left:0;top:0;width:100vw;height:100vh;z-index:1000}
+  .modal-bg{background:rgba(0,0,0,.35)}
+  .login-modal{z-index:1001;left:50%;top:50%;transform:translate(-50%,-50%);background:#fff;padding:26px;border-radius:12px;width:92%;max-width:380px;box-shadow:0 2px 18px #2224}
+  .login-modal h3{margin:0 0 10px 0}
+  .hint{font-size:12px;color:var(--muted)}
+  .youtube-download-icon { margin-left:8px; }
+
+  /* Watch button style (works for button or anchor) */
+  .watch-btn{display:inline-block;background:var(--brand);color:#fff;text-decoration:none;font-weight:700;cursor:pointer;padding:6px 10px;border-radius:6px}
+  .watch-btn:hover{background:#125ca8}
+
+  /* Modal video player styles */
+  .modal-video-bg {
+    display: none; position: fixed; left: 0; top: 0; width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center;
+  }
+  .modal-video-player {
+    background: #000; border-radius: 12px; box-shadow: 0 0 24px #0008;
+    width: 90vw; max-width: 800px; max-height: 90vh; display: flex; flex-direction: column;
+    position: relative;
+  }
+  .modal-video-player iframe {
+    width: 100%; height: 450px; border: none; border-radius: 12px 12px 0 0;
+    background: #000;
+  }
+  .modal-video-close {
+    background: #e53935; color: #fff; border: none; border-radius: 0 0 12px 12px;
+    padding: 10px; cursor: pointer; font-size: 16px; font-weight: bold;
+    transition: background 0.2s;
+  }
+  .modal-video-close:hover { background: #b71c1c; }
+
+  /* Search bar styles */
+  .search-bar-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 16px 0 0 0;
+    background: var(--bg);
+  }
+  .search-bar-input {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    min-width: 220px;
+    max-width: 320px;
+  }
+  .search-bar-btn {
+    background: var(--brand);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s;
+  }
+  .search-bar-btn:hover {
+    background: #155a99;
+  }
+
+
+  /* ================= AI VIDEO SECTION ================= */
+  .ai-video-panel{background:#fff;padding:20px;margin:20px auto;width:92%;max-width:1000px;border-radius:12px;box-shadow:0 0 15px rgba(0,0,0,.15)}
+  .ai-video-panel h3{margin-top:0}
+  .ai-video-badge{display:inline-block;background:#673ab7;color:#fff;border-radius:999px;padding:5px 10px;font-size:12px;font-weight:bold;margin-left:6px}
+  .ai-video-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+  .ai-tab{border:1px solid #ddd;background:#f7f7f7;color:#333;border-radius:8px;padding:8px 12px;cursor:pointer;font-weight:bold}
+  .ai-tab.active{background:#673ab7;color:#fff;border-color:#673ab7}
+  .ai-video-form{border:1px solid #eee;border-radius:10px;padding:14px;background:#fafafa}
+  .ai-video-form textarea{width:100%;min-height:110px;padding:10px;border:1px solid #ccc;border-radius:8px;resize:vertical;font-family:inherit}
+  .ai-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .btn.ai{background:#673ab7}
+  .btn.ai:hover{background:#512da8}
+  .btn.success{background:#2e7d32}
+  .ai-status{margin-top:10px;padding:10px;border-radius:8px;background:#f1f1f1;font-size:13px;display:none}
+  .ai-status.show{display:block}
+  .ai-status.error{background:#ffebee;color:#b71c1c}
+  .ai-status.ok{background:#e8f5e9;color:#1b5e20}
+  .ai-storyboard{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:12px}
+  .scene-card{background:#fff;border:1px solid #ddd;border-radius:10px;padding:12px}
+  .scene-card h5{margin:0 0 8px;color:#673ab7}
+  .scene-card p{font-size:13px;line-height:1.45;margin:6px 0}
+  .ai-video-list{margin-top:15px}
+  .ai-published-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;padding:20px}
+  .ai-public-card{background:#fff;border-radius:12px;box-shadow:0 0 12px rgba(0,0,0,.08);overflow:hidden}
+  .ai-public-card video{width:100%;display:block;background:#000;aspect-ratio:16/9}
+  .ai-public-card .body{padding:12px}
+  .ai-public-card .meta{font-size:12px;color:#777;margin-top:5px}
+  .ai-preview-wrap{margin-top:15px;background:#111;border-radius:12px;padding:10px;display:none}
+  .ai-preview-wrap video{width:100%;max-height:480px;background:#000;border-radius:8px}
+  .ai-help{font-size:12px;color:#666;margin-top:8px;line-height:1.5}
+  .ai-admin-only{display:none}
+
+</style>
+</head>
+<body>
+  <h2>Thrives Archivers - Video Streaming</h2>
+
+  <!-- Search Bar -->
+  <div class="search-bar-container">
+    <input
+      type="text"
+      id="videoSearchInput"
+      class="search-bar-input"
+      placeholder="Search videos by title, section, semester..."
+      autocomplete="off"
+    />
+    <button class="search-bar-btn" id="videoSearchBtn">Search</button>
+    <button class="search-bar-btn" id="videoClearBtn" style="background:#777;">Clear</button>
+  </div>
+
+  <!-- YouTube Channel Banner -->
+  <div class="youtube-banner">
+    <span class="yt-icon">▶️</span>
+    <span class="sub-text">Subscribe to our YouTube channel</span>
+    <a href="https://youtube.com/@thrivesarchivers?si=S092LRlM1g2mWTll" target="_blank" rel="noopener">
+      @thrivesarchivers
+    </a>
+  </div>
+
+  <div class="topbar">
+    <div class="left">Welcome, <span id="displayName">Guest</span></div>
+    <div class="right">
+      <span class="pill" id="subInfo">Not logged in</span>
+      <button class="btn" id="loginTopBtn">Login</button>
+      <button class="btn ghost" id="logoutBtn" style="display:none">Logout</button>
+    </div>
+  </div>
+
+  <div class="status-bar" id="statusBar"></div>
+
+  <!-- Login Modal -->
+  <div class="modal-bg" id="modalBg"></div>
+  <div class="login-modal" id="loginModal">
+    <h3>Login to your account</h3>
+    <div class="hint">Use your Supabase Auth email & password</div>
+    <input type="email" id="loginEmail" placeholder="Your Email" required />
+    <input type="password" id="loginPassword" placeholder="Your Password" required />
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:6px">
+      <button class="btn" id="loginBtn">Login</button>
+      <button class="btn ghost" id="closeModalBtn">Cancel</button>
+    </div>
+  </div>
+
+  <div class="container" id="container"></div>
+
+  <!-- AI GENERATED VIDEOS: published videos are separate from the existing YouTube system -->
+  <section id="aiPublishedSection" style="display:none">
+    <h2 style="background:#673ab7">🤖 AI Generated Educational Videos</h2>
+    <div id="aiPublishedVideos" class="ai-published-grid"></div>
+  </section>
+
+
+  <!-- Modal Video Player (NEW) -->
+  <div class="modal-video-bg" id="modalVideoBg">
+    <div class="modal-video-player">
+      <iframe id="modalVideoFrame" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="no-referrer" loading="lazy"></iframe>
+      <button class="modal-video-close" id="closeModalVideoBtn">Close</button>
+    </div>
+  </div>
+
+  <!-- Admin Panel -->
+  <div class="admin-panel" id="adminPanel">
+    <h3>Admin Panel — Manage Videos, AI & Access</h3>
+    <form id="addVideoForm">
+      <div class="grid">
+        <div><label>Title</label><input type="text" id="videoTitle" placeholder="Video Title" required /></div>
+        <div><label>YouTube Video ID</label><input type="text" id="videoID" placeholder="dQw4w9WgXcQ" required /></div>
+        <div><label>Passwords (comma separated)</label><input type="text" id="passwordList" placeholder="abc123, xyz789" required /></div>
+        <div>
+          <label>Section</label>
+          <select id="videoSection" required>
+            <option value="">Select Section</option>
+            <option>Maths</option>
+            <option>Physics</option>
+            <option>Chemistry</option>
+            <option>Biology</option>
+           <option>MATHS 131</option>
+            <option>ANATOMY MBCHB </option>
+            <option>ANATOMY PHARM/BIOMED </option> 
+            <option>PHARMACOLOGY </option>
+            <option> PATHOLOGY </option>
+            <option>PHYSIOLOGY </option>
+            <option>BIOCHEMISTRY</option> 
+          </option> 
+          </select>
+        </div>
+        <div>
+          <label>Semester</label>
+          <select id="videoSemester" required>
+            <option value="">Select Semester</option>
+            <option>First Semester</option>
+            <option>Second Semester</option>
+          </select>
+        </div>
+        <div><label>Order (number)</label><input type="number" id="videoOrder" placeholder="1" required /></div>
+      </div>
+      <div style="margin-top:10px"><button class="btn" type="submit">Add Video</button></div>
+    </form>
+
+    <div id="existingVideos" style="margin-top:16px"></div>
+
+
+    <!-- ================= AI VIDEO GENERATOR ================= -->
+    <hr style="margin:20px 0" />
+    <div class="ai-video-panel" style="width:100%;margin:0;box-shadow:none;padding:0;background:transparent">
+      <h3>🤖 AI Video Generator <span class="ai-video-badge">ADMIN ONLY</span></h3>
+      <div class="hint">Create educational video scripts/storyboards with AI, preview an animated lesson, record it in the browser, and publish the finished video separately from YouTube.</div>
+
+      <div class="ai-video-tabs">
+        <button class="ai-tab active" data-ai-tab="generate">Generate</button>
+        <button class="ai-tab" data-ai-tab="drafts">Drafts</button>
+        <button class="ai-tab" data-ai-tab="published">Published</button>
+      </div>
+
+      <div id="aiTabGenerate">
+        <form id="aiVideoForm" class="ai-video-form">
+          <div class="grid">
+            <div><label>Video Title</label><input id="aiTitle" type="text" placeholder="e.g. Introduction to Bacteria" required></div>
+            <div><label>Section</label>
+              <select id="aiSection" required>
+                <option value="">Select Section</option>
+                <option>Maths</option><option>Physics</option><option>Chemistry</option><option>Biology</option>
+                <option>MATHS 131</option><option>ANATOMY MBCHB</option><option>ANATOMY PHARM/BIOMED</option>
+                <option>PHARMACOLOGY</option><option>PATHOLOGY</option><option>PHYSIOLOGY</option><option>BIOCHEMISTRY</option>
+              </select>
+            </div>
+            <div><label>Semester</label>
+              <select id="aiSemester" required><option value="">Select Semester</option><option>First Semester</option><option>Second Semester</option></select>
+            </div>
+            <div><label>Target Duration</label>
+              <select id="aiDuration"><option value="60">1 minute</option><option value="180">3 minutes</option><option value="300">5 minutes</option></select>
+            </div>
+          </div>
+          <div style="margin-top:10px"><label>Topic / Learning Objective</label><textarea id="aiPrompt" placeholder="Example: Explain bacteria, their basic structure, differences between Gram-positive and Gram-negative bacteria, and why Gram staining is clinically important."></textarea></div>
+          <div class="grid" style="margin-top:10px">
+            <div><label>Teaching Style</label><select id="aiStyle"><option>Medical classroom animation</option><option>Simple student-friendly explanation</option><option>Exam revision lesson</option><option>Detailed university lecture</option></select></div>
+            <div><label>Difficulty</label><select id="aiDifficulty"><option>First Year</option><option>Second Year</option><option>Third Year</option><option>Advanced</option></select></div>
+          </div>
+          <div class="ai-actions">
+            <button class="btn ai" type="submit" id="generateAiBtn">✨ Generate AI Script & Storyboard</button>
+            <button class="btn ghost" type="button" id="clearAiBtn">Clear</button>
+          </div>
+          <div id="aiStatus" class="ai-status"></div>
+        </form>
+
+        <div id="aiStoryboard" class="ai-storyboard"></div>
+        <div id="aiPreviewWrap" class="ai-preview-wrap">
+          <div style="color:#fff;font-weight:bold;margin-bottom:8px">Video Preview</div>
+          <video id="aiPreviewVideo" controls playsinline></video>
+          <div class="ai-actions">
+            <button class="btn success" id="recordAiVideoBtn" type="button">🎬 Create Video</button>
+            <button class="btn" id="saveAiDraftBtn" type="button">💾 Save Draft</button>
+            <button class="btn ghost" id="publishAiVideoBtn" type="button" disabled>🚀 Publish</button>
+          </div>
+          <div class="ai-help">The first version uses browser animation + MediaRecorder, so it does not require a paid video-generation API. The AI supplies the lesson structure; the browser creates the educational animation.</div>
+        </div>
+      </div>
+
+      <div id="aiTabDrafts" style="display:none"><div id="aiDraftsList" class="ai-video-list"></div></div>
+      <div id="aiTabPublished" style="display:none"><div id="aiAdminPublishedList" class="ai-video-list"></div></div>
+    </div>
+
+    <hr style="margin:20px 0" />
+
+    <h3>Subscriptions Controls</h3>
+    <div id="subscriptionsAdmin"></div>
+  </div>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+// --- SUPABASE CONFIG ---
+const supabaseUrl = 'https://odwiqajuubcgrrqipyju.supabase.co'
+const supabaseKey ='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1dWJjZ3JycWlweWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzA4MjEsImV4cCI6MjA2ODg0NjgyMX0.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A'
+const supabase = createClient(supabaseUrl, supabaseKey)
+
+// --- CONSTANTS ---
+const ADMIN_EMAIL = 'thrivesarchivers@gmail.com'
+
+// --- ELEMENTS ---
+const container = document.getElementById('container')
+const modalVideoBg = document.getElementById('modalVideoBg')
+const modalVideoFrame = document.getElementById('modalVideoFrame')
+const closeModalVideoBtn = document.getElementById('closeModalVideoBtn')
+const adminPanel = document.getElementById('adminPanel')
+const addVideoForm = document.getElementById('addVideoForm')
+const existingVideosDiv = document.getElementById('existingVideos')
+const statusBar = document.getElementById('statusBar')
+const loginModal = document.getElementById('loginModal')
+const modalBg = document.getElementById('modalBg')
+const closeModalBtn = document.getElementById('closeModalBtn')
+const loginBtn = document.getElementById('loginBtn')
+const loginEmail = document.getElementById('loginEmail')
+const loginPassword = document.getElementById('loginPassword')
+const loginTopBtn = document.getElementById('loginTopBtn')
+const logoutBtn = document.getElementById('logoutBtn')
+const displayNameEl = document.getElementById('displayName')
+const subInfo = document.getElementById('subInfo')
+const subscriptionsAdmin = document.getElementById('subscriptionsAdmin')
+// Search bar elements
+const videoSearchInput = document.getElementById('videoSearchInput')
+const videoSearchBtn = document.getElementById('videoSearchBtn')
+const videoClearBtn = document.getElementById('videoClearBtn')
+
+
+// --- AI VIDEO ELEMENTS ---
+const aiPublishedSection = document.getElementById('aiPublishedSection')
+const aiPublishedVideos = document.getElementById('aiPublishedVideos')
+const aiVideoForm = document.getElementById('aiVideoForm')
+const aiStatus = document.getElementById('aiStatus')
+const aiStoryboard = document.getElementById('aiStoryboard')
+const aiPreviewWrap = document.getElementById('aiPreviewWrap')
+const aiPreviewVideo = document.getElementById('aiPreviewVideo')
+const recordAiVideoBtn = document.getElementById('recordAiVideoBtn')
+const saveAiDraftBtn = document.getElementById('saveAiDraftBtn')
+const publishAiVideoBtn = document.getElementById('publishAiVideoBtn')
+let currentAiProject = null
+let currentAiBlob = null
+let currentAiVideoUrl = null
+let aiVideos = []
+
+// Change this ONLY if your Supabase Edge Function has a different name.
+const AI_VIDEO_FUNCTION_URL = `${supabaseUrl}/functions/v1/generate-video-script`
+
+// --- STATE ---
+let currentUser = null
+let subscription = null // row from subscription table
+let allVideos = []
+let filteredVideos = null // if search is active, filteredVideos is set
+
+// --- HELPERS ---
+function showLoginModal(){ loginModal.style.display = 'block'; modalBg.style.display = 'block' }
+function hideLoginModal(){ loginModal.style.display = 'none'; modalBg.style.display = 'none' }
+function normalizeCourses(str){
+  if(!str) return []
+  return str.split(',').map(s=>s.trim()).filter(Boolean)
+}
+function userDisplayName(user){
+  const meta = user?.user_metadata || {}
+  return meta.name || meta.full_name || meta.fullName || user?.email || 'User'
+}
+function formatStatus(){
+  if(!currentUser){
+    statusBar.textContent = 'Please log in to see your subscriptions and watch videos.'
+    subInfo.textContent = 'Not logged in'
+    displayNameEl.textContent = 'Guest'
+    return
+  }
+  const name = userDisplayName(currentUser)
+  const email = currentUser.email
+  displayNameEl.textContent = name
+
+  if(!subscription){
+    statusBar.textContent = `${email} — You are not subscribed. Locked videos require a password.`
+    subInfo.textContent = 'No active subscription'
+  } else {
+    const courses = subscription.courses?.trim()
+    const list = courses ? normalizeCourses(courses).join(', ') : 'All'
+    statusBar.textContent = `${email} — Subscribed: ${list}. Start: ${subscription['start date']||'-'} | End: ${subscription['end date']||'-'}`
+    subInfo.textContent = `Subscribed: ${list}`
+  }
+}
+function canAccessVideo(video){
+  if(!currentUser) return false
+  if(currentUser.email === ADMIN_EMAIL) return true
+  if(!subscription) return false
+  const courses = subscription.courses?.trim()
+  if(!courses) return true // blank means ALL courses
+  const allowed = new Set(normalizeCourses(courses).map(s=>s.toLowerCase()))
+  return allowed.has((video.section||'').toLowerCase())
+}
+function passwordsFor(video){
+  return (video['password list']||'').split(',').map(s=>s.trim()).filter(Boolean)
+}
+
+
+// ================= AI VIDEO FUNCTIONS =================
+function setAiStatus(message, type=''){
+  aiStatus.textContent = message
+  aiStatus.className = 'ai-status show' + (type ? ' '+type : '')
+}
+
+function escapeHtml(value){
+  return String(value ?? '').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))
+}
+
+function normalizeStoryboard(raw){
+  let scenes = raw?.scenes || raw?.storyboard || []
+  if(typeof scenes === 'string'){
+    try{ scenes = JSON.parse(scenes) }catch(e){ scenes = [] }
+  }
+  if(!Array.isArray(scenes)) scenes = []
+  return scenes.map((s,i)=>({
+    number:i+1,
+    title:s.title || `Scene ${i+1}`,
+    narration:s.narration || s.voiceover || s.script || '',
+    visual:s.visual || s.visual_description || s.description || 'Educational diagram related to the topic',
+    duration:Number(s.duration || s.duration_seconds || 8) || 8,
+    keyPoints:Array.isArray(s.key_points)?s.key_points:(Array.isArray(s.keyPoints)?s.keyPoints:[])
+  }))
+}
+
+function renderAiStoryboard(scenes){
+  aiStoryboard.innerHTML = scenes.length ? scenes.map(s=>`
+    <div class="scene-card">
+      <h5>Scene ${s.number}: ${escapeHtml(s.title)}</h5>
+      <p><b>Visual:</b> ${escapeHtml(s.visual)}</p>
+      <p><b>Narration:</b> ${escapeHtml(s.narration)}</p>
+      <p><b>Duration:</b> ${s.duration}s</p>
+    </div>`).join('') : '<div class="hint">No scenes generated yet.</div>'
+}
+
+function makeSceneCanvas(scenes, width=1280, height=720){
+  const canvas=document.createElement('canvas'); canvas.width=width; canvas.height=height
+  const ctx=canvas.getContext('2d')
+  let sceneIndex=0, start=performance.now(), raf=0
+  const total=scenes.reduce((a,s)=>a+s.duration,0)
+  let recorder=null, chunks=[]
+  let stream=canvas.captureStream(30)
+
+  function draw(now){
+    let elapsed=(now-start)/1000
+    if(elapsed>=total){
+      drawFrame(scenes.length-1,1)
+      if(recorder && recorder.state==='recording') recorder.stop()
+      cancelAnimationFrame(raf); return
+    }
+    let t=elapsed, idx=0
+    while(idx<scenes.length-1 && t>=scenes[idx].duration){t-=scenes[idx].duration;idx++}
+    sceneIndex=idx
+    drawFrame(sceneIndex,t/scenes[idx].duration)
+    raf=requestAnimationFrame(draw)
+  }
+  function drawFrame(idx,progress){
+    const s=scenes[idx]||{}
+    ctx.fillStyle='#111';ctx.fillRect(0,0,width,height)
+    const grad=ctx.createLinearGradient(0,0,width,height);grad.addColorStop(0,'#172554');grad.addColorStop(1,'#312e81');ctx.fillStyle=grad;ctx.fillRect(0,0,width,height)
+    ctx.fillStyle='#fff';ctx.font='bold 52px Arial';ctx.fillText(s.title||`Scene ${idx+1}`,70,95)
+    ctx.fillStyle='#dbeafe';ctx.font='28px Arial'
+    const visual=(s.visual||'').slice(0,170)
+    wrapText(ctx,visual,70,170,width-140,42)
+    ctx.fillStyle='#fff';ctx.font='bold 30px Arial';ctx.fillText('Key teaching point',70,370)
+    ctx.fillStyle='#e0e7ff';ctx.font='26px Arial'
+    const kp=(s.keyPoints?.length?s.keyPoints.join(' • '):s.narration||'').slice(0,220)
+    wrapText(ctx,kp,70,420,width-140,38)
+    ctx.fillStyle='#c7d2fe';ctx.font='20px Arial';ctx.fillText(`Thrives Archivers • Scene ${idx+1}/${scenes.length}`,70,height-55)
+    ctx.fillStyle='#fff';ctx.globalAlpha=.25;ctx.fillRect(70,height-95,(width-140)*progress,8);ctx.globalAlpha=1
+  }
+  function wrapText(ctx,text,x,y,maxWidth,lineHeight){
+    const words=String(text).split(' ');let line='';
+    for(const word of words){const test=line+word+' ';if(ctx.measureText(test).width>maxWidth&&line){ctx.fillText(line,x,y);line=word+' ';y+=lineHeight}else line=test}
+    if(line)ctx.fillText(line,x,y)
+  }
+  function start(){start=performance.now();raf=requestAnimationFrame(draw)}
+  function record(){
+    const mime=['video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'].find(m=>MediaRecorder.isTypeSupported(m))
+    if(!mime) throw new Error('This browser does not support video recording.')
+    chunks=[]; recorder=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:4000000})
+    recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)}
+    recorder.onstop=()=>{
+      currentAiBlob=new Blob(chunks,{type:'video/webm'})
+      if(currentAiVideoUrl)URL.revokeObjectURL(currentAiVideoUrl)
+      currentAiVideoUrl=URL.createObjectURL(currentAiBlob)
+      aiPreviewVideo.src=currentAiVideoUrl
+      publishAiVideoBtn.disabled=false
+      setAiStatus('Video created successfully in the browser. You can save it as a draft or publish it.','ok')
+    }
+    recorder.start(1000);start()
+  }
+  return {canvas,start,record}
+}
+
+async function generateAiStoryboard(){
+  if(!currentUser || currentUser.email?.toLowerCase()!==ADMIN_EMAIL.toLowerCase()) return alert('Admins only.')
+  const title=document.getElementById('aiTitle').value.trim()
+  const section=document.getElementById('aiSection').value
+  const semester=document.getElementById('aiSemester').value
+  const duration=Number(document.getElementById('aiDuration').value)
+  const prompt=document.getElementById('aiPrompt').value.trim()
+  const style=document.getElementById('aiStyle').value
+  const difficulty=document.getElementById('aiDifficulty').value
+  if(!title||!section||!semester||!prompt) return alert('Fill in title, section, semester and topic/learning objective.')
+  setAiStatus('AI is preparing the lesson script and storyboard...')
+  document.getElementById('generateAiBtn').disabled=true
+  try{
+    const {data:{session}}=await supabase.auth.getSession()
+    const res=await fetch(AI_VIDEO_FUNCTION_URL,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${session?.access_token||''}`},body:JSON.stringify({title,section,semester,duration,prompt,style,difficulty})})
+    const result=await res.json()
+    if(!res.ok) throw new Error(result.error||'AI generation failed.')
+    const scenes=normalizeStoryboard(result)
+    if(!scenes.length) throw new Error('AI returned no scenes.')
+    currentAiProject={title,section,semester,duration,prompt,style,difficulty,scenes}
+    renderAiStoryboard(scenes)
+    aiPreviewWrap.style.display='block'
+    setAiStatus(`Storyboard generated with ${scenes.length} scenes. Click “Create Video” to render the animated lesson.`,'ok')
+  }catch(err){console.error(err);setAiStatus(err.message||String(err),'error')}
+  finally{document.getElementById('generateAiBtn').disabled=false}
+}
+
+aiVideoForm.onsubmit=e=>{e.preventDefault();generateAiStoryboard()}
+document.getElementById('clearAiBtn').onclick=()=>{aiVideoForm.reset();aiStoryboard.innerHTML='';aiPreviewWrap.style.display='none';currentAiProject=null;currentAiBlob=null;publishAiVideoBtn.disabled=true;setAiStatus('') ;aiStatus.className='ai-status'}
+recordAiVideoBtn.onclick=()=>{
+  if(!currentAiProject?.scenes?.length) return alert('Generate a storyboard first.')
+  try{
+    recordAiVideoBtn.disabled=true;setAiStatus('Rendering educational animation...')
+    const player=makeSceneCanvas(currentAiProject.scenes)
+    player.record()
+    setTimeout(()=>recordAiVideoBtn.disabled=false,1000)
+  }catch(e){recordAiVideoBtn.disabled=false;setAiStatus(e.message,'error')}
+}
+
+async function saveAiVideoRecord(published=false){
+  if(!currentAiProject) return alert('Generate a video first.')
+  if(!currentAiBlob) return alert('Click “Create Video” first.')
+  if(!currentUser || currentUser.email?.toLowerCase()!==ADMIN_EMAIL.toLowerCase()) return alert('Admins only.')
+  setAiStatus(published?'Uploading and publishing video...':'Saving video draft...')
+  const safe= currentAiProject.title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') || 'ai-video'
+  const path=`${Date.now()}-${safe}.webm`
+  const {error:uploadError}=await supabase.storage.from('ai-videos').upload(path,currentAiBlob,{contentType:'video/webm',upsert:false})
+  if(uploadError){setAiStatus('Upload failed: '+uploadError.message,'error');return}
+  const {data:urlData}=supabase.storage.from('ai-videos').getPublicUrl(path)
+  const row={title:currentAiProject.title,section:currentAiProject.section,semester:currentAiProject.semester,duration_seconds:Math.round(currentAiProject.scenes.reduce((a,s)=>a+s.duration,0)),status:published?'published':'draft',script:currentAiProject.scenes.map(s=>s.narration).join('\n\n'),storyboard:currentAiProject.scenes,video_url:urlData.publicUrl,'password_list':'',order:0}
+  const {error}=await supabase.from('AI_Videos').insert([row])
+  if(error){setAiStatus('Database save failed: '+error.message,'error');return}
+  setAiStatus(published?'Video published successfully.':'Draft saved successfully.','ok')
+  await fetchAiVideos()
+  if(published) renderAiPublishedVideos(aiVideos)
+}
+
+saveAiDraftBtn.onclick=()=>saveAiVideoRecord(false)
+publishAiVideoBtn.onclick=()=>saveAiVideoRecord(true)
+
+document.querySelectorAll('.ai-tab').forEach(btn=>btn.onclick=()=>{
+  document.querySelectorAll('.ai-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active')
+  const tab=btn.dataset.aiTab
+  document.getElementById('aiTabGenerate').style.display=tab==='generate'?'block':'none'
+  document.getElementById('aiTabDrafts').style.display=tab==='drafts'?'block':'none'
+  document.getElementById('aiTabPublished').style.display=tab==='published'?'block':'none'
+  if(tab==='drafts') renderAiAdminList(aiVideos.filter(v=>v.status==='draft'),'draft')
+  if(tab==='published') renderAiAdminList(aiVideos.filter(v=>v.status==='published'),'published')
+})
+
+async function fetchAiVideos(){
+  const {data,error}=await supabase.from('AI_Videos').select('*').order('created_at',{ascending:false})
+  if(error){console.error('AI_Videos:',error);return}
+  aiVideos=data||[]
+  if(currentUser?.email?.toLowerCase()===ADMIN_EMAIL.toLowerCase()){
+    renderAiAdminList(aiVideos.filter(v=>v.status==='draft'),'draft')
+    renderAiAdminList(aiVideos.filter(v=>v.status==='published'),'published')
+  }
+  renderAiPublishedVideos(aiVideos.filter(v=>v.status==='published'))
+}
+
+function renderAiAdminList(list,type){
+  const target=type==='draft'?document.getElementById('aiDraftsList'):document.getElementById('aiAdminPublishedList')
+  if(!target)return
+  if(!list.length){target.innerHTML='<div class="hint">No '+type+' AI videos yet.</div>';return}
+  target.innerHTML=list.map(v=>`<div class="video-card" style="cursor:default"><span><b>${escapeHtml(v.title)}</b><br><small>${escapeHtml(v.section||'')} — ${escapeHtml(v.semester||'')} — ${escapeHtml(v.status||'')}</small></span><button class="btn danger" data-ai-delete="${v.id}">Delete</button></div>`).join('')
+  target.querySelectorAll('[data-ai-delete]').forEach(btn=>btn.onclick=async()=>{
+    if(!confirm('Delete this AI video record?'))return
+    const {error}=await supabase.from('AI_Videos').delete().eq('id',btn.dataset.aiDelete)
+    if(error)return alert(error.message)
+    fetchAiVideos()
+  })
+}
+
+function renderAiPublishedVideos(list){
+  if(!list.length){aiPublishedSection.style.display='none';return}
+  aiPublishedSection.style.display='block'
+  aiPublishedVideos.innerHTML=list.map(v=>`<article class="ai-public-card"><video controls preload="metadata" src="${escapeHtml(v.video_url||'')}"></video><div class="body"><b>${escapeHtml(v.title)}</b><div class="meta">${escapeHtml(v.section||'')} • ${escapeHtml(v.semester||'')}</div></div></article>`).join('')
+}
+
+// --- AUTH ---
+closeModalBtn.onclick = hideLoginModal
+loginTopBtn.onclick = showLoginModal
+logoutBtn.onclick = async ()=>{
+  await supabase.auth.signOut()
+  currentUser = null
+  subscription = null
+  adminPanel.style.display = 'none'
+  logoutBtn.style.display = 'none'
+  loginTopBtn.style.display = 'inline-block'
+  formatStatus()
+  renderVideos(allVideos)
+  aiPublishedSection.style.display='none'
+  currentAiProject=null
+  currentAiBlob=null
+}
+
+loginBtn.onclick = async ()=>{
+  const email = loginEmail.value.trim()
+  const password = loginPassword.value.trim()
+  if(!email || !password) return alert('Please enter email and password.')
+
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+  if(error){ alert('Login failed: '+error.message); return }
+  currentUser = data.user
+  hideLoginModal()
+  logoutBtn.style.display = 'inline-block'
+  loginTopBtn.style.display = 'none'
+  if(currentUser.email === ADMIN_EMAIL){ adminPanel.style.display = 'block'; fetchSubscriptions() }
+  await fetchSubscriptionForUser(currentUser.email)
+  formatStatus()
+  await fetchVideos()
+  await fetchAiVideos()
+}
+
+window.addEventListener('DOMContentLoaded', async ()=>{
+  const { data: { session } } = await supabase.auth.getSession()
+  if(session?.user){
+    currentUser = session.user
+    logoutBtn.style.display = 'inline-block'
+    loginTopBtn.style.display = 'none'
+    if(currentUser.email === ADMIN_EMAIL){ adminPanel.style.display = 'block'; fetchSubscriptions() }
+    await fetchSubscriptionForUser(currentUser.email)
+    formatStatus()
+  } else {
+    formatStatus()
+    showLoginModal()
+  }
+  await fetchVideos()
+  await fetchAiVideos()
+})
+
+// --- SUBSCRIPTION (for current user) ---
+async function fetchSubscriptionForUser(email){
+  subscription = null
+  const { data, error } = await supabase
+    .from('subscription')
+    .select('email, "start date", duration, "end date", courses')
+    .eq('email', email.toLowerCase())
+    .maybeSingle()
+  if(error){ console.error(error); return }
+  subscription = data || null
+}
+
+// --- VIDEOS ---
+async function fetchVideos(){
+  const { data, error } = await supabase
+    .from('Videos')
+    .select('id, title, "video id", "password list", section, semester, order')
+    .order('order', { ascending: true })
+  if(error){ container.innerHTML = '<b>Failed to load videos.</b>'; console.error(error); return }
+  allVideos = data || []
+  filteredVideos = null
+  renderVideos(allVideos)
+  if(currentUser?.email === ADMIN_EMAIL){ renderExistingVideos(allVideos) }
+}
+
+// --- SEARCH ---
+function searchVideos(query) {
+  if(!query || !query.trim()) return allVideos;
+  const q = query.trim().toLowerCase();
+  return allVideos.filter(video =>
+    (video.title && video.title.toLowerCase().includes(q)) ||
+    (video.section && video.section.toLowerCase().includes(q)) ||
+    (video.semester && video.semester.toLowerCase().includes(q))
+  );
+}
+function handleSearch() {
+  const query = videoSearchInput.value;
+  if(!query.trim()) {
+    filteredVideos = null;
+    renderVideos(allVideos);
+    return;
+  }
+  filteredVideos = searchVideos(query);
+  renderVideos(filteredVideos);
+}
+function handleClearSearch() {
+  videoSearchInput.value = '';
+  filteredVideos = null;
+  renderVideos(allVideos);
+}
+videoSearchBtn.onclick = handleSearch;
+videoSearchInput.addEventListener('keydown', e=>{
+  if(e.key==="Enter") handleSearch();
+});
+videoClearBtn.onclick = handleClearSearch;
+
+// --- RENDER ---
+function renderVideos(videos){
+  const grouped = {}
+  videos.forEach(v=>{
+    const sec = v.section || 'Other'
+    const sem = v.semester || 'Other'
+    grouped[sec] = grouped[sec] || {}
+    grouped[sec][sem] = grouped[sec][sem] || []
+    grouped[sec][sem].push(v)
+  })
+
+  container.innerHTML = ''
+  // Show "No results" if search active and no results
+  if(filteredVideos && videos.length === 0) {
+    container.innerHTML = `<div style="text-align:center;padding:32px;font-size:1.2em;color:#888;">No videos found for your search.</div>`;
+    return;
+  }
+  Object.keys(grouped).sort().forEach(section=>{
+    const secDiv = document.createElement('div')
+    secDiv.className = 'section'
+    secDiv.innerHTML = `<h3>${section}</h3>`
+
+    Object.keys(grouped[section]).sort().forEach(semester=>{
+      const semDiv = document.createElement('div')
+      semDiv.innerHTML = `<div class="semester-title">${semester}</div>`
+      grouped[section][semester].forEach(video=>{
+        const card = document.createElement('div')
+        const unlocked = canAccessVideo(video)
+        card.className = 'video-card'
+        // Added "Watch on YouTube" button next to Download.
+        card.innerHTML = `
+          <span style="display:flex; align-items:center; gap:6px;">
+            ${unlocked 
+              ? `<span>▶️</span>`
+              : '<span>🔒</span>'}
+            ${video.title}
+          </span>
+          <div style="display:flex;gap:8px;align-items:center">
+            <a class="watch-btn" href="#" title="Open on YouTube" onclick="event.stopPropagation();">Watch on YouTube</a>
+            <button class="youtube-download-icon download-btn"
+                    style="background:none; border:none; padding:0; cursor:pointer;"
+                    title="Download from YouTube">
+              <canvas width="32" height="32" class="yt-canvas"></canvas>
+              <span style="font-size:12px; color:#FF0000; font-weight:bold;">Download</span>
+            </button>
+          </div>
+        `
+        card.onclick = ()=> handleVideoClick(video, unlocked)
+        // Draw YouTube canvas icon for each button
+        const ytCanvas = card.querySelector('.yt-canvas');
+        if (ytCanvas) {
+          const ctx = ytCanvas.getContext('2d');
+          // Draw red rounded rectangle
+          ctx.beginPath();
+          const x = 2, y = 7, width = 28, height = 18, radius = 6;
+          ctx.moveTo(x + radius, y);
+          ctx.lineTo(x + width - radius, y);
+          ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+          ctx.lineTo(x + width, y + height - radius);
+          ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+          ctx.lineTo(x + radius, y + height);
+          ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+          ctx.lineTo(x, y + radius);
+          ctx.quadraticCurveTo(x, y, x + radius, y);
+          ctx.closePath();
+          ctx.fillStyle = "#FF0000";
+          ctx.fill();
+          // Draw white play triangle
+          ctx.beginPath();
+          ctx.moveTo(13, 12); // top
+          ctx.lineTo(13, 22); // bottom
+          ctx.lineTo(22, 17); // right
+          ctx.closePath();
+          ctx.fillStyle = "#FFFFFF";
+          ctx.fill();
+        }
+
+        // Watch button logic - allow subscribers OR correct password holders to open YouTube
+        const watchBtn = card.querySelector('.watch-btn')
+        if (watchBtn) {
+          watchBtn.onclick = (e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            if (unlocked) {
+              // Open the YouTube watch page in a new tab
+              window.open(`https://www.youtube.com/watch?v=${video['video id']}`, '_blank', 'noopener,noreferrer')
+              return
+            }
+            // Not unlocked — allow if user supplies a correct password for this video
+            const pw = prompt('You are not subscribed to this course. Enter password to watch on YouTube:')
+            if(pw === null) return
+            const passwords = passwordsFor(video).map(s=>s.toLowerCase())
+            if(passwords.includes(pw.trim().toLowerCase())){
+              window.open(`https://www.youtube.com/watch?v=${video['video id']}`, '_blank', 'noopener,noreferrer')
+            } else {
+              alert('Incorrect password or access denied.')
+            }
+          }
+        }
+
+        // Download button logic:
+        const dlBtn = card.querySelector('.download-btn')
+        if(dlBtn){
+          dlBtn.onclick = (e)=>{
+            e.stopPropagation()
+            if(unlocked){
+              window.open(`https://en1.savefrom.net/1-youtube-video-downloader-8jH/?url=https://www.youtube.com/watch?v=${video['video id']}`, '_blank')
+              alert('Successful download on YouTube.')
+            }else{
+              alert('To download this content, you need to subscribe.')
+            }
+          }
+        }
+        semDiv.appendChild(card)
+      })
+      secDiv.appendChild(semDiv)
+    })
+
+    container.appendChild(secDiv)
+  })
+}
+
+// --- MODAL VIDEO LOGIC ---
+function showModalVideo(videoId) {
+  modalVideoFrame.src = `https://www.youtube.com/embed/${videoId}`
+  modalVideoBg.style.display = 'flex'
+}
+function hideModalVideo() {
+  modalVideoFrame.src = ''
+  modalVideoBg.style.display = 'none'
+}
+closeModalVideoBtn.onclick = hideModalVideo
+modalVideoBg.onclick = function(e) {
+  // Only close if clicking the background, not inside the modal
+  if (e.target === modalVideoBg) hideModalVideo()
+}
+
+// --- Update handleVideoClick to use modal ---
+async function handleVideoClick(video, unlocked){
+  if(unlocked){
+    showModalVideo(video['video id'])
+    return
+  }
+  // Not subscribed for this section — ask for password
+  const pw = prompt('You are not subscribed to this course. Enter password to watch:')
+  if(pw===null) return
+  const passwords = passwordsFor(video).map(s=>s.toLowerCase())
+  if(passwords.includes(pw.trim().toLowerCase())){
+    showModalVideo(video['video id'])
+  } else {
+    alert('Incorrect password or access denied.')
+  }
+}
+
+// --- ADMIN: Video management ---
+function renderExistingVideos(data){
+  existingVideosDiv.innerHTML = '<h4>Existing Videos</h4>'
+  data.forEach(v=>{
+    const row = document.createElement('div')
+    row.style.borderBottom = '1px solid #eee'
+    row.style.padding = '6px 0'
+    row.innerHTML = `${v.title} (${v.section} — ${v.semester}) <button class="btn danger" data-id="${v.id}">Delete</button>`
+    existingVideosDiv.appendChild(row)
+  })
+  existingVideosDiv.querySelectorAll('button[data-id]').forEach(btn=>{
+    btn.onclick = async ()=>{
+      const id = btn.getAttribute('data-id')
+      if(!confirm('Delete this video?')) return
+      const { error } = await supabase.from('Videos').delete().eq('id', id)
+      if(error){ alert(error.message); return }
+      fetchVideos()
+    }
+  })
+}
+
+addVideoForm.onsubmit = async (e)=>{
+  e.preventDefault()
+  if(!currentUser || currentUser.email !== ADMIN_EMAIL) return alert('Admins only.')
+  const title = document.getElementById('videoTitle').value.trim()
+  const video_id = document.getElementById('videoID').value.trim()
+  const password_list = document.getElementById('passwordList').value.trim()
+  const section = document.getElementById('videoSection').value
+  const semester = document.getElementById('videoSemester').value
+  const order = parseInt(document.getElementById('videoOrder').value)
+  if(!title || !video_id || !section || !semester || Number.isNaN(order)) return alert('Fill all fields.')
+
+  const { error } = await supabase.from('Videos').insert([{ 
+    title,
+    'video id': video_id,
+    'password list': password_list,
+    section,
+    semester,
+    order
+  }])
+  if(error){ alert(error.message); return }
+  addVideoForm.reset()
+  fetchVideos()
+}
+
+// --- ADMIN: Subscriptions management ---
+async function fetchSubscriptions(){
+  const { data, error } = await supabase
+    .from('subscription')
+    .select('email, "start date", duration, "end date", courses')
+    .order('email', { ascending: true })
+  if(error){ subscriptionsAdmin.innerHTML = 'Failed to fetch subscriptions.'; console.error(error); return }
+  renderSubscriptionsAdmin(data||[])
+}
+
+function renderSubscriptionsAdmin(data){
+  subscriptionsAdmin.innerHTML = `
+    <h4>All Subscriptions</h4>
+    <table>
+      <tr><th>Email</th><th>Start</th><th>Duration (months)</th><th>End</th><th>Courses</th><th>Action</th></tr>
+      ${data.map(sub=>`
+        <tr>
+          <td>${sub.email}</td>
+          <td>${sub['start date']||''}</td>
+          <td>${sub.duration||''}</td>
+          <td>${sub['end date']||''}</td>
+          <td>${sub.courses||''}</td>
+          <td>
+            <button class="btn ghost" data-edit="${sub.email}">Edit</button>
+            <button class="btn danger" data-del="${sub.email}">Delete</button>
+          </td>
+        </tr>`).join('')}
+    </table>
+    <h4 style="margin-top:14px">Add / Update Subscription</h4>
+    <form id="addSubForm">
+      <div class="grid">
+        <div><label>Email</label><input type="email" id="subEmail" placeholder="Email" required /></div>
+        <div><label>Start Date</label><input type="date" id="subStart" required /></div>
+        <div>
+          <label>Duration</label>
+          <select id="subDuration" required>
+            <option value="">Select Duration</option>
+            <option value="1">1 Month</option>
+            <option value="3">3 Months</option>
+            <option value="5">5 Months</option>
+          </select>
+        </div>
+        <div><label>Courses (comma separated; blank = ALL)</label><input type="text" id="subCourses" placeholder="e.g., Maths, Biology" /></div>
+      </div>
+      <div style="margin-top:10px"><button class="btn" type="submit">Save Subscription</button></div>
+    </form>
+  `
+
+  // row buttons
+  subscriptionsAdmin.querySelectorAll('button[data-edit]').forEach(btn=>{
+    btn.onclick = ()=>{
+      const email = btn.getAttribute('data-edit')
+      const tr = btn.closest('tr')
+      document.getElementById('subEmail').value = email
+      document.getElementById('subStart').value = tr.children[1].textContent
+      document.getElementById('subDuration').value = tr.children[2].textContent
+      document.getElementById('subCourses').value = tr.children[4].textContent
+    }
+  })
+  subscriptionsAdmin.querySelectorAll('button[data-del]').forEach(btn=>{
+    btn.onclick = async ()=>{
+      const email = btn.getAttribute('data-del')
+      if(!confirm('Delete subscription for '+email+'?')) return
+      const { error } = await supabase.from('subscription').delete().eq('email', email)
+      if(error){ alert('Error: '+error.message); return }
+      fetchSubscriptions()
+    }
+  })
+
+  // form submit
+  const addForm = document.getElementById('addSubForm')
+  addForm.onsubmit = async (e)=>{
+    e.preventDefault()
+    const email = document.getElementById('subEmail').value.trim().toLowerCase()
+    const start = document.getElementById('subStart').value
+    const duration = parseInt(document.getElementById('subDuration').value)
+    const courses = document.getElementById('subCourses').value.trim()
+    if(!email || !start || Number.isNaN(duration)) return alert('Fill required fields.')
+
+    // compute end
+    const startDate = new Date(start)
+    const endDate = new Date(startDate)
+    endDate.setMonth(endDate.getMonth()+duration)
+    const endStr = endDate.toISOString().split('T')[0]
+
+    const { error } = await supabase.from('subscription').upsert([{ 
+      email,
+      'start date': start,
+      duration,
+      'end date': endStr,
+      courses
+    }])
+    if(error){ alert('Error: '+error.message); return }
+
+    alert('Subscription saved/updated!')
+    fetchSubscriptions()
+  }
+}
+</script>
+</body>
+</html>
