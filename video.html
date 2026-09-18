@@ -174,7 +174,8 @@ hr{border:0;border-top:1px solid #ddd;margin:18px 0}
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
 const supabaseUrl = "https://odwiqajuubcgrrqipyju.supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1d2JjZ3JycWlweWp1IiwiaWF0IjoxNzUzMjcwODIxLCJleHAiOjIwNjg0NjgyMjF9.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1dWJjZ3JycWlweWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzA4MjEsImV4cCI6MjA2ODg0NjgyMX0.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A';
+
 const supabase = createClient(supabaseUrl, supabaseKey);
 const ADMIN_EMAIL = "thrivesarchivers@gmail.com";
 const AI_VIDEO_FUNCTION_URL = `${supabaseUrl}/functions/v1/generate-video-script`;
