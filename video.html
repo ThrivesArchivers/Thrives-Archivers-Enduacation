@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -74,7 +75,7 @@ hr{border:0;border-top:1px solid #ddd;margin:18px 0}
 
   <div class="card ai-hero">
     <h2>🤖 Thrives Archivers AI Video Studio</h2>
-    <p>Create educational animated lessons with diagrams, charts, captions and audio.</p>
+    <p>Create educational lessons with real medical visuals, animated diagrams, captions and recorded narration audio.</p>
     <p class="small">Only the administrator can generate and publish AI videos.</p>
   </div>
 
@@ -138,7 +139,7 @@ hr{border:0;border-top:1px solid #ddd;margin:18px 0}
       <canvas id="chartPreviewCanvas" width="1100" height="560"></canvas>
 
       <hr>
-      <h3>🎥 Video Preview & Recording</h3>
+      <h3>🎥 Video Preview & Recording — Real Visuals + Audio</h3>
       <div class="ai-toolbar">
         <button id="recordAiVideoBtn" class="success">🎬 Create Animation Video</button>
         <button id="previewVoiceBtn" class="secondary">🔊 Read Narration</button>
@@ -170,6 +171,7 @@ hr{border:0;border-top:1px solid #ddd;margin:18px 0}
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/mespeak@2.0.2/src/mespeak.js"></script>
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
@@ -184,6 +186,11 @@ let currentStoryboard = [];
 let currentChart = null;
 let currentVideoBlob = null;
 let currentVideoUrl = null;
+let sceneImages = [];
+let ttsReady = false;
+let ttsConfigReady = false;
+let ttsVoiceReady = false;
+let audioContext = null;
 let drafts = JSON.parse(localStorage.getItem("thrives_ai_drafts") || "[]");
 let published = JSON.parse(localStorage.getItem("thrives_ai_published") || "[]");
 
@@ -439,6 +446,78 @@ $("addChartBtn").onclick=()=>{
   renderStoryboard();setAiStatus("Chart added as a video scene.","ok");
 };
 
+/* ---------- Real educational images + recorded narration ---------- */
+async function initTTS(){
+  if(ttsReady || !window.meSpeak) return ttsReady;
+  try{
+    await new Promise((resolve,reject)=>meSpeak.loadConfig("https://cdn.jsdelivr.net/npm/mespeak@2.0.2/src/mespeak_config.json",ok=>ok?resolve():reject(new Error("TTS config failed"))));
+    ttsConfigReady=true;
+    await new Promise((resolve,reject)=>meSpeak.loadVoice("https://cdn.jsdelivr.net/npm/mespeak@2.0.2/voices/en/en-us.json",(ok,msg)=>ok?resolve():reject(new Error(msg||"TTS voice failed"))));
+    ttsVoiceReady=true; ttsReady=true; return true;
+  }catch(e){ console.warn("meSpeak unavailable",e); return false; }
+}
+function imageQueryForScene(s){
+  const subject=($("aiSection").value||"").trim();
+  const raw=[subject,s.title,s.visual||"",(s.points||[]).slice(0,2).join(" ")].join(" ");
+  const low=raw.toLowerCase();
+  if(/heart|cardiac|atrium|ventricle|valve/.test(low)) return "human heart anatomy medical diagram";
+  if(/blood|circulation|oxygen/.test(low)) return "human cardiovascular blood circulation anatomy";
+  if(/brain|neuron|nerv/.test(low)) return "human brain anatomy medical";
+  if(/kidney|nephron/.test(low)) return "human kidney nephron anatomy";
+  if(/lung|respirat/.test(low)) return "human lungs respiratory anatomy";
+  if(/bone|skeleton|joint/.test(low)) return "human bone anatomy medical";
+  if(/muscle/.test(low)) return "human muscle anatomy medical";
+  if(/cell|bacteria|virus|microbio/.test(low)) return "microscope cell bacteria medical";
+  if(/molecule|atom|chem/.test(low)) return "molecular structure chemistry diagram";
+  return raw.slice(0,140)+" medical educational diagram";
+}
+async function searchMedicalImage(query){
+  const url="https://commons.wikimedia.org/w/api.php?origin=*&action=query&generator=search&gsrnamespace=6&gsrlimit=5&gsrsearch="+encodeURIComponent(query)+"&prop=imageinfo&iiprop=url|extmetadata&iiurlwidth=1600&format=json";
+  try{
+    const res=await fetch(url); if(!res.ok) throw new Error("image search failed");
+    const json=await res.json();
+    const pages=Object.values(json?.query?.pages||{});
+    for(const page of pages){
+      const info=page.imageinfo?.[0];
+      const src=info?.thumburl||info?.url;
+      if(src && /\.(jpg|jpeg|png|webp)(\?|$)/i.test(src)) return {src,title:page.title||"Wikimedia Commons",credit:info?.extmetadata?.Artist?.value||"Wikimedia Commons"};
+    }
+  }catch(e){console.warn("Medical image lookup failed",e)}
+  return null;
+}
+function loadImage(src){return new Promise(resolve=>{const img=new Image();img.crossOrigin="anonymous";img.onload=()=>resolve(img);img.onerror=()=>resolve(null);img.src=src;});}
+async function prepareSceneImages(){
+  sceneImages=[];
+  setAiStatus("Finding real medical visuals for each scene...");
+  for(let i=0;i<currentStoryboard.length;i++){
+    const s=currentStoryboard[i];
+    const found=await searchMedicalImage(imageQueryForScene(s));
+    const img=found?await loadImage(found.src):null;
+    sceneImages[i]={img,meta:found,query:imageQueryForScene(s)};
+  }
+}
+function drawRealImage(ctx,img,t){
+  if(!img) return false;
+  const iw=img.naturalWidth||img.width, ih=img.naturalHeight||img.height;
+  const scale=Math.max(W/iw,H/ih)*(1+0.035*Math.min(t,10));
+  const dw=iw*scale,dh=ih*scale;
+  const pan=Math.sin(t*.22)*18;
+  const x=(W-dw)/2+pan,y=(H-dh)/2;
+  ctx.save();ctx.globalAlpha=.98;ctx.drawImage(img,x,y,dw,dh);ctx.restore();
+  return true;
+}
+async function buildNarrationAudio(){
+  if(!(await initTTS())) return null;
+  const text=currentStoryboard.map(s=>s.narration).filter(Boolean).join(" ");
+  const wav=meSpeak.speak(text,{rawdata:true,amplitude:100,pitch:48,speed:150});
+  if(!wav) return null;
+  audioContext=new (window.AudioContext||window.webkitAudioContext)();
+  const audioBuffer=await audioContext.decodeAudioData(wav.slice(0));
+  const destination=audioContext.createMediaStreamDestination();
+  const source=audioContext.createBufferSource();source.buffer=audioBuffer;source.connect(destination);source.connect(audioContext.destination);
+  return {destination,source,audioBuffer};
+}
+
 /* ---------- Educational Canvas renderer ---------- */
 const W=1280,H=720;
 function rounded(ctx,x,y,w,h,r){
@@ -549,14 +628,24 @@ function drawEducationalScene(ctx,s,index,total,t){
   ctx.font="16px Arial";ctx.textAlign="right";ctx.fillText(`Scene ${index+1}/${total}`,1240,47);
   ctx.fillStyle="#1976d2";ctx.font="bold 34px Arial";ctx.textAlign="center";ctx.fillText(s.title||"",640,125);
   const type=s.visualType||"diagram";
-  if(type==="heart"||type==="heart_chambers")drawHeart(ctx,type,t);
-  else if(type==="bloodflow")drawBloodFlow(ctx,t);
-  else if(type==="valves")drawValves(ctx);
-  else if(type==="molecule")drawMolecule(ctx,t);
-  else if(type==="wave")drawWave(ctx,t);
-  else if(type==="chart"&&s.chart)drawChartScene(ctx,s.chart);
-  else if(type==="summary")drawSummary(ctx,s);
-  else drawDiagram(ctx,s,t);
+  const realImage=sceneImages[index]?.img;
+  const preferReal=!['chart','summary'].includes(type);
+  const drewReal=preferReal && drawRealImage(ctx,realImage,t);
+  if(!drewReal){
+    if(type==="heart"||type==="heart_chambers")drawHeart(ctx,type,t);
+    else if(type==="bloodflow")drawBloodFlow(ctx,t);
+    else if(type==="valves")drawValves(ctx);
+    else if(type==="molecule")drawMolecule(ctx,t);
+    else if(type==="wave")drawWave(ctx,t);
+    else if(type==="chart"&&s.chart)drawChartScene(ctx,s.chart);
+    else if(type==="summary")drawSummary(ctx,s);
+    else drawDiagram(ctx,s,t);
+  } else {
+    // Medical labels remain on top of the real image so students can follow the structure.
+    ctx.fillStyle="#0008";rounded(ctx,55,145,1170,74,12);
+    ctx.fillStyle="#fff";ctx.font="bold 22px Arial";ctx.textAlign="left";
+    ctx.fillText((s.visual||"Real medical visual").slice(0,90),80,190);
+  }
 
   // caption
   ctx.fillStyle="#000c";rounded(ctx,55,590,1170,82,12);
@@ -578,40 +667,39 @@ $("stopVoiceBtn").onclick=()=>speechSynthesis.cancel();
 /* ---------- Canvas video recording ---------- */
 async function createAiVideo(){
   if(!currentStoryboard.length){setAiStatus("Generate a lesson first.","error");return}
-  if(!window.MediaRecorder||!HTMLCanvasElement.prototype.captureStream){
-    setAiStatus("This browser does not support Canvas video recording.","error");return;
-  }
+  if(!window.MediaRecorder||!HTMLCanvasElement.prototype.captureStream){setAiStatus("This browser does not support Canvas video recording.","error");return}
+  await prepareSceneImages();
+  const audio=await buildNarrationAudio();
   const canvas=document.createElement("canvas");canvas.width=W;canvas.height=H;
   const ctx=canvas.getContext("2d");
-  const stream=canvas.captureStream(30);
-  let mime="video/webm;codecs=vp9";
-  if(!MediaRecorder.isTypeSupported(mime))mime="video/webm;codecs=vp8";
-  if(!MediaRecorder.isTypeSupported(mime))mime="video/webm";
-  const recorder=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:5000000});
-  const chunks=[];
-  recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};
-  const done=new Promise(resolve=>recorder.onstop=()=>resolve());
-  recorder.start(250);
-  setAiStatus("Rendering animated educational video...");
-  const start=performance.now();
-  const sceneDur=getSceneDuration()*1000;
-  let lastScene=-1;
-  while(performance.now()-start<Number($("aiDuration").value)*60000){
-    const elapsed=performance.now()-start;
-    const si=Math.min(currentStoryboard.length-1,Math.floor(elapsed/sceneDur));
+  const videoStream=canvas.captureStream(30);
+  const tracks=[...videoStream.getVideoTracks()];
+  if(audio) tracks.push(...audio.destination.stream.getAudioTracks());
+  const combined=new MediaStream(tracks);
+  let mime="video/webm;codecs=vp9,opus";
+  if(!MediaRecorder.isTypeSupported(mime)) mime="video/webm;codecs=vp8,opus";
+  if(!MediaRecorder.isTypeSupported(mime)) mime="video/webm";
+  const recorder=new MediaRecorder(combined,{mimeType:mime,videoBitsPerSecond:8000000,audioBitsPerSecond:128000});
+  const chunks=[];recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};
+  const done=new Promise(resolve=>recorder.onstop=resolve);
+  recorder.start(250);setAiStatus(audio?"Rendering high-quality visuals + narration audio...":"Rendering high-quality visuals... (narration could not be prepared)");
+  if(audio){await audio.source.start(0);}
+  const totalSeconds=Math.max(3,Number($("aiDuration").value)*60);
+  const startTime=performance.now(),sceneDur=getSceneDuration()*1000;let lastScene=-1;
+  while(performance.now()-startTime<totalSeconds*1000){
+    const elapsed=performance.now()-startTime;const si=Math.min(currentStoryboard.length-1,Math.floor(elapsed/sceneDur));
     const local=(elapsed-si*sceneDur)/1000;
     if(si!==lastScene){lastScene=si;setAiStatus(`Rendering scene ${si+1} of ${currentStoryboard.length}...`)}
     drawEducationalScene(ctx,currentStoryboard[si],si,currentStoryboard.length,local);
     await new Promise(requestAnimationFrame);
   }
-  recorder.stop();await done;
-  stream.getTracks().forEach(t=>t.stop());
-  currentVideoBlob=new Blob(chunks,{type:"video/webm"});
+  if(audio){try{audio.source.stop()}catch(_){};try{await audioContext.close()}catch(_){}}
+  recorder.stop();await done;videoStream.getTracks().forEach(t=>t.stop());combined.getTracks().forEach(t=>t.stop());
+  currentVideoBlob=new Blob(chunks,{type:mime});
   if(currentVideoUrl)URL.revokeObjectURL(currentVideoUrl);
   currentVideoUrl=URL.createObjectURL(currentVideoBlob);
-  $("aiPreviewVideo").src=currentVideoUrl;
-  $("aiPreviewWrap").classList.remove("hidden");
-  setAiStatus(`Video generated successfully (${(currentVideoBlob.size/1024/1024).toFixed(1)} MB).`,"ok");
+  $("aiPreviewVideo").src=currentVideoUrl;$("aiPreviewWrap").classList.remove("hidden");
+  setAiStatus(`Video generated with ${audio?"recorded narration and":""} real medical visuals (${(currentVideoBlob.size/1024/1024).toFixed(1)} MB).`,"ok");
 }
 $("recordAiVideoBtn").onclick=createAiVideo;
 
