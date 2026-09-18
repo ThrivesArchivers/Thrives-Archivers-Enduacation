@@ -174,8 +174,7 @@ hr{border:0;border-top:1px solid #ddd;margin:18px 0}
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
 const supabaseUrl = "https://odwiqajuubcgrrqipyju.supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1dWJjZ3JycWlweWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzA4MjEsImV4cCI6MjA2ODg0NjgyMX0.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A';
-
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1d2JjZ3JycWlweWp1IiwiaWF0IjoxNzUzMjcwODIxLCJleHAiOjIwNjg0NjgyMjF9.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A";
 const supabase = createClient(supabaseUrl, supabaseKey);
 const ADMIN_EMAIL = "thrivesarchivers@gmail.com";
 const AI_VIDEO_FUNCTION_URL = `${supabaseUrl}/functions/v1/generate-video-script`;
@@ -191,7 +190,10 @@ let published = JSON.parse(localStorage.getItem("thrives_ai_published") || "[]")
 /* ---------- Helpers ---------- */
 const $ = id => document.getElementById(id);
 const escapeHtml = s => String(s ?? "").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
-function isAdmin(){ return currentUser?.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase(); }
+function isAdmin(){
+  const email = (currentUser?.email || currentUser?.user_metadata?.email || "").trim().toLowerCase();
+  return email === ADMIN_EMAIL.trim().toLowerCase();
+}
 function setAiStatus(text, type=""){ $("aiStatus").textContent=text; $("aiStatus").className="status "+type; }
 function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 
@@ -204,6 +206,8 @@ async function initAuth(){
   if(isAdmin()){
     $("aiAdmin").classList.remove("hidden");
     renderDrafts(); renderAdminPublished();
+  } else {
+    $("aiAdmin").classList.add("hidden");
   }
 }
 function updateAuthUI(){
@@ -219,7 +223,17 @@ $("loginBtn").onclick=async()=>{
   if(error)alert(error.message); else location.reload();
 };
 $("logoutBtn").onclick=async()=>{await supabase.auth.signOut();location.reload()};
-supabase.auth.onAuthStateChange((_e,session)=>{currentUser=session?.user||null;updateAuthUI()});
+supabase.auth.onAuthStateChange((_e,session)=>{
+  currentUser=session?.user||null;
+  updateAuthUI();
+  if(isAdmin()){
+    $("aiAdmin").classList.remove("hidden");
+    renderDrafts();
+    renderAdminPublished();
+  } else {
+    $("aiAdmin").classList.add("hidden");
+  }
+});
 
 /* ---------- Existing YouTube area: safe loader ---------- */
 async function loadYouTubeVideos(search=""){
