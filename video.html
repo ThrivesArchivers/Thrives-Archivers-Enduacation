@@ -1,4707 +1,715 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Thrives Archivers - Video Streaming</title>
-
-  <style>
-    :root {
-      --brand: #1976d2;
-      --ink: #333;
-      --bg: #f4f4f4;
-      --card: #fff;
-      --muted: #777;
-      --danger: #e53935;
-      --youtube: #ff0000;
-      --success: #188038;
-      --warning: #f9a825;
-      --dark: #17202a;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: var(--bg);
-      color: var(--ink);
-    }
-
-    button,
-    input,
-    select,
-    textarea {
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    .topbar {
-      background: var(--brand);
-      color: white;
-      padding: 14px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 15px;
-      flex-wrap: wrap;
-    }
-
-    .topbar h1 {
-      margin: 0;
-      font-size: 21px;
-    }
-
-    .account-area {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .account-area small {
-      opacity: 0.95;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: auto;
-      padding: 20px;
-    }
-
-    .search-area {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 18px;
-      flex-wrap: wrap;
-    }
-
-    .search-area input {
-      flex: 1;
-      min-width: 220px;
-    }
-
-    input,
-    select,
-    textarea {
-      width: 100%;
-      border: 1px solid #ccc;
-      border-radius: 7px;
-      padding: 11px 12px;
-      outline: none;
-      background: white;
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 100px;
-    }
-
-    input:focus,
-    select:focus,
-    textarea:focus {
-      border-color: var(--brand);
-    }
-
-    .btn {
-      border: 0;
-      border-radius: 7px;
-      padding: 10px 15px;
-      background: var(--brand);
-      color: white;
-      font-weight: 600;
-    }
-
-    .btn:hover {
-      opacity: 0.9;
-    }
-
-    .btn-danger {
-      background: var(--danger);
-    }
-
-    .btn-success {
-      background: var(--success);
-    }
-
-    .btn-dark {
-      background: #263238;
-    }
-
-    .btn-youtube {
-      background: var(--youtube);
-    }
-
-    .btn-light {
-      background: #e8e8e8;
-      color: #222;
-    }
-
-    .status {
-      background: white;
-      border-left: 5px solid var(--brand);
-      padding: 13px;
-      margin-bottom: 20px;
-      border-radius: 5px;
-    }
-
-    .channel-banner {
-      background: linear-gradient(135deg, #111, #333);
-      color: white;
-      padding: 20px;
-      border-radius: 10px;
-      margin-bottom: 25px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 15px;
-      flex-wrap: wrap;
-    }
-
-    .channel-banner h2 {
-      margin: 0 0 5px;
-    }
-
-    .channel-banner p {
-      margin: 0;
-      color: #ddd;
-    }
-
-    .channel-banner a {
-      text-decoration: none;
-    }
-
-    .section-heading {
-      margin-top: 30px;
-      margin-bottom: 12px;
-      border-bottom: 2px solid #ddd;
-      padding-bottom: 8px;
-    }
-
-    .video-group {
-      margin-bottom: 28px;
-    }
-
-    .video-group h3 {
-      margin-bottom: 12px;
-    }
-
-    .video-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-      gap: 15px;
-    }
-
-    .video-card {
-      background: var(--card);
-      border-radius: 10px;
-      padding: 15px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    }
-
-    .video-card h4 {
-      margin: 0 0 12px;
-      line-height: 1.4;
-    }
-
-    .video-icon {
-      height: 130px;
-      border-radius: 8px;
-      background: #111;
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 45px;
-      margin-bottom: 12px;
-    }
-
-    .video-actions {
-      display: flex;
-      gap: 7px;
-      flex-wrap: wrap;
-    }
-
-    .video-actions button {
-      flex: 1;
-      min-width: 100px;
-    }
-
-    .locked {
-      background: #fafafa;
-    }
-
-    .admin-panel {
-      display: none;
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      margin-top: 30px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-    }
-
-    .admin-panel h2 {
-      margin-top: 0;
-    }
-
-    .admin-form {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-    }
-
-    .admin-form .full {
-      grid-column: 1 / -1;
-    }
-
-    .admin-list {
-      margin-top: 20px;
-    }
-
-    .admin-item {
-      border: 1px solid #ddd;
-      padding: 12px;
-      border-radius: 7px;
-      margin-bottom: 8px;
-      background: #fafafa;
-    }
-
-    .admin-item-actions {
-      display: flex;
-      gap: 7px;
-      flex-wrap: wrap;
-      margin-top: 8px;
-    }
-
-    .modal-bg {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.65);
-      z-index: 9998;
-    }
-
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 9999;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      width: min(94%, 500px);
-      background: white;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 10px 50px rgba(0,0,0,0.3);
-    }
-
-    .modal h2 {
-      margin-top: 0;
-    }
-
-    .video-modal-bg {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 10000;
-      background: rgba(0,0,0,0.92);
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .video-modal {
-      width: min(1100px, 96vw);
-      position: relative;
-    }
-
-    .video-modal iframe,
-    .video-modal video {
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      border: 0;
-      border-radius: 8px;
-      background: black;
-    }
-
-    .close-video {
-      position: absolute;
-      right: -5px;
-      top: -45px;
-      background: white;
-      color: black;
-      border: 0;
-      border-radius: 50%;
-      width: 35px;
-      height: 35px;
-      font-size: 20px;
-    }
-
-    /* =========================================================
-       AI VIDEO SECTION
-       ========================================================= */
-
-    .ai-section {
-      margin-top: 45px;
-      background: #101820;
-      color: white;
-      border-radius: 14px;
-      padding: 22px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.12);
-    }
-
-    .ai-section-header {
-      display: flex;
-      justify-content: space-between;
-      gap: 15px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .ai-section-header h2 {
-      margin: 0;
-    }
-
-    .ai-badge {
-      display: inline-block;
-      background: #7c4dff;
-      color: white;
-      padding: 5px 10px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: bold;
-    }
-
-    .ai-public {
-      margin-top: 22px;
-    }
-
-    .ai-video-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-      gap: 15px;
-    }
-
-    .ai-video-card {
-      background: white;
-      color: #222;
-      border-radius: 10px;
-      padding: 15px;
-    }
-
-    .ai-video-card h3 {
-      margin-top: 0;
-    }
-
-    .ai-thumbnail {
-      background: linear-gradient(135deg, #263238, #7c4dff);
-      height: 150px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 45px;
-      margin-bottom: 12px;
-    }
-
-    .ai-meta {
-      color: #777;
-      font-size: 13px;
-      margin-bottom: 12px;
-    }
-
-    .ai-admin {
-      display: none;
-      margin-top: 25px;
-      background: #17202a;
-      border: 1px solid #37474f;
-      border-radius: 12px;
-      padding: 18px;
-    }
-
-    .ai-tabs {
-      display: flex;
-      gap: 7px;
-      flex-wrap: wrap;
-      margin-bottom: 18px;
-    }
-
-    .ai-tab {
-      background: #263238;
-      border: 1px solid #455a64;
-      color: white;
-      border-radius: 7px;
-      padding: 9px 14px;
-    }
-
-    .ai-tab.active {
-      background: #7c4dff;
-    }
-
-    .ai-tab-content {
-      display: none;
-    }
-
-    .ai-tab-content.active {
-      display: block;
-    }
-
-    .ai-form {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-    }
-
-    .ai-form .full {
-      grid-column: 1 / -1;
-    }
-
-    .ai-form label {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 5px;
-      color: #ddd;
-      font-size: 14px;
-    }
-
-    .ai-form input,
-    .ai-form select,
-    .ai-form textarea {
-      background: #fff;
-      color: #222;
-    }
-
-    .ai-controls {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 15px;
-    }
-
-    .ai-status {
-      margin-top: 15px;
-      padding: 12px;
-      background: #263238;
-      border-radius: 7px;
-      color: #ddd;
-      white-space: pre-wrap;
-    }
-
-    .storyboard {
-      margin-top: 18px;
-    }
-
-    .storyboard-scene {
-      background: #263238;
-      border: 1px solid #455a64;
-      border-radius: 8px;
-      padding: 13px;
-      margin-bottom: 10px;
-    }
-
-    .storyboard-scene h4 {
-      margin: 0 0 7px;
-      color: #fff;
-    }
-
-    .storyboard-scene p {
-      margin: 5px 0;
-      color: #ddd;
-      line-height: 1.45;
-    }
-
-    .ai-preview-wrap {
-      margin-top: 20px;
-      display: none;
-    }
-
-    #aiPreviewVideo {
-      width: 100%;
-      max-width: 900px;
-      border-radius: 9px;
-      background: #000;
-    }
-
-    .admin-ai-list {
-      margin-top: 10px;
-    }
-
-    .admin-ai-item {
-      background: #263238;
-      border: 1px solid #455a64;
-      border-radius: 8px;
-      padding: 13px;
-      margin-bottom: 10px;
-    }
-
-    .admin-ai-item h4 {
-      margin: 0 0 6px;
-    }
-
-    .admin-ai-actions {
-      display: flex;
-      gap: 7px;
-      flex-wrap: wrap;
-      margin-top: 9px;
-    }
-
-    .empty {
-      padding: 20px;
-      background: white;
-      border-radius: 8px;
-      color: #666;
-    }
-
-    .ai-empty {
-      padding: 20px;
-      background: #263238;
-      border-radius: 8px;
-      color: #ccc;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    @media (max-width: 700px) {
-      .admin-form,
-      .ai-form {
-        grid-template-columns: 1fr;
-      }
-
-      .admin-form .full,
-      .ai-form .full {
-        grid-column: auto;
-      }
-
-      .topbar {
-        align-items: flex-start;
-      }
-
-      .video-actions button {
-        min-width: 90px;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thrives Archivers - Video Streaming</title>
+<style>
+:root{
+  --brand:#1976d2;--ink:#333;--bg:#f4f4f4;--card:#fff;--muted:#777;
+  --danger:#e53935;--youtube:#ff0000;--success:#188038;--warning:#f9a825;--dark:#17202a
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--ink)}
+.topbar{background:var(--brand);color:#fff;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;position:sticky;top:0;z-index:10}
+.topbar h1{font-size:20px;margin:0}.topbar button{border:0;border-radius:7px;padding:8px 12px;cursor:pointer}
+.container{max-width:1200px;margin:auto;padding:18px}
+.card{background:var(--card);border-radius:12px;padding:18px;margin-bottom:18px;box-shadow:0 2px 9px #00000012}
+.hidden{display:none!important}.muted{color:var(--muted)}.danger{color:var(--danger)}
+button{background:var(--brand);color:#fff;border:0;padding:10px 14px;border-radius:7px;cursor:pointer}
+button.secondary{background:#607d8b}button.success{background:var(--success)}button.warning{background:var(--warning);color:#222}
+button.danger{background:var(--danger);color:#fff}button.youtube{background:var(--youtube)}
+input,select,textarea{width:100%;padding:10px;border:1px solid #ccc;border-radius:7px;margin-top:5px}
+textarea{min-height:100px;resize:vertical}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.video-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:15px}
+.video-card{background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 2px 7px #0001}
+.video-thumb{aspect-ratio:16/9;background:#111;display:flex;align-items:center;justify-content:center;color:#fff}
+.video-info{padding:12px}.video-info h3{margin:0 0 8px;font-size:17px}
+.status{padding:10px;border-radius:8px;background:#eef5ff;margin:10px 0}.error{background:#ffebee;color:#b71c1c}.ok{background:#e8f5e9;color:#166534}
+.tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}.tabs button.active{background:var(--dark)}
+.ai-hero{background:linear-gradient(135deg,#17202a,#1976d2);color:#fff}
+.ai-toolbar{display:flex;gap:8px;flex-wrap:wrap}
+.storyboard{display:grid;gap:12px;margin-top:12px}
+.scene-card{border:1px solid #ddd;border-radius:10px;padding:14px;background:#fafafa}
+.scene-card h3{margin-top:0}.scene-meta{font-size:12px;color:#666}
+#aiPreviewVideo{width:100%;max-height:560px;background:#000;border-radius:10px}
+#chartPreviewCanvas{width:100%;height:auto;background:#fff;border:1px solid #ddd;border-radius:8px}
+.chart-data{font-family:monospace;min-height:130px}
+.small{font-size:12px}
+.modal{position:fixed;inset:0;background:#000b;display:flex;align-items:center;justify-content:center;z-index:100}
+.modal-box{background:#fff;width:min(900px,94vw);padding:15px;border-radius:12px;position:relative}
+.modal-box video{width:100%;background:#000}.close{position:absolute;right:10px;top:8px;border-radius:50%;padding:6px 10px}
+label{font-weight:bold;font-size:13px}
+hr{border:0;border-top:1px solid #ddd;margin:18px 0}
+</style>
 </head>
-
 <body>
 
-  <!-- =========================================================
-       TOP BAR
-       ========================================================= -->
-  <div class="topbar">
-    <div>
-      <h1>Thrives Archivers</h1>
-      <small>Educational Video Streaming</small>
-    </div>
+<div class="topbar">
+  <h1>Thrives Archivers</h1>
+  <div>
+    <span id="displayName">Guest</span>
+    <button id="loginBtn">Login</button>
+    <button id="logoutBtn" class="hidden">Logout</button>
+  </div>
+</div>
 
-    <div class="account-area">
-      <div>
-        <strong id="displayName">Guest</strong><br>
-        <small id="subInfo">Not logged in</small>
+<div class="container">
+  <div class="card">
+    <h2>Video Lessons</h2>
+    <div id="subInfo" class="muted">Checking subscription...</div>
+    <div class="grid">
+      <div><label>Search videos</label><input id="videoSearchInput" placeholder="Search lesson..."></div>
+      <div style="align-self:end">
+        <button id="videoSearchBtn">Search</button>
+        <button id="videoClearBtn" class="secondary">Clear</button>
+        <a href="https://youtube.com/@thrivesarchivers?si=S092LRlM1g2mWTll" target="_blank"><button class="youtube">YouTube</button></a>
       </div>
-
-      <button class="btn btn-light" id="loginBtnTop">
-        Login
-      </button>
-
-      <button class="btn btn-danger" id="logoutBtn" style="display:none;">
-        Logout
-      </button>
     </div>
+    <div id="statusBar" class="status">Loading videos...</div>
+    <div id="videoContainer" class="video-grid"></div>
   </div>
 
-  <main class="container">
+  <div class="card ai-hero">
+    <h2>🤖 Thrives Archivers AI Video Studio</h2>
+    <p>Create educational animated lessons with diagrams, charts, captions and audio.</p>
+    <p class="small">Only the administrator can generate and publish AI videos.</p>
+  </div>
 
-    <!-- =======================================================
-         SEARCH
-         ======================================================= -->
-    <div class="search-area">
-      <input
-        id="videoSearchInput"
-        type="text"
-        placeholder="Search videos, courses, sections..."
-      >
+  <section id="ai-section" class="card">
+    <h2>🎬 AI Video Library</h2>
+    <div id="aiPublishedVideos" class="video-grid"></div>
+  </section>
 
-      <button class="btn" id="videoSearchBtn">
-        Search
-      </button>
-
-      <button class="btn btn-light" id="videoClearBtn">
-        Clear
-      </button>
+  <section id="aiAdmin" class="card hidden">
+    <h2>🔐 AI Video Admin Studio</h2>
+    <div class="tabs">
+      <button class="active" data-tab="generate">Generate</button>
+      <button data-tab="drafts">Drafts</button>
+      <button data-tab="published">Published</button>
     </div>
 
-    <!-- =======================================================
-         CHANNEL
-         ======================================================= -->
-    <div class="channel-banner">
-      <div>
-        <h2>Thrives Archivers YouTube Lessons</h2>
-        <p>Access our educational video lessons and study materials.</p>
-      </div>
-
-      <a
-        href="https://youtube.com/@thrivesarchivers?si=S092LRlM1g2mWTll"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <button class="btn btn-youtube">
-          Visit YouTube Channel
-        </button>
-      </a>
-    </div>
-
-    <!-- =======================================================
-         STATUS
-         ======================================================= -->
-    <div class="status" id="statusBar">
-      Please log in to see your subscriptions and watch videos.
-    </div>
-
-    <!-- =======================================================
-         EXISTING YOUTUBE VIDEO SECTION
-         ======================================================= -->
-    <h2 class="section-heading">
-      📺 YouTube Video Lessons
-    </h2>
-
-    <div id="videoContainer">
-      <div class="empty">
-        Loading videos...
-      </div>
-    </div>
-
-    <!-- =======================================================
-         AI VIDEO SECTION
-         ======================================================= -->
-    <section class="ai-section">
-
-      <div class="ai-section-header">
-        <div>
-          <span class="ai-badge">AI VIDEO</span>
-          <h2>🤖 Thrives Archivers AI Lessons</h2>
-          <p>
-            Animated educational lessons generated by Thrives Archivers.
-          </p>
+    <div id="aiGenerateTab">
+      <div class="grid">
+        <div><label>Lesson title</label><input id="aiTitle" placeholder="Introduction to the Human Heart"></div>
+        <div><label>Course / subject</label><input id="aiSection" placeholder="Anatomy"></div>
+        <div><label>Semester</label>
+          <select id="aiSemester"><option>Semester 1</option><option>Semester 2</option><option>Term 1</option><option>Term 2</option><option>General</option></select>
+        </div>
+        <div><label>Duration</label>
+          <select id="aiDuration"><option value="1">1 minute</option><option value="3" selected>3 minutes</option><option value="5">5 minutes</option></select>
+        </div>
+        <div><label>Teaching style</label>
+          <select id="aiStyle"><option>2D Educational Animation</option><option>Medical / Anatomy Animation</option><option>Whiteboard</option><option>Simple Classroom</option></select>
+        </div>
+        <div><label>Difficulty</label>
+          <select id="aiDifficulty"><option>Beginner</option><option selected>Intermediate</option><option>Advanced</option></select>
         </div>
       </div>
+      <label>Lesson instruction</label>
+      <textarea id="aiPrompt" placeholder="Explain the chambers, valves and blood flow. Include important examination points."></textarea>
 
-      <!-- PUBLIC PUBLISHED AI VIDEOS -->
-      <div class="ai-public">
-        <h3>🎬 Published AI Videos</h3>
-
-        <div id="aiPublishedVideos" class="ai-video-grid">
-          <div class="ai-empty">
-            Loading AI videos...
-          </div>
-        </div>
+      <div class="ai-toolbar">
+        <button id="generateAiBtn">✨ Generate Lesson</button>
+        <button id="clearAiBtn" class="secondary">Clear</button>
       </div>
-
-      <!-- ADMIN AI AREA -->
-      <div class="ai-admin" id="aiAdmin">
-
-        <h3>🔐 AI Video Administration</h3>
-
-        <div class="ai-tabs">
-
-          <button
-            class="ai-tab active"
-            data-tab="aiGenerateTab"
-          >
-            Generate Video
-          </button>
-
-          <button
-            class="ai-tab"
-            data-tab="aiDraftsTab"
-          >
-            Drafts
-          </button>
-
-          <button
-            class="ai-tab"
-            data-tab="aiPublishedTab"
-          >
-            Published
-          </button>
-
-        </div>
-
-        <!-- ===================================================
-             GENERATOR
-             =================================================== -->
-        <div
-          class="ai-tab-content active"
-          id="aiGenerateTab"
-        >
-
-          <div class="ai-form">
-
-            <div>
-              <label for="aiTitle">Video Title</label>
-
-              <input
-                id="aiTitle"
-                type="text"
-                placeholder="Example: Introduction to the Human Heart"
-              >
-            </div>
-
-            <div>
-              <label for="aiSection">Course / Section</label>
-
-              <select id="aiSection">
-                <option value="Maths">Maths</option>
-                <option value="Physics">Physics</option>
-                <option value="Chemistry">Chemistry</option>
-                <option value="Biology">Biology</option>
-                <option value="MATHS 131">MATHS 131</option>
-                <option value="ANATOMY MBCHB">ANATOMY MBCHB</option>
-                <option value="ANATOMY PHARM/BIOMED">ANATOMY PHARM/BIOMED</option>
-                <option value="PHARMACOLOGY">PHARMACOLOGY</option>
-                <option value="PATHOLOGY">PATHOLOGY</option>
-                <option value="PHYSIOLOGY">PHYSIOLOGY</option>
-                <option value="BIOCHEMISTRY">BIOCHEMISTRY</option>
-              </select>
-            </div>
-
-            <div>
-              <label for="aiSemester">Semester / Year</label>
-
-              <select id="aiSemester">
-                <option value="First Year">First Year</option>
-                <option value="Second Year">Second Year</option>
-                <option value="Third Year">Third Year</option>
-                <option value="Fourth Year">Fourth Year</option>
-                <option value="Fifth Year">Fifth Year</option>
-                <option value="General">General</option>
-              </select>
-            </div>
-
-            <div>
-              <label for="aiDuration">Video Duration</label>
-
-              <select id="aiDuration">
-                <option value="1">1 Minute</option>
-                <option value="3">3 Minutes</option>
-                <option value="5">5 Minutes</option>
-              </select>
-            </div>
-
-            <div>
-              <label for="aiStyle">Teaching Style</label>
-
-              <select id="aiStyle">
-                <option value="2D Educational Animation">
-                  2D Educational Animation
-                </option>
-
-                <option value="Medical Animation">
-                  Medical / Anatomy Animation
-                </option>
-
-                <option value="Whiteboard">
-                  Whiteboard Teaching
-                </option>
-
-                <option value="Simple Classroom">
-                  Simple Classroom
-                </option>
-              </select>
-            </div>
-
-            <div>
-              <label for="aiDifficulty">Difficulty</label>
-
-              <select id="aiDifficulty">
-                <option value="Beginner">Beginner</option>
-                <option value="Intermediate">Intermediate</option>
-                <option value="Advanced">Advanced</option>
-              </select>
-            </div>
-
-            <div class="full">
-              <label for="aiPrompt">
-                Learning Objective / Topic
-              </label>
-
-              <textarea
-                id="aiPrompt"
-                placeholder="Example: Explain the structure of the human heart, chambers, valves, blood flow and major blood vessels. Make it suitable for first-year medical students."
-              ></textarea>
-            </div>
-
-          </div>
-
-          <div class="ai-controls">
-
-            <button
-              class="btn"
-              id="generateAiBtn"
-            >
-              🤖 Generate AI Storyboard
-            </button>
-
-            <button
-              class="btn btn-light"
-              id="clearAiBtn"
-            >
-              Clear
-            </button>
-
-          </div>
-
-          <div
-            class="ai-status"
-            id="aiStatus"
-          >
-            Ready.
-          </div>
-
-          <!-- STORYBOARD -->
-          <div
-            class="storyboard"
-            id="aiStoryboard"
-          ></div>
-
-          <!-- VIDEO PREVIEW -->
-          <div
-            class="ai-preview-wrap"
-            id="aiPreviewWrap"
-          >
-
-            <h3>🎥 Generated Animation Preview</h3>
-
-            <video
-              id="aiPreviewVideo"
-              controls
-              playsinline
-            ></video>
-
-            <div class="ai-controls">
-
-              <button
-                class="btn btn-success"
-                id="recordAiVideoBtn"
-              >
-                🎥 Create Animation Video
-              </button>
-
-              <button
-                class="btn"
-                id="saveAiDraftBtn"
-              >
-                💾 Save Draft
-              </button>
-
-              <button
-                class="btn btn-success"
-                id="publishAiVideoBtn"
-              >
-                🚀 Publish Video
-              </button>
-
-            </div>
-
-          </div>
-
-        </div>
-
-        <!-- ===================================================
-             DRAFTS
-             =================================================== -->
-        <div
-          class="ai-tab-content"
-          id="aiDraftsTab"
-        >
-
-          <h3>📝 AI Video Drafts</h3>
-
-          <div
-            id="aiDraftsList"
-            class="admin-ai-list"
-          >
-            <div class="ai-empty">
-              Loading drafts...
-            </div>
-          </div>
-
-        </div>
-
-        <!-- ===================================================
-             PUBLISHED ADMIN
-             =================================================== -->
-        <div
-          class="ai-tab-content"
-          id="aiPublishedTab"
-        >
-
-          <h3>🚀 Published AI Videos</h3>
-
-          <div
-            id="aiAdminPublishedList"
-            class="admin-ai-list"
-          >
-            <div class="ai-empty">
-              Loading published videos...
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-
-    </section>
-
-    <!-- =======================================================
-         EXISTING ADMIN PANEL
-         ======================================================= -->
-    <section
-      class="admin-panel"
-      id="adminPanel"
-    >
-
-      <h2>🔐 Admin Panel</h2>
-
-      <h3>Add YouTube Video</h3>
-
-      <form id="addVideoForm">
-
-        <div class="admin-form">
-
-          <div>
-            <label>Video Title</label>
-
-            <input
-              id="videoTitle"
-              type="text"
-              required
-            >
-          </div>
-
-          <div>
-            <label>YouTube Video ID</label>
-
-            <input
-              id="videoID"
-              type="text"
-              placeholder="Example: dQw4w9WgXcQ"
-              required
-            >
-          </div>
-
-          <div>
-            <label>Passwords</label>
-
-            <input
-              id="passwordList"
-              type="text"
-              placeholder="password1, password2"
-            >
-          </div>
-
-          <div>
-            <label>Section</label>
-
-            <select id="videoSection">
-
-              <option value="Maths">Maths</option>
-              <option value="Physics">Physics</option>
-              <option value="Chemistry">Chemistry</option>
-              <option value="Biology">Biology</option>
-              <option value="MATHS 131">MATHS 131</option>
-              <option value="ANATOMY MBCHB">ANATOMY MBCHB</option>
-              <option value="ANATOMY PHARM/BIOMED">ANATOMY PHARM/BIOMED</option>
-              <option value="PHARMACOLOGY">PHARMACOLOGY</option>
-              <option value="PATHOLOGY">PATHOLOGY</option>
-              <option value="PHYSIOLOGY">PHYSIOLOGY</option>
-              <option value="BIOCHEMISTRY">BIOCHEMISTRY</option>
-
-            </select>
-          </div>
-
-          <div>
-            <label>Semester</label>
-
-            <select id="videoSemester">
-
-              <option value="First Year">First Year</option>
-              <option value="Second Year">Second Year</option>
-              <option value="Third Year">Third Year</option>
-              <option value="Fourth Year">Fourth Year</option>
-              <option value="Fifth Year">Fifth Year</option>
-              <option value="General">General</option>
-
-            </select>
-          </div>
-
-          <div>
-            <label>Order</label>
-
-            <input
-              id="videoOrder"
-              type="number"
-              value="0"
-            >
-          </div>
-
-          <div class="full">
-
-            <button
-              class="btn btn-success"
-              type="submit"
-            >
-              Add Video
-            </button>
-
-          </div>
-
-        </div>
-
-      </form>
+      <div id="aiStatus" class="status">Ready.</div>
+      <div id="aiStoryboard" class="storyboard"></div>
 
       <hr>
-
-      <h3>Existing YouTube Videos</h3>
-
-      <div
-        id="existingVideos"
-        class="admin-list"
-      ></div>
+      <h3>📊 Chart Create</h3>
+      <p class="muted">Create a chart and add it as an animated scene in the lesson.</p>
+      <div class="grid">
+        <div><label>Chart type</label>
+          <select id="chartType"><option value="bar">Bar Chart</option><option value="line">Line Chart</option><option value="pie">Pie Chart</option></select>
+        </div>
+        <div><label>Chart title</label><input id="chartTitle" placeholder="Heart Rate During Exercise"></div>
+        <div><label>X-axis label</label><input id="chartXLabel" placeholder="Time (minutes)"></div>
+        <div><label>Y-axis label</label><input id="chartYLabel" placeholder="Heart rate (bpm)"></div>
+      </div>
+      <label>Data — one item per line: label:value</label>
+      <textarea id="chartData" class="chart-data" placeholder="1:72&#10;2:85&#10;3:98&#10;4:110"></textarea>
+      <div class="ai-toolbar">
+        <button id="generateChartBtn">📊 Generate Chart</button>
+        <button id="addChartBtn" class="success">➕ Add Chart To Video</button>
+      </div>
+      <canvas id="chartPreviewCanvas" width="1100" height="560"></canvas>
 
       <hr>
-
-      <h3>Subscriptions</h3>
-
-      <div id="subscriptionsAdmin">
-
-        <div class="admin-form">
-
-          <div>
-            <label>Email</label>
-
-            <input
-              id="subEmail"
-              type="email"
-              placeholder="student@example.com"
-            >
-          </div>
-
-          <div>
-            <label>Start Date</label>
-
-            <input
-              id="subStartDate"
-              type="date"
-            >
-          </div>
-
-          <div>
-            <label>Duration in Months</label>
-
-            <input
-              id="subDuration"
-              type="number"
-              min="1"
-              value="1"
-            >
-          </div>
-
-          <div>
-            <label>Courses</label>
-
-            <input
-              id="subCourses"
-              type="text"
-              placeholder="Biology, Chemistry"
-            >
-          </div>
-
-          <div class="full">
-
-            <button
-              class="btn btn-success"
-              id="saveSubscriptionBtn"
-            >
-              Save Subscription
-            </button>
-
-          </div>
-
-        </div>
-
-        <div id="subscriptionList" class="admin-list"></div>
-
+      <h3>🎥 Video Preview & Recording</h3>
+      <div class="ai-toolbar">
+        <button id="recordAiVideoBtn" class="success">🎬 Create Animation Video</button>
+        <button id="previewVoiceBtn" class="secondary">🔊 Read Narration</button>
+        <button id="stopVoiceBtn" class="danger">Stop Voice</button>
+        <button id="saveAiDraftBtn" class="warning">💾 Save Draft</button>
+        <button id="publishAiVideoBtn" class="success">🚀 Publish Video</button>
       </div>
-
-    </section>
-
-  </main>
-
-  <!-- =========================================================
-       LOGIN MODAL
-       ========================================================= -->
-
-  <div
-    class="modal-bg"
-    id="modalBg"
-  ></div>
-
-  <div
-    class="modal"
-    id="loginModal"
-  >
-
-    <h2>Login</h2>
-
-    <input
-      id="loginEmail"
-      type="email"
-      placeholder="Email"
-      autocomplete="email"
-    >
-
-    <br><br>
-
-    <input
-      id="loginPassword"
-      type="password"
-      placeholder="Password"
-      autocomplete="current-password"
-    >
-
-    <br><br>
-
-    <button
-      class="btn"
-      id="loginBtn"
-    >
-      Login
-    </button>
-
-    <button
-      class="btn btn-light"
-      id="closeModalBtn"
-    >
-      Close
-    </button>
-
-    <p id="loginMessage"></p>
-
-  </div>
-
-  <!-- =========================================================
-       YOUTUBE VIDEO MODAL
-       ========================================================= -->
-
-  <div
-    class="video-modal-bg"
-    id="modalVideoBg"
-  >
-
-    <div class="video-modal">
-
-      <button
-        class="close-video"
-        id="closeModalVideoBtn"
-      >
-        ×
-      </button>
-
-      <iframe
-        id="modalVideoFrame"
-        allow="autoplay; encrypted-media; picture-in-picture"
-        allowfullscreen
-      ></iframe>
-
+      <div id="aiPreviewWrap" class="hidden"><video id="aiPreviewVideo" controls></video></div>
     </div>
 
+    <div id="aiDraftsTab" class="hidden"><div id="aiDraftsList"></div></div>
+    <div id="aiPublishedTab" class="hidden"><div id="aiAdminPublishedList"></div></div>
+  </section>
+</div>
+
+<!-- Existing YouTube modal -->
+<div id="modalVideoBg" class="modal hidden">
+  <div class="modal-box">
+    <button class="close danger" id="closeModalVideoBtn">×</button>
+    <video id="modalVideoFrame" controls></video>
   </div>
+</div>
 
-  <!-- =========================================================
-       AI VIDEO MODAL
-       ========================================================= -->
-
-  <div
-    class="video-modal-bg"
-    id="aiVideoModalBg"
-  >
-
-    <div class="video-modal">
-
-      <button
-        class="close-video"
-        id="closeAiVideoModalBtn"
-      >
-        ×
-      </button>
-
-      <video
-        id="aiVideoModalPlayer"
-        controls
-        playsinline
-      ></video>
-
-    </div>
-
+<!-- AI modal -->
+<div id="aiVideoModalBg" class="modal hidden">
+  <div class="modal-box">
+    <button class="close danger" id="closeAiModalBtn">×</button>
+    <video id="aiVideoModalPlayer" controls></video>
   </div>
-
-
-  <!-- =========================================================
-       JAVASCRIPT
-       ========================================================= -->
-
-  <script type="module">
-
-    import {
-      createClient
-    } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-
-
-    /* =========================================================
-       SUPABASE
-       ========================================================= */
-
-    const supabaseUrl =
-      "https://odwiqajuubcgrrqipyju.supabase.co";
-
-    const supabaseKey =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1d2JjZ3JycWlweWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzA4MjEsImV4cCI6MjA2ODg0NjgyMX0.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A";
-
-    const supabase =
-      createClient(supabaseUrl, supabaseKey);
-
-    const ADMIN_EMAIL =
-      "thrivesarchivers@gmail.com";
-
-
-    /*
-      AI EDGE FUNCTION
-
-      Deploy your Supabase Edge Function using:
-
-      generate-video-script
-
-      It should be available at:
-
-      https://odwiqajuubcgrrqipyju.supabase.co/functions/v1/generate-video-script
-    */
-
-    const AI_VIDEO_FUNCTION_URL =
-      `${supabaseUrl}/functions/v1/generate-video-script`;
-
-
-
-    /* =========================================================
-       STATE
-       ========================================================= */
-
-    let currentUser = null;
-    let subscription = null;
-
-    let allVideos = [];
-    let filteredVideos = null;
-
-    let allAiVideos = [];
-
-    let currentAiProject = null;
-    let currentAiBlob = null;
-    let currentAiVideoUrl = null;
-
-
-
-    /* =========================================================
-       DOM
-       ========================================================= */
-
-    const displayNameEl =
-      document.getElementById("displayName");
-
-    const subInfo =
-      document.getElementById("subInfo");
-
-    const statusBar =
-      document.getElementById("statusBar");
-
-    const videoContainer =
-      document.getElementById("videoContainer");
-
-    const loginModal =
-      document.getElementById("loginModal");
-
-    const modalBg =
-      document.getElementById("modalBg");
-
-    const loginMessage =
-      document.getElementById("loginMessage");
-
-    const adminPanel =
-      document.getElementById("adminPanel");
-
-    const aiAdmin =
-      document.getElementById("aiAdmin");
-
-    const aiStatus =
-      document.getElementById("aiStatus");
-
-    const aiStoryboard =
-      document.getElementById("aiStoryboard");
-
-    const aiPreviewWrap =
-      document.getElementById("aiPreviewWrap");
-
-    const aiPreviewVideo =
-      document.getElementById("aiPreviewVideo");
-
-
-
-    /* =========================================================
-       GENERAL HELPERS
-       ========================================================= */
-
-    function escapeHtml(value) {
-
-      return String(value ?? "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-    }
-
-
-    function normalizeCourses(str) {
-
-      if (!str) {
-        return [];
-      }
-
-      return str
-        .split(",")
-        .map(s => s.trim())
-        .filter(Boolean);
-    }
-
-
-    function userDisplayName(user) {
-
-      const meta =
-        user?.user_metadata || {};
-
-      return (
-        meta.name ||
-        meta.full_name ||
-        meta.fullName ||
-        user?.email ||
-        "User"
-      );
-    }
-
-
-
-    /* =========================================================
-       LOGIN MODAL
-       ========================================================= */
-
-    function showLoginModal() {
-
-      loginModal.style.display = "block";
-      modalBg.style.display = "block";
-    }
-
-
-    function hideLoginModal() {
-
-      loginModal.style.display = "none";
-      modalBg.style.display = "none";
-    }
-
-
-    document
-      .getElementById("loginBtnTop")
-      .addEventListener("click", showLoginModal);
-
-
-    document
-      .getElementById("closeModalBtn")
-      .addEventListener("click", hideLoginModal);
-
-
-    modalBg.addEventListener(
-      "click",
-      hideLoginModal
-    );
-
-
-
-    /* =========================================================
-       AUTH
-       ========================================================= */
-
-    function formatStatus() {
-
-      if (!currentUser) {
-
-        statusBar.textContent =
-          "Please log in to see your subscriptions and watch videos.";
-
-        subInfo.textContent =
-          "Not logged in";
-
-        displayNameEl.textContent =
-          "Guest";
-
-        return;
-      }
-
-      const name =
-        userDisplayName(currentUser);
-
-      const email =
-        currentUser.email;
-
-      displayNameEl.textContent =
-        name;
-
-      if (!subscription) {
-
-        statusBar.textContent =
-          `${email} — You are not subscribed. Locked videos require a password.`;
-
-        subInfo.textContent =
-          "No active subscription";
-
-      } else {
-
-        const courses =
-          subscription.courses?.trim();
-
-        const list =
-          courses
-            ? normalizeCourses(courses).join(", ")
-            : "All";
-
-        statusBar.textContent =
-          `${email} — Subscribed: ${list}. Start: ${subscription["start date"] || "-"} | End: ${subscription["end date"] || "-"}`;
-
-        subInfo.textContent =
-          `Subscribed: ${list}`;
-      }
-    }
-
-
-
-    async function fetchSubscriptionForUser(email) {
-
-      subscription = null;
-
-      const {
-        data,
-        error
-      } = await supabase
-        .from("subscription")
-        .select(
-          'email, "start date", duration, "end date", courses'
-        )
-        .eq(
-          "email",
-          email.toLowerCase()
-        )
-        .maybeSingle();
-
-      if (error) {
-
-        console.error(
-          "Subscription error:",
-          error
-        );
-
-        return;
-      }
-
-      subscription =
-        data || null;
-    }
-
-
-
-    function isAdmin() {
-
-      return (
-        currentUser?.email?.toLowerCase() ===
-        ADMIN_EMAIL.toLowerCase()
-      );
-    }
-
-
-
-    function canAccessVideo(video) {
-
-      if (!currentUser) {
-        return false;
-      }
-
-      if (isAdmin()) {
-        return true;
-      }
-
-      if (!subscription) {
-        return false;
-      }
-
-      const courses =
-        subscription.courses?.trim();
-
-      if (!courses) {
-        return true;
-      }
-
-      const allowed =
-        new Set(
-          normalizeCourses(courses)
-            .map(s => s.toLowerCase())
-        );
-
-      return allowed.has(
-        (video.section || "").toLowerCase()
-      );
-    }
-
-
-
-    function passwordsFor(video) {
-
-      return (
-        video["password list"] || ""
-      )
-        .split(",")
-        .map(s => s.trim())
-        .filter(Boolean);
-    }
-
-
-
-    async function handleLogin() {
-
-      const email =
-        document
-          .getElementById("loginEmail")
-          .value
-          .trim();
-
-      const password =
-        document
-          .getElementById("loginPassword")
-          .value;
-
-      loginMessage.textContent =
-        "Logging in...";
-
-      const {
-        data,
-        error
-      } = await supabase.auth
-        .signInWithPassword({
-          email,
-          password
-        });
-
-      if (error) {
-
-        loginMessage.textContent =
-          error.message;
-
-        return;
-      }
-
-      currentUser =
-        data.user;
-
-      hideLoginModal();
-
-      document
-        .getElementById("loginBtnTop")
-        .style.display = "none";
-
-      document
-        .getElementById("logoutBtn")
-        .style.display = "inline-block";
-
-      if (isAdmin()) {
-
-        adminPanel.style.display =
-          "block";
-
-        aiAdmin.style.display =
-          "block";
-      }
-
-      await fetchSubscriptionForUser(
-        currentUser.email
-      );
-
-      formatStatus();
-
-      await fetchVideos();
-
-      await fetchAiVideos();
-
-      if (isAdmin()) {
-
-        await renderExistingVideos(
-          allVideos
-        );
-
-        await fetchSubscriptionsAdmin();
-
-        await fetchAiAdminLists();
-      }
-    }
-
-
-
-    document
-      .getElementById("loginBtn")
-      .addEventListener(
-        "click",
-        handleLogin
-      );
-
-
-    document
-      .getElementById("loginPassword")
-      .addEventListener(
-        "keydown",
-        event => {
-
-          if (event.key === "Enter") {
-            handleLogin();
-          }
-
+</div>
+
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+const supabaseUrl = "https://odwiqajuubcgrrqipyju.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1d2JjZ3JycWlweWp1IiwiaWF0IjoxNzUzMjcwODIxLCJleHAiOjIwNjg0NjgyMjF9.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A";
+const supabase = createClient(supabaseUrl, supabaseKey);
+const ADMIN_EMAIL = "thrivesarchivers@gmail.com";
+const AI_VIDEO_FUNCTION_URL = `${supabaseUrl}/functions/v1/generate-video-script`;
+
+let currentUser = null;
+let currentStoryboard = [];
+let currentChart = null;
+let currentVideoBlob = null;
+let currentVideoUrl = null;
+let drafts = JSON.parse(localStorage.getItem("thrives_ai_drafts") || "[]");
+let published = JSON.parse(localStorage.getItem("thrives_ai_published") || "[]");
+
+/* ---------- Helpers ---------- */
+const $ = id => document.getElementById(id);
+const escapeHtml = s => String(s ?? "").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+function isAdmin(){ return currentUser?.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase(); }
+function setAiStatus(text, type=""){ $("aiStatus").textContent=text; $("aiStatus").className="status "+type; }
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+
+/* ---------- Auth ---------- */
+async function initAuth(){
+  const {data:{session}} = await supabase.auth.getSession();
+  currentUser=session?.user || null;
+  updateAuthUI();
+  await loadPublishedAI();
+  if(isAdmin()){
+    $("aiAdmin").classList.remove("hidden");
+    renderDrafts(); renderAdminPublished();
+  }
+}
+function updateAuthUI(){
+  $("displayName").textContent=currentUser?.email || "Guest";
+  $("loginBtn").classList.toggle("hidden",!!currentUser);
+  $("logoutBtn").classList.toggle("hidden",!currentUser);
+}
+$("loginBtn").onclick=async()=>{
+  const email=prompt("Email:");
+  const password=prompt("Password:");
+  if(!email||!password)return;
+  const {error}=await supabase.auth.signInWithPassword({email,password});
+  if(error)alert(error.message); else location.reload();
+};
+$("logoutBtn").onclick=async()=>{await supabase.auth.signOut();location.reload()};
+supabase.auth.onAuthStateChange((_e,session)=>{currentUser=session?.user||null;updateAuthUI()});
+
+/* ---------- Existing YouTube area: safe loader ---------- */
+async function loadYouTubeVideos(search=""){
+  $("statusBar").textContent="Loading videos...";
+  try{
+    let q=supabase.from("Videos").select("*").order("videoOrder",{ascending:true});
+    const {data,error}=await q;
+    if(error)throw error;
+    const list=(data||[]).filter(v=>!search || JSON.stringify(v).toLowerCase().includes(search.toLowerCase()));
+    $("videoContainer").innerHTML=list.map(v=>{
+      const id=v.videoID||v.video_id||v.youtube_id||"";
+      return `<div class="video-card">
+        <div class="video-thumb"><button class="youtube" onclick="window.open('https://www.youtube.com/watch?v=${encodeURIComponent(id)}','_blank')">▶ YouTube</button></div>
+        <div class="video-info"><h3>${escapeHtml(v.title||"Untitled lesson")}</h3><div class="muted">${escapeHtml(v.section||"")}</div></div>
+      </div>`;
+    }).join("") || `<p class="muted">No videos found.</p>`;
+    $("statusBar").textContent=`${list.length} video(s) loaded.`;
+  }catch(e){
+    $("statusBar").textContent="YouTube lesson database could not be loaded: "+e.message;
+    $("statusBar").className="status error";
+  }
+}
+$("videoSearchBtn").onclick=()=>loadYouTubeVideos($("videoSearchInput").value.trim());
+$("videoClearBtn").onclick=()=>{$("videoSearchInput").value="";loadYouTubeVideos()};
+
+/* ---------- AI Storyboard ---------- */
+function normalizeStoryboard(raw){
+  let arr=Array.isArray(raw)?raw:(raw?.scenes||raw?.storyboard||raw?.result?.scenes||raw?.result?.storyboard||[]);
+  return arr.map((s,i)=>({
+    title:s.title||s.name||`Scene ${i+1}`,
+    narration:s.narration||s.voiceover||s.script||s.content||"",
+    points:Array.isArray(s.points)?s.points:(s.key_points||s.keyPoints||[]),
+    visual:s.visual||s.visualPrompt||s.description||"",
+    visualType:s.visualType||s.visual_type||inferVisualType(s),
+    labels:s.labels||[],
+    animation:s.animation||"fade",
+    chart:s.chart||null
+  }));
+}
+function inferVisualType(s){
+  const t=JSON.stringify(s).toLowerCase();
+  if(t.includes("chart")||t.includes("graph"))return "chart";
+  if(t.includes("heart")||t.includes("atrium")||t.includes("ventricle"))return "heart";
+  if(t.includes("blood flow")||t.includes("oxygenated")||t.includes("deoxygenated"))return "bloodflow";
+  if(t.includes("molecule")||t.includes("atom"))return "molecule";
+  if(t.includes("wave")||t.includes("oscillation"))return "wave";
+  return "diagram";
+}
+function createFallbackStoryboard(){
+  const title=$("aiTitle").value.trim()||"Educational Lesson";
+  const subject=($("aiSection").value.trim()||"General").toLowerCase();
+  const prompt=$("aiPrompt").value.trim();
+  if(/heart|cardiac|anatomy/.test((title+" "+prompt+" "+subject).toLowerCase())){
+    return [
+      {title:"Introduction to the Human Heart",narration:`The human heart is a muscular organ that pumps blood throughout the body. In this lesson we will examine its main structures and the pathway of blood flow.`,points:["Muscular organ","Four chambers","Maintains circulation"],visual:"Anatomical heart overview",visualType:"heart"},
+      {title:"The Four Chambers",narration:"The heart has four chambers. The right atrium and right ventricle handle mainly deoxygenated blood, while the left atrium and left ventricle handle oxygenated blood.",points:["Right atrium","Right ventricle","Left atrium","Left ventricle"],visual:"Four chamber heart diagram",visualType:"heart_chambers"},
+      {title:"Blood Flow",narration:"Deoxygenated blood returns from the body to the right side of the heart and is pumped to the lungs. Oxygenated blood returns from the lungs to the left side and is pumped to the body.",points:["Body to right heart","Right heart to lungs","Lungs to left heart","Left heart to body"],visual:"Animated oxygenated and deoxygenated blood flow",visualType:"bloodflow"},
+      {title:"Heart Valves",narration:"Four important valves help maintain one-way blood flow: tricuspid, pulmonary, mitral and aortic valves.",points:["Tricuspid","Pulmonary","Mitral","Aortic"],visual:"Valve positions",visualType:"valves"},
+      {title:"Summary and Exam Points",narration:"Remember that the right side sends deoxygenated blood to the lungs and the left side sends oxygenated blood to the body. Valves prevent backflow.",points:["Right = lungs","Left = body","Valves prevent backflow"],visual:"Summary diagram",visualType:"summary"}
+    ];
+  }
+  if(/physics|wave|motion|oscillation/.test(subject+" "+title+" "+prompt)){
+    return [
+      {title:"Introduction",narration:`Today we study ${title}. We begin with the basic idea and the quantities used to describe the phenomenon.`,points:["Definition","Key quantities","Units"],visualType:"diagram"},
+      {title:"Main Concept",narration:prompt||"The motion can be represented by a repeating wave pattern. Observe how amplitude and wavelength describe the wave.",points:["Amplitude","Wavelength","Frequency"],visualType:"wave"},
+      {title:"Exam Points",narration:"For examinations, define the quantities clearly, state their units and use the correct relationships.",points:["Definitions","Units","Equations"],visualType:"summary"}
+    ];
+  }
+  if(/chem|molecule|atom|biochem/.test(subject+" "+title+" "+prompt)){
+    return [
+      {title:"Introduction",narration:`This lesson introduces ${title}. We will identify the important chemical ideas and terminology.`,points:["Definitions","Structures","Key terms"],visualType:"molecule"},
+      {title:"Core Concept",narration:prompt||"Chemical structures and interactions can be represented using diagrams. Focus on the relationship between structure and function.",points:["Structure","Interaction","Function"],visualType:"molecule"},
+      {title:"Summary",narration:"Review the definitions, structures and important relationships before attempting examination questions.",points:["Definitions","Structures","Applications"],visualType:"summary"}
+    ];
+  }
+  return [
+    {title:"Introduction",narration:`Welcome to ${title}. In this lesson we will build the main idea step by step.`,points:["Topic introduction","Learning objective","Key terminology"],visual:"Educational introduction",visualType:"diagram"},
+    {title:"Main Concept",narration:prompt||`The central concept is ${title}. Study the diagram and connect each key point to the main idea.`,points:["Core concept","Important relationships","Application"],visual:"Concept diagram",visualType:"diagram"},
+    {title:"Exam Review",narration:"Review the definitions, relationships and applications. These are useful points to remember when preparing for examinations.",points:["Definition","Key relationships","Exam application"],visual:"Summary",visualType:"summary"}
+  ];
+}
+async function generateAiStoryboard(){
+  if(!isAdmin()){setAiStatus("Administrator access required.","error");return}
+  const payload={
+    title:$("aiTitle").value.trim(),
+    section:$("aiSection").value.trim(),
+    semester:$("aiSemester").value,
+    duration:Number($("aiDuration").value),
+    style:$("aiStyle").value,
+    difficulty:$("aiDifficulty").value,
+    prompt:$("aiPrompt").value.trim()
+  };
+  if(!payload.title){setAiStatus("Enter a lesson title.","error");return}
+  setAiStatus("Generating lesson content...");
+  try{
+    const {data:{session}}=await supabase.auth.getSession();
+    const res=await fetch(AI_VIDEO_FUNCTION_URL,{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+        ...(session?.access_token?{Authorization:`Bearer ${session.access_token}`}:{})
+      },
+      body:JSON.stringify(payload)
+    });
+    if(!res.ok)throw new Error(`AI service returned ${res.status}`);
+    const raw=await res.json();
+    currentStoryboard=normalizeStoryboard(raw);
+    if(!currentStoryboard.length)throw new Error("No scenes returned");
+    setAiStatus("AI lesson generated successfully.","ok");
+  }catch(e){
+    currentStoryboard=createFallbackStoryboard();
+    setAiStatus(`⚠️ AI service could not be reached (${e.message}). A useful local educational storyboard was created so you can still generate the animation.`,"");
+  }
+  renderStoryboard();
+}
+
+/* ---------- Storyboard UI ---------- */
+function renderStoryboard(){
+  $("aiStoryboard").innerHTML=currentStoryboard.map((s,i)=>`
+    <div class="scene-card">
+      <h3>Scene ${i+1}: ${escapeHtml(s.title)}</h3>
+      <div class="scene-meta">Visual: ${escapeHtml(s.visualType||"diagram")}</div>
+      <p>${escapeHtml(s.narration)}</p>
+      <ul>${(s.points||[]).map(p=>`<li>${escapeHtml(p)}</li>`).join("")}</ul>
+    </div>`).join("");
+}
+
+/* ---------- Chart Create ---------- */
+function parseChartData(){
+  return $("chartData").value.split("\n").map(x=>x.trim()).filter(Boolean).map(line=>{
+    const i=line.lastIndexOf(":");
+    if(i<1)return null;
+    const label=line.slice(0,i).trim();
+    const value=Number(line.slice(i+1).trim());
+    return Number.isFinite(value)?{label,value}:null;
+  }).filter(Boolean);
+}
+function drawChart(ctx,w,h,chart= currentChart){
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle="#fff";ctx.fillRect(0,0,w,h);
+  if(!chart||!chart.data.length){
+    ctx.fillStyle="#777";ctx.font="24px Arial";ctx.fillText("Create a chart to preview it.",40,70);return;
+  }
+  ctx.fillStyle="#17202a";ctx.font="bold 28px Arial";ctx.fillText(chart.title||"Chart",40,45);
+  const left=100,right=40,top=85,bottom=90;
+  const cw=w-left-right,ch=h-top-bottom;
+  const max=Math.max(...chart.data.map(d=>d.value),1);
+  ctx.strokeStyle="#bbb";ctx.lineWidth=1;
+  for(let i=0;i<=5;i++){
+    const y=top+ch-(i/5)*ch;
+    ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(left+cw,y);ctx.stroke();
+    ctx.fillStyle="#555";ctx.font="13px Arial";ctx.fillText((max*i/5).toFixed(0),45,y+5);
+  }
+  if(chart.type==="pie"){
+    const cx=left+cw/2,cy=top+ch/2,r=Math.min(cw,ch)*.34;
+    let total=chart.data.reduce((a,d)=>a+d.value,0),a=-Math.PI/2;
+    chart.data.forEach((d,i)=>{
+      const da=d.value/total*Math.PI*2;
+      ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,a,a+da);ctx.closePath();
+      ctx.fillStyle=`hsl(${(i*67)%360} 65% 55%)`;ctx.fill();ctx.strokeStyle="#fff";ctx.stroke();
+      a+=da;
+    });
+  }else{
+    const step=cw/chart.data.length;
+    chart.data.forEach((d,i)=>{
+      const x=left+i*step+step*.2;
+      const bw=step*.6;
+      const y=top+ch-(d.value/max)*ch;
+      ctx.fillStyle="#1976d2";
+      if(chart.type==="bar"){
+        ctx.fillRect(x,y,bw,top+ch-y);
+      }else{
+        if(i>0){
+          const prev=chart.data[i-1];
+          const px=left+(i-1)*step+step/2;
+          const py=top+ch-(prev.value/max)*ch;
+          ctx.strokeStyle="#1976d2";ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(x+step*.3,y);ctx.stroke();
         }
-      );
-
-
-
-    /* =========================================================
-       LOGOUT
-       ========================================================= */
-
-    async function logout() {
-
-      await supabase.auth.signOut();
-
-      currentUser = null;
-      subscription = null;
-
-      adminPanel.style.display =
-        "none";
-
-      aiAdmin.style.display =
-        "none";
-
-      document
-        .getElementById("loginBtnTop")
-        .style.display = "inline-block";
-
-      document
-        .getElementById("logoutBtn")
-        .style.display = "none";
-
-      formatStatus();
-
-      renderVideos(allVideos);
-    }
-
-
-    document
-      .getElementById("logoutBtn")
-      .addEventListener(
-        "click",
-        logout
-      );
-
-
-
-    /* =========================================================
-       YOUTUBE VIDEOS
-       ========================================================= */
-
-    async function fetchVideos() {
-
-      const {
-        data,
-        error
-      } = await supabase
-        .from("Videos")
-        .select(
-          'id, title, "video id", "password list", section, semester, "order"'
-        )
-        .order(
-          "order",
-          {
-            ascending: true
-          }
-        );
-
-      if (error) {
-
-        console.error(error);
-
-        videoContainer.innerHTML = `
-          <div class="empty">
-            Failed to load videos.
-          </div>
-        `;
-
-        return;
+        ctx.beginPath();ctx.arc(x+step*.3,y,6,0,Math.PI*2);ctx.fill();
       }
-
-      allVideos =
-        data || [];
-
-      filteredVideos =
-        null;
-
-      renderVideos(
-        allVideos
-      );
-
-      if (isAdmin()) {
-
-        renderExistingVideos(
-          allVideos
-        );
-      }
-    }
-
-
-
-    function renderVideos(videos) {
-
-      if (!videos.length) {
-
-        videoContainer.innerHTML = `
-          <div class="empty">
-            No videos found.
-          </div>
-        `;
-
-        return;
-      }
-
-      const groups = {};
-
-      videos.forEach(video => {
-
-        const section =
-          video.section ||
-          "Other";
-
-        const semester =
-          video.semester ||
-          "General";
-
-        const key =
-          `${section}|||${semester}`;
-
-        if (!groups[key]) {
-          groups[key] = [];
-        }
-
-        groups[key].push(video);
-      });
-
-
-      let html = "";
-
-      Object.keys(groups)
-        .forEach(key => {
-
-          const [
-            section,
-            semester
-          ] = key.split("|||");
-
-          html += `
-            <div class="video-group">
-
-              <h3>
-                ${escapeHtml(section)}
-                —
-                ${escapeHtml(semester)}
-              </h3>
-
-              <div class="video-grid">
-          `;
-
-          groups[key].forEach(video => {
-
-            const accessible =
-              canAccessVideo(video);
-
-            html += `
-              <div class="video-card ${accessible ? "" : "locked"}">
-
-                <div class="video-icon">
-                  ${accessible ? "▶" : "🔒"}
-                </div>
-
-                <h4>
-                  ${escapeHtml(video.title)}
-                </h4>
-
-                <div class="video-actions">
-
-                  <button
-                    class="btn"
-                    data-video-action="open"
-                    data-video-id="${video.id}"
-                  >
-                    ${accessible ? "Watch" : "Unlock"}
-                  </button>
-
-                  <button
-                    class="btn btn-youtube"
-                    data-video-action="youtube"
-                    data-video-id="${video.id}"
-                  >
-                    YouTube
-                  </button>
-
-                  <button
-                    class="btn btn-light"
-                    data-video-action="download"
-                    data-video-id="${video.id}"
-                  >
-                    Download
-                  </button>
-
-                </div>
-
-              </div>
-            `;
-          });
-
-          html += `
-              </div>
-            </div>
-          `;
-        });
-
-      videoContainer.innerHTML =
-        html;
-    }
-
-
-
-    videoContainer.addEventListener(
-      "click",
-      event => {
-
-        const button =
-          event.target.closest(
-            "button[data-video-action]"
-          );
-
-        if (!button) {
-          return;
-        }
-
-        const id =
-          button.dataset.videoId;
-
-        const video =
-          allVideos.find(
-            v => String(v.id) === String(id)
-          );
-
-        if (!video) {
-          return;
-        }
-
-        const action =
-          button.dataset.videoAction;
-
-        if (action === "open") {
-
-          handleVideoClick(video);
-
-        } else if (action === "youtube") {
-
-          window.open(
-            `https://www.youtube.com/watch?v=${video["video id"]}`,
-            "_blank",
-            "noopener,noreferrer"
-          );
-
-        } else if (action === "download") {
-
-          window.open(
-            `https://en1.savefrom.net/1-youtube-video-downloader-8jH/?url=https://www.youtube.com/watch?v=${video["video id"]}`,
-            "_blank"
-          );
-
-          alert(
-            "Successful download on YouTube."
-          );
-        }
-      }
-    );
-
-
-
-    /* =========================================================
-       VIDEO ACCESS
-       ========================================================= */
-
-    function handleVideoClick(video) {
-
-      if (canAccessVideo(video)) {
-
-        showModalVideo(
-          video["video id"]
-        );
-
-        return;
-      }
-
-      const passwords =
-        passwordsFor(video);
-
-      if (!passwords.length) {
-
-        alert(
-          "This video is locked. Please subscribe or contact Thrives Archivers."
-        );
-
-        return;
-      }
-
-      const entered =
-        prompt(
-          "Enter the password for this video:"
-        );
-
-      if (
-        entered &&
-        passwords.includes(entered.trim())
-      ) {
-
-        showModalVideo(
-          video["video id"]
-        );
-
-      } else if (entered !== null) {
-
-        alert(
-          "Incorrect password."
-        );
-      }
-    }
-
-
-
-    /* =========================================================
-       YOUTUBE MODAL
-       ========================================================= */
-
-    function showModalVideo(videoId) {
-
-      document
-        .getElementById("modalVideoFrame")
-        .src =
-        `https://www.youtube.com/embed/${encodeURIComponent(videoId)}?autoplay=1`;
-
-      document
-        .getElementById("modalVideoBg")
-        .style.display =
-        "flex";
-    }
-
-
-    function hideModalVideo() {
-
-      document
-        .getElementById("modalVideoFrame")
-        .src = "";
-
-      document
-        .getElementById("modalVideoBg")
-        .style.display =
-        "none";
-    }
-
-
-    document
-      .getElementById("closeModalVideoBtn")
-      .addEventListener(
-        "click",
-        hideModalVideo
-      );
-
-
-
-    /* =========================================================
-       SEARCH
-       ========================================================= */
-
-    function performSearch() {
-
-      const query =
-        document
-          .getElementById("videoSearchInput")
-          .value
-          .trim()
-          .toLowerCase();
-
-      if (!query) {
-
-        filteredVideos = null;
-
-        renderVideos(
-          allVideos
-        );
-
-        return;
-      }
-
-      filteredVideos =
-        allVideos.filter(video => {
-
-          return [
-            video.title,
-            video.section,
-            video.semester
-          ]
-            .filter(Boolean)
-            .join(" ")
-            .toLowerCase()
-            .includes(query);
-
-        });
-
-      renderVideos(
-        filteredVideos
-      );
-    }
-
-
-    document
-      .getElementById("videoSearchBtn")
-      .addEventListener(
-        "click",
-        performSearch
-      );
-
-
-    document
-      .getElementById("videoSearchInput")
-      .addEventListener(
-        "keydown",
-        event => {
-
-          if (event.key === "Enter") {
-            performSearch();
-          }
-
-        }
-      );
-
-
-    document
-      .getElementById("videoClearBtn")
-      .addEventListener(
-        "click",
-        () => {
-
-          document
-            .getElementById("videoSearchInput")
-            .value = "";
-
-          filteredVideos = null;
-
-          renderVideos(
-            allVideos
-          );
-        }
-      );
-
-
-
-    /* =========================================================
-       ADMIN - ADD YOUTUBE VIDEO
-       ========================================================= */
-
-    document
-      .getElementById("addVideoForm")
-      .addEventListener(
-        "submit",
-        async event => {
-
-          event.preventDefault();
-
-          if (!isAdmin()) {
-            alert("Admin access required.");
-            return;
-          }
-
-          const title =
-            document
-              .getElementById("videoTitle")
-              .value
-              .trim();
-
-          const video_id =
-            document
-              .getElementById("videoID")
-              .value
-              .trim();
-
-          const password_list =
-            document
-              .getElementById("passwordList")
-              .value
-              .trim();
-
-          const section =
-            document
-              .getElementById("videoSection")
-              .value;
-
-          const semester =
-            document
-              .getElementById("videoSemester")
-              .value;
-
-          const order =
-            Number(
-              document
-                .getElementById("videoOrder")
-                .value || 0
-            );
-
-          const {
-            error
-          } = await supabase
-            .from("Videos")
-            .insert([
-              {
-                title,
-                "video id": video_id,
-                "password list": password_list,
-                section,
-                semester,
-                order
-              }
-            ]);
-
-          if (error) {
-
-            alert(
-              `Failed: ${error.message}`
-            );
-
-            return;
-          }
-
-          alert(
-            "Video added successfully."
-          );
-
-          event.target.reset();
-
-          await fetchVideos();
-        }
-      );
-
-
-
-    async function renderExistingVideos(videos) {
-
-      const box =
-        document.getElementById(
-          "existingVideos"
-        );
-
-      if (!videos.length) {
-
-        box.innerHTML = `
-          <div class="empty">
-            No videos.
-          </div>
-        `;
-
-        return;
-      }
-
-      box.innerHTML =
-        videos.map(video => `
-
-          <div class="admin-item">
-
-            <strong>
-              ${escapeHtml(video.title)}
-            </strong>
-
-            <br>
-
-            <small>
-              ${escapeHtml(video.section || "")}
-              —
-              ${escapeHtml(video.semester || "")}
-            </small>
-
-            <div class="admin-item-actions">
-
-              <button
-                class="btn btn-danger"
-                data-delete-video="${video.id}"
-              >
-                Delete
-              </button>
-
-            </div>
-
-          </div>
-
-        `).join("");
-    }
-
-
-
-    document
-      .getElementById("existingVideos")
-      .addEventListener(
-        "click",
-        async event => {
-
-          const button =
-            event.target.closest(
-              "[data-delete-video]"
-            );
-
-          if (!button) {
-            return;
-          }
-
-          if (!isAdmin()) {
-            return;
-          }
-
-          const id =
-            button.dataset.deleteVideo;
-
-          if (
-            !confirm(
-              "Delete this video?"
-            )
-          ) {
-            return;
-          }
-
-          const {
-            error
-          } = await supabase
-            .from("Videos")
-            .delete()
-            .eq("id", id);
-
-          if (error) {
-
-            alert(
-              error.message
-            );
-
-            return;
-          }
-
-          await fetchVideos();
-        }
-      );
-
-
-
-    /* =========================================================
-       ADMIN SUBSCRIPTIONS
-       ========================================================= */
-
-    async function fetchSubscriptionsAdmin() {
-
-      if (!isAdmin()) {
-        return;
-      }
-
-      const {
-        data,
-        error
-      } = await supabase
-        .from("subscription")
-        .select("*")
-        .order(
-          "start date",
-          {
-            ascending: false
-          }
-        );
-
-      const box =
-        document.getElementById(
-          "subscriptionList"
-        );
-
-      if (error) {
-
-        box.innerHTML = `
-          <div class="empty">
-            ${escapeHtml(error.message)}
-          </div>
-        `;
-
-        return;
-      }
-
-      if (!data?.length) {
-
-        box.innerHTML = `
-          <div class="empty">
-            No subscriptions.
-          </div>
-        `;
-
-        return;
-      }
-
-      box.innerHTML =
-        data.map(row => `
-
-          <div class="admin-item">
-
-            <strong>
-              ${escapeHtml(row.email)}
-            </strong>
-
-            <br>
-
-            Courses:
-            ${escapeHtml(row.courses || "All")}
-
-            <br>
-
-            Start:
-            ${escapeHtml(row["start date"] || "-")}
-
-            <br>
-
-            End:
-            ${escapeHtml(row["end date"] || "-")}
-
-            <div class="admin-item-actions">
-
-              <button
-                class="btn btn-danger"
-                data-delete-sub="${escapeHtml(row.email)}"
-              >
-                Delete
-              </button>
-
-            </div>
-
-          </div>
-
-        `).join("");
-    }
-
-
-
-    function calculateEndDate(
-      startDate,
-      months
-    ) {
-
-      const date =
-        new Date(
-          `${startDate}T00:00:00`
-        );
-
-      date.setMonth(
-        date.getMonth() +
-        Number(months)
-      );
-
-      return date
-        .toISOString()
-        .split("T")[0];
-    }
-
-
-
-    document
-      .getElementById(
-        "saveSubscriptionBtn"
-      )
-      .addEventListener(
-        "click",
-        async () => {
-
-          if (!isAdmin()) {
-            alert("Admin access required.");
-            return;
-          }
-
-          const email =
-            document
-              .getElementById("subEmail")
-              .value
-              .trim()
-              .toLowerCase();
-
-          const startDate =
-            document
-              .getElementById("subStartDate")
-              .value;
-
-          const duration =
-            Number(
-              document
-                .getElementById("subDuration")
-                .value
-            );
-
-          const courses =
-            document
-              .getElementById("subCourses")
-              .value
-              .trim();
-
-          if (
-            !email ||
-            !startDate ||
-            !duration
-          ) {
-
-            alert(
-              "Please complete the subscription details."
-            );
-
-            return;
-          }
-
-          const endDate =
-            calculateEndDate(
-              startDate,
-              duration
-            );
-
-          const {
-            error
-          } = await supabase
-            .from("subscription")
-            .upsert(
-              {
-                email,
-                "start date": startDate,
-                duration,
-                "end date": endDate,
-                courses
-              },
-              {
-                onConflict: "email"
-              }
-            );
-
-          if (error) {
-
-            alert(
-              error.message
-            );
-
-            return;
-          }
-
-          alert(
-            "Subscription saved."
-          );
-
-          await fetchSubscriptionsAdmin();
-        }
-      );
-
-
-
-    document
-      .getElementById(
-        "subscriptionList"
-      )
-      .addEventListener(
-        "click",
-        async event => {
-
-          const button =
-            event.target.closest(
-              "[data-delete-sub]"
-            );
-
-          if (!button) {
-            return;
-          }
-
-          const email =
-            button.dataset.deleteSub;
-
-          if (
-            !confirm(
-              `Delete subscription for ${email}?`
-            )
-          ) {
-            return;
-          }
-
-          const {
-            error
-          } = await supabase
-            .from("subscription")
-            .delete()
-            .eq(
-              "email",
-              email
-            );
-
-          if (error) {
-
-            alert(
-              error.message
-            );
-
-            return;
-          }
-
-          await fetchSubscriptionsAdmin();
-        }
-      );
-
-
-
-    /* =========================================================
-       AI TABS
-       ========================================================= */
-
-    document
-      .querySelectorAll(".ai-tab")
-      .forEach(tab => {
-
-        tab.addEventListener(
-          "click",
-          () => {
-
-            document
-              .querySelectorAll(".ai-tab")
-              .forEach(t =>
-                t.classList.remove("active")
-              );
-
-            document
-              .querySelectorAll(".ai-tab-content")
-              .forEach(content =>
-                content.classList.remove("active")
-              );
-
-            tab.classList.add("active");
-
-            document
-              .getElementById(
-                tab.dataset.tab
-              )
-              .classList.add("active");
-
-          }
-        );
-
-      });
-
-
-
-    /* =========================================================
-       AI STATUS
-       ========================================================= */
-
-    function setAiStatus(message) {
-
-      aiStatus.textContent =
-        message;
-    }
-
-
-
-    /* =========================================================
-       AI STORYBOARD NORMALIZATION
-       ========================================================= */
-
-    function normalizeStoryboard(raw) {
-
-      let data = raw;
-
-      if (typeof data === "string") {
-
-        try {
-          data = JSON.parse(data);
-        } catch {
-          data = null;
-        }
-      }
-
-      let scenes = [];
-
-      if (Array.isArray(data)) {
-        scenes = data;
-      } else if (
-        Array.isArray(data?.scenes)
-      ) {
-        scenes = data.scenes;
-      } else if (
-        Array.isArray(data?.storyboard)
-      ) {
-        scenes = data.storyboard;
-      } else if (
-        Array.isArray(data?.result?.scenes)
-      ) {
-        scenes =
-          data.result.scenes;
-      } else if (
-        Array.isArray(data?.result?.storyboard)
-      ) {
-        scenes =
-          data.result.storyboard;
-      }
-
-      return scenes.map(
-        (scene, index) => {
-
-          const points =
-            scene.points ||
-            scene.keyPoints ||
-            scene.key_points ||
-            [];
-
-          return {
-            title:
-              scene.title ||
-              scene.scene ||
-              `Scene ${index + 1}`,
-
-            narration:
-              scene.narration ||
-              scene.voiceover ||
-              scene.voice_over ||
-              scene.description ||
-              "",
-
-            points:
-              Array.isArray(points)
-                ? points
-                : String(points)
-                    .split("\n")
-                    .filter(Boolean),
-
-            visual:
-              scene.visual ||
-              scene.visualDescription ||
-              scene.visual_description ||
-              ""
-          };
-
-        }
-      );
-    }
-
-
-
-    /* =========================================================
-       LOCAL FALLBACK STORYBOARD
-       ========================================================= */
-
-    function createFallbackStoryboard() {
-
-      const title =
-        document
-          .getElementById("aiTitle")
-          .value
-          .trim();
-
-      const prompt =
-        document
-          .getElementById("aiPrompt")
-          .value
-          .trim();
-
-      return [
-        {
-          title: "Introduction",
-          narration:
-            `Welcome to Thrives Archivers. In this lesson we will study ${title || "this topic"}.`,
-          points: [
-            "Introduce the topic",
-            "Explain why the topic is important",
-            "Define the main concepts"
-          ],
-          visual:
-            "Educational title screen with simple animated symbols."
-        },
-
-        {
-          title: "Main Concept",
-          narration:
-            prompt ||
-            "We will now explain the main concept step by step.",
-          points: [
-            "Identify the important structures or concepts",
-            "Explain their functions",
-            "Connect the concepts together"
-          ],
-          visual:
-            "Simple educational diagram with labels and arrows."
-        },
-
-        {
-          title: "Summary",
-          narration:
-            "Let us review the most important points from this lesson.",
-          points: [
-            "Remember the major concepts",
-            "Understand the relationship between them",
-            "Use the knowledge when answering examination questions"
-          ],
-          visual:
-            "Animated summary with key points appearing one by one."
-        }
-      ];
-    }
-
-
-
-    /* =========================================================
-       RENDER STORYBOARD
-       ========================================================= */
-
-    function renderStoryboard(
-      scenes
-    ) {
-
-      if (!scenes.length) {
-
-        aiStoryboard.innerHTML = `
-          <div class="ai-empty">
-            No storyboard scenes were generated.
-          </div>
-        `;
-
-        return;
-      }
-
-      aiStoryboard.innerHTML = `
-        <h3>📋 Storyboard Preview</h3>
-
-        ${scenes.map(
-          (scene, index) => `
-
-          <div class="storyboard-scene">
-
-            <h4>
-              Scene ${index + 1}:
-              ${escapeHtml(scene.title)}
-            </h4>
-
-            <p>
-              <strong>Narration:</strong>
-              ${escapeHtml(scene.narration)}
-            </p>
-
-            <p>
-              <strong>Visual:</strong>
-              ${escapeHtml(scene.visual)}
-            </p>
-
-            <p>
-              <strong>Key Points:</strong>
-            </p>
-
-            <ul>
-              ${(scene.points || [])
-                .map(
-                  point =>
-                    `<li>${escapeHtml(point)}</li>`
-                )
-                .join("")}
-            </ul>
-
-          </div>
-        `
-        ).join("")}
-      `;
-    }
-
-
-
-    /* =========================================================
-       AI GENERATE STORYBOARD
-       ========================================================= */
-
-    document
-      .getElementById("generateAiBtn")
-      .addEventListener(
-        "click",
-        generateAiStoryboard
-      );
-
-
-    async function generateAiStoryboard() {
-
-      if (!isAdmin()) {
-
-        alert(
-          "Only the administrator can generate AI videos."
-        );
-
-        return;
-      }
-
-      const title =
-        document
-          .getElementById("aiTitle")
-          .value
-          .trim();
-
-      const section =
-        document
-          .getElementById("aiSection")
-          .value;
-
-      const semester =
-        document
-          .getElementById("aiSemester")
-          .value;
-
-      const duration =
-        Number(
-          document
-            .getElementById("aiDuration")
-            .value
-        );
-
-      const prompt =
-        document
-          .getElementById("aiPrompt")
-          .value
-          .trim();
-
-      const style =
-        document
-          .getElementById("aiStyle")
-          .value;
-
-      const difficulty =
-        document
-          .getElementById("aiDifficulty")
-          .value;
-
-
-      if (!title || !prompt) {
-
-        alert(
-          "Please enter a title and learning objective/topic."
-        );
-
-        return;
-      }
-
-
-      setAiStatus(
-        "🤖 Asking the AI to create the lesson storyboard..."
-      );
-
-
-      currentAiProject = {
-        title,
-        section,
-        semester,
-        duration,
-        prompt,
-        style,
-        difficulty,
-        scenes: []
-      };
-
-
-      try {
-
-        const {
-          data: sessionData
-        } =
-          await supabase.auth.getSession();
-
-        const token =
-          sessionData?.session?.access_token;
-
-
-        if (!token) {
-          throw new Error(
-            "Your login session has expired. Please log in again."
-          );
-        }
-
-
-        const response =
-          await fetch(
-            AI_VIDEO_FUNCTION_URL,
-            {
-              method: "POST",
-
-              headers: {
-                "Content-Type":
-                  "application/json",
-
-                "Authorization":
-                  `Bearer ${token}`
-              },
-
-              body: JSON.stringify({
-                title,
-                section,
-                semester,
-                duration,
-                prompt,
-                style,
-                difficulty
-              })
-            }
-          );
-
-
-        if (!response.ok) {
-
-          const errorText =
-            await response.text();
-
-          throw new Error(
-            `AI function returned ${response.status}: ${errorText}`
-          );
-        }
-
-
-        const result =
-          await response.json();
-
-
-        const scenes =
-          normalizeStoryboard(result);
-
-
-        if (!scenes.length) {
-
-          throw new Error(
-            "The AI function returned no storyboard scenes."
-          );
-        }
-
-
-        currentAiProject.scenes =
-          scenes;
-
-
-        renderStoryboard(
-          scenes
-        );
-
-
-        aiPreviewWrap.style.display =
-          "block";
-
-
-        setAiStatus(
-          `✅ AI storyboard generated successfully.\n${scenes.length} scenes created.`
-        );
-
-      } catch (error) {
-
-        console.error(
-          "AI storyboard error:",
-          error
-        );
-
-
-        /*
-          Fallback allows the browser animation
-          system to continue working even when
-          the Edge Function is not available.
-        */
-
-        const fallback =
-          createFallbackStoryboard();
-
-
-        currentAiProject.scenes =
-          fallback;
-
-
-        renderStoryboard(
-          fallback
-        );
-
-
-        aiPreviewWrap.style.display =
-          "block";
-
-
-        setAiStatus(
-          `⚠️ AI service could not be reached.\n\n${error.message}\n\nA local fallback storyboard was created so you can test the animation system.`
-        );
-      }
-    }
-
-
-
-    /* =========================================================
-       CLEAR AI
-       ========================================================= */
-
-    document
-      .getElementById("clearAiBtn")
-      .addEventListener(
-        "click",
-        () => {
-
-          document
-            .getElementById("aiTitle")
-            .value = "";
-
-          document
-            .getElementById("aiPrompt")
-            .value = "";
-
-          aiStoryboard.innerHTML =
-            "";
-
-          aiPreviewWrap.style.display =
-            "none";
-
-          aiPreviewVideo.src =
-            "";
-
-          currentAiProject =
-            null;
-
-          currentAiBlob =
-            null;
-
-          if (currentAiVideoUrl) {
-
-            URL.revokeObjectURL(
-              currentAiVideoUrl
-            );
-
-            currentAiVideoUrl =
-              null;
-          }
-
-          setAiStatus(
-            "Ready."
-          );
-        }
-      );
-
-
-
-    /* =========================================================
-       CANVAS EDUCATIONAL ANIMATION
-       ========================================================= */
-
-    function drawArrow(
-      ctx,
-      x1,
-      y1,
-      x2,
-      y2
-    ) {
-
-      const angle =
-        Math.atan2(
-          y2 - y1,
-          x2 - x1
-        );
-
-      const headLength =
-        14;
-
-      ctx.beginPath();
-
-      ctx.moveTo(
-        x1,
-        y1
-      );
-
-      ctx.lineTo(
-        x2,
-        y2
-      );
-
-      ctx.stroke();
-
-      ctx.beginPath();
-
-      ctx.moveTo(
-        x2,
-        y2
-      );
-
-      ctx.lineTo(
-        x2 -
-          headLength *
-            Math.cos(angle - Math.PI / 6),
-
-        y2 -
-          headLength *
-            Math.sin(angle - Math.PI / 6)
-      );
-
-      ctx.lineTo(
-        x2 -
-          headLength *
-            Math.cos(angle + Math.PI / 6),
-
-        y2 -
-          headLength *
-            Math.sin(angle + Math.PI / 6)
-      );
-
-      ctx.closePath();
-
-      ctx.fill();
-    }
-
-
-
-    function drawEducationalScene(
-      ctx,
-      canvas,
-      scene,
-      sceneIndex,
-      sceneProgress,
-      globalProgress
-    ) {
-
-      const width =
-        canvas.width;
-
-      const height =
-        canvas.height;
-
-
-      ctx.fillStyle =
-        "#f4f7fb";
-
-      ctx.fillRect(
-        0,
-        0,
-        width,
-        height
-      );
-
-
-      /*
-        Header
-      */
-
-      ctx.fillStyle =
-        "#1976d2";
-
-      ctx.fillRect(
-        0,
-        0,
-        width,
-        95
-      );
-
-
-      ctx.fillStyle =
-        "#ffffff";
-
-      ctx.font =
-        "bold 38px Arial";
-
-      ctx.fillText(
-        "THRIVES ARCHIVERS",
-        45,
-        58
-      );
-
-
-      /*
-        Scene title
-      */
-
-      ctx.fillStyle =
-        "#222";
-
-      ctx.font =
-        "bold 42px Arial";
-
-      ctx.fillText(
-        scene.title || `Scene ${sceneIndex + 1}`,
-        50,
-        160
-      );
-
-
-      /*
-        Animated central diagram
-      */
-
-      const cx =
-        width / 2;
-
-      const cy =
-        370;
-
-      const radius =
-        100 +
-        Math.sin(
-          sceneProgress * Math.PI * 2
-        ) *
-        8;
-
-
-      ctx.beginPath();
-
-      ctx.arc(
-        cx,
-        cy,
-        radius,
-        0,
-        Math.PI * 2
-      );
-
-      ctx.fillStyle =
-        "#e3f2fd";
-
-      ctx.fill();
-
-      ctx.lineWidth =
-        6;
-
-      ctx.strokeStyle =
-        "#1976d2";
-
-      ctx.stroke();
-
-
-      /*
-        Inner educational structures
-      */
-
-      for (
-        let i = 0;
-        i < 4;
-        i++
-      ) {
-
-        const angle =
-          (Math.PI * 2 / 4) *
-          i +
-          sceneProgress *
-          Math.PI *
-          0.7;
-
-        const x =
-          cx +
-          Math.cos(angle) *
-          55;
-
-        const y =
-          cy +
-          Math.sin(angle) *
-          55;
-
-        ctx.beginPath();
-
-        ctx.arc(
-          x,
-          y,
-          20,
-          0,
-          Math.PI * 2
-        );
-
-        ctx.fillStyle =
-          "#ffffff";
-
-        ctx.fill();
-
-        ctx.strokeStyle =
-          "#1976d2";
-
-        ctx.stroke();
-      }
-
-
-      /*
-        Arrows
-      */
-
-      ctx.strokeStyle =
-        "#333";
-
-      ctx.fillStyle =
-        "#333";
-
-      ctx.lineWidth =
-        4;
-
-      drawArrow(
-        ctx,
-        cx - 250,
-        cy,
-        cx - 120,
-        cy
-      );
-
-      drawArrow(
-        ctx,
-        cx + 120,
-        cy,
-        cx + 250,
-        cy
-      );
-
-
-      /*
-        Key points
-      */
-
-      const points =
-        scene.points || [];
-
-      ctx.font =
-        "24px Arial";
-
-      ctx.fillStyle =
-        "#333";
-
-      points
-        .slice(0, 3)
-        .forEach(
-          (point, index) => {
-
-            const y =
-              540 +
-              index * 40;
-
-            ctx.fillText(
-              `• ${String(point).slice(0, 85)}`,
-              55,
-              y
-            );
-          }
-        );
-
-
-      /*
-        Progress
-      */
-
-      ctx.fillStyle =
-        "#ddd";
-
-      ctx.fillRect(
-        50,
-        height - 35,
-        width - 100,
-        12
-      );
-
-
-      ctx.fillStyle =
-        "#1976d2";
-
-      ctx.fillRect(
-        50,
-        height - 35,
-        (width - 100) *
-          globalProgress,
-        12
-      );
-    }
-
-
-
-    /* =========================================================
-       CREATE VIDEO
-       ========================================================= */
-
-    document
-      .getElementById("recordAiVideoBtn")
-      .addEventListener(
-        "click",
-        createAiVideo
-      );
-
-
-    async function createAiVideo() {
-
-      if (!isAdmin()) {
-
-        alert(
-          "Only the administrator can create AI videos."
-        );
-
-        return;
-      }
-
-      if (
-        !currentAiProject ||
-        !currentAiProject.scenes?.length
-      ) {
-
-        alert(
-          "Generate a storyboard first."
-        );
-
-        return;
-      }
-
-
-      if (
-        typeof MediaRecorder ===
-        "undefined"
-      ) {
-
-        alert(
-          "Your browser does not support video recording."
-        );
-
-        return;
-      }
-
-
-      const canvas =
-        document.createElement(
-          "canvas"
-        );
-
-      canvas.width =
-        1280;
-
-      canvas.height =
-        720;
-
-
-      const ctx =
-        canvas.getContext(
-          "2d"
-        );
-
-
-      const stream =
-        canvas.captureStream(30);
-
-
-      const mimeTypes = [
-        "video/webm;codecs=vp9",
-        "video/webm;codecs=vp8",
-        "video/webm"
-      ];
-
-
-      let selectedMime =
-        "";
-
-
-      for (
-        const mime of mimeTypes
-      ) {
-
-        if (
-          MediaRecorder.isTypeSupported(
-            mime
-          )
-        ) {
-
-          selectedMime =
-            mime;
-
-          break;
-        }
-      }
-
-
-      if (!selectedMime) {
-
-        alert(
-          "Your browser cannot create a WebM video."
-        );
-
-        return;
-      }
-
-
-      const recorder =
-        new MediaRecorder(
-          stream,
-          {
-            mimeType:
-              selectedMime
-          }
-        );
-
-
-      const chunks = [];
-
-
-      recorder.ondataavailable =
-        event => {
-
-          if (
-            event.data &&
-            event.data.size
-          ) {
-
-            chunks.push(
-              event.data
-            );
-          }
-        };
-
-
-      const totalDuration =
-        Number(
-          currentAiProject.duration
-        ) *
-        60 *
-        1000;
-
-
-      const scenes =
-        currentAiProject.scenes;
-
-
-      const sceneDuration =
-        totalDuration /
-        scenes.length;
-
-
-      setAiStatus(
-        `🎥 Creating ${currentAiProject.duration}-minute animation...\nPlease keep this tab open.`
-      );
-
-
-      recorder.start();
-
-
-      const startTime =
-        performance.now();
-
-
-      function drawFrame(
-        now
-      ) {
-
-        const elapsed =
-          now -
-          startTime;
-
-
-        const globalProgress =
-          Math.min(
-            elapsed /
-              totalDuration,
-            1
-          );
-
-
-        const sceneIndex =
-          Math.min(
-            Math.floor(
-              elapsed /
-                sceneDuration
-            ),
-            scenes.length - 1
-          );
-
-
-        const sceneElapsed =
-          elapsed -
-          sceneIndex *
-            sceneDuration;
-
-
-        const sceneProgress =
-          Math.min(
-            sceneElapsed /
-              sceneDuration,
-            1
-          );
-
-
-        drawEducationalScene(
-          ctx,
-          canvas,
-          scenes[sceneIndex],
-          sceneIndex,
-          sceneProgress,
-          globalProgress
-        );
-
-
-        if (
-          elapsed <
-          totalDuration
-        ) {
-
-          requestAnimationFrame(
-            drawFrame
-          );
-
-        } else {
-
-          recorder.stop();
-
-          setAiStatus(
-            "⏳ Finalizing video..."
-          );
-        }
-      }
-
-
-      recorder.onstop =
-        () => {
-
-          const blob =
-            new Blob(
-              chunks,
-              {
-                type:
-                  selectedMime
-              }
-            );
-
-
-          currentAiBlob =
-            blob;
-
-
-          if (
-            currentAiVideoUrl
-          ) {
-
-            URL.revokeObjectURL(
-              currentAiVideoUrl
-            );
-          }
-
-
-          currentAiVideoUrl =
-            URL.createObjectURL(
-              blob
-            );
-
-
-          aiPreviewVideo.src =
-            currentAiVideoUrl;
-
-
-          aiPreviewWrap.style.display =
-            "block";
-
-
-          setAiStatus(
-            `✅ Video created successfully.\nSize: ${(blob.size / 1024 / 1024).toFixed(2)} MB`
-          );
-        };
-
-
-      requestAnimationFrame(
-        drawFrame
-      );
-    }
-
-
-
-    /* =========================================================
-       UPLOAD AI VIDEO
-       ========================================================= */
-
-    async function uploadAiVideo(
-      published
-    ) {
-
-      if (
-        !currentAiBlob ||
-        !currentAiProject
-      ) {
-
-        throw new Error(
-          "No generated video is available."
-        );
-      }
-
-
-      const safeTitle =
-        currentAiProject.title
-          .toLowerCase()
-          .replace(
-            /[^a-z0-9]+/g,
-            "-"
-          )
-          .replace(
-            /^-+|-+$/g,
-            ""
-          );
-
-
-      const filename =
-        `${Date.now()}-${safeTitle || "ai-video"}.webm`;
-
-      const storagePath =
-        `generated/${filename}`;
-
-
-      setAiStatus(
-        published
-          ? "⬆️ Uploading and publishing video..."
-          : "⬆️ Uploading draft video..."
-      );
-
-
-      const {
-        error: uploadError
-      } = await supabase.storage
-        .from("ai-videos")
-        .upload(
-          storagePath,
-          currentAiBlob,
-          {
-            contentType:
-              "video/webm",
-            upsert: true
-          }
-        );
-
-
-      if (uploadError) {
-
-        throw new Error(
-          `Storage upload failed: ${uploadError.message}`
-        );
-      }
-
-
-      const {
-        data: publicData
-      } = supabase.storage
-        .from("ai-videos")
-        .getPublicUrl(
-          storagePath
-        );
-
-
-      const videoUrl =
-        publicData.publicUrl;
-
-
-      const {
-        data,
-        error
-      } = await supabase
-        .from("AI_Videos")
-        .insert([
-          {
-            title:
-              currentAiProject.title,
-
-            section:
-              currentAiProject.section,
-
-            semester:
-              currentAiProject.semester,
-
-            duration:
-              currentAiProject.duration,
-
-            prompt:
-              currentAiProject.prompt,
-
-            style:
-              currentAiProject.style,
-
-            difficulty:
-              currentAiProject.difficulty,
-
-            storyboard:
-              currentAiProject.scenes,
-
-            video_url:
-              videoUrl,
-
-            storage_path:
-              storagePath,
-
-            published:
-              Boolean(published),
-
-            created_by:
-              currentUser.email
-          }
-        ])
-        .select()
-        .single();
-
-
-      if (error) {
-
-        throw new Error(
-          `Database save failed: ${error.message}`
-        );
-      }
-
-
-      return data;
-    }
-
-
-
-    /* =========================================================
-       SAVE DRAFT
-       ========================================================= */
-
-    document
-      .getElementById("saveAiDraftBtn")
-      .addEventListener(
-        "click",
-        async () => {
-
-          if (!isAdmin()) {
-            return;
-          }
-
-          try {
-
-            await uploadAiVideo(
-              false
-            );
-
-            alert(
-              "AI video draft saved successfully."
-            );
-
-            setAiStatus(
-              "✅ Draft saved successfully."
-            );
-
-            await fetchAiVideos();
-
-            await fetchAiAdminLists();
-
-          } catch (error) {
-
-            console.error(error);
-
-            alert(
-              error.message
-            );
-
-            setAiStatus(
-              `❌ ${error.message}`
-            );
-          }
-        }
-      );
-
-
-
-    /* =========================================================
-       PUBLISH AI VIDEO
-       ========================================================= */
-
-    document
-      .getElementById(
-        "publishAiVideoBtn"
-      )
-      .addEventListener(
-        "click",
-        async () => {
-
-          if (!isAdmin()) {
-            return;
-          }
-
-          if (
-            !currentAiBlob
-          ) {
-
-            alert(
-              "Create the animation video first."
-            );
-
-            return;
-          }
-
-
-          try {
-
-            await uploadAiVideo(
-              true
-            );
-
-            alert(
-              "AI video published successfully."
-            );
-
-            setAiStatus(
-              "🚀 AI video published successfully."
-            );
-
-            await fetchAiVideos();
-
-            await fetchAiAdminLists();
-
-          } catch (error) {
-
-            console.error(error);
-
-            alert(
-              error.message
-            );
-
-            setAiStatus(
-              `❌ ${error.message}`
-            );
-          }
-        }
-      );
-
-
-
-    /* =========================================================
-       FETCH AI VIDEOS
-       ========================================================= */
-
-    async function fetchAiVideos() {
-
-      const {
-        data,
-        error
-      } = await supabase
-        .from("AI_Videos")
-        .select("*")
-        .eq(
-          "published",
-          true
-        )
-        .order(
-          "created_at",
-          {
-            ascending: false
-          }
-        );
-
-
-      if (error) {
-
-        console.error(
-          "AI videos error:",
-          error
-        );
-
-
-        document
-          .getElementById(
-            "aiPublishedVideos"
-          )
-          .innerHTML = `
-            <div class="ai-empty">
-              AI videos are not available yet.
-            </div>
-          `;
-
-        return;
-      }
-
-
-      allAiVideos =
-        data || [];
-
-
-      renderPublishedAiVideos(
-        allAiVideos
-      );
-    }
-
-
-
-    function renderPublishedAiVideos(
-      videos
-    ) {
-
-      const box =
-        document.getElementById(
-          "aiPublishedVideos"
-        );
-
-
-      if (!videos.length) {
-
-        box.innerHTML = `
-          <div class="ai-empty">
-            No AI videos have been published yet.
-          </div>
-        `;
-
-        return;
-      }
-
-
-      box.innerHTML =
-        videos.map(
-          video => `
-
-          <div class="ai-video-card">
-
-            <div class="ai-thumbnail">
-              🤖
-            </div>
-
-            <h3>
-              ${escapeHtml(video.title)}
-            </h3>
-
-            <div class="ai-meta">
-
-              ${escapeHtml(video.section || "")}
-
-              —
-              
-              ${escapeHtml(video.semester || "")}
-
-              <br>
-
-              Duration:
-              ${escapeHtml(video.duration || "")}
-              minute(s)
-
-            </div>
-
-            <button
-              class="btn"
-              data-open-ai="${video.id}"
-            >
-              ▶ Watch AI Video
-            </button>
-
-          </div>
-
-        `
-        ).join("");
-    }
-
-
-
-    document
-      .getElementById(
-        "aiPublishedVideos"
-      )
-      .addEventListener(
-        "click",
-        event => {
-
-          const button =
-            event.target.closest(
-              "[data-open-ai]"
-            );
-
-          if (!button) {
-            return;
-          }
-
-          const id =
-            button.dataset.openAi;
-
-          const video =
-            allAiVideos.find(
-              item =>
-                String(item.id) ===
-                String(id)
-            );
-
-          if (!video) {
-            return;
-          }
-
-          showAiVideo(
-            video.video_url
-          );
-        }
-      );
-
-
-
-    /* =========================================================
-       AI VIDEO PLAYER
-       ========================================================= */
-
-    function showAiVideo(
-      url
-    ) {
-
-      const modal =
-        document.getElementById(
-          "aiVideoModalBg"
-        );
-
-      const player =
-        document.getElementById(
-          "aiVideoModalPlayer"
-        );
-
-      player.src =
-        url;
-
-      modal.style.display =
-        "flex";
-    }
-
-
-    function hideAiVideo() {
-
-      const modal =
-        document.getElementById(
-          "aiVideoModalBg"
-        );
-
-      const player =
-        document.getElementById(
-          "aiVideoModalPlayer"
-        );
-
-      player.pause();
-
-      player.src =
-        "";
-
-      modal.style.display =
-        "none";
-    }
-
-
-    document
-      .getElementById(
-        "closeAiVideoModalBtn"
-      )
-      .addEventListener(
-        "click",
-        hideAiVideo
-      );
-
-
-
-    /* =========================================================
-       ADMIN AI LISTS
-       ========================================================= */
-
-    async function fetchAiAdminLists() {
-
-      if (!isAdmin()) {
-        return;
-      }
-
-
-      const {
-        data,
-        error
-      } = await supabase
-        .from("AI_Videos")
-        .select("*")
-        .order(
-          "created_at",
-          {
-            ascending: false
-          }
-        );
-
-
-      if (error) {
-
-        console.error(error);
-
-        return;
-      }
-
-
-      renderAiDrafts(
-        data.filter(
-          item =>
-            !item.published
-        )
-      );
-
-
-      renderAiAdminPublished(
-        data.filter(
-          item =>
-            item.published
-        )
-      );
-    }
-
-
-
-    function renderAiDrafts(
-      drafts
-    ) {
-
-      const box =
-        document.getElementById(
-          "aiDraftsList"
-        );
-
-
-      if (!drafts.length) {
-
-        box.innerHTML = `
-          <div class="ai-empty">
-            No drafts.
-          </div>
-        `;
-
-        return;
-      }
-
-
-      box.innerHTML =
-        drafts.map(
-          video => `
-
-          <div class="admin-ai-item">
-
-            <h4>
-              ${escapeHtml(video.title)}
-            </h4>
-
-            <small>
-              ${escapeHtml(video.section || "")}
-              —
-              ${escapeHtml(video.semester || "")}
-            </small>
-
-            <div class="admin-ai-actions">
-
-              <button
-                class="btn"
-                data-preview-ai="${video.id}"
-              >
-                Preview
-              </button>
-
-              <button
-                class="btn btn-success"
-                data-publish-ai="${video.id}"
-              >
-                Publish
-              </button>
-
-              <button
-                class="btn btn-danger"
-                data-delete-ai="${video.id}"
-              >
-                Delete
-              </button>
-
-            </div>
-
-          </div>
-
-        `
-        ).join("");
-    }
-
-
-
-    function renderAiAdminPublished(
-      videos
-    ) {
-
-      const box =
-        document.getElementById(
-          "aiAdminPublishedList"
-        );
-
-
-      if (!videos.length) {
-
-        box.innerHTML = `
-          <div class="ai-empty">
-            No published AI videos.
-          </div>
-        `;
-
-        return;
-      }
-
-
-      box.innerHTML =
-        videos.map(
-          video => `
-
-          <div class="admin-ai-item">
-
-            <h4>
-              ${escapeHtml(video.title)}
-            </h4>
-
-            <small>
-              ${escapeHtml(video.section || "")}
-              —
-              ${escapeHtml(video.semester || "")}
-            </small>
-
-            <div class="admin-ai-actions">
-
-              <button
-                class="btn"
-                data-preview-ai="${video.id}"
-              >
-                Preview
-              </button>
-
-              <button
-                class="btn btn-danger"
-                data-delete-ai="${video.id}"
-              >
-                Delete
-              </button>
-
-            </div>
-
-          </div>
-
-        `
-        ).join("");
-    }
-
-
-
-    /* =========================================================
-       AI ADMIN ACTIONS
-       ========================================================= */
-
-    document
-      .getElementById(
-        "aiDraftsList"
-      )
-      .addEventListener(
-        "click",
-        handleAiAdminAction
-      );
-
-
-    document
-      .getElementById(
-        "aiAdminPublishedList"
-      )
-      .addEventListener(
-        "click",
-        handleAiAdminAction
-      );
-
-
-    async function handleAiAdminAction(
-      event
-    ) {
-
-      if (!isAdmin()) {
-        return;
-      }
-
-
-      const previewButton =
-        event.target.closest(
-          "[data-preview-ai]"
-        );
-
-
-      if (previewButton) {
-
-        const id =
-          previewButton.dataset.previewAi;
-
-        const {
-          data
-        } = await supabase
-          .from("AI_Videos")
-          .select("*")
-          .eq("id", id)
-          .single();
-
-        if (data) {
-
-          showAiVideo(
-            data.video_url
-          );
-        }
-
-        return;
-      }
-
-
-      const publishButton =
-        event.target.closest(
-          "[data-publish-ai]"
-        );
-
-
-      if (publishButton) {
-
-        const id =
-          publishButton.dataset.publishAi;
-
-        const {
-          error
-        } = await supabase
-          .from("AI_Videos")
-          .update({
-            published: true
-          })
-          .eq(
-            "id",
-            id
-          );
-
-
-        if (error) {
-
-          alert(
-            error.message
-          );
-
-          return;
-        }
-
-
-        alert(
-          "AI video published."
-        );
-
-        await fetchAiVideos();
-
-        await fetchAiAdminLists();
-
-        return;
-      }
-
-
-      const deleteButton =
-        event.target.closest(
-          "[data-delete-ai]"
-        );
-
-
-      if (deleteButton) {
-
-        const id =
-          deleteButton.dataset.deleteAi;
-
-
-        if (
-          !confirm(
-            "Delete this AI video?"
-          )
-        ) {
-          return;
-        }
-
-
-        const {
-          data: video
-        } = await supabase
-          .from("AI_Videos")
-          .select(
-            "storage_path"
-          )
-          .eq(
-            "id",
-            id
-          )
-          .single();
-
-
-        if (
-          video?.storage_path
-        ) {
-
-          await supabase.storage
-            .from("ai-videos")
-            .remove([
-              video.storage_path
-            ]);
-        }
-
-
-        const {
-          error
-        } = await supabase
-          .from("AI_Videos")
-          .delete()
-          .eq(
-            "id",
-            id
-          );
-
-
-        if (error) {
-
-          alert(
-            error.message
-          );
-
-          return;
-        }
-
-
-        await fetchAiVideos();
-
-        await fetchAiAdminLists();
-      }
-    }
-
-
-
-    /* =========================================================
-       INITIAL AUTH SESSION
-       ========================================================= */
-
-    async function initialize() {
-
-      const {
-        data
-      } = await supabase.auth.getSession();
-
-
-      currentUser =
-        data?.session?.user ||
-        null;
-
-
-      if (!currentUser) {
-
-        formatStatus();
-
-        await fetchVideos();
-
-        await fetchAiVideos();
-
-        showLoginModal();
-
-        return;
-      }
-
-
-      document
-        .getElementById("loginBtnTop")
-        .style.display =
-        "none";
-
-      document
-        .getElementById("logoutBtn")
-        .style.display =
-        "inline-block";
-
-
-      if (isAdmin()) {
-
-        adminPanel.style.display =
-          "block";
-
-        aiAdmin.style.display =
-          "block";
-      }
-
-
-      await fetchSubscriptionForUser(
-        currentUser.email
-      );
-
-
-      formatStatus();
-
-
-      await fetchVideos();
-
-      await fetchAiVideos();
-
-
-      if (isAdmin()) {
-
-        await renderExistingVideos(
-          allVideos
-        );
-
-        await fetchSubscriptionsAdmin();
-
-        await fetchAiAdminLists();
-      }
-    }
-
-
-
-    /* =========================================================
-       AUTH STATE LISTENER
-       ========================================================= */
-
-    supabase.auth.onAuthStateChange(
-      async (
-        event,
-        session
-      ) => {
-
-        if (
-          event === "SIGNED_OUT"
-        ) {
-
-          currentUser = null;
-          subscription = null;
-
-          formatStatus();
-
-          return;
-        }
-
-        if (
-          session?.user
-        ) {
-
-          currentUser =
-            session.user;
-
-          formatStatus();
-        }
-      }
-    );
-
-
-
-    /* =========================================================
-       START
-       ========================================================= */
-
-    initialize();
-
-  </script>
-
+      ctx.fillStyle="#333";ctx.font="13px Arial";ctx.textAlign="center";ctx.fillText(d.label,x+bw/2,top+ch+25);
+    });
+  }
+  ctx.textAlign="center";ctx.fillStyle="#333";ctx.font="bold 15px Arial";ctx.fillText(chart.xLabel||"",left+cw/2,h-25);
+  ctx.save();ctx.translate(20,top+ch/2);ctx.rotate(-Math.PI/2);ctx.fillText(chart.yLabel||"",0,0);ctx.restore();
+  ctx.textAlign="left";
+}
+$("generateChartBtn").onclick=()=>{
+  currentChart={
+    type:$("chartType").value,title:$("chartTitle").value||"Chart",
+    xLabel:$("chartXLabel").value,yLabel:$("chartYLabel").value,data:parseChartData()
+  };
+  if(!currentChart.data.length){alert("Enter chart data such as 1:72, 2:85, 3:98");return}
+  drawChart($("chartPreviewCanvas").getContext("2d"),1100,560,currentChart);
+};
+$("addChartBtn").onclick=()=>{
+  if(!currentChart){$("generateChartBtn").click()}
+  if(!currentChart?.data?.length)return;
+  currentStoryboard.push({
+    title:currentChart.title,narration:`This chart shows ${currentChart.title}. The horizontal axis represents ${currentChart.xLabel||"the categories"}, while the vertical axis represents ${currentChart.yLabel||"the values"}.`,
+    points:currentChart.data.map(d=>`${d.label}: ${d.value}`),visualType:"chart",chart:currentChart
+  });
+  renderStoryboard();setAiStatus("Chart added as a video scene.","ok");
+};
+
+/* ---------- Educational Canvas renderer ---------- */
+const W=1280,H=720;
+function rounded(ctx,x,y,w,h,r){
+  ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill();
+}
+function arrow(ctx,x1,y1,x2,y2){
+  const a=Math.atan2(y2-y1,x2-x1),l=14;
+  ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-l*Math.cos(a-.5),y2-l*Math.sin(a-.5));ctx.lineTo(x2-l*Math.cos(a+.5),y2-l*Math.sin(a+.5));ctx.closePath();ctx.fill();
+}
+function textWrap(ctx,text,x,y,maxWidth,lineHeight=26,maxLines=5){
+  const words=String(text||"").split(/\s+/);let line="",lines=[];
+  for(const word of words){
+    const test=line?line+" "+word:word;
+    if(ctx.measureText(test).width>maxWidth&&line){lines.push(line);line=word;if(lines.length>=maxLines)break}else line=test;
+  }
+  if(line&&lines.length<maxLines)lines.push(line);
+  lines.forEach((l,i)=>ctx.fillText(l,x,y+i*lineHeight));
+}
+function drawHeart(ctx,mode,t){
+  const cx=640,cy=365,scale=1;
+  ctx.save();ctx.translate(cx,cy);
+  ctx.fillStyle="#f6a6a6";
+  ctx.beginPath();
+  ctx.moveTo(0,190);
+  ctx.bezierCurveTo(-180,50,-185,-80,-90,-125);
+  ctx.bezierCurveTo(-35,-150,0,-105,0,-65);
+  ctx.bezierCurveTo(0,-105,35,-150,90,-125);
+  ctx.bezierCurveTo(185,-80,180,50,0,190);ctx.fill();
+  ctx.strokeStyle="#8b1e1e";ctx.lineWidth=5;ctx.stroke();
+  if(mode==="heart_chambers"||mode==="heart"){
+    ctx.fillStyle="#b91c1c";ctx.beginPath();ctx.ellipse(-65,-35,45,70,0,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle="#b91c1c";ctx.beginPath();ctx.ellipse(65,-35,45,70,0,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle="#e8d8d8";ctx.beginPath();ctx.ellipse(-58,85,55,70,0,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle="#e8d8d8";ctx.beginPath();ctx.ellipse(58,85,55,70,0,0,Math.PI*2);ctx.fill();
+  }
+  ctx.fillStyle="#17202a";ctx.font="bold 18px Arial";ctx.textAlign="center";
+  ctx.fillText("Right Atrium",-100,-35);ctx.fillText("Left Atrium",100,-35);
+  ctx.fillText("Right Ventricle",-90,95);ctx.fillText("Left Ventricle",90,95);
+  if(Math.sin(t*5)>0){
+    ctx.fillStyle="#ff3333";ctx.beginPath();ctx.arc(0,0,8,0,Math.PI*2);ctx.fill();
+  }
+  ctx.restore();
+}
+function drawBloodFlow(ctx,t){
+  ctx.font="bold 24px Arial";ctx.textAlign="center";
+  ctx.fillStyle="#1976d2";ctx.fillText("BODY",180,300);
+  ctx.fillStyle="#e53935";ctx.fillText("LUNGS",1080,300);
+  ctx.fillStyle="#d96b6b";ctx.beginPath();ctx.arc(640,340,120,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle="#fff";ctx.fillText("HEART",640,348);
+  ctx.strokeStyle="#1976d2";ctx.fillStyle="#1976d2";ctx.lineWidth=10;
+  arrow(ctx,260,300,500,330);arrow(ctx,500,400,260,420);
+  ctx.strokeStyle="#e53935";ctx.fillStyle="#e53935";
+  arrow(ctx,780,330,1020,300);arrow(ctx,1020,420,780,400);
+  const phase=(t*130)%230;
+  ctx.fillStyle="#1976d2";ctx.beginPath();ctx.arc(260+phase,300+(phase/230)*30,9,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle="#e53935";ctx.beginPath();ctx.arc(790+phase,330-(phase/230)*30,9,0,Math.PI*2);ctx.fill();
+  ctx.font="18px Arial";ctx.fillStyle="#333";ctx.fillText("Deoxygenated blood",390,470);ctx.fillText("Oxygenated blood",890,470);
+}
+function drawValves(ctx){
+  ctx.textAlign="left";ctx.font="bold 22px Arial";ctx.fillStyle="#17202a";
+  const items=[["Tricuspid valve",280,250],["Pulmonary valve",730,250],["Mitral valve",280,420],["Aortic valve",730,420]];
+  items.forEach((a,i)=>{
+    ctx.fillStyle=i<2?"#1976d2":"#e53935";ctx.beginPath();ctx.arc(a[1],a[2],35,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle="#333";ctx.fillText(a[0],a[1]+55,a[2]+8);
+  });
+  ctx.textAlign="center";ctx.fillStyle="#666";ctx.font="20px Arial";ctx.fillText("Valves open and close to maintain one-way blood flow.",640,570);
+}
+function drawMolecule(ctx,t){
+  const pts=[[640,340],[500,250],[780,250],[500,430],[780,430]];
+  ctx.strokeStyle="#1976d2";ctx.lineWidth=5;
+  pts.slice(1).forEach(p=>{ctx.beginPath();ctx.moveTo(640,340);ctx.lineTo(p[0],p[1]);ctx.stroke()});
+  pts.forEach((p,i)=>{ctx.fillStyle=i%2?"#90caf9":"#e53935";ctx.beginPath();ctx.arc(p[0],p[1],45+Math.sin(t*2+i)*4,0,Math.PI*2);ctx.fill()});
+  ctx.textAlign="center";ctx.fillStyle="#333";ctx.font="bold 18px Arial";ctx.fillText("Molecular structure",640,540);
+}
+function drawWave(ctx,t){
+  ctx.strokeStyle="#1976d2";ctx.lineWidth=5;ctx.beginPath();
+  for(let x=100;x<1180;x+=4){let y=360+90*Math.sin((x/110)*Math.PI*2-t*3);if(x===100)ctx.moveTo(x,y);else ctx.lineTo(x,y)}ctx.stroke();
+  ctx.fillStyle="#333";ctx.font="bold 20px Arial";ctx.textAlign="center";ctx.fillText("Amplitude and wavelength",640,520);
+}
+function drawDiagram(ctx,s,t){
+  const cx=640,cy=350;
+  ctx.strokeStyle="#1976d2";ctx.fillStyle="#e3f2fd";ctx.lineWidth=3;
+  ctx.beginPath();ctx.arc(cx,cy,100,0,Math.PI*2);ctx.fill();ctx.stroke();
+  ctx.fillStyle="#17202a";ctx.font="bold 22px Arial";ctx.textAlign="center";ctx.fillText("MAIN CONCEPT",cx,cy+8);
+  const labels=(s.points||[]).slice(0,4);
+  labels.forEach((p,i)=>{
+    const a=-Math.PI/2+i*Math.PI/2,x=cx+280*Math.cos(a),y=cy+220*Math.sin(a);
+    ctx.fillStyle="#fff";rounded(ctx,x-120,y-35,240,70,12);ctx.strokeStyle="#90caf9";ctx.stroke();
+    ctx.fillStyle="#333";ctx.font="18px Arial";textWrap(ctx,p,x-105,y-8,210,22,2);
+    ctx.strokeStyle="#1976d2";ctx.fillStyle="#1976d2";arrow(ctx,x-120*Math.cos(a),y-35*Math.sin(a),x-100*Math.cos(a),y-35*Math.sin(a));
+  });
+}
+function drawSummary(ctx,s){
+  ctx.textAlign="left";ctx.fillStyle="#17202a";ctx.font="bold 30px Arial";ctx.fillText("EXAM POINTS",110,190);
+  (s.points||[]).slice(0,6).forEach((p,i)=>{
+    ctx.fillStyle="#1976d2";ctx.beginPath();ctx.arc(130,250+i*60,8,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle="#333";ctx.font="22px Arial";textWrap(ctx,p,155,258+i*60,950,26,1);
+  });
+}
+function drawChartScene(ctx,chart){
+  drawChart(ctx,W,H,{...chart});
+}
+function drawEducationalScene(ctx,s,index,total,t){
+  ctx.fillStyle="#fff";ctx.fillRect(0,0,W,H);
+  ctx.fillStyle="#17202a";ctx.fillRect(0,0,W,75);
+  ctx.fillStyle="#fff";ctx.font="bold 24px Arial";ctx.textAlign="left";ctx.fillText("THRIVES ARCHIVERS",35,48);
+  ctx.font="16px Arial";ctx.textAlign="right";ctx.fillText(`Scene ${index+1}/${total}`,1240,47);
+  ctx.fillStyle="#1976d2";ctx.font="bold 34px Arial";ctx.textAlign="center";ctx.fillText(s.title||"",640,125);
+  const type=s.visualType||"diagram";
+  if(type==="heart"||type==="heart_chambers")drawHeart(ctx,type,t);
+  else if(type==="bloodflow")drawBloodFlow(ctx,t);
+  else if(type==="valves")drawValves(ctx);
+  else if(type==="molecule")drawMolecule(ctx,t);
+  else if(type==="wave")drawWave(ctx,t);
+  else if(type==="chart"&&s.chart)drawChartScene(ctx,s.chart);
+  else if(type==="summary")drawSummary(ctx,s);
+  else drawDiagram(ctx,s,t);
+
+  // caption
+  ctx.fillStyle="#000c";rounded(ctx,55,590,1170,82,12);
+  ctx.fillStyle="#fff";ctx.font="18px Arial";ctx.textAlign="left";textWrap(ctx,s.narration,80,620,1110,25,2);
+  ctx.fillStyle="#1976d2";ctx.fillRect(55,684,1170*(Math.min(t/(Number($("aiDuration").value)*60),1)),7);
+}
+function getSceneDuration(){return Math.max(3,(Number($("aiDuration").value)*60)/(currentStoryboard.length||1));}
+
+/* ---------- Optional narration preview ---------- */
+$("previewVoiceBtn").onclick=()=>{
+  if(!currentStoryboard.length){alert("Generate a lesson first.");return}
+  speechSynthesis.cancel();
+  const text=currentStoryboard.map(s=>s.narration).join(" ");
+  const u=new SpeechSynthesisUtterance(text);u.rate=.92;u.pitch=1;
+  speechSynthesis.speak(u);
+};
+$("stopVoiceBtn").onclick=()=>speechSynthesis.cancel();
+
+/* ---------- Canvas video recording ---------- */
+async function createAiVideo(){
+  if(!currentStoryboard.length){setAiStatus("Generate a lesson first.","error");return}
+  if(!window.MediaRecorder||!HTMLCanvasElement.prototype.captureStream){
+    setAiStatus("This browser does not support Canvas video recording.","error");return;
+  }
+  const canvas=document.createElement("canvas");canvas.width=W;canvas.height=H;
+  const ctx=canvas.getContext("2d");
+  const stream=canvas.captureStream(30);
+  let mime="video/webm;codecs=vp9";
+  if(!MediaRecorder.isTypeSupported(mime))mime="video/webm;codecs=vp8";
+  if(!MediaRecorder.isTypeSupported(mime))mime="video/webm";
+  const recorder=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:5000000});
+  const chunks=[];
+  recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};
+  const done=new Promise(resolve=>recorder.onstop=()=>resolve());
+  recorder.start(250);
+  setAiStatus("Rendering animated educational video...");
+  const start=performance.now();
+  const sceneDur=getSceneDuration()*1000;
+  let lastScene=-1;
+  while(performance.now()-start<Number($("aiDuration").value)*60000){
+    const elapsed=performance.now()-start;
+    const si=Math.min(currentStoryboard.length-1,Math.floor(elapsed/sceneDur));
+    const local=(elapsed-si*sceneDur)/1000;
+    if(si!==lastScene){lastScene=si;setAiStatus(`Rendering scene ${si+1} of ${currentStoryboard.length}...`)}
+    drawEducationalScene(ctx,currentStoryboard[si],si,currentStoryboard.length,local);
+    await new Promise(requestAnimationFrame);
+  }
+  recorder.stop();await done;
+  stream.getTracks().forEach(t=>t.stop());
+  currentVideoBlob=new Blob(chunks,{type:"video/webm"});
+  if(currentVideoUrl)URL.revokeObjectURL(currentVideoUrl);
+  currentVideoUrl=URL.createObjectURL(currentVideoBlob);
+  $("aiPreviewVideo").src=currentVideoUrl;
+  $("aiPreviewWrap").classList.remove("hidden");
+  setAiStatus(`Video generated successfully (${(currentVideoBlob.size/1024/1024).toFixed(1)} MB).`,"ok");
+}
+$("recordAiVideoBtn").onclick=createAiVideo;
+
+/* ---------- Save / publish ---------- */
+function videoRecord(){
+  return {
+    id:crypto.randomUUID?.()||String(Date.now()),
+    title:$("aiTitle").value.trim(),
+    section:$("aiSection").value.trim(),
+    semester:$("aiSemester").value,
+    duration:Number($("aiDuration").value),
+    style:$("aiStyle").value,
+    difficulty:$("aiDifficulty").value,
+    prompt:$("aiPrompt").value.trim(),
+    storyboard:currentStoryboard,
+    chart:currentChart,
+    video_url:currentVideoUrl,
+    created_at:new Date().toISOString()
+  };
+}
+$("saveAiDraftBtn").onclick=()=>{
+  if(!currentStoryboard.length){alert("Generate a lesson first.");return}
+  const d=videoRecord();drafts.unshift(d);localStorage.setItem("thrives_ai_drafts",JSON.stringify(drafts));
+  renderDrafts();setAiStatus("Draft saved in this browser.","ok");
+};
+$("publishAiVideoBtn").onclick=async()=>{
+  if(!currentVideoBlob){alert("Create the animation video first.");return}
+  if(!isAdmin()){alert("Administrator access required.");return}
+  setAiStatus("Publishing video...");
+  try{
+    const safe=($("aiTitle").value.trim()||"ai-video").replace(/[^a-z0-9_-]+/gi,"-").toLowerCase();
+    const path=`generated/${Date.now()}-${safe}.webm`;
+    const {error:uploadError}=await supabase.storage.from("ai-videos").upload(path,currentVideoBlob,{contentType:"video/webm",upsert:false});
+    if(uploadError)throw uploadError;
+    const {data}=supabase.storage.from("ai-videos").getPublicUrl(path);
+    const row={
+      title:$("aiTitle").value.trim(),section:$("aiSection").value.trim(),semester:$("aiSemester").value,
+      duration:Number($("aiDuration").value),prompt:$("aiPrompt").value.trim(),style:$("aiStyle").value,
+      difficulty:$("aiDifficulty").value,storyboard:currentStoryboard,video_url:data.publicUrl,
+      storage_path:path,published:true,created_by:currentUser?.id||null
+    };
+    const {error}=await supabase.from("AI_Videos").insert(row);
+    if(error)throw error;
+    await loadPublishedAI();renderAdminPublished();
+    setAiStatus("Video published successfully to the AI Video Library.","ok");
+  }catch(e){
+    // Keep local publishing as a fallback so the generated video is not lost.
+    const p=videoRecord();published.unshift(p);localStorage.setItem("thrives_ai_published",JSON.stringify(published));
+    renderPublishedLocal();renderAdminPublished();
+    setAiStatus(`Video generated, but Supabase publishing failed: ${e.message}. A local copy was kept in this browser.`,"");
+  }
+};
+
+/* ---------- AI public library ---------- */
+async function loadPublishedAI(){
+  try{
+    const {data,error}=await supabase.from("AI_Videos").select("*").eq("published",true).order("created_at",{ascending:false});
+    if(error)throw error;
+    renderPublished(data||[]);
+  }catch(e){renderPublishedLocal()}
+}
+function renderPublished(data){
+  const list=data||[];
+  $("aiPublishedVideos").innerHTML=list.map(v=>`
+    <div class="video-card">
+      <div class="video-thumb"><button onclick="window.open('${escapeHtml(v.video_url||"")}','_blank')">▶ Watch AI Lesson</button></div>
+      <div class="video-info"><h3>${escapeHtml(v.title)}</h3><div>${escapeHtml(v.section||"")} • ${escapeHtml(v.semester||"")}</div></div>
+    </div>`).join("")||"<p class='muted'>No published AI lessons yet.</p>";
+}
+function renderPublishedLocal(){renderPublished(published)}
+function renderDrafts(){
+  $("aiDraftsList").innerHTML=drafts.map((d,i)=>`
+    <div class="scene-card"><h3>${escapeHtml(d.title)}</h3>
+    <p>${escapeHtml(d.section)} • ${escapeHtml(d.duration)} min</p>
+    <button onclick="loadDraft(${i})">Load Draft</button>
+    </div>`).join("")||"<p class='muted'>No drafts.</p>";
+}
+window.loadDraft=i=>{
+  const d=drafts[i];if(!d)return;
+  $("aiTitle").value=d.title;$("aiSection").value=d.section;$("aiSemester").value=d.semester;
+  $("aiDuration").value=d.duration;$("aiStyle").value=d.style;$("aiDifficulty").value=d.difficulty;$("aiPrompt").value=d.prompt;
+  currentStoryboard=d.storyboard||[];currentChart=d.chart||null;renderStoryboard();
+  if(currentChart)drawChart($("chartPreviewCanvas").getContext("2d"),1100,560,currentChart);
+  if(d.video_url){currentVideoUrl=d.video_url;$("aiPreviewVideo").src=d.video_url;$("aiPreviewWrap").classList.remove("hidden")}
+};
+function renderAdminPublished(){
+  $("aiAdminPublishedList").innerHTML=published.map((p,i)=>`
+    <div class="scene-card"><h3>${escapeHtml(p.title)}</h3><p>${escapeHtml(p.section||"")}</p></div>`).join("")||"<p class='muted'>No local published items.</p>";
+}
+
+/* ---------- Tabs ---------- */
+document.querySelectorAll(".tabs button").forEach(btn=>btn.onclick=()=>{
+  document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));btn.classList.add("active");
+  $("aiGenerateTab").classList.toggle("hidden",btn.dataset.tab!=="generate");
+  $("aiDraftsTab").classList.toggle("hidden",btn.dataset.tab!=="drafts");
+  $("aiPublishedTab").classList.toggle("hidden",btn.dataset.tab!=="published");
+});
+$("generateAiBtn").onclick=generateAiStoryboard;
+$("clearAiBtn").onclick=()=>{
+  ["aiTitle","aiSection","aiPrompt","chartTitle","chartXLabel","chartYLabel","chartData"].forEach(id=>$(id).value="");
+  currentStoryboard=[];currentChart=null;currentVideoBlob=null;
+  $("aiStoryboard").innerHTML="";$("aiPreviewWrap").classList.add("hidden");
+  drawChart($("chartPreviewCanvas").getContext("2d"),1100,560,null);setAiStatus("Cleared.");
+};
+
+/* ---------- Modal close ---------- */
+$("closeModalVideoBtn").onclick=()=>$("modalVideoBg").classList.add("hidden");
+$("closeAiModalBtn").onclick=()=>$("aiVideoModalBg").classList.add("hidden");
+
+/* ---------- Start ---------- */
+drawChart($("chartPreviewCanvas").getContext("2d"),1100,560,null);
+loadYouTubeVideos();
+initAuth();
+</script>
 </body>
 </html>
