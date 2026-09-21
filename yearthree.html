@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,684 +5,5119 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Thrives Archivers | Year Three</title>
 
-<!--
-  THRIVES ARCHIVERS - SUPABASE EDITION
-  ---------------------------------------------------------
-  1. Replace SUPABASE_URL and SUPABASE_ANON_KEY below.
-  2. Create the database tables/storage policies described in the
-     companion SQL setup section in the admin documentation.
-  3. AI actions call Supabase Edge Functions:
-       - simplify-document
-       - youtube-to-quiz
-     Keep AI/API keys inside Edge Functions, NEVER in this HTML.
--->
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,Helvetica,sans-serif}
-:root{--blue:#1976d2;--dark:#0d47a1;--bg:#f4f7fb;--card:#fff;--ink:#1f2937;--muted:#6b7280;--border:#dbe4ef;--green:#16834a;--red:#dc2626;--orange:#d97706}
-body{background:var(--bg);color:var(--ink);line-height:1.55}
-button,input,textarea,select{font:inherit}
-button{cursor:pointer}
-header{background:linear-gradient(135deg,#0d47a1,#1976d2);color:#fff;padding:15px 6%;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:1000;box-shadow:0 3px 15px #0002}
-.logo{font-size:22px;font-weight:800}.logo span{display:block;font-size:12px;font-weight:400;opacity:.85}
-nav{display:flex;gap:18px;align-items:center}nav a{color:#fff;text-decoration:none;font-size:14px;font-weight:700}
-.container{width:92%;max-width:1250px;margin:30px auto}
-.hero{min-height:330px;background:linear-gradient(135deg,#0d47a1ee,#1976d2e8);color:#fff;display:flex;align-items:center;justify-content:center;text-align:center;padding:45px 20px}
-.hero h1{font-size:50px;margin-bottom:8px}.hero h2{font-size:23px;font-weight:400;margin-bottom:15px}.hero p{max-width:760px}
-.section-title{text-align:center;margin:45px 0 25px}.section-title h2{color:var(--dark);font-size:30px}.section-title p{color:var(--muted)}
-.courses{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:22px}
-.card,.course-card,.resource-card,.admin-card{background:var(--card);border-radius:16px;padding:23px;box-shadow:0 7px 25px #0000000d;border:1px solid #edf2f7}
-.course-card{border-top:5px solid var(--blue)}.course-icon{font-size:42px;margin-bottom:10px}.course-card h3{color:var(--dark);margin-bottom:8px}.course-card p{color:var(--muted);font-size:14px}
-.buttons{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:17px}
-.btn{border:0;padding:10px 12px;border-radius:8px;background:var(--blue);color:#fff;font-weight:700}.btn:hover{background:var(--dark)}
-.btn.secondary{background:#e8f1ff;color:var(--dark)}.btn.secondary:hover{background:#d6e7ff}
-.btn.green{background:var(--green)}.btn.red{background:var(--red)}.btn.orange{background:var(--orange)}
-.resources-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
-.resource-card h3{color:var(--dark);margin-bottom:6px}.resource-card p{color:var(--muted);font-size:14px}.tag{display:inline-block;padding:4px 9px;border-radius:20px;background:#e8f1ff;color:var(--dark);font-size:11px;font-weight:700;margin:4px 4px 0 0}
-#resourcesArea{margin-top:20px}
-.empty{text-align:center;padding:35px;color:var(--muted);background:#fff;border-radius:15px;border:1px dashed var(--border)}
-footer{margin-top:70px;background:#111827;color:#fff;padding:35px;text-align:center}.footer-links{margin:12px}.footer-links a{color:#90caf9;margin:0 8px;text-decoration:none}
-.hidden{display:none!important}
-.overlay{position:fixed;inset:0;background:#0009;display:none;align-items:center;justify-content:center;z-index:3000;padding:15px}.overlay.show{display:flex}
-.modal{background:#fff;width:min(1050px,100%);max-height:92vh;overflow:auto;border-radius:17px;padding:25px;position:relative}
-.close{position:absolute;right:18px;top:12px;border:0;background:transparent;font-size:28px}
-.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}
-.field label{font-size:13px;font-weight:700;color:var(--dark)}.field input,.field textarea,.field select{padding:11px;border:1px solid var(--border);border-radius:8px;outline:none;background:#fff}.field textarea{min-height:150px;resize:vertical}
-.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.toolbar button{padding:8px 11px;border:1px solid var(--border);background:#f8fafc;border-radius:7px}
-.preview{border:1px solid var(--border);border-radius:10px;padding:20px;background:#fbfdff;min-height:220px}
-.preview img{max-width:100%;border-radius:9px;margin:10px 0}.preview h1,.preview h2,.preview h3{color:var(--dark);margin:14px 0 8px}.preview p{margin:8px 0}.preview ul{padding-left:25px}
-.admin-layout{display:grid;grid-template-columns:230px 1fr;min-height:620px;background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 7px 30px #00000012}
-.admin-sidebar{background:#0d47a1;color:#fff;padding:18px}.admin-sidebar button{display:block;width:100%;text-align:left;border:0;background:transparent;color:#fff;padding:12px;border-radius:8px;margin:3px 0;font-weight:700}.admin-sidebar button.active,.admin-sidebar button:hover{background:#ffffff1f}
-.admin-main{padding:24px}.admin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:15px}.stat{padding:20px;border:1px solid var(--border);border-radius:12px;background:#f9fbff}.stat strong{display:block;font-size:30px;color:var(--dark)}
-.admin-list{margin-top:18px;display:grid;gap:10px}.list-row{border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;justify-content:space-between;gap:10px;align-items:center}.list-row small{color:var(--muted)}
-.toast{position:fixed;right:20px;bottom:20px;z-index:5000;padding:13px 17px;border-radius:9px;color:#fff;background:#111827;box-shadow:0 8px 25px #0003;display:none}.toast.show{display:block}
-.auth-box{max-width:430px;margin:50px auto;background:#fff;border-radius:17px;padding:28px;box-shadow:0 8px 30px #0001}
-.status{padding:10px;border-radius:8px;background:#f3f4f6;font-size:13px;margin:10px 0}.status.ok{background:#dcfce7;color:#166534}.status.err{background:#fee2e2;color:#991b1b}
-.video-frame{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:10px;background:#000}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-@media(max-width:750px){nav{display:none}.hero h1{font-size:38px}.form-grid{grid-template-columns:1fr}.admin-layout{grid-template-columns:1fr}.admin-sidebar{display:flex;overflow:auto;gap:6px}.admin-sidebar button{white-space:nowrap;width:auto}.list-row{align-items:flex-start;flex-direction:column}}
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:Arial,Helvetica,sans-serif
+}
+
+:root{
+  --blue:#1976d2;
+  --dark:#0d47a1;
+  --bg:#f4f7fb;
+  --card:#fff;
+  --ink:#1f2937;
+  --muted:#6b7280;
+  --border:#dbe4ef;
+  --green:#16834a;
+  --red:#dc2626;
+  --orange:#d97706;
+  --purple:#7c3aed
+}
+
+body{
+  background:var(--bg);
+  color:var(--ink);
+  line-height:1.55
+}
+
+button,input,textarea,select{
+  font:inherit
+}
+
+button{
+  cursor:pointer
+}
+
+header{
+  background:linear-gradient(135deg,#0d47a1,#1976d2);
+  color:#fff;
+  padding:15px 6%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  position:sticky;
+  top:0;
+  z-index:1000;
+  box-shadow:0 3px 15px #0002
+}
+
+.logo{
+  font-size:22px;
+  font-weight:800
+}
+
+.logo span{
+  display:block;
+  font-size:12px;
+  font-weight:400;
+  opacity:.85
+}
+
+nav{
+  display:flex;
+  gap:18px;
+  align-items:center
+}
+
+nav a{
+  color:#fff;
+  text-decoration:none;
+  font-size:14px;
+  font-weight:700
+}
+
+.container{
+  width:92%;
+  max-width:1250px;
+  margin:30px auto
+}
+
+.hero{
+  min-height:350px;
+  background:
+    linear-gradient(135deg,#0d47a1ee,#1976d2e8),
+    radial-gradient(circle at top right,#90caf9,transparent 35%);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:45px 20px
+}
+
+.hero h1{
+  font-size:50px;
+  margin-bottom:8px
+}
+
+.hero h2{
+  font-size:23px;
+  font-weight:400;
+  margin-bottom:15px
+}
+
+.hero p{
+  max-width:760px;
+  margin:auto
+}
+
+.section-title{
+  text-align:center;
+  margin:45px 0 25px
+}
+
+.section-title h2{
+  color:var(--dark);
+  font-size:30px
+}
+
+.section-title p{
+  color:var(--muted)
+}
+
+.courses{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:22px
+}
+
+.card,
+.course-card,
+.resource-card,
+.admin-card{
+  background:var(--card);
+  border-radius:16px;
+  padding:23px;
+  box-shadow:0 7px 25px #0000000d;
+  border:1px solid #edf2f7
+}
+
+.course-card{
+  border-top:5px solid var(--blue);
+  transition:.2s
+}
+
+.course-card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 12px 30px #0002
+}
+
+.course-icon{
+  font-size:42px;
+  margin-bottom:10px
+}
+
+.course-card h3{
+  color:var(--dark);
+  margin-bottom:8px
+}
+
+.course-card p{
+  color:var(--muted);
+  font-size:14px
+}
+
+.buttons{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:17px
+}
+
+.btn{
+  border:0;
+  padding:10px 12px;
+  border-radius:8px;
+  background:var(--blue);
+  color:#fff;
+  font-weight:700
+}
+
+.btn:hover{
+  background:var(--dark)
+}
+
+.btn.secondary{
+  background:#e8f1ff;
+  color:var(--dark)
+}
+
+.btn.secondary:hover{
+  background:#d6e7ff
+}
+
+.btn.green{
+  background:var(--green)
+}
+
+.btn.red{
+  background:var(--red)
+}
+
+.btn.orange{
+  background:var(--orange)
+}
+
+.btn.purple{
+  background:var(--purple)
+}
+
+.resources-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:18px
+}
+
+.resource-card{
+  transition:.2s
+}
+
+.resource-card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 12px 30px #0002
+}
+
+.resource-card h3{
+  color:var(--dark);
+  margin-bottom:6px
+}
+
+.resource-card p{
+  color:var(--muted);
+  font-size:14px
+}
+
+.tag{
+  display:inline-block;
+  padding:4px 9px;
+  border-radius:20px;
+  background:#e8f1ff;
+  color:var(--dark);
+  font-size:11px;
+  font-weight:700;
+  margin:4px 4px 0 0
+}
+
+#resourcesArea{
+  margin-top:20px
+}
+
+.empty{
+  text-align:center;
+  padding:35px;
+  color:var(--muted);
+  background:#fff;
+  border-radius:15px;
+  border:1px dashed var(--border);
+  grid-column:1/-1
+}
+
+footer{
+  margin-top:70px;
+  background:#111827;
+  color:#fff;
+  padding:35px;
+  text-align:center
+}
+
+.footer-links{
+  margin:12px
+}
+
+.footer-links a{
+  color:#90caf9;
+  margin:0 8px;
+  text-decoration:none
+}
+
+.hidden{
+  display:none!important
+}
+
+.overlay{
+  position:fixed;
+  inset:0;
+  background:#0009;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:3000;
+  padding:15px
+}
+
+.overlay.show{
+  display:flex
+}
+
+.modal{
+  background:#fff;
+  width:min(1050px,100%);
+  max-height:92vh;
+  overflow:auto;
+  border-radius:17px;
+  padding:25px;
+  position:relative
+}
+
+.close{
+  position:absolute;
+  right:18px;
+  top:12px;
+  border:0;
+  background:transparent;
+  font-size:28px
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px
+}
+
+.field{
+  display:flex;
+  flex-direction:column;
+  gap:6px
+}
+
+.field.full{
+  grid-column:1/-1
+}
+
+.field label{
+  font-size:13px;
+  font-weight:700;
+  color:var(--dark)
+}
+
+.field input,
+.field textarea,
+.field select{
+  padding:11px;
+  border:1px solid var(--border);
+  border-radius:8px;
+  outline:none;
+  background:#fff
+}
+
+.field input:focus,
+.field textarea:focus,
+.field select:focus{
+  border-color:var(--blue);
+  box-shadow:0 0 0 3px #1976d21a
+}
+
+.field textarea{
+  min-height:150px;
+  resize:vertical
+}
+
+.toolbar{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin:14px 0
+}
+
+.toolbar button:not(.btn){
+  padding:8px 11px;
+  border:1px solid var(--border);
+  background:#f8fafc;
+  border-radius:7px
+}
+
+.preview{
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:20px;
+  background:#fbfdff;
+  min-height:220px
+}
+
+.preview img{
+  max-width:100%;
+  border-radius:9px;
+  margin:10px 0
+}
+
+.preview h1,
+.preview h2,
+.preview h3{
+  color:var(--dark);
+  margin:14px 0 8px
+}
+
+.preview p{
+  margin:8px 0
+}
+
+.preview ul,
+.preview ol{
+  padding-left:25px
+}
+
+.admin-layout{
+  display:grid;
+  grid-template-columns:230px 1fr;
+  min-height:650px;
+  background:#fff;
+  border-radius:18px;
+  overflow:hidden;
+  box-shadow:0 7px 30px #00000012
+}
+
+.admin-sidebar{
+  background:#0d47a1;
+  color:#fff;
+  padding:18px
+}
+
+.admin-sidebar button{
+  display:block;
+  width:100%;
+  text-align:left;
+  border:0;
+  background:transparent;
+  color:#fff;
+  padding:12px;
+  border-radius:8px;
+  margin:3px 0;
+  font-weight:700
+}
+
+.admin-sidebar button.active,
+.admin-sidebar button:hover{
+  background:#ffffff1f
+}
+
+.admin-main{
+  padding:24px
+}
+
+.admin-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:15px
+}
+
+.stat{
+  padding:20px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:#f9fbff
+}
+
+.stat strong{
+  display:block;
+  font-size:30px;
+  color:var(--dark)
+}
+
+.admin-list{
+  margin-top:18px;
+  display:grid;
+  gap:10px
+}
+
+.list-row{
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:14px;
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:center;
+  background:#fff
+}
+
+.list-row small{
+  color:var(--muted)
+}
+
+.toast{
+  position:fixed;
+  right:20px;
+  bottom:20px;
+  z-index:5000;
+  padding:13px 17px;
+  border-radius:9px;
+  color:#fff;
+  background:#111827;
+  box-shadow:0 8px 25px #0003;
+  display:none;
+  max-width:420px
+}
+
+.toast.show{
+  display:block
+}
+
+.auth-box{
+  max-width:430px;
+  margin:50px auto;
+  background:#fff;
+  border-radius:17px;
+  padding:28px;
+  box-shadow:0 8px 30px #0001
+}
+
+.status{
+  padding:10px;
+  border-radius:8px;
+  background:#f3f4f6;
+  font-size:13px;
+  margin:10px 0
+}
+
+.status.ok{
+  background:#dcfce7;
+  color:#166534
+}
+
+.status.err{
+  background:#fee2e2;
+  color:#991b1b
+}
+
+.status.warn{
+  background:#fef3c7;
+  color:#92400e
+}
+
+.video-frame{
+  position:relative;
+  padding-bottom:56.25%;
+  height:0;
+  overflow:hidden;
+  border-radius:10px;
+  background:#000
+}
+
+.video-frame iframe{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  border:0
+}
+
+.quiz-question{
+  margin-top:14px
+}
+
+.quiz-option{
+  display:block;
+  padding:10px;
+  border:1px solid var(--border);
+  border-radius:8px;
+  margin:7px 0;
+  cursor:pointer
+}
+
+.quiz-option:hover{
+  background:#f8fafc
+}
+
+.dashboard-banner{
+  padding:18px;
+  border-radius:12px;
+  background:linear-gradient(135deg,#e8f1ff,#f7fbff);
+  border:1px solid #cfe0f5;
+  margin-top:18px
+}
+
+.search-box{
+  display:flex;
+  gap:10px;
+  margin:15px 0
+}
+
+.search-box input{
+  flex:1;
+  padding:11px;
+  border:1px solid var(--border);
+  border-radius:8px
+}
+
+.resource-meta{
+  font-size:12px;
+  color:var(--muted);
+  margin-top:8px
+}
+
+.admin-header{
+  display:flex;
+  justify-content:space-between;
+  gap:15px;
+  align-items:center;
+  flex-wrap:wrap
+}
+
+@media(max-width:750px){
+
+  nav{
+    display:none
+  }
+
+  .hero h1{
+    font-size:38px
+  }
+
+  .form-grid{
+    grid-template-columns:1fr
+  }
+
+  .admin-layout{
+    grid-template-columns:1fr
+  }
+
+  .admin-sidebar{
+    display:flex;
+    overflow:auto;
+    gap:6px
+  }
+
+  .admin-sidebar button{
+    white-space:nowrap;
+    width:auto
+  }
+
+  .list-row{
+    align-items:flex-start;
+    flex-direction:column
+  }
+
+  .buttons{
+    grid-template-columns:1fr
+  }
+}
 </style>
 </head>
 
 <body>
 
 <header>
-  <div class="logo">THRIVES ARCHIVERS<span>Year Three Learning Hub</span></div>
+
+  <div class="logo">
+    THRIVES ARCHIVERS
+    <span>Year Three Learning Hub</span>
+  </div>
+
   <nav>
+
     <a href="#home">Home</a>
     <a href="#courses">Courses</a>
     <a href="#resources">Resources</a>
-    <a href="#admin" id="adminNav" class="hidden">Admin Panel</a>
-    <button class="btn secondary hidden" id="logoutBtn" onclick="logout()">Logout</button>
+
+    <a href="#admin" id="adminNav" class="hidden">
+      Admin Panel
+    </a>
+
+    <button
+      class="btn secondary hidden"
+      id="logoutBtn"
+      onclick="logout()">
+      Logout
+    </button>
+
   </nav>
+
 </header>
 
+
+<!-- HERO -->
+
 <section class="hero" id="home">
+
   <div>
+
     <h1>YEAR THREE</h1>
-    <h2>Thrives Archivers Academic Hub</h2>
-    <p>Access simplified study documents, video lessons, quizzes, past papers and organized learning resources in one place.</p>
-    <p style="margin-top:18px;font-weight:700;font-style:italic">"Everything is possible to achieve if we are together."</p>
+
+    <h2>
+      Thrives Archivers Academic Hub
+    </h2>
+
+    <p>
+      Access simplified study documents, video lessons,
+      quizzes, past papers and organized learning resources
+      in one place.
+    </p>
+
+    <p style="margin-top:18px;font-weight:700;font-style:italic">
+      "Everything is possible to achieve if we are together."
+    </p>
+
   </div>
+
 </section>
+
+
+<!-- COURSES -->
 
 <main class="container" id="courses">
+
   <div class="section-title">
-    <h2>Year Three Courses</h2>
-    <p>Select a course to view published learning resources.</p>
+
+    <h2>
+      Year Three Courses
+    </h2>
+
+    <p>
+      Select a course to view published learning resources.
+    </p>
+
   </div>
+
 
   <div class="courses">
-    <div class="course-card"><div class="course-icon">🧬</div><h3>Pathology</h3><p>Disease processes, causes, mechanisms, tissue changes and clinical manifestations.</p><div class="buttons"><button class="btn" onclick="showCourse('Pathology')">Resources</button><button class="btn secondary" onclick="showCourse('Pathology','quiz')">Quizzes</button></div></div>
-    <div class="course-card"><div class="course-icon">🌍</div><h3>Public Health</h3><p>Disease prevention, health promotion, epidemiology and community health.</p><div class="buttons"><button class="btn" onclick="showCourse('Public Health')">Resources</button><button class="btn secondary" onclick="showCourse('Public Health','quiz')">Quizzes</button></div></div>
-    <div class="course-card"><div class="course-icon">💊</div><h3>Pharmacology</h3><p>Drugs, mechanisms of action, pharmacokinetics, pharmacodynamics and adverse effects.</p><div class="buttons"><button class="btn" onclick="showCourse('Pharmacology')">Resources</button><button class="btn secondary" onclick="showCourse('Pharmacology','quiz')">Quizzes</button></div></div>
-    <div class="course-card"><div class="course-icon">⚖️</div><h3>Medical Ethics</h3><p>Ethical principles, professional conduct, patient rights and informed consent.</p><div class="buttons"><button class="btn" onclick="showCourse('Medical Ethics')">Resources</button><button class="btn secondary" onclick="showCourse('Medical Ethics','quiz')">Quizzes</button></div></div>
-    <div class="course-card"><div class="course-icon">🦠</div><h3>Microbiology</h3><p>Microorganisms, bacteria, viruses, fungi, parasites, infection and diagnosis.</p><div class="buttons"><button class="btn" onclick="showCourse('Microbiology')">Resources</button><button class="btn secondary" onclick="showCourse('Microbiology','quiz')">Quizzes</button></div></div>
+
+
+    <div class="course-card">
+
+      <div class="course-icon">
+        🧬
+      </div>
+
+      <h3>
+        Pathology
+      </h3>
+
+      <p>
+        Disease processes, causes, mechanisms,
+        tissue changes and clinical manifestations.
+      </p>
+
+      <div class="buttons">
+
+        <button
+          class="btn"
+          onclick="showCourse('Pathology')">
+          Resources
+        </button>
+
+        <button
+          class="btn secondary"
+          onclick="showCourse('Pathology','quiz')">
+          Quizzes
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <div class="course-card">
+
+      <div class="course-icon">
+        🌍
+      </div>
+
+      <h3>
+        Public Health
+      </h3>
+
+      <p>
+        Disease prevention, health promotion,
+        epidemiology and community health.
+      </p>
+
+      <div class="buttons">
+
+        <button
+          class="btn"
+          onclick="showCourse('Public Health')">
+          Resources
+        </button>
+
+        <button
+          class="btn secondary"
+          onclick="showCourse('Public Health','quiz')">
+          Quizzes
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <div class="course-card">
+
+      <div class="course-icon">
+        💊
+      </div>
+
+      <h3>
+        Pharmacology
+      </h3>
+
+      <p>
+        Drugs, mechanisms of action,
+        pharmacokinetics, pharmacodynamics
+        and adverse effects.
+      </p>
+
+      <div class="buttons">
+
+        <button
+          class="btn"
+          onclick="showCourse('Pharmacology')">
+          Resources
+        </button>
+
+        <button
+          class="btn secondary"
+          onclick="showCourse('Pharmacology','quiz')">
+          Quizzes
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <div class="course-card">
+
+      <div class="course-icon">
+        ⚖️
+      </div>
+
+      <h3>
+        Medical Ethics
+      </h3>
+
+      <p>
+        Ethical principles, professional conduct,
+        patient rights and informed consent.
+      </p>
+
+      <div class="buttons">
+
+        <button
+          class="btn"
+          onclick="showCourse('Medical Ethics')">
+          Resources
+        </button>
+
+        <button
+          class="btn secondary"
+          onclick="showCourse('Medical Ethics','quiz')">
+          Quizzes
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <div class="course-card">
+
+      <div class="course-icon">
+        🦠
+      </div>
+
+      <h3>
+        Microbiology
+      </h3>
+
+      <p>
+        Microorganisms, bacteria, viruses, fungi,
+        parasites, infection and diagnosis.
+      </p>
+
+      <div class="buttons">
+
+        <button
+          class="btn"
+          onclick="showCourse('Microbiology')">
+          Resources
+        </button>
+
+        <button
+          class="btn secondary"
+          onclick="showCourse('Microbiology','quiz')">
+          Quizzes
+        </button>
+
+      </div>
+
+    </div>
+
+
   </div>
+
+
+  <!-- RESOURCES -->
 
   <section id="resources">
-    <div class="section-title"><h2>Learning Resources</h2><p id="resourceSubtitle">Published documents, videos and quizzes will appear here.</p></div>
-    <div id="resourcesArea" class="resources-grid"></div>
+
+    <div class="section-title">
+
+      <h2>
+        Learning Resources
+      </h2>
+
+      <p id="resourceSubtitle">
+        Published documents, videos and quizzes will appear here.
+      </p>
+
+    </div>
+
+
+    <div class="search-box">
+
+      <input
+        id="resourceSearch"
+        placeholder="Search published resources..."
+        oninput="filterDisplayedResources()">
+
+      <button
+        class="btn secondary"
+        onclick="loadPublishedHome()">
+        Refresh
+      </button>
+
+    </div>
+
+
+    <div
+      id="resourcesArea"
+      class="resources-grid">
+    </div>
+
   </section>
+
 </main>
 
+
 <!-- AUTH MODAL -->
-<div class="overlay" id="authModal">
-  <div class="modal" style="max-width:480px">
-    <button class="close" onclick="closeModal('authModal')">&times;</button>
-    <div class="auth-box" style="margin:0;box-shadow:none">
-      <h2 style="color:var(--dark);margin-bottom:8px">Admin Login</h2>
-      <p style="color:var(--muted);font-size:14px">Only the authorized Thrives Archivers administrator can access the management panel.</p>
-      <div class="field" style="margin-top:16px"><label>Email</label><input id="loginEmail" type="email" value="thrivesarchivers@gmail.com"></div>
-      <div class="field" style="margin-top:12px"><label>Password</label><input id="loginPassword" type="password" placeholder="Admin password"></div>
-      <button class="btn" style="width:100%;margin-top:15px" onclick="adminLogin()">Login</button>
-      <div id="authMessage" class="status hidden"></div>
+
+<div
+  class="overlay"
+  id="authModal">
+
+  <div
+    class="modal"
+    style="max-width:480px">
+
+    <button
+      class="close"
+      onclick="closeModal('authModal')">
+      &times;
+    </button>
+
+
+    <div
+      class="auth-box"
+      style="margin:0;box-shadow:none">
+
+      <h2
+        style="color:var(--dark);margin-bottom:8px">
+        Admin Login
+      </h2>
+
+      <p
+        style="color:var(--muted);font-size:14px">
+
+        Only the authorized Thrives Archivers
+        administrator can access the management panel.
+
+      </p>
+
+
+      <div
+        class="field"
+        style="margin-top:16px">
+
+        <label>
+          Email
+        </label>
+
+        <input
+          id="loginEmail"
+          type="email"
+          value="thrivesarchivers@gmail.com">
+
+      </div>
+
+
+      <div
+        class="field"
+        style="margin-top:12px">
+
+        <label>
+          Password
+        </label>
+
+        <input
+          id="loginPassword"
+          type="password"
+          placeholder="Admin password">
+
+      </div>
+
+
+      <button
+        class="btn"
+        style="width:100%;margin-top:15px"
+        onclick="adminLogin()">
+
+        Login
+
+      </button>
+
+
+      <div
+        id="authMessage"
+        class="status hidden">
+      </div>
+
     </div>
+
   </div>
+
 </div>
 
-<!-- RESOURCE VIEW MODAL -->
-<div class="overlay" id="resourceModal">
+
+<!-- RESOURCE VIEWER -->
+
+<div
+  class="overlay"
+  id="resourceModal">
+
   <div class="modal">
-    <button class="close" onclick="closeModal('resourceModal')">&times;</button>
-    <div id="resourceViewer"></div>
+
+    <button
+      class="close"
+      onclick="closeModal('resourceModal')">
+      &times;
+    </button>
+
+    <div id="resourceViewer">
+    </div>
+
   </div>
+
 </div>
 
-<!-- ADMIN -->
-<section class="container hidden" id="admin">
-  <div class="section-title"><h2>Thrives Archivers Admin Panel</h2><p>Manage simplified documents, videos and AI-generated quizzes.</p></div>
+
+<!-- ADMIN PANEL -->
+
+<section
+  class="container hidden"
+  id="admin">
+
+  <div class="section-title">
+
+    <h2>
+      Thrives Archivers Admin Panel
+    </h2>
+
+    <p>
+      Manage documents, videos and AI-generated quizzes.
+    </p>
+
+  </div>
+
 
   <div class="admin-layout">
+
+
+    <!-- SIDEBAR -->
+
     <aside class="admin-sidebar">
-      <button class="active" onclick="adminTab('dashboard',this)">📊 Dashboard</button>
-      <button onclick="adminTab('documents',this)">📚 Documents</button>
-      <button onclick="adminTab('videos',this)">🎥 Videos</button>
-      <button onclick="adminTab('quizzes',this)">📝 Quizzes</button>
-      <button onclick="adminTab('settings',this)">⚙️ Settings</button>
+
+      <button
+        class="active"
+        onclick="adminTab('dashboard',this)">
+        📊 Dashboard
+      </button>
+
+      <button
+        onclick="adminTab('documents',this)">
+        📚 Documents
+      </button>
+
+      <button
+        onclick="adminTab('videos',this)">
+        🎥 Videos
+      </button>
+
+      <button
+        onclick="adminTab('quizzes',this)">
+        📝 Quizzes
+      </button>
+
+      <button
+        onclick="adminTab('settings',this)">
+        ⚙️ Settings
+      </button>
+
     </aside>
 
+
     <div class="admin-main">
-      <div id="tab-dashboard" class="admin-tab">
-        <h2>Dashboard</h2>
-        <div class="admin-grid" style="margin-top:18px">
-          <div class="stat">Documents<strong id="statDocuments">0</strong></div>
-          <div class="stat">Videos<strong id="statVideos">0</strong></div>
-          <div class="stat">Quizzes<strong id="statQuizzes">0</strong></div>
-          <div class="stat">Published<strong id="statPublished">0</strong></div>
-        </div>
-        <div class="card" style="margin-top:18px">
-          <h3>Quick actions</h3>
-          <div class="toolbar">
-            <button class="btn" onclick="adminTab('documents')">+ Simplify Document</button>
-            <button class="btn secondary" onclick="adminTab('videos')">+ Add Video</button>
-            <button class="btn green" onclick="adminTab('quizzes')">+ Generate Quiz</button>
+
+
+      <!-- DASHBOARD -->
+
+      <div
+        id="tab-dashboard"
+        class="admin-tab">
+
+        <div class="admin-header">
+
+          <div>
+
+            <h2>
+              Dashboard
+            </h2>
+
+            <p style="color:var(--muted)">
+              Year Three content management.
+            </p>
+
           </div>
+
+          <button
+            class="btn"
+            onclick="loadAdminData()">
+            🔄 Refresh
+          </button>
+
         </div>
+
+
+        <div
+          class="admin-grid"
+          style="margin-top:18px">
+
+          <div class="stat">
+
+            Documents
+
+            <strong id="statDocuments">
+              0
+            </strong>
+
+          </div>
+
+
+          <div class="stat">
+
+            Videos
+
+            <strong id="statVideos">
+              0
+            </strong>
+
+          </div>
+
+
+          <div class="stat">
+
+            Quizzes
+
+            <strong id="statQuizzes">
+              0
+            </strong>
+
+          </div>
+
+
+          <div class="stat">
+
+            Published
+
+            <strong id="statPublished">
+              0
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <div class="dashboard-banner">
+
+          <h3>
+            Quick actions
+          </h3>
+
+          <div class="toolbar">
+
+            <button
+              class="btn"
+              onclick="adminTab('documents')">
+              + Simplify Document
+            </button>
+
+            <button
+              class="btn secondary"
+              onclick="adminTab('videos')">
+              + Add Video
+            </button>
+
+            <button
+              class="btn green"
+              onclick="adminTab('quizzes')">
+              + Generate Quiz
+            </button>
+
+          </div>
+
+        </div>
+
       </div>
 
-      <div id="tab-documents" class="admin-tab hidden">
-        <h2>AI Simplified Documents</h2>
-        <p style="color:var(--muted)">Paste your source material, let the AI simplify it, edit the result, add pictures and preview it before publishing.</p>
 
-        <div class="form-grid" style="margin-top:18px">
-          <div class="field"><label>Document title</label><input id="docTitle" placeholder="e.g. Inflammation"></div>
-          <div class="field"><label>Course</label><select id="docCourse"><option>Pathology</option><option>Public Health</option><option>Pharmacology</option><option>Medical Ethics</option><option>Microbiology</option></select></div>
-          <div class="field"><label>Topic</label><input id="docTopic" placeholder="Topic / chapter"></div>
-          <div class="field"><label>Semester</label><select id="docSemester"><option>Semester 1</option><option>Semester 2</option><option>Term 1</option><option>Term 2</option></select></div>
-          <div class="field full"><label>Original document / notes</label><textarea id="docSource" placeholder="Paste the document here..."></textarea></div>
+      <!-- DOCUMENTS -->
+
+      <div
+        id="tab-documents"
+        class="admin-tab hidden">
+
+        <h2>
+          AI Simplified Documents
+        </h2>
+
+        <p style="color:var(--muted)">
+
+          Paste your source material, let the AI simplify
+          it, edit the result, add pictures and publish it.
+
+        </p>
+
+
+        <div
+          class="form-grid"
+          style="margin-top:18px">
+
+
+          <div class="field">
+
+            <label>
+              Document title
+            </label>
+
+            <input
+              id="docTitle"
+              placeholder="e.g. Inflammation">
+
+          </div>
+
+
+          <div class="field">
+
+            <label>
+              Course
+            </label>
+
+            <select id="docCourse">
+
+              <option>
+                Pathology
+              </option>
+
+              <option>
+                Public Health
+              </option>
+
+              <option>
+                Pharmacology
+              </option>
+
+              <option>
+                Medical Ethics
+              </option>
+
+              <option>
+                Microbiology
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="field">
+
+            <label>
+              Topic
+            </label>
+
+            <input
+              id="docTopic"
+              placeholder="Topic / chapter">
+
+          </div>
+
+
+          <div class="field">
+
+            <label>
+              Semester
+            </label>
+
+            <select id="docSemester">
+
+              <option>
+                Semester 1
+              </option>
+
+              <option>
+                Semester 2
+              </option>
+
+              <option>
+                Term 1
+              </option>
+
+              <option>
+                Term 2
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="field full">
+
+            <label>
+              Original document / notes
+            </label>
+
+            <textarea
+              id="docSource"
+              placeholder="Paste the document here...">
+            </textarea>
+
+          </div>
+
         </div>
+
 
         <div class="toolbar">
-          <button class="btn" onclick="simplifyDocument()">🤖 AI Simplify</button>
-          <button class="btn secondary" onclick="clearDocumentForm()">Clear</button>
-        </div>
-        <div id="docAIStatus" class="status hidden"></div>
 
-        <div id="documentEditorArea" class="hidden">
-          <h3 style="margin-top:18px">Preview / Editor</h3>
-          <div class="toolbar">
-            <button onclick="execEdit('bold')"><b>B</b></button>
-            <button onclick="execEdit('italic')"><i>I</i></button>
-            <button onclick="execEdit('insertUnorderedList')">• List</button>
-            <button onclick="addHeading()">Heading</button>
-            <button onclick="document.getElementById('imageInput').click()">🖼️ Add Picture</button>
-            <input id="imageInput" type="file" accept="image/*" class="hidden" onchange="insertImage(event)">
-          </div>
-          <div id="documentEditor" class="preview" contenteditable="true"></div>
-          <div class="toolbar">
-            <button class="btn" onclick="saveDocument('draft')">Save Draft</button>
-            <button class="btn green" onclick="saveDocument('published')">Publish Document</button>
-          </div>
+          <button
+            class="btn"
+            onclick="simplifyDocument()">
+            🤖 AI Simplify
+          </button>
+
+          <button
+            class="btn secondary"
+            onclick="clearDocumentForm()">
+            Clear
+          </button>
+
         </div>
 
-        <div class="admin-list" id="documentList"></div>
+
+        <div
+          id="docAIStatus"
+          class="status hidden">
+        </div>
+
+
+        <div
+          id="documentEditorArea"
+          class="hidden">
+
+          <h3 style="margin-top:18px">
+            Preview / Editor
+          </h3>
+
+
+          <div class="toolbar">
+
+            <button
+              onclick="execEdit('bold')">
+              <b>B</b>
+            </button>
+
+            <button
+              onclick="execEdit('italic')">
+              <i>I</i>
+            </button>
+
+            <button
+              onclick="execEdit('insertUnorderedList')">
+              • List
+            </button>
+
+            <button
+              onclick="addHeading()">
+              Heading
+            </button>
+
+            <button
+              onclick="document.getElementById('imageInput').click()">
+              🖼️ Add Picture
+            </button>
+
+            <input
+              id="imageInput"
+              type="file"
+              accept="image/*"
+              class="hidden"
+              onchange="insertImage(event)">
+
+          </div>
+
+
+          <div
+            id="documentEditor"
+            class="preview"
+            contenteditable="true">
+          </div>
+
+
+          <div class="toolbar">
+
+            <button
+              class="btn"
+              onclick="saveDocument('draft')">
+              Save Draft
+            </button>
+
+            <button
+              class="btn green"
+              onclick="saveDocument('published')">
+              Publish Document
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <h3 style="margin-top:25px">
+          Existing Documents
+        </h3>
+
+        <div
+          class="admin-list"
+          id="documentList">
+        </div>
+
       </div>
 
-      <div id="tab-videos" class="admin-tab hidden">
-        <h2>Video Manager</h2>
-        <p style="color:var(--muted)">Add YouTube lessons and make them available under the selected course.</p>
-        <div class="form-grid" style="margin-top:18px">
-          <div class="field"><label>Video title</label><input id="videoTitle" placeholder="Lesson title"></div>
-          <div class="field"><label>Course</label><select id="videoCourse"><option>Pathology</option><option>Public Health</option><option>Pharmacology</option><option>Medical Ethics</option><option>Microbiology</option></select></div>
-          <div class="field full"><label>YouTube URL</label><input id="videoUrl" placeholder="https://www.youtube.com/watch?v=..."></div>
-          <div class="field full"><label>Description</label><textarea id="videoDescription" placeholder="Short lesson description"></textarea></div>
-        </div>
-        <div class="toolbar"><button class="btn green" onclick="saveVideo()">Add / Publish Video</button></div>
-        <div id="videoStatus" class="status hidden"></div>
-        <div class="admin-list" id="videoList"></div>
-      </div>
 
-      <div id="tab-quizzes" class="admin-tab hidden">
-        <h2>Quiz Manager</h2>
-        <p style="color:var(--muted)">Generate a quiz from a YouTube lesson or from a simplified document. Always review AI-generated questions before publishing.</p>
+      <!-- VIDEOS -->
 
-        <div class="form-grid" style="margin-top:18px">
-          <div class="field"><label>Quiz title</label><input id="quizTitle" placeholder="e.g. Inflammation Quiz"></div>
-          <div class="field"><label>Course</label><select id="quizCourse"><option>Pathology</option><option>Public Health</option><option>Pharmacology</option><option>Medical Ethics</option><option>Microbiology</option></select></div>
-          <div class="field full"><label>YouTube URL (optional)</label><input id="quizYoutube" placeholder="Paste a YouTube URL"></div>
-          <div class="field full"><label>Or source document text (optional)</label><textarea id="quizSource" placeholder="Paste simplified document text here..."></textarea></div>
-          <div class="field"><label>Number of questions</label><select id="quizCount"><option>5</option><option>10</option><option>15</option><option>20</option></select></div>
-          <div class="field"><label>Difficulty</label><select id="quizDifficulty"><option>Easy</option><option>Moderate</option><option>Advanced</option></select></div>
-        </div>
+      <div
+        id="tab-videos"
+        class="admin-tab hidden">
 
-        <div class="toolbar"><button class="btn green" onclick="generateQuiz()">🤖 Generate Quiz</button></div>
-        <div id="quizAIStatus" class="status hidden"></div>
+        <h2>
+          Video Manager
+        </h2>
 
-        <div id="quizEditorArea" class="hidden">
-          <h3>Quiz Preview / Editor</h3>
-          <div id="quizEditor"></div>
-          <div class="toolbar">
-            <button class="btn" onclick="saveQuiz('draft')">Save Draft</button>
-            <button class="btn green" onclick="saveQuiz('published')">Publish Quiz</button>
+        <p style="color:var(--muted)">
+
+          Add YouTube lessons and make them available
+          under the selected course.
+
+        </p>
+
+
+        <div
+          class="form-grid"
+          style="margin-top:18px">
+
+
+          <div class="field">
+
+            <label>
+              Video title
+            </label>
+
+            <input
+              id="videoTitle"
+              placeholder="Lesson title">
+
           </div>
+
+
+          <div class="field">
+
+            <label>
+              Course
+            </label>
+
+            <select id="videoCourse">
+
+              <option>
+                Pathology
+              </option>
+
+              <option>
+                Public Health
+              </option>
+
+              <option>
+                Pharmacology
+              </option>
+
+              <option>
+                Medical Ethics
+              </option>
+
+              <option>
+                Microbiology
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="field full">
+
+            <label>
+              YouTube URL
+            </label>
+
+            <input
+              id="videoUrl"
+              placeholder="https://www.youtube.com/watch?v=...">
+
+          </div>
+
+
+          <div class="field full">
+
+            <label>
+              Description
+            </label>
+
+            <textarea
+              id="videoDescription"
+              placeholder="Short lesson description">
+            </textarea>
+
+          </div>
+
         </div>
 
-        <div class="admin-list" id="quizList"></div>
+
+        <div class="toolbar">
+
+          <button
+            class="btn green"
+            onclick="saveVideo()">
+            Add / Publish Video
+          </button>
+
+        </div>
+
+
+        <div
+          id="videoStatus"
+          class="status hidden">
+        </div>
+
+
+        <h3 style="margin-top:25px">
+          Existing Videos
+        </h3>
+
+        <div
+          class="admin-list"
+          id="videoList">
+        </div>
+
       </div>
 
-      <div id="tab-settings" class="admin-tab hidden">
-        <h2>Settings</h2>
+
+      <!-- QUIZZES -->
+
+      <div
+        id="tab-quizzes"
+        class="admin-tab hidden">
+
+        <h2>
+          Quiz Manager
+        </h2>
+
+        <p style="color:var(--muted)">
+
+          Generate a quiz from a YouTube lesson or
+          simplified document. Always review AI-generated
+          questions before publishing.
+
+        </p>
+
+
+        <div
+          class="form-grid"
+          style="margin-top:18px">
+
+
+          <div class="field">
+
+            <label>
+              Quiz title
+            </label>
+
+            <input
+              id="quizTitle"
+              placeholder="e.g. Inflammation Quiz">
+
+          </div>
+
+
+          <div class="field">
+
+            <label>
+              Course
+            </label>
+
+            <select id="quizCourse">
+
+              <option>
+                Pathology
+              </option>
+
+              <option>
+                Public Health
+              </option>
+
+              <option>
+                Pharmacology
+              </option>
+
+              <option>
+                Medical Ethics
+              </option>
+
+              <option>
+                Microbiology
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="field full">
+
+            <label>
+              YouTube URL (optional)
+            </label>
+
+            <input
+              id="quizYoutube"
+              placeholder="Paste a YouTube URL">
+
+          </div>
+
+
+          <div class="field full">
+
+            <label>
+              Or source document text (optional)
+            </label>
+
+            <textarea
+              id="quizSource"
+              placeholder="Paste simplified document text here...">
+            </textarea>
+
+          </div>
+
+
+          <div class="field">
+
+            <label>
+              Number of questions
+            </label>
+
+            <select id="quizCount">
+
+              <option>
+                5
+              </option>
+
+              <option>
+                10
+              </option>
+
+              <option>
+                15
+              </option>
+
+              <option>
+                20
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="field">
+
+            <label>
+              Difficulty
+            </label>
+
+            <select id="quizDifficulty">
+
+              <option>
+                Easy
+              </option>
+
+              <option>
+                Moderate
+              </option>
+
+              <option>
+                Advanced
+              </option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+
+        <div class="toolbar">
+
+          <button
+            class="btn green"
+            onclick="generateQuiz()">
+            🤖 Generate Quiz
+          </button>
+
+        </div>
+
+
+        <div
+          id="quizAIStatus"
+          class="status hidden">
+        </div>
+
+
+        <div
+          id="quizEditorArea"
+          class="hidden">
+
+          <h3>
+            Quiz Preview / Editor
+          </h3>
+
+          <div id="quizEditor">
+          </div>
+
+
+          <div class="toolbar">
+
+            <button
+              class="btn"
+              onclick="saveQuiz('draft')">
+              Save Draft
+            </button>
+
+            <button
+              class="btn green"
+              onclick="saveQuiz('published')">
+              Publish Quiz
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <h3 style="margin-top:25px">
+          Existing Quizzes
+        </h3>
+
+        <div
+          class="admin-list"
+          id="quizList">
+        </div>
+
+      </div>
+
+
+      <!-- SETTINGS -->
+
+      <div
+        id="tab-settings"
+        class="admin-tab hidden">
+
+        <h2>
+          Settings
+        </h2>
+
+
         <div class="card">
-          <p><b>Admin email:</b> thrivesarchivers@gmail.com</p>
-          <p style="margin-top:7px;color:var(--muted)">Supabase Authentication controls access. Do not put a service-role key or AI secret key in this HTML file.</p>
-          <div id="supabaseStatus" class="status"></div>
+
+          <p>
+            <b>Admin email:</b>
+            thrivesarchivers@gmail.com
+          </p>
+
+
+          <p
+            style="margin-top:7px;color:var(--muted)">
+
+            Supabase Authentication controls access.
+            Never put a Supabase secret/service-role key
+            or AI API key in this HTML file.
+
+          </p>
+
+
+          <div
+            id="supabaseStatus"
+            class="status">
+          </div>
+
+
+          <div
+            class="status warn">
+
+            <b>Security reminder:</b>
+            Database write permissions should be protected
+            with Supabase Row Level Security policies.
+
+          </div>
+
         </div>
+
       </div>
+
+
     </div>
+
   </div>
+
 </section>
 
+
 <footer>
-  <h3>THRIVES ARCHIVERS</h3>
-  <p>Year Three Learning Hub</p>
-  <p>Everything is possible to achieve if we are together.</p>
-  <div class="footer-links"><a href="#home">Home</a><a href="#courses">Courses</a><a href="#resources">Resources</a></div>
-  <p style="margin-top:18px;color:#9ca3af">© 2026 Thrives Archivers. All Rights Reserved.</p>
+
+  <h3>
+    THRIVES ARCHIVERS
+  </h3>
+
+  <p>
+    Year Three Learning Hub
+  </p>
+
+  <p>
+    Everything is possible to achieve if we are together.
+  </p>
+
+  <div class="footer-links">
+
+    <a href="#home">
+      Home
+    </a>
+
+    <a href="#courses">
+      Courses
+    </a>
+
+    <a href="#resources">
+      Resources
+    </a>
+
+  </div>
+
+  <p
+    style="margin-top:18px;color:#9ca3af">
+
+    © 2026 Thrives Archivers. All Rights Reserved.
+
+  </p>
+
 </footer>
 
-<div id="toast" class="toast"></div>
+
+<div
+  id="toast"
+  class="toast">
+</div>
+
 
 <script>
+
 /* ============================================================
    SUPABASE CONFIGURATION
    ============================================================ */
+
 const SUPABASE_URL =
 'https://odwiqajuubcgrrqipyju.supabase.co';
 
 const SUPABASE_ANON_KEY =
-'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1dWJjZ3JycWlweWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzA4MjEsImV4cCI6MjA2ODg0NjgyMX0.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A';
+'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1d2JjZ3JycWlweWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzA4MjEsImV4cCI6MjA2ODg0NjgyMX0.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A';
 
-const {createClient}=window.supabase;
+const ADMIN_EMAIL =
+'thrivesarchivers@gmail.com';
 
-const db=createClient(
-SUPABASE_URL,
-SUPABASE_ANON_KEY
-);
-
-const ADMIN_EMAIL='thrivesarchivers@gmail.com';
 let supabaseClient = null;
+
 let currentUser = null;
+
 let currentQuiz = null;
+
 let currentDocumentId = null;
 
+let displayedResources = [];
+
+
+/* ============================================================
+   CONFIGURATION
+   ============================================================ */
+
 function configured(){
-  return SUPABASE_URL.startsWith("https://") &&
-         !SUPABASE_URL.includes("YOUR_SUPABASE") &&
-         SUPABASE_ANON_KEY &&
-         !SUPABASE_ANON_KEY.includes("YOUR_SUPABASE");
+
+  return (
+    SUPABASE_URL.startsWith("https://") &&
+    !SUPABASE_URL.includes("YOUR_SUPABASE") &&
+    SUPABASE_ANON_KEY &&
+    !SUPABASE_ANON_KEY.includes("YOUR_SUPABASE")
+  );
+
 }
+
+
+/* ============================================================
+   INITIALIZE SUPABASE
+   ============================================================ */
 
 if(configured()){
-  supabaseClient = window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
-  document.getElementById("supabaseStatus").textContent="Supabase configuration detected.";
-  document.getElementById("supabaseStatus").className="status ok";
-  supabaseClient.auth.getSession().then(({data})=>handleSession(data.session));
-  supabaseClient.auth.onAuthStateChange((_event,session)=>handleSession(session));
+
+  supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_ANON_KEY
+    );
+
+
+  const status =
+    document.getElementById("supabaseStatus");
+
+  if(status){
+
+    status.textContent =
+      "Supabase configuration detected.";
+
+    status.className =
+      "status ok";
+
+  }
+
+
+  supabaseClient.auth
+    .getSession()
+    .then(({data})=>{
+
+      handleSession(data?.session || null);
+
+    })
+    .catch(error=>{
+
+      console.error(error);
+
+    });
+
+
+  supabaseClient.auth.onAuthStateChange(
+    (_event,session)=>{
+
+      handleSession(session);
+
+    }
+  );
+
+
 }else{
-  document.getElementById("supabaseStatus").textContent="Add your Supabase URL and anon key in the HTML configuration.";
+
+  const status =
+    document.getElementById("supabaseStatus");
+
+  if(status){
+
+    status.textContent =
+      "Supabase configuration is missing.";
+
+    status.className =
+      "status err";
+
+  }
+
 }
+
+
+/* ============================================================
+   SESSION
+   ============================================================ */
 
 function handleSession(session){
-  currentUser=session?.user||null;
-  const isAdmin=currentUser && currentUser.email?.toLowerCase()===ADMIN_EMAIL.toLowerCase();
-  document.getElementById("adminNav").classList.toggle("hidden",!isAdmin);
-  document.getElementById("logoutBtn").classList.toggle("hidden",!isAdmin);
-  if(isAdmin) document.getElementById("admin").classList.remove("hidden");
-  else document.getElementById("admin").classList.add("hidden");
-  if(isAdmin) loadAdminData();
+
+  currentUser =
+    session?.user || null;
+
+
+  const isAdmin =
+    !!currentUser &&
+    currentUser.email?.toLowerCase() ===
+    ADMIN_EMAIL.toLowerCase();
+
+
+  document
+    .getElementById("adminNav")
+    .classList
+    .toggle("hidden",!isAdmin);
+
+
+  document
+    .getElementById("logoutBtn")
+    .classList
+    .toggle("hidden",!isAdmin);
+
+
+  document
+    .getElementById("admin")
+    .classList
+    .toggle("hidden",!isAdmin);
+
+
+  if(isAdmin){
+
+    loadAdminData();
+
+  }
+
 }
+
+
+/* ============================================================
+   UI HELPERS
+   ============================================================ */
 
 function toast(message){
-  const t=document.getElementById("toast");
-  t.textContent=message;t.classList.add("show");
-  setTimeout(()=>t.classList.remove("show"),3500);
-}
-function closeModal(id){document.getElementById(id).classList.remove("show")}
-function showModal(id){document.getElementById(id).classList.add("show")}
 
-document.getElementById("adminNav").addEventListener("click",e=>{
-  e.preventDefault();
-  if(currentUser?.email?.toLowerCase()===ADMIN_EMAIL.toLowerCase()) document.getElementById("admin").scrollIntoView({behavior:"smooth"});
-  else showModal("authModal");
-});
+  const t =
+    document.getElementById("toast");
 
-/* ============================================================
-   AUTH
-   ============================================================ */
-async function adminLogin(){
-  if(!supabaseClient){showAuthMessage("Configure Supabase first.","err");return}
-  const email=document.getElementById("loginEmail").value.trim();
-  const password=document.getElementById("loginPassword").value;
-  if(email.toLowerCase()!==ADMIN_EMAIL.toLowerCase()){
-    showAuthMessage("This account is not the authorized administrator.","err");return;
-  }
-  const {error}=await supabaseClient.auth.signInWithPassword({email,password});
-  if(error){showAuthMessage(error.message,"err");return}
-  closeModal("authModal");toast("Admin login successful.");
-}
-function showAuthMessage(msg,type){
-  const el=document.getElementById("authMessage");el.textContent=msg;el.className="status "+type;
-}
-async function logout(){
-  if(supabaseClient) await supabaseClient.auth.signOut();
-  toast("Logged out.");
-}
-document.addEventListener("keydown",e=>{
-  if(e.key==="Escape"){document.querySelectorAll(".overlay.show").forEach(x=>x.classList.remove("show"))}
-});
+  t.textContent =
+    message;
 
-/* ============================================================
-   STUDENT RESOURCES
-   ============================================================ */
-async function showCourse(course,filter=""){
-  document.getElementById("resourceSubtitle").textContent=course+" resources";
-  const area=document.getElementById("resourcesArea");
-  area.innerHTML="<div class='empty'>Loading resources...</div>";
-  if(!supabaseClient){
-    area.innerHTML="<div class='empty'>Connect Supabase to load resources.</div>";return;
+  t.classList.add("show");
+
+  clearTimeout(window.toastTimer);
+
+  window.toastTimer =
+    setTimeout(
+      ()=>t.classList.remove("show"),
+      4000
+    );
+
+}
+
+
+function closeModal(id){
+
+  const element =
+    document.getElementById(id);
+
+  if(element){
+    element.classList.remove("show");
   }
-  const [docs,videos,quizzes]=await Promise.all([
-    supabaseClient.from("documents").select("*").eq("course",course).eq("status","published").order("created_at",{ascending:false}),
-    supabaseClient.from("videos").select("*").eq("course",course).eq("status","published").order("created_at",{ascending:false}),
-    supabaseClient.from("quizzes").select("*").eq("course",course).eq("status","published").order("created_at",{ascending:false})
-  ]);
-  if(docs.error||videos.error||quizzes.error){
-    area.innerHTML="<div class='empty'>Resources could not be loaded. Check your Supabase tables and policies.</div>";return;
+
+}
+
+
+function showModal(id){
+
+  const element =
+    document.getElementById(id);
+
+  if(element){
+    element.classList.add("show");
   }
-  let html="";
-  if(!filter || filter==="document") docs.data.forEach(d=>html+=resourceCard("📚",d.title,d.topic||"", "Document",()=>viewDocument(d)));
-  if(!filter || filter==="video") videos.data.forEach(v=>html+=resourceCard("🎥",v.title,v.description||"", "Video",()=>viewVideo(v)));
-  if(!filter || filter==="quiz") quizzes.data.forEach(q=>html+=resourceCard("📝",q.title,"AI/manual quiz", "Quiz",()=>viewQuiz(q)));
-  area.innerHTML=html||"<div class='empty'>No published resources found for this course yet.</div>";
-  document.getElementById("resources").scrollIntoView({behavior:"smooth"});
+
 }
-function resourceCard(icon,title,text,type,fn){
-  const id="r"+Math.random().toString(36).slice(2);
-  setTimeout(()=>{const el=document.getElementById(id);if(el)el.onclick=fn},0);
-  return `<div class="resource-card" id="${id}" style="cursor:pointer"><div style="font-size:34px">${icon}</div><h3>${escapeHtml(title)}</h3><p>${escapeHtml(text)}</p><span class="tag">${type}</span></div>`;
+
+
+function showStatus(id,message,type){
+
+  const element =
+    document.getElementById(id);
+
+  if(!element)return;
+
+  element.textContent =
+    message;
+
+  element.className =
+    "status " + type;
+
 }
-async function loadPublishedHome(){
-  if(!supabaseClient){document.getElementById("resourcesArea").innerHTML="<div class='empty'>Connect Supabase to display resources.</div>";return}
-  const {data,error}=await supabaseClient.from("documents").select("*").eq("status","published").order("created_at",{ascending:false}).limit(12);
-  if(error)return;
-  document.getElementById("resourcesArea").innerHTML=data?.length
-    ?data.map(d=>resourceCard("📚",d.title,d.topic||d.course,"Document",()=>viewDocument(d))).join("")
-    :"<div class='empty'>Published resources will appear here.</div>";
-}
-async function viewDocument(doc){
-  document.getElementById("resourceViewer").innerHTML=`<h2>${escapeHtml(doc.title)}</h2><p style="color:var(--muted)">${escapeHtml(doc.course)} · ${escapeHtml(doc.topic||"")}</p><hr style="margin:15px 0;border:0;border-top:1px solid var(--border)"><div class="preview">${doc.content_html||escapeHtml(doc.content_text||"")}</div>`;
-  showModal("resourceModal");
-}
-function viewVideo(v){
-  const id=extractYoutubeId(v.url);
-  document.getElementById("resourceViewer").innerHTML=`<h2>${escapeHtml(v.title)}</h2><p>${escapeHtml(v.description||"")}</p><div style="margin-top:15px">${id?`<div class="video-frame"><iframe src="https://www.youtube.com/embed/${id}" allowfullscreen></iframe></div>`:`<a href="${escapeAttr(v.url)}" target="_blank" rel="noopener">Open video</a>`}</div>`;
-  showModal("resourceModal");
-}
-async function viewQuiz(q){
-  let questions=q.questions||[];
-  if(typeof questions==="string"){try{questions=JSON.parse(questions)}catch(e){questions=[]}}
-  let html=`<h2>${escapeHtml(q.title)}</h2><p>${escapeHtml(q.course)} · ${questions.length} questions</p>`;
-  questions.forEach((x,i)=>{
-    html+=`<div class="card" style="margin-top:14px"><h3>${i+1}. ${escapeHtml(x.question)}</h3>`;
-    (x.options||[]).forEach((o,j)=>html+=`<label style="display:block;margin:8px 0"><input type="radio" name="q${i}" value="${j}"> ${escapeHtml(o)}</label>`);
-    html+=`</div>`;
-  });
-  html+=`<button class="btn green" style="margin-top:18px" onclick='gradeQuiz(${JSON.stringify(questions).replace(/'/g,"&#39;")})'>Submit Quiz</button><div id="quizResult" style="margin-top:15px"></div>`;
-  document.getElementById("resourceViewer").innerHTML=html;showModal("resourceModal");
-}
-function gradeQuiz(questions){
-  let score=0;
-  questions.forEach((q,i)=>{const selected=document.querySelector(`input[name="q${i}"]:checked`);if(selected&&Number(selected.value)===Number(q.correctIndex))score++});
-  document.getElementById("quizResult").innerHTML=`<div class="status ok">Score: ${score} / ${questions.length}</div>`;
-}
+
 
 /* ============================================================
    ADMIN NAVIGATION
    ============================================================ */
+
+document
+  .getElementById("adminNav")
+  .addEventListener("click",function(e){
+
+    e.preventDefault();
+
+    if(
+      currentUser &&
+      currentUser.email?.toLowerCase() ===
+      ADMIN_EMAIL.toLowerCase()
+    ){
+
+      document
+        .getElementById("admin")
+        .scrollIntoView({
+          behavior:"smooth"
+        });
+
+    }else{
+
+      showModal("authModal");
+
+    }
+
+  });
+
+
 function adminTab(name,button){
-  document.querySelectorAll(".admin-tab").forEach(x=>x.classList.add("hidden"));
-  document.getElementById("tab-"+name).classList.remove("hidden");
-  document.querySelectorAll(".admin-sidebar button").forEach(x=>x.classList.remove("active"));
-  if(button)button.classList.add("active");
+
+  document
+    .querySelectorAll(".admin-tab")
+    .forEach(x=>{
+      x.classList.add("hidden");
+    });
+
+
+  const target =
+    document.getElementById(
+      "tab-"+name
+    );
+
+  if(target){
+    target.classList.remove("hidden");
+  }
+
+
+  document
+    .querySelectorAll(".admin-sidebar button")
+    .forEach(x=>{
+      x.classList.remove("active");
+    });
+
+
+  if(button){
+    button.classList.add("active");
+  }
+
 }
+
+
+/* ============================================================
+   AUTHENTICATION
+   ============================================================ */
+
+async function adminLogin(){
+
+  if(!supabaseClient){
+
+    showAuthMessage(
+      "Configure Supabase first.",
+      "err"
+    );
+
+    return;
+
+  }
+
+
+  const email =
+    document
+      .getElementById("loginEmail")
+      .value
+      .trim();
+
+
+  const password =
+    document
+      .getElementById("loginPassword")
+      .value;
+
+
+  if(
+    email.toLowerCase() !==
+    ADMIN_EMAIL.toLowerCase()
+  ){
+
+    showAuthMessage(
+      "This account is not the authorized administrator.",
+      "err"
+    );
+
+    return;
+
+  }
+
+
+  if(!password){
+
+    showAuthMessage(
+      "Enter your password.",
+      "err"
+    );
+
+    return;
+
+  }
+
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient.auth.signInWithPassword({
+      email,
+      password
+    });
+
+
+  if(error){
+
+    showAuthMessage(
+      error.message,
+      "err"
+    );
+
+    return;
+
+  }
+
+
+  if(
+    data?.user?.email?.toLowerCase() !==
+    ADMIN_EMAIL.toLowerCase()
+  ){
+
+    await supabaseClient.auth.signOut();
+
+    showAuthMessage(
+      "This account is not authorized.",
+      "err"
+    );
+
+    return;
+
+  }
+
+
+  closeModal("authModal");
+
+  toast(
+    "Admin login successful."
+  );
+
+}
+
+
+function showAuthMessage(msg,type){
+
+  const element =
+    document.getElementById(
+      "authMessage"
+    );
+
+  element.textContent =
+    msg;
+
+  element.className =
+    "status "+type;
+
+}
+
+
+async function logout(){
+
+  if(supabaseClient){
+
+    await supabaseClient.auth.signOut();
+
+  }
+
+  toast(
+    "Logged out."
+  );
+
+}
+
+
+document.addEventListener(
+  "keydown",
+  e=>{
+
+    if(e.key === "Escape"){
+
+      document
+        .querySelectorAll(".overlay.show")
+        .forEach(x=>{
+          x.classList.remove("show");
+        });
+
+    }
+
+  }
+);
+
+
+/* ============================================================
+   STUDENT RESOURCES
+   ============================================================ */
+
+async function showCourse(
+  course,
+  filter=""
+){
+
+  document
+    .getElementById("resourceSubtitle")
+    .textContent =
+    course+" resources";
+
+
+  const area =
+    document.getElementById(
+      "resourcesArea"
+    );
+
+
+  area.innerHTML =
+    "<div class='empty'>Loading resources...</div>";
+
+
+  if(!supabaseClient){
+
+    area.innerHTML =
+      "<div class='empty'>Connect Supabase to load resources.</div>";
+
+    return;
+
+  }
+
+
+  const results =
+    await Promise.all([
+
+      supabaseClient
+        .from("documents")
+        .select("*")
+        .eq("course",course)
+        .eq("status","published"),
+
+      supabaseClient
+        .from("videos")
+        .select("*")
+        .eq("course",course)
+        .eq("status","published"),
+
+      supabaseClient
+        .from("quizzes")
+        .select("*")
+        .eq("course",course)
+        .eq("status","published")
+
+    ]);
+
+
+  const docs =
+    results[0];
+
+  const videos =
+    results[1];
+
+  const quizzes =
+    results[2];
+
+
+  const error =
+    docs.error ||
+    videos.error ||
+    quizzes.error;
+
+
+  if(error){
+
+    console.error(
+      "Resource loading error:",
+      error
+    );
+
+
+    area.innerHTML = `
+      <div class="empty">
+
+        <h3>
+          Resources could not be loaded.
+        </h3>
+
+        <p style="margin-top:8px">
+          ${escapeHtml(error.message)}
+        </p>
+
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  let html = "";
+
+
+  if(!filter || filter === "document"){
+
+    (docs.data || []).forEach(d=>{
+
+      html += resourceCard(
+        "📚",
+        d.title,
+        d.topic || d.course || "",
+        "Document",
+        ()=>viewDocument(d)
+      );
+
+    });
+
+  }
+
+
+  if(!filter || filter === "video"){
+
+    (videos.data || []).forEach(v=>{
+
+      html += resourceCard(
+        "🎥",
+        v.title,
+        v.description || "",
+        "Video",
+        ()=>viewVideo(v)
+      );
+
+    });
+
+  }
+
+
+  if(!filter || filter === "quiz"){
+
+    (quizzes.data || []).forEach(q=>{
+
+      html += resourceCard(
+        "📝",
+        q.title,
+        "AI / Manual Quiz",
+        "Quiz",
+        ()=>viewQuiz(q)
+      );
+
+    });
+
+  }
+
+
+  area.innerHTML =
+    html ||
+    "<div class='empty'>No published resources found for this course yet.</div>";
+
+
+  document
+    .getElementById("resources")
+    .scrollIntoView({
+      behavior:"smooth"
+    });
+
+
+  displayedResources =
+    Array.from(
+      area.querySelectorAll(".resource-card")
+    );
+
+}
+
+
+function resourceCard(
+  icon,
+  title,
+  text,
+  type,
+  fn
+){
+
+  const id =
+    "resource-"+Math.random()
+      .toString(36)
+      .slice(2);
+
+
+  setTimeout(()=>{
+
+    const element =
+      document.getElementById(id);
+
+    if(element){
+      element.onclick = fn;
+    }
+
+  },0);
+
+
+  return `
+
+    <div
+      class="resource-card"
+      id="${id}"
+      data-search="${escapeAttr(
+        `${title} ${text} ${type}`
+      )}"
+      style="cursor:pointer">
+
+      <div style="font-size:34px">
+        ${icon}
+      </div>
+
+      <h3>
+        ${escapeHtml(title)}
+      </h3>
+
+      <p>
+        ${escapeHtml(text)}
+      </p>
+
+      <span class="tag">
+        ${escapeHtml(type)}
+      </span>
+
+    </div>
+
+  `;
+
+}
+
+
+/* ============================================================
+   HOME RESOURCES
+   ============================================================ */
+
+async function loadPublishedHome(){
+
+  const area =
+    document.getElementById(
+      "resourcesArea"
+    );
+
+
+  if(!supabaseClient){
+
+    area.innerHTML =
+      "<div class='empty'>Connect Supabase to display resources.</div>";
+
+    return;
+
+  }
+
+
+  area.innerHTML =
+    "<div class='empty'>Loading published resources...</div>";
+
+
+  const results =
+    await Promise.all([
+
+      supabaseClient
+        .from("documents")
+        .select("*")
+        .eq("status","published")
+        .limit(12),
+
+      supabaseClient
+        .from("videos")
+        .select("*")
+        .eq("status","published")
+        .limit(12),
+
+      supabaseClient
+        .from("quizzes")
+        .select("*")
+        .eq("status","published")
+        .limit(12)
+
+    ]);
+
+
+  const docs =
+    results[0];
+
+  const videos =
+    results[1];
+
+  const quizzes =
+    results[2];
+
+
+  const error =
+    docs.error ||
+    videos.error ||
+    quizzes.error;
+
+
+  if(error){
+
+    console.error(
+      "Home resource error:",
+      error
+    );
+
+
+    area.innerHTML = `
+      <div class="empty">
+
+        Unable to load published resources.
+
+        <br>
+
+        <small>
+          ${escapeHtml(error.message)}
+        </small>
+
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  let html = "";
+
+
+  (docs.data || []).forEach(d=>{
+
+    html += resourceCard(
+      "📚",
+      d.title,
+      d.topic || d.course || "",
+      "Document",
+      ()=>viewDocument(d)
+    );
+
+  });
+
+
+  (videos.data || []).forEach(v=>{
+
+    html += resourceCard(
+      "🎥",
+      v.title,
+      v.description || v.course || "",
+      "Video",
+      ()=>viewVideo(v)
+    );
+
+  });
+
+
+  (quizzes.data || []).forEach(q=>{
+
+    html += resourceCard(
+      "📝",
+      q.title,
+      q.course || "Quiz",
+      "Quiz",
+      ()=>viewQuiz(q)
+    );
+
+  });
+
+
+  area.innerHTML =
+    html ||
+    "<div class='empty'>Published resources will appear here.</div>";
+
+}
+
+
+function filterDisplayedResources(){
+
+  const query =
+    document
+      .getElementById("resourceSearch")
+      .value
+      .toLowerCase()
+      .trim();
+
+
+  document
+    .querySelectorAll("#resourcesArea .resource-card")
+    .forEach(card=>{
+
+      const text =
+        (
+          card.dataset.search ||
+          card.innerText ||
+          ""
+        ).toLowerCase();
+
+
+      card.style.display =
+        !query ||
+        text.includes(query)
+          ? ""
+          : "none";
+
+    });
+
+}
+
+
+/* ============================================================
+   DOCUMENT VIEWER
+   ============================================================ */
+
+function viewDocument(doc){
+
+  const content =
+    doc.content_html ||
+    `<p>${escapeHtml(
+      doc.content_text || ""
+    ).replace(/\n/g,"<br>")}</p>`;
+
+
+  document
+    .getElementById("resourceViewer")
+    .innerHTML = `
+
+      <h2>
+        ${escapeHtml(doc.title)}
+      </h2>
+
+      <p style="color:var(--muted)">
+        ${escapeHtml(doc.course || "")}
+        ${doc.topic ? " · "+escapeHtml(doc.topic) : ""}
+        ${doc.semester ? " · "+escapeHtml(doc.semester) : ""}
+      </p>
+
+      <hr
+        style="
+          margin:15px 0;
+          border:0;
+          border-top:1px solid var(--border)
+        ">
+
+      <div class="preview">
+        ${content}
+      </div>
+
+    `;
+
+
+  showModal(
+    "resourceModal"
+  );
+
+}
+
+
+/* ============================================================
+   VIDEO VIEWER
+   ============================================================ */
+
+function viewVideo(v){
+
+  const id =
+    extractYoutubeId(v.url);
+
+
+  document
+    .getElementById("resourceViewer")
+    .innerHTML = `
+
+      <h2>
+        ${escapeHtml(v.title)}
+      </h2>
+
+      <p>
+        ${escapeHtml(v.description || "")}
+      </p>
+
+      <div style="margin-top:15px">
+
+        ${
+          id
+
+          ?
+
+          `
+
+          <div class="video-frame">
+
+            <iframe
+              src="https://www.youtube.com/embed/${escapeAttr(id)}"
+              title="${escapeAttr(v.title)}"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen>
+            </iframe>
+
+          </div>
+
+          `
+
+          :
+
+          `
+
+          <a
+            href="${escapeAttr(v.url)}"
+            target="_blank"
+            rel="noopener">
+
+            Open video
+
+          </a>
+
+          `
+
+        }
+
+      </div>
+
+    `;
+
+
+  showModal(
+    "resourceModal"
+  );
+
+}
+
+
+/* ============================================================
+   QUIZ VIEWER
+   ============================================================ */
+
+async function viewQuiz(q){
+
+  let questions =
+    q.questions || [];
+
+
+  if(typeof questions === "string"){
+
+    try{
+
+      questions =
+        JSON.parse(questions);
+
+    }catch(e){
+
+      questions = [];
+
+    }
+
+  }
+
+
+  let html = `
+
+    <h2>
+      ${escapeHtml(q.title)}
+    </h2>
+
+    <p>
+      ${escapeHtml(q.course || "")}
+      · ${questions.length} questions
+    </p>
+
+  `;
+
+
+  questions.forEach((question,index)=>{
+
+    html += `
+
+      <div
+        class="card quiz-question">
+
+        <h3>
+          ${index+1}.
+          ${escapeHtml(
+            question.question || ""
+          )}
+        </h3>
+
+    `;
+
+
+    (
+      question.options || []
+    ).forEach((option,j)=>{
+
+      html += `
+
+        <label class="quiz-option">
+
+          <input
+            type="radio"
+            name="quiz-question-${index}"
+            value="${j}">
+
+          ${String.fromCharCode(65+j)}.
+          ${escapeHtml(option)}
+
+        </label>
+
+      `;
+
+    });
+
+
+    html += `
+
+      </div>
+
+    `;
+
+  });
+
+
+  html += `
+
+    <button
+      class="btn green"
+      style="margin-top:18px"
+      id="submitStudentQuiz">
+
+      Submit Quiz
+
+    </button>
+
+    <div
+      id="quizResult"
+      style="margin-top:15px">
+    </div>
+
+  `;
+
+
+  document
+    .getElementById("resourceViewer")
+    .innerHTML = html;
+
+
+  document
+    .getElementById("submitStudentQuiz")
+    .onclick = ()=>{
+
+      gradeQuiz(questions);
+
+    };
+
+
+  showModal(
+    "resourceModal"
+  );
+
+}
+
+
+function gradeQuiz(questions){
+
+  let score = 0;
+
+
+  questions.forEach((q,index)=>{
+
+    const selected =
+      document.querySelector(
+        `input[name="quiz-question-${index}"]:checked`
+      );
+
+
+    if(
+      selected &&
+      Number(selected.value) ===
+      Number(q.correctIndex)
+    ){
+
+      score++;
+
+    }
+
+  });
+
+
+  const percentage =
+    questions.length
+      ? Math.round(
+          score/questions.length*100
+        )
+      : 0;
+
+
+  document
+    .getElementById("quizResult")
+    .innerHTML = `
+
+      <div class="status ok">
+
+        <b>
+          Score: ${score} / ${questions.length}
+        </b>
+
+        <br>
+
+        Percentage:
+        ${percentage}%
+
+      </div>
+
+    `;
+
+}
+
+
+/* ============================================================
+   ADMIN DATA
+   ============================================================ */
+
 async function loadAdminData(){
+
   if(!supabaseClient)return;
-  await Promise.all([loadAdminStats(),loadDocuments(),loadVideos(),loadQuizzes()]);
+
+  await Promise.all([
+
+    loadAdminStats(),
+
+    loadDocuments(),
+
+    loadVideos(),
+
+    loadQuizzes()
+
+  ]);
+
 }
+
 
 /* ============================================================
    DOCUMENT AI
    ============================================================ */
+
 async function simplifyDocument(){
-  const title=document.getElementById("docTitle").value.trim();
-  const source=document.getElementById("docSource").value.trim();
-  const status=document.getElementById("docAIStatus");
-  if(!title||!source){status.textContent="Enter a title and source document.";status.className="status err";return}
-  status.textContent="AI is simplifying the document...";status.className="status";
+
+  const title =
+    document
+      .getElementById("docTitle")
+      .value
+      .trim();
+
+
+  const source =
+    document
+      .getElementById("docSource")
+      .value
+      .trim();
+
+
+  const status =
+    document.getElementById(
+      "docAIStatus"
+    );
+
+
+  if(!title || !source){
+
+    status.textContent =
+      "Enter a title and source document.";
+
+    status.className =
+      "status err";
+
+    return;
+
+  }
+
+
+  status.textContent =
+    "AI is simplifying the document...";
+
+  status.className =
+    "status";
+
+
   try{
-    const result=await callEdgeFunction("simplify-document",{
-      title,
-      course:document.getElementById("docCourse").value,
-      topic:document.getElementById("docTopic").value,
-      source
-    });
-    const content=result.content_html||markdownToHtml(result.content||"");
-    document.getElementById("documentEditor").innerHTML=content;
-    document.getElementById("documentEditorArea").classList.remove("hidden");
-    status.textContent="AI draft generated. Review and edit it before publishing.";status.className="status ok";
-  }catch(e){status.textContent=e.message;status.className="status err"}
+
+    const result =
+      await callEdgeFunction(
+        "simplify-document",
+        {
+
+          title,
+
+          course:
+            document
+              .getElementById("docCourse")
+              .value,
+
+          topic:
+            document
+              .getElementById("docTopic")
+              .value
+              .trim(),
+
+          source
+
+        }
+      );
+
+
+    const content =
+      result.content_html ||
+      markdownToHtml(
+        result.content || ""
+      );
+
+
+    document
+      .getElementById("documentEditor")
+      .innerHTML =
+      content;
+
+
+    document
+      .getElementById("documentEditorArea")
+      .classList
+      .remove("hidden");
+
+
+    status.textContent =
+      "AI draft generated. Review and edit it before publishing.";
+
+    status.className =
+      "status ok";
+
+
+  }catch(error){
+
+    console.error(
+      "Simplify error:",
+      error
+    );
+
+
+    status.textContent =
+      error.message ||
+      "AI simplification failed.";
+
+    status.className =
+      "status err";
+
+  }
+
 }
-async function saveDocument(statusValue){
-  if(!supabaseClient)return toast("Configure Supabase first.");
-  const payload={
-    title:document.getElementById("docTitle").value.trim(),
-    course:document.getElementById("docCourse").value,
-    topic:document.getElementById("docTopic").value.trim(),
-    semester:document.getElementById("docSemester").value,
-    content_html:document.getElementById("documentEditor").innerHTML,
-    content_text:document.getElementById("documentEditor").innerText,
-    status:statusValue,
-    created_by:currentUser.id
+
+
+/* ============================================================
+   SAVE DOCUMENT
+   ============================================================ */
+
+async function saveDocument(
+  statusValue
+){
+
+  if(!supabaseClient){
+
+    toast(
+      "Configure Supabase first."
+    );
+
+    return;
+
+  }
+
+
+  if(!currentUser){
+
+    toast(
+      "Admin session expired."
+    );
+
+    return;
+
+  }
+
+
+  const payload = {
+
+    title:
+      document
+        .getElementById("docTitle")
+        .value
+        .trim(),
+
+    course:
+      document
+        .getElementById("docCourse")
+        .value,
+
+    topic:
+      document
+        .getElementById("docTopic")
+        .value
+        .trim(),
+
+    semester:
+      document
+        .getElementById("docSemester")
+        .value,
+
+    content_html:
+      document
+        .getElementById("documentEditor")
+        .innerHTML,
+
+    content_text:
+      document
+        .getElementById("documentEditor")
+        .innerText,
+
+    status:
+      statusValue,
+
+    created_by:
+      currentUser.id
+
   };
-  if(!payload.title||!payload.content_text.trim())return toast("Document title and content are required.");
+
+
+  if(
+    !payload.title ||
+    !payload.content_text.trim()
+  ){
+
+    toast(
+      "Document title and content are required."
+    );
+
+    return;
+
+  }
+
+
   let response;
-  if(currentDocumentId)response=await supabaseClient.from("documents").update(payload).eq("id",currentDocumentId).select().single();
-  else response=await supabaseClient.from("documents").insert(payload).select().single();
-  if(response.error){toast(response.error.message);return}
-  currentDocumentId=response.data.id;
-  toast(statusValue==="published"?"Document published.":"Document saved as draft.");
-  await loadDocuments();await loadAdminStats();
+
+
+  if(currentDocumentId){
+
+    response =
+      await supabaseClient
+        .from("documents")
+        .update(payload)
+        .eq("id",currentDocumentId)
+        .select()
+        .single();
+
+  }else{
+
+    response =
+      await supabaseClient
+        .from("documents")
+        .insert(payload)
+        .select()
+        .single();
+
+  }
+
+
+  if(response.error){
+
+    console.error(
+      "Save document error:",
+      response.error
+    );
+
+    toast(
+      response.error.message
+    );
+
+    return;
+
+  }
+
+
+  currentDocumentId =
+    response.data.id;
+
+
+  toast(
+    statusValue === "published"
+      ? "Document published."
+      : "Document saved as draft."
+  );
+
+
+  await loadDocuments();
+
+  await loadAdminStats();
+
+  await loadPublishedHome();
+
 }
+
+
+/* ============================================================
+   DOCUMENT FORM
+   ============================================================ */
+
 function clearDocumentForm(){
-  ["docTitle","docTopic","docSource"].forEach(id=>document.getElementById(id).value="");
-  document.getElementById("documentEditor").innerHTML="";
-  document.getElementById("documentEditorArea").classList.add("hidden");
-  currentDocumentId=null;
+
+  [
+    "docTitle",
+    "docTopic",
+    "docSource"
+  ].forEach(id=>{
+
+    document
+      .getElementById(id)
+      .value = "";
+
+  });
+
+
+  document
+    .getElementById("documentEditor")
+    .innerHTML = "";
+
+
+  document
+    .getElementById("documentEditorArea")
+    .classList
+    .add("hidden");
+
+
+  currentDocumentId =
+    null;
+
 }
-function execEdit(command){document.execCommand(command,false,null)}
-function addHeading(){document.execCommand("formatBlock",false,"h2")}
+
+
+function execEdit(command){
+
+  document.execCommand(
+    command,
+    false,
+    null
+  );
+
+}
+
+
+function addHeading(){
+
+  document.execCommand(
+    "formatBlock",
+    false,
+    "h2"
+  );
+
+}
+
+
 function insertImage(event){
-  const file=event.target.files[0];if(!file)return;
-  const reader=new FileReader();
-  reader.onload=e=>document.execCommand("insertImage",false,e.target.result);
+
+  const file =
+    event.target.files[0];
+
+
+  if(!file)return;
+
+
+  const reader =
+    new FileReader();
+
+
+  reader.onload =
+    e=>{
+
+      document.execCommand(
+        "insertImage",
+        false,
+        e.target.result
+      );
+
+    };
+
+
   reader.readAsDataURL(file);
+
 }
+
 
 /* ============================================================
    VIDEO MANAGER
    ============================================================ */
+
 async function saveVideo(){
-  if(!supabaseClient)return toast("Configure Supabase first.");
-  const title=document.getElementById("videoTitle").value.trim();
-  const url=document.getElementById("videoUrl").value.trim();
-  if(!title||!url)return toast("Video title and YouTube URL are required.");
-  const {data,error}=await supabaseClient.from("videos").insert({
-    title,course:document.getElementById("videoCourse").value,url,
-    description:document.getElementById("videoDescription").value.trim(),
-    status:"published",created_by:currentUser.id
-  }).select().single();
-  if(error){showStatus("videoStatus",error.message,"err");return}
-  showStatus("videoStatus","Video published successfully.","ok");
-  ["videoTitle","videoUrl","videoDescription"].forEach(id=>document.getElementById(id).value="");
-  await loadVideos();await loadAdminStats();
+
+  if(!supabaseClient){
+
+    toast(
+      "Configure Supabase first."
+    );
+
+    return;
+
+  }
+
+
+  if(!currentUser){
+
+    toast(
+      "Admin session expired."
+    );
+
+    return;
+
+  }
+
+
+  const title =
+    document
+      .getElementById("videoTitle")
+      .value
+      .trim();
+
+
+  const url =
+    document
+      .getElementById("videoUrl")
+      .value
+      .trim();
+
+
+  if(!title || !url){
+
+    showStatus(
+      "videoStatus",
+      "Video title and YouTube URL are required.",
+      "err"
+    );
+
+    return;
+
+  }
+
+
+  const youtubeId =
+    extractYoutubeId(url);
+
+
+  if(!youtubeId){
+
+    showStatus(
+      "videoStatus",
+      "Please enter a valid YouTube URL.",
+      "err"
+    );
+
+    return;
+
+  }
+
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from("videos")
+      .insert({
+
+        title,
+
+        course:
+          document
+            .getElementById("videoCourse")
+            .value,
+
+        url,
+
+        description:
+          document
+            .getElementById("videoDescription")
+            .value
+            .trim(),
+
+        status:
+          "published",
+
+        created_by:
+          currentUser.id
+
+      })
+      .select()
+      .single();
+
+
+  if(error){
+
+    console.error(
+      "Save video error:",
+      error
+    );
+
+    showStatus(
+      "videoStatus",
+      error.message,
+      "err"
+    );
+
+    return;
+
+  }
+
+
+  console.log(
+    "Video created:",
+    data
+  );
+
+
+  showStatus(
+    "videoStatus",
+    "Video published successfully.",
+    "ok"
+  );
+
+
+  [
+    "videoTitle",
+    "videoUrl",
+    "videoDescription"
+  ].forEach(id=>{
+
+    document
+      .getElementById(id)
+      .value = "";
+
+  });
+
+
+  await loadVideos();
+
+  await loadAdminStats();
+
+  await loadPublishedHome();
+
 }
+
 
 /* ============================================================
    AI QUIZ
    ============================================================ */
+
 async function generateQuiz(){
-  const status=document.getElementById("quizAIStatus");
-  const youtube=document.getElementById("quizYoutube").value.trim();
-  const source=document.getElementById("quizSource").value.trim();
-  if(!youtube&&!source){status.textContent="Paste a YouTube URL or document text.";status.className="status err";return}
-  status.textContent="AI is preparing the quiz...";status.className="status";
+
+  const status =
+    document.getElementById(
+      "quizAIStatus"
+    );
+
+
+  const youtube =
+    document
+      .getElementById("quizYoutube")
+      .value
+      .trim();
+
+
+  const source =
+    document
+      .getElementById("quizSource")
+      .value
+      .trim();
+
+
+  if(!youtube && !source){
+
+    status.textContent =
+      "Paste a YouTube URL or document text.";
+
+    status.className =
+      "status err";
+
+    return;
+
+  }
+
+
+  status.textContent =
+    "AI is preparing the quiz...";
+
+  status.className =
+    "status";
+
+
   try{
-    const result=await callEdgeFunction("youtube-to-quiz",{
-      youtube_url:youtube||null,
-      source_text:source||null,
-      title:document.getElementById("quizTitle").value.trim(),
-      course:document.getElementById("quizCourse").value,
-      count:Number(document.getElementById("quizCount").value),
-      difficulty:document.getElementById("quizDifficulty").value
-    });
-    currentQuiz=result.questions||result.quiz||[];
-    if(typeof currentQuiz==="string")currentQuiz=JSON.parse(currentQuiz);
+
+    const result =
+      await callEdgeFunction(
+        "youtube-to-quiz",
+        {
+
+          youtube_url:
+            youtube || null,
+
+          source_text:
+            source || null,
+
+          title:
+            document
+              .getElementById("quizTitle")
+              .value
+              .trim(),
+
+          course:
+            document
+              .getElementById("quizCourse")
+              .value,
+
+          count:
+            Number(
+              document
+                .getElementById("quizCount")
+                .value
+            ),
+
+          difficulty:
+            document
+              .getElementById("quizDifficulty")
+              .value
+
+        }
+      );
+
+
+    currentQuiz =
+      result.questions ||
+      result.quiz ||
+      [];
+
+
+    if(typeof currentQuiz === "string"){
+
+      currentQuiz =
+        JSON.parse(
+          currentQuiz
+        );
+
+    }
+
+
+    if(!Array.isArray(currentQuiz)){
+
+      throw new Error(
+        "The AI function returned an invalid quiz format."
+      );
+
+    }
+
+
     renderQuizEditor();
-    status.textContent="Quiz generated. Edit and verify every question before publishing.";status.className="status ok";
-  }catch(e){status.textContent=e.message;status.className="status err"}
-}
-function renderQuizEditor(){
-  const area=document.getElementById("quizEditorArea"),editor=document.getElementById("quizEditor");
-  area.classList.remove("hidden");
-  editor.innerHTML=(currentQuiz||[]).map((q,i)=>`
-    <div class="card quiz-edit" data-index="${i}" style="margin-top:14px">
-      <div class="field"><label>Question ${i+1}</label><textarea class="qtext">${escapeHtml(q.question||"")}</textarea></div>
-      <div class="form-grid" style="margin-top:10px">
-        ${(q.options||["","","",""]).slice(0,4).map((o,j)=>`<div class="field"><label>Option ${String.fromCharCode(65+j)}</label><input class="qopt" value="${escapeAttr(o||"")}"></div>`).join("")}
-      </div>
-      <div class="form-grid" style="margin-top:10px">
-        <div class="field"><label>Correct option</label><select class="qcorrect"><option value="0">A</option><option value="1">B</option><option value="2">C</option><option value="3">D</option></select></div>
-        <div class="field"><label>Explanation</label><input class="qexp" value="${escapeAttr(q.explanation||"")}"></div>
-      </div>
-    </div>`).join("");
-  document.querySelectorAll(".quiz-edit").forEach((card,i)=>{
-    card.querySelector(".qcorrect").value=String(currentQuiz[i].correctIndex??0);
-  });
-}
-function collectQuiz(){
-  return [...document.querySelectorAll(".quiz-edit")].map(card=>({
-    question:card.querySelector(".qtext").value.trim(),
-    options:[...card.querySelectorAll(".qopt")].map(x=>x.value.trim()),
-    correctIndex:Number(card.querySelector(".qcorrect").value),
-    explanation:card.querySelector(".qexp").value.trim()
-  }));
-}
-async function saveQuiz(statusValue){
-  if(!supabaseClient)return toast("Configure Supabase first.");
-  const questions=collectQuiz();
-  if(!questions.length)return toast("Generate a quiz first.");
-  const invalid=questions.some(q=>!q.question||q.options.length!==4||q.options.some(o=>!o));
-  if(invalid)return toast("Complete every question and all four options.");
-  const {error}=await supabaseClient.from("quizzes").insert({
-    title:document.getElementById("quizTitle").value.trim()||"Thrives Archivers Quiz",
-    course:document.getElementById("quizCourse").value,
-    questions,
-    status:statusValue,
-    created_by:currentUser.id
-  });
-  if(error){toast(error.message);return}
-  toast(statusValue==="published"?"Quiz published.":"Quiz saved.");
-  document.getElementById("quizEditorArea").classList.add("hidden");
-  currentQuiz=null;await loadQuizzes();await loadAdminStats();
+
+
+    status.textContent =
+      "Quiz generated. Edit and verify every question before publishing.";
+
+    status.className =
+      "status ok";
+
+
+  }catch(error){
+
+    console.error(
+      "Quiz generation error:",
+      error
+    );
+
+
+    status.textContent =
+      error.message ||
+      "Quiz generation failed.";
+
+    status.className =
+      "status err";
+
+  }
+
 }
 
+
 /* ============================================================
-   ADMIN LISTS / EDIT / DELETE
+   QUIZ EDITOR
    ============================================================ */
+
+function renderQuizEditor(){
+
+  const area =
+    document.getElementById(
+      "quizEditorArea"
+    );
+
+
+  const editor =
+    document.getElementById(
+      "quizEditor"
+    );
+
+
+  area.classList.remove(
+    "hidden"
+  );
+
+
+  editor.innerHTML =
+    (currentQuiz || [])
+      .map((q,i)=>`
+
+        <div
+          class="card quiz-edit"
+          data-index="${i}"
+          style="margin-top:14px">
+
+          <div class="field">
+
+            <label>
+              Question ${i+1}
+            </label>
+
+            <textarea class="qtext">${escapeHtml(
+              q.question || ""
+            )}</textarea>
+
+          </div>
+
+
+          <div
+            class="form-grid"
+            style="margin-top:10px">
+
+            ${(q.options || ["","","",""])
+              .slice(0,4)
+              .map((o,j)=>`
+
+                <div class="field">
+
+                  <label>
+                    Option ${String.fromCharCode(65+j)}
+                  </label>
+
+                  <input
+                    class="qopt"
+                    value="${escapeAttr(o || "")}">
+
+                </div>
+
+              `)
+              .join("")}
+
+          </div>
+
+
+          <div
+            class="form-grid"
+            style="margin-top:10px">
+
+            <div class="field">
+
+              <label>
+                Correct option
+              </label>
+
+              <select class="qcorrect">
+
+                <option value="0">
+                  A
+                </option>
+
+                <option value="1">
+                  B
+                </option>
+
+                <option value="2">
+                  C
+                </option>
+
+                <option value="3">
+                  D
+                </option>
+
+              </select>
+
+            </div>
+
+
+            <div class="field">
+
+              <label>
+                Explanation
+              </label>
+
+              <input
+                class="qexp"
+                value="${escapeAttr(
+                  q.explanation || ""
+                )}">
+
+            </div>
+
+          </div>
+
+        </div>
+
+      `)
+      .join("");
+
+
+  document
+    .querySelectorAll(".quiz-edit")
+    .forEach((card,i)=>{
+
+      const correct =
+        currentQuiz[i]
+          ?.correctIndex ?? 0;
+
+
+      card
+        .querySelector(".qcorrect")
+        .value =
+        String(correct);
+
+    });
+
+}
+
+
+function collectQuiz(){
+
+  return [
+    ...document
+      .querySelectorAll(".quiz-edit")
+  ].map(card=>({
+
+    question:
+      card
+        .querySelector(".qtext")
+        .value
+        .trim(),
+
+    options:
+      [
+        ...card
+          .querySelectorAll(".qopt")
+      ].map(
+        x=>x.value.trim()
+      ),
+
+    correctIndex:
+      Number(
+        card
+          .querySelector(".qcorrect")
+          .value
+      ),
+
+    explanation:
+      card
+        .querySelector(".qexp")
+        .value
+        .trim()
+
+  }));
+
+}
+
+
+/* ============================================================
+   SAVE QUIZ
+   ============================================================ */
+
+async function saveQuiz(
+  statusValue
+){
+
+  if(!supabaseClient){
+
+    toast(
+      "Configure Supabase first."
+    );
+
+    return;
+
+  }
+
+
+  if(!currentUser){
+
+    toast(
+      "Admin session expired."
+    );
+
+    return;
+
+  }
+
+
+  const questions =
+    collectQuiz();
+
+
+  if(!questions.length){
+
+    toast(
+      "Generate a quiz first."
+    );
+
+    return;
+
+  }
+
+
+  const invalid =
+    questions.some(q=>
+      !q.question ||
+      q.options.length !== 4 ||
+      q.options.some(
+        option=>!option
+      )
+    );
+
+
+  if(invalid){
+
+    toast(
+      "Complete every question and all four options."
+    );
+
+    return;
+
+  }
+
+
+  const title =
+    document
+      .getElementById("quizTitle")
+      .value
+      .trim() ||
+      "Thrives Archivers Quiz";
+
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from("quizzes")
+      .insert({
+
+        title,
+
+        course:
+          document
+            .getElementById("quizCourse")
+            .value,
+
+        questions,
+
+        status:
+          statusValue,
+
+        created_by:
+          currentUser.id
+
+      })
+      .select()
+      .single();
+
+
+  if(error){
+
+    console.error(
+      "Save quiz error:",
+      error
+    );
+
+    toast(
+      error.message
+    );
+
+    return;
+
+  }
+
+
+  console.log(
+    "Quiz created:",
+    data
+  );
+
+
+  toast(
+    statusValue === "published"
+      ? "Quiz published."
+      : "Quiz saved."
+  );
+
+
+  document
+    .getElementById("quizEditorArea")
+    .classList
+    .add("hidden");
+
+
+  currentQuiz =
+    null;
+
+
+  await loadQuizzes();
+
+  await loadAdminStats();
+
+  await loadPublishedHome();
+
+}
+
+
+/* ============================================================
+   DOCUMENT LIST
+   ============================================================ */
+
 async function loadDocuments(){
+
   if(!supabaseClient)return;
-  const {data,error}=await supabaseClient.from("documents").select("*").order("created_at",{ascending:false});
-  const el=document.getElementById("documentList");
-  if(error){el.innerHTML=`<div class="status err">${escapeHtml(error.message)}</div>`;return}
-  el.innerHTML=(data||[]).map(d=>`
-    <div class="list-row">
-      <div><b>${escapeHtml(d.title)}</b><br><small>${escapeHtml(d.course)} · ${escapeHtml(d.status)}</small></div>
-      <div class="toolbar" style="margin:0">
-        <button class="btn secondary" onclick='editDocument(${JSON.stringify(d).replace(/'/g,"&#39;")})'>Edit</button>
-        <button class="btn ${d.status==="published"?"orange":"green"}" onclick="toggleDocument('${d.id}','${d.status}')">${d.status==="published"?"Unpublish":"Publish"}</button>
-        <button class="btn red" onclick="deleteResource('documents','${d.id}',loadDocuments)">Delete</button>
-      </div>
-    </div>`).join("")||"<div class='empty'>No documents yet.</div>";
+
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from("documents")
+      .select("*");
+
+
+  const element =
+    document.getElementById(
+      "documentList"
+    );
+
+
+  if(error){
+
+    console.error(
+      "Documents list error:",
+      error
+    );
+
+
+    element.innerHTML =
+      `<div class="status err">
+        ${escapeHtml(error.message)}
+      </div>`;
+
+    return;
+
+  }
+
+
+  element.innerHTML =
+    (data || [])
+      .map(d=>`
+
+        <div class="list-row">
+
+          <div>
+
+            <b>
+              ${escapeHtml(d.title)}
+            </b>
+
+            <br>
+
+            <small>
+
+              ${escapeHtml(d.course || "")}
+
+              ·
+
+              ${escapeHtml(d.status || "")}
+
+            </small>
+
+          </div>
+
+
+          <div
+            class="toolbar"
+            style="margin:0">
+
+            <button
+              class="btn secondary"
+              onclick='editDocument(${safeJsonForAttribute(d)})'>
+
+              Edit
+
+            </button>
+
+
+            <button
+              class="btn ${
+                d.status === "published"
+                  ? "orange"
+                  : "green"
+              }"
+              onclick="toggleDocument(
+                '${escapeJs(d.id)}',
+                '${escapeJs(d.status)}'
+              )">
+
+              ${
+                d.status === "published"
+                  ? "Unpublish"
+                  : "Publish"
+              }
+
+            </button>
+
+
+            <button
+              class="btn red"
+              onclick="deleteResource(
+                'documents',
+                '${escapeJs(d.id)}',
+                loadDocuments
+              )">
+
+              Delete
+
+            </button>
+
+          </div>
+
+        </div>
+
+      `)
+      .join("") ||
+
+      "<div class='empty'>No documents yet.</div>";
+
 }
+
+
+/* ============================================================
+   EDIT DOCUMENT
+   ============================================================ */
+
 function editDocument(d){
-  currentDocumentId=d.id;
-  document.getElementById("docTitle").value=d.title||"";
-  document.getElementById("docCourse").value=d.course||"Pathology";
-  document.getElementById("docTopic").value=d.topic||"";
-  document.getElementById("docSemester").value=d.semester||"Semester 1";
-  document.getElementById("documentEditor").innerHTML=d.content_html||escapeHtml(d.content_text||"");
-  document.getElementById("documentEditorArea").classList.remove("hidden");
-  adminTab("documents",document.querySelectorAll(".admin-sidebar button")[1]);
-  document.getElementById("documentEditorArea").scrollIntoView({behavior:"smooth"});
+
+  currentDocumentId =
+    d.id;
+
+
+  document
+    .getElementById("docTitle")
+    .value =
+    d.title || "";
+
+
+  document
+    .getElementById("docCourse")
+    .value =
+    d.course || "Pathology";
+
+
+  document
+    .getElementById("docTopic")
+    .value =
+    d.topic || "";
+
+
+  document
+    .getElementById("docSemester")
+    .value =
+    d.semester || "Semester 1";
+
+
+  document
+    .getElementById("documentEditor")
+    .innerHTML =
+    d.content_html ||
+    escapeHtml(
+      d.content_text || ""
+    );
+
+
+  document
+    .getElementById("documentEditorArea")
+    .classList
+    .remove("hidden");
+
+
+  adminTab(
+    "documents",
+    document
+      .querySelectorAll(
+        ".admin-sidebar button"
+      )[1]
+  );
+
+
+  document
+    .getElementById("documentEditorArea")
+    .scrollIntoView({
+      behavior:"smooth"
+    });
+
 }
-async function toggleDocument(id,status){
-  const newStatus=status==="published"?"draft":"published";
-  const {error}=await supabaseClient.from("documents").update({status:newStatus}).eq("id",id);
-  if(error)toast(error.message);else{toast("Document status updated.");loadDocuments();loadAdminStats()}
+
+
+/* ============================================================
+   TOGGLE DOCUMENT
+   ============================================================ */
+
+async function toggleDocument(
+  id,
+  status
+){
+
+  if(!supabaseClient)return;
+
+
+  const newStatus =
+    status === "published"
+      ? "draft"
+      : "published";
+
+
+  const {
+    error
+  } =
+    await supabaseClient
+      .from("documents")
+      .update({
+        status:newStatus
+      })
+      .eq("id",id);
+
+
+  if(error){
+
+    toast(
+      error.message
+    );
+
+    return;
+
+  }
+
+
+  toast(
+    "Document status updated."
+  );
+
+
+  await loadDocuments();
+
+  await loadAdminStats();
+
+  await loadPublishedHome();
+
 }
+
+
+/* ============================================================
+   VIDEO LIST
+   ============================================================ */
+
 async function loadVideos(){
+
   if(!supabaseClient)return;
-  const {data,error}=await supabaseClient.from("videos").select("*").order("created_at",{ascending:false});
-  const el=document.getElementById("videoList");
-  if(error){el.innerHTML=`<div class="status err">${escapeHtml(error.message)}</div>`;return}
-  el.innerHTML=(data||[]).map(v=>`
-    <div class="list-row">
-      <div><b>${escapeHtml(v.title)}</b><br><small>${escapeHtml(v.course)} · ${escapeHtml(v.status)}</small></div>
-      <div class="toolbar" style="margin:0"><button class="btn red" onclick="deleteResource('videos','${v.id}',loadVideos)">Delete</button></div>
-    </div>`).join("")||"<div class='empty'>No videos yet.</div>";
+
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from("videos")
+      .select("*");
+
+
+  const element =
+    document.getElementById(
+      "videoList"
+    );
+
+
+  if(error){
+
+    element.innerHTML =
+      `<div class="status err">
+        ${escapeHtml(error.message)}
+      </div>`;
+
+    return;
+
+  }
+
+
+  element.innerHTML =
+    (data || [])
+      .map(v=>`
+
+        <div class="list-row">
+
+          <div>
+
+            <b>
+              ${escapeHtml(v.title)}
+            </b>
+
+            <br>
+
+            <small>
+
+              ${escapeHtml(v.course || "")}
+
+              ·
+
+              ${escapeHtml(v.status || "")}
+
+            </small>
+
+          </div>
+
+
+          <div
+            class="toolbar"
+            style="margin:0">
+
+            <button
+              class="btn red"
+              onclick="deleteResource(
+                'videos',
+                '${escapeJs(v.id)}',
+                loadVideos
+              )">
+
+              Delete
+
+            </button>
+
+          </div>
+
+        </div>
+
+      `)
+      .join("") ||
+
+      "<div class='empty'>No videos yet.</div>";
+
 }
+
+
+/* ============================================================
+   QUIZ LIST
+   ============================================================ */
+
 async function loadQuizzes(){
+
   if(!supabaseClient)return;
-  const {data,error}=await supabaseClient.from("quizzes").select("*").order("created_at",{ascending:false});
-  const el=document.getElementById("quizList");
-  if(error){el.innerHTML=`<div class="status err">${escapeHtml(error.message)}</div>`;return}
-  el.innerHTML=(data||[]).map(q=>`
-    <div class="list-row">
-      <div><b>${escapeHtml(q.title)}</b><br><small>${escapeHtml(q.course)} · ${q.questions?.length||0} questions · ${escapeHtml(q.status)}</small></div>
-      <div class="toolbar" style="margin:0"><button class="btn red" onclick="deleteResource('quizzes','${q.id}',loadQuizzes)">Delete</button></div>
-    </div>`).join("")||"<div class='empty'>No quizzes yet.</div>";
+
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from("quizzes")
+      .select("*");
+
+
+  const element =
+    document.getElementById(
+      "quizList"
+    );
+
+
+  if(error){
+
+    element.innerHTML =
+      `<div class="status err">
+        ${escapeHtml(error.message)}
+      </div>`;
+
+    return;
+
+  }
+
+
+  element.innerHTML =
+    (data || [])
+      .map(q=>{
+
+        let questions =
+          q.questions || [];
+
+
+        if(typeof questions === "string"){
+
+          try{
+
+            questions =
+              JSON.parse(
+                questions
+              );
+
+          }catch(e){
+
+            questions = [];
+
+          }
+
+        }
+
+
+        return `
+
+          <div class="list-row">
+
+            <div>
+
+              <b>
+                ${escapeHtml(q.title)}
+              </b>
+
+              <br>
+
+              <small>
+
+                ${escapeHtml(q.course || "")}
+
+                ·
+
+                ${questions.length}
+                questions
+
+                ·
+
+                ${escapeHtml(q.status || "")}
+
+              </small>
+
+            </div>
+
+
+            <div
+              class="toolbar"
+              style="margin:0">
+
+              <button
+                class="btn red"
+                onclick="deleteResource(
+                  'quizzes',
+                  '${escapeJs(q.id)}',
+                  loadQuizzes
+                )">
+
+                Delete
+
+              </button>
+
+            </div>
+
+          </div>
+
+        `;
+
+      })
+      .join("") ||
+
+      "<div class='empty'>No quizzes yet.</div>";
+
 }
-async function deleteResource(table,id,refresh){
-  if(!confirm("Delete this resource?"))return;
-  const {error}=await supabaseClient.from(table).delete().eq("id",id);
-  if(error)toast(error.message);else{toast("Deleted.");refresh();loadAdminStats()}
+
+
+/* ============================================================
+   DELETE RESOURCE
+   ============================================================ */
+
+async function deleteResource(
+  table,
+  id,
+  refresh
+){
+
+  if(!supabaseClient)return;
+
+
+  if(
+    !confirm(
+      "Delete this resource?"
+    )
+  ){
+
+    return;
+
+  }
+
+
+  const {
+    error
+  } =
+    await supabaseClient
+      .from(table)
+      .delete()
+      .eq("id",id);
+
+
+  if(error){
+
+    toast(
+      error.message
+    );
+
+    return;
+
+  }
+
+
+  toast(
+    "Deleted successfully."
+  );
+
+
+  if(refresh){
+    await refresh();
+  }
+
+
+  await loadAdminStats();
+
+  await loadPublishedHome();
+
 }
+
+
+/* ============================================================
+   ADMIN STATISTICS
+   ============================================================ */
+
+async function getTableCount(
+  table
+){
+
+  const {
+    count,
+    error
+  } =
+    await supabaseClient
+      .from(table)
+      .select(
+        "id",
+        {
+          count:"exact",
+          head:true
+        }
+      );
+
+
+  if(error){
+
+    console.error(
+      table,
+      error
+    );
+
+    return 0;
+
+  }
+
+
+  return count || 0;
+
+}
+
+
+async function getPublishedCount(
+  table
+){
+
+  const {
+    count,
+    error
+  } =
+    await supabaseClient
+      .from(table)
+      .select(
+        "id",
+        {
+          count:"exact",
+          head:true
+        }
+      )
+      .eq(
+        "status",
+        "published"
+      );
+
+
+  if(error){
+
+    console.error(
+      table,
+      error
+    );
+
+    return 0;
+
+  }
+
+
+  return count || 0;
+
+}
+
+
 async function loadAdminStats(){
+
   if(!supabaseClient)return;
-  const tables=["documents","videos","quizzes"];
-  const counts=await Promise.all(tables.map(t=>supabaseClient.from(t).select("id,status",{count:"exact",head:false})));
-  document.getElementById("statDocuments").textContent=counts[0].data?.length||0;
-  document.getElementById("statVideos").textContent=counts[1].data?.length||0;
-  document.getElementById("statQuizzes").textContent=counts[2].data?.length||0;
-  document.getElementById("statPublished").textContent=counts.reduce((n,x)=>n+(x.data||[]).filter(r=>r.status==="published").length,0);
+
+
+  const [
+
+    documents,
+
+    videos,
+
+    quizzes,
+
+    publishedDocuments,
+
+    publishedVideos,
+
+    publishedQuizzes
+
+  ] =
+    await Promise.all([
+
+      getTableCount(
+        "documents"
+      ),
+
+      getTableCount(
+        "videos"
+      ),
+
+      getTableCount(
+        "quizzes"
+      ),
+
+      getPublishedCount(
+        "documents"
+      ),
+
+      getPublishedCount(
+        "videos"
+      ),
+
+      getPublishedCount(
+        "quizzes"
+      )
+
+    ]);
+
+
+  document
+    .getElementById(
+      "statDocuments"
+    )
+    .textContent =
+    documents;
+
+
+  document
+    .getElementById(
+      "statVideos"
+    )
+    .textContent =
+    videos;
+
+
+  document
+    .getElementById(
+      "statQuizzes"
+    )
+    .textContent =
+    quizzes;
+
+
+  document
+    .getElementById(
+      "statPublished"
+    )
+    .textContent =
+    publishedDocuments +
+    publishedVideos +
+    publishedQuizzes;
+
 }
+
 
 /* ============================================================
    EDGE FUNCTION CALLER
    ============================================================ */
-async function callEdgeFunction(functionName,payload){
-  if(!supabaseClient)throw new Error("Supabase is not configured.");
-  const {data:{session}}=await supabaseClient.auth.getSession();
-  if(!session)throw new Error("Admin session expired. Please log in again.");
-  const {data,error}=await supabaseClient.functions.invoke(functionName,{body:payload});
-  if(error)throw new Error(error.message||"Edge Function request failed.");
-  if(data?.error)throw new Error(data.error);
-  return data;
+
+async function callEdgeFunction(
+  functionName,
+  payload
+){
+
+  if(!supabaseClient){
+
+    throw new Error(
+      "Supabase is not configured."
+    );
+
+  }
+
+
+  const {
+    data,
+    error:
+      sessionError
+  } =
+    await supabaseClient.auth.getSession();
+
+
+  if(sessionError){
+
+    throw new Error(
+      sessionError.message
+    );
+
+  }
+
+
+  if(!data?.session){
+
+    throw new Error(
+      "Admin session expired. Please log in again."
+    );
+
+  }
+
+
+  const result =
+    await supabaseClient
+      .functions
+      .invoke(
+        functionName,
+        {
+          body:payload
+        }
+      );
+
+
+  if(result.error){
+
+    console.error(
+      "Edge Function error:",
+      result.error
+    );
+
+
+    /*
+      Supabase FunctionsHttpError
+      exposes the function response through
+      error.context.
+    */
+
+    try{
+
+      if(result.error.context){
+
+        const response =
+          result.error.context;
+
+
+        if(
+          typeof response.json ===
+          "function"
+        ){
+
+          const body =
+            await response.json();
+
+
+          if(body?.error){
+
+            throw new Error(
+              body.error
+            );
+
+          }
+
+
+          if(body?.message){
+
+            throw new Error(
+              body.message
+            );
+
+          }
+
+        }
+
+      }
+
+    }catch(innerError){
+
+      if(
+        innerError?.message &&
+        innerError.message !==
+        "Failed to send a request to the Edge Function"
+      ){
+
+        throw innerError;
+
+      }
+
+    }
+
+
+    throw new Error(
+      result.error.message ||
+      "Edge Function request failed."
+    );
+
+  }
+
+
+  if(result.data?.error){
+
+    throw new Error(
+      result.data.error
+    );
+
+  }
+
+
+  return result.data;
+
 }
+
 
 /* ============================================================
-   HELPERS
+   YOUTUBE
    ============================================================ */
-function extractYoutubeId(url){
+
+function extractYoutubeId(
+  url
+){
+
   try{
-    const u=new URL(url);
-    if(u.hostname.includes("youtu.be"))return u.pathname.slice(1);
-    if(u.searchParams.get("v"))return u.searchParams.get("v");
-    const m=u.pathname.match(/\/(embed|shorts)\/([^/?]+)/);return m?m[2]:null;
-  }catch(e){return null}
+
+    const u =
+      new URL(url);
+
+
+    if(
+      u.hostname.includes(
+        "youtu.be"
+      )
+    ){
+
+      return u.pathname
+        .slice(1)
+        .split("/")[0];
+
+    }
+
+
+    const videoId =
+      u.searchParams.get("v");
+
+
+    if(videoId){
+
+      return videoId;
+
+    }
+
+
+    const match =
+      u.pathname.match(
+        /\/(embed|shorts|live)\/([^/?]+)/
+      );
+
+
+    return match
+      ? match[2]
+      : null;
+
+
+  }catch(e){
+
+    return null;
+
+  }
+
 }
-function markdownToHtml(text){
-  return escapeHtml(text).replace(/^### (.*)$/gm,"<h3>$1</h3>").replace(/^## (.*)$/gm,"<h2>$1</h2>").replace(/^# (.*)$/gm,"<h1>$1</h1>").replace(/\*\*(.*?)\*\*/g,"<b>$1</b>").replace(/\n\n/g,"</p><p>").replace(/\n/g,"<br>");
+
+
+/* ============================================================
+   MARKDOWN
+   ============================================================ */
+
+function markdownToHtml(
+  text
+){
+
+  let safe =
+    escapeHtml(
+      text || ""
+    );
+
+
+  safe =
+    safe.replace(
+      /^### (.*)$/gm,
+      "<h3>$1</h3>"
+    );
+
+
+  safe =
+    safe.replace(
+      /^## (.*)$/gm,
+      "<h2>$1</h2>"
+    );
+
+
+  safe =
+    safe.replace(
+      /^# (.*)$/gm,
+      "<h1>$1</h1>"
+    );
+
+
+  safe =
+    safe.replace(
+      /\*\*(.*?)\*\*/g,
+      "<b>$1</b>"
+    );
+
+
+  safe =
+    safe.replace(
+      /\*(.*?)\*/g,
+      "<i>$1</i>"
+    );
+
+
+  safe =
+    safe.replace(
+      /\n\n/g,
+      "</p><p>"
+    );
+
+
+  safe =
+    safe.replace(
+      /\n/g,
+      "<br>"
+    );
+
+
+  return "<p>"+safe+"</p>";
+
 }
+
+
+/* ============================================================
+   SECURITY / ESCAPING
+   ============================================================ */
+
 function escapeHtml(s){
-  return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+  return String(
+    s ?? ""
+  ).replace(
+    /[&<>"']/g,
+    c=>({
+
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;",
+      "'":"&#39;"
+
+    }[c])
+  );
+
 }
-function escapeAttr(s){return escapeHtml(s).replace(/`/g,"&#96;")}
-function showStatus(id,msg,type){const e=document.getElementById(id);e.textContent=msg;e.className="status "+type}
+
+
+function escapeAttr(s){
+
+  return escapeHtml(
+    s
+  )
+  .replace(
+    /`/g,
+    "&#96;"
+  );
+
+}
+
+
+function escapeJs(s){
+
+  return String(
+    s ?? ""
+  )
+  .replace(
+    /\\/g,
+    "\\\\"
+  )
+  .replace(
+    /'/g,
+    "\\'"
+  )
+  .replace(
+    /\r/g,
+    "\\r"
+  )
+  .replace(
+    /\n/g,
+    "\\n"
+  );
+
+}
+
+
+/*
+  Safely serializes a database row into
+  an onclick attribute.
+*/
+
+function safeJsonForAttribute(
+  object
+){
+
+  return JSON.stringify(
+    object
+  )
+  .replace(
+    /\\/g,
+    "\\\\"
+  )
+  .replace(
+    /'/g,
+    "\\'"
+  )
+  .replace(
+    /"/g,
+    "&quot;"
+  );
+
+}
+
+
+/* ============================================================
+   INITIAL PAGE LOAD
+   ============================================================ */
 
 loadPublishedHome();
+
 </script>
+
 </body>
 </html>
