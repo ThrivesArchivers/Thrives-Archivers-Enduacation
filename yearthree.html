@@ -269,10 +269,20 @@ footer{margin-top:70px;background:#111827;color:#fff;padding:35px;text-align:cen
 /* ============================================================
    SUPABASE CONFIGURATION
    ============================================================ */
-const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
-const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
-const ADMIN_EMAIL = "thrivesarchivers@gmail.com";
+const SUPABASE_URL =
+'https://odwiqajuubcgrrqipyju.supabase.co';
 
+const SUPABASE_ANON_KEY =
+'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1dWJjZ3JycWlweWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzA4MjEsImV4cCI6MjA2ODg0NjgyMX0.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A';
+
+const {createClient}=window.supabase;
+
+const db=createClient(
+SUPABASE_URL,
+SUPABASE_ANON_KEY
+);
+
+const ADMIN_EMAIL='thrivesarchivers@gmail.com';
 let supabaseClient = null;
 let currentUser = null;
 let currentQuiz = null;
