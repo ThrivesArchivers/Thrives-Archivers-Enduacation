@@ -1,818 +1,697 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Thrives Archivers - Video Streaming</title>
 <style>
-:root{
-  --brand:#1976d2;--ink:#333;--bg:#f4f4f4;--card:#fff;--muted:#777;
-  --danger:#e53935;--youtube:#ff0000;--success:#188038;--warning:#f9a825;--dark:#17202a
-}
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--ink)}
-.topbar{background:var(--brand);color:#fff;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;position:sticky;top:0;z-index:10}
-.topbar h1{font-size:20px;margin:0}.topbar button{border:0;border-radius:7px;padding:8px 12px;cursor:pointer}
-.container{max-width:1200px;margin:auto;padding:18px}
-.card{background:var(--card);border-radius:12px;padding:18px;margin-bottom:18px;box-shadow:0 2px 9px #00000012}
-.hidden{display:none!important}.muted{color:var(--muted)}.danger{color:var(--danger)}
-button{background:var(--brand);color:#fff;border:0;padding:10px 14px;border-radius:7px;cursor:pointer}
-button.secondary{background:#607d8b}button.success{background:var(--success)}button.warning{background:var(--warning);color:#222}
-button.danger{background:var(--danger);color:#fff}button.youtube{background:var(--youtube)}
-input,select,textarea{width:100%;padding:10px;border:1px solid #ccc;border-radius:7px;margin-top:5px}
-textarea{min-height:100px;resize:vertical}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
-.video-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:15px}
-.video-card{background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 2px 7px #0001}
-.video-thumb{aspect-ratio:16/9;background:#111;display:flex;align-items:center;justify-content:center;color:#fff}
-.video-info{padding:12px}.video-info h3{margin:0 0 8px;font-size:17px}
-.status{padding:10px;border-radius:8px;background:#eef5ff;margin:10px 0}.error{background:#ffebee;color:#b71c1c}.ok{background:#e8f5e9;color:#166534}
-.tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}.tabs button.active{background:var(--dark)}
-.ai-hero{background:linear-gradient(135deg,#17202a,#1976d2);color:#fff}
-.ai-toolbar{display:flex;gap:8px;flex-wrap:wrap}
-.storyboard{display:grid;gap:12px;margin-top:12px}
-.scene-card{border:1px solid #ddd;border-radius:10px;padding:14px;background:#fafafa}
-.scene-card h3{margin-top:0}.scene-meta{font-size:12px;color:#666}
-#aiPreviewVideo{width:100%;max-height:560px;background:#000;border-radius:10px}
-#chartPreviewCanvas{width:100%;height:auto;background:#fff;border:1px solid #ddd;border-radius:8px}
-.chart-data{font-family:monospace;min-height:130px}
-.small{font-size:12px}
-.modal{position:fixed;inset:0;background:#000b;display:flex;align-items:center;justify-content:center;z-index:100}
-.modal-box{background:#fff;width:min(900px,94vw);padding:15px;border-radius:12px;position:relative}
-.modal-box video{width:100%;background:#000}.close{position:absolute;right:10px;top:8px;border-radius:50%;padding:6px 10px}
-label{font-weight:bold;font-size:13px}
-hr{border:0;border-top:1px solid #ddd;margin:18px 0}
+  :root{
+    --brand:#1976d2;--ink:#333;--bg:#f4f4f4;--card:#fff;--muted:#777;--danger:#e53935;--youtube:#FF0000;
+  }
+  *{box-sizing:border-box}
+  body{font-family:Arial,Helvetica,sans-serif;background:var(--bg);margin:0}
+  h2{background:#333;color:#fff;padding:15px;margin:0;text-align:center}
+  .topbar{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:10px 16px;background:#222;color:#fff}
+  .topbar .left{font-weight:bold}
+  .topbar .right{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .pill{background:#111;padding:6px 10px;border-radius:999px;font-size:12px;border:1px solid #444}
+  .btn{cursor:pointer;background:var(--brand);color:#fff;border:none;border-radius:6px;padding:8px 12px}
+  .btn.ghost{background:#444}
+  .btn.danger{background:var(--danger)}
+  .status-bar{margin:10px auto;padding:10px;font-weight:bold;text-align:center}
+  .container{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;padding:20px}
+  .section{background:#fff;padding:15px;border-radius:12px;box-shadow:0 0 15px rgba(0,0,0,.08)}
+  .section h3{margin-top:0;background:var(--brand);color:#fff;padding:10px;border-radius:6px}
+  .semester-title{font-weight:bold;margin-top:10px;color:#333;font-size:14px}
+  .video-card{background:#f1f1f1;padding:10px;margin:8px 0;border-radius:8px;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .video-card:hover{background:#e6e6e6}
+  .lock{font-size:18px}
+  /* Remove old .video-player styling, replaced by modal */
+  .admin-panel{background:#fff;padding:20px;margin:20px auto;width:92%;max-width:1000px;border-radius:12px;box-shadow:0 0 15px rgba(0,0,0,.15);display:none}
+  .admin-panel h3{margin-top:0}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+  input, select{width:100%;padding:10px;border:1px solid #ccc;border-radius:8px}
+  label{font-size:12px;color:var(--muted)}
+  table{width:100%;border-collapse:collapse;margin-top:10px}
+  th,td{border:1px solid #ddd;padding:8px;text-align:left}
+  th{background:#fafafa}
+  .login-modal,.modal-bg{display:none;position:fixed;left:0;top:0;width:100vw;height:100vh;z-index:1000}
+  .modal-bg{background:rgba(0,0,0,.35)}
+  .login-modal{z-index:1001;left:50%;top:50%;transform:translate(-50%,-50%);background:#fff;padding:26px;border-radius:12px;width:92%;max-width:380px;box-shadow:0 2px 18px #2224}
+  .login-modal h3{margin:0 0 10px 0}
+  .hint{font-size:12px;color:var(--muted)}
+  .youtube-download-icon { margin-left:8px; }
+
+  /* Watch button style (works for button or anchor) */
+  .watch-btn{display:inline-block;background:var(--brand);color:#fff;text-decoration:none;font-weight:700;cursor:pointer;padding:6px 10px;border-radius:6px}
+  .watch-btn:hover{background:#125ca8}
+
+  /* Modal video player styles */
+  .modal-video-bg {
+    display: none; position: fixed; left: 0; top: 0; width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center;
+  }
+  .modal-video-player {
+    background: #000; border-radius: 12px; box-shadow: 0 0 24px #0008;
+    width: 90vw; max-width: 800px; max-height: 90vh; display: flex; flex-direction: column;
+    position: relative;
+  }
+  .modal-video-player iframe {
+    width: 100%; height: 450px; border: none; border-radius: 12px 12px 0 0;
+    background: #000;
+  }
+  .modal-video-close {
+    background: #e53935; color: #fff; border: none; border-radius: 0 0 12px 12px;
+    padding: 10px; cursor: pointer; font-size: 16px; font-weight: bold;
+    transition: background 0.2s;
+  }
+  .modal-video-close:hover { background: #b71c1c; }
+
+  /* Search bar styles */
+  .search-bar-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 16px 0 0 0;
+    background: var(--bg);
+  }
+  .search-bar-input {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    min-width: 220px;
+    max-width: 320px;
+  }
+  .search-bar-btn {
+    background: var(--brand);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s;
+  }
+  .search-bar-btn:hover {
+    background: #155a99;
+  }
 </style>
 </head>
 <body>
+  <h2>Thrives Archivers - Video Streaming</h2>
 
-<div class="topbar">
-  <h1>Thrives Archivers</h1>
-  <div>
-    <span id="displayName">Guest</span>
-    <button id="loginBtn">Login</button>
-    <button id="logoutBtn" class="hidden">Logout</button>
+  <!-- Search Bar -->
+  <div class="search-bar-container">
+    <input
+      type="text"
+      id="videoSearchInput"
+      class="search-bar-input"
+      placeholder="Search videos by title, section, semester..."
+      autocomplete="off"
+    />
+    <button class="search-bar-btn" id="videoSearchBtn">Search</button>
+    <button class="search-bar-btn" id="videoClearBtn" style="background:#777;">Clear</button>
   </div>
-</div>
 
-<div class="container">
-  <div class="card">
-    <h2>Video Lessons</h2>
-    <div id="subInfo" class="muted">Checking subscription...</div>
-    <div class="grid">
-      <div><label>Search videos</label><input id="videoSearchInput" placeholder="Search lesson..."></div>
-      <div style="align-self:end">
-        <button id="videoSearchBtn">Search</button>
-        <button id="videoClearBtn" class="secondary">Clear</button>
-        <a href="https://youtube.com/@thrivesarchivers?si=S092LRlM1g2mWTll" target="_blank"><button class="youtube">YouTube</button></a>
-      </div>
+  <!-- YouTube Channel Banner -->
+  <div class="youtube-banner">
+    <span class="yt-icon">▶️</span>
+    <span class="sub-text">Subscribe to our YouTube channel</span>
+    <a href="https://youtube.com/@thrivesarchivers?si=S092LRlM1g2mWTll" target="_blank" rel="noopener">
+      @thrivesarchivers
+    </a>
+  </div>
+
+  <div class="topbar">
+    <div class="left">Welcome, <span id="displayName">Guest</span></div>
+    <div class="right">
+      <span class="pill" id="subInfo">Not logged in</span>
+      <button class="btn" id="loginTopBtn">Login</button>
+      <button class="btn ghost" id="logoutBtn" style="display:none">Logout</button>
     </div>
-    <div id="statusBar" class="status">Loading videos...</div>
-    <div id="videoContainer" class="video-grid"></div>
   </div>
 
-  <div class="card ai-hero">
-    <h2>🤖 Thrives Archivers AI Video Studio</h2>
-    <p>Create educational lessons with real medical visuals, animated diagrams, captions and recorded narration audio.</p>
-    <p class="small">Only the administrator can generate and publish AI videos.</p>
-  </div>
+  <div class="status-bar" id="statusBar"></div>
 
-  <section id="ai-section" class="card">
-    <h2>🎬 AI Video Library</h2>
-    <div id="aiPublishedVideos" class="video-grid"></div>
-  </section>
-
-  <section id="aiAdmin" class="card hidden">
-    <h2>🔐 AI Video Admin Studio</h2>
-    <div class="tabs">
-      <button class="active" data-tab="generate">Generate</button>
-      <button data-tab="drafts">Drafts</button>
-      <button data-tab="published">Published</button>
+  <!-- Login Modal -->
+  <div class="modal-bg" id="modalBg"></div>
+  <div class="login-modal" id="loginModal">
+    <h3>Login to your account</h3>
+    <div class="hint">Use your Supabase Auth email & password</div>
+    <input type="email" id="loginEmail" placeholder="Your Email" required />
+    <input type="password" id="loginPassword" placeholder="Your Password" required />
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:6px">
+      <button class="btn" id="loginBtn">Login</button>
+      <button class="btn ghost" id="closeModalBtn">Cancel</button>
     </div>
+  </div>
 
-    <div id="aiGenerateTab">
+  <div class="container" id="container"></div>
+
+  <!-- Modal Video Player (NEW) -->
+  <div class="modal-video-bg" id="modalVideoBg">
+    <div class="modal-video-player">
+      <iframe id="modalVideoFrame" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="no-referrer" loading="lazy"></iframe>
+      <button class="modal-video-close" id="closeModalVideoBtn">Close</button>
+    </div>
+  </div>
+
+  <!-- Admin Panel -->
+  <div class="admin-panel" id="adminPanel">
+    <h3>Admin Panel — Manage Videos & Access</h3>
+    <form id="addVideoForm">
       <div class="grid">
-        <div><label>Lesson title</label><input id="aiTitle" placeholder="Introduction to the Human Heart"></div>
-        <div><label>Course / subject</label><input id="aiSection" placeholder="Anatomy"></div>
-        <div><label>Semester</label>
-          <select id="aiSemester"><option>Semester 1</option><option>Semester 2</option><option>Term 1</option><option>Term 2</option><option>General</option></select>
+        <div><label>Title</label><input type="text" id="videoTitle" placeholder="Video Title" required /></div>
+        <div><label>YouTube Video ID</label><input type="text" id="videoID" placeholder="dQw4w9WgXcQ" required /></div>
+        <div><label>Passwords (comma separated)</label><input type="text" id="passwordList" placeholder="abc123, xyz789" required /></div>
+        <div>
+          <label>Section</label>
+          <select id="videoSection" required>
+            <option value="">Select Section</option>
+            <option>Maths</option>
+            <option>Physics</option>
+            <option>Chemistry</option>
+            <option>Biology</option>
+           <option>MATHS 131</option>
+            <option>ANATOMY MBCHB </option>
+            <option>ANATOMY PHARM/BIOMED </option> 
+            <option>PHARMACOLOGY </option>
+            <option> PATHOLOGY </option>
+            <option>PHYSIOLOGY </option>
+            <option>BIOCHEMISTRY</option> 
+          </option> 
+          </select>
         </div>
-        <div><label>Duration</label>
-          <select id="aiDuration"><option value="1">1 minute</option><option value="3" selected>3 minutes</option><option value="5">5 minutes</option></select>
+        <div>
+          <label>Semester</label>
+          <select id="videoSemester" required>
+            <option value="">Select Semester</option>
+            <option>First Semester</option>
+            <option>Second Semester</option>
+          </select>
         </div>
-        <div><label>Teaching style</label>
-          <select id="aiStyle"><option>2D Educational Animation</option><option>Medical / Anatomy Animation</option><option>Whiteboard</option><option>Simple Classroom</option></select>
-        </div>
-        <div><label>Difficulty</label>
-          <select id="aiDifficulty"><option>Beginner</option><option selected>Intermediate</option><option>Advanced</option></select>
-        </div>
+        <div><label>Order (number)</label><input type="number" id="videoOrder" placeholder="1" required /></div>
       </div>
-      <label>Lesson instruction</label>
-      <textarea id="aiPrompt" placeholder="Explain the chambers, valves and blood flow. Include important examination points."></textarea>
+      <div style="margin-top:10px"><button class="btn" type="submit">Add Video</button></div>
+    </form>
 
-      <div class="ai-toolbar">
-        <button id="generateAiBtn">✨ Generate Lesson</button>
-        <button id="clearAiBtn" class="secondary">Clear</button>
-      </div>
-      <div id="aiStatus" class="status">Ready.</div>
-      <div id="aiStoryboard" class="storyboard"></div>
+    <div id="existingVideos" style="margin-top:16px"></div>
+    <hr style="margin:20px 0" />
 
-      <hr>
-      <h3>📊 Chart Create</h3>
-      <p class="muted">Create a chart and add it as an animated scene in the lesson.</p>
-      <div class="grid">
-        <div><label>Chart type</label>
-          <select id="chartType"><option value="bar">Bar Chart</option><option value="line">Line Chart</option><option value="pie">Pie Chart</option></select>
-        </div>
-        <div><label>Chart title</label><input id="chartTitle" placeholder="Heart Rate During Exercise"></div>
-        <div><label>X-axis label</label><input id="chartXLabel" placeholder="Time (minutes)"></div>
-        <div><label>Y-axis label</label><input id="chartYLabel" placeholder="Heart rate (bpm)"></div>
-      </div>
-      <label>Data — one item per line: label:value</label>
-      <textarea id="chartData" class="chart-data" placeholder="1:72&#10;2:85&#10;3:98&#10;4:110"></textarea>
-      <div class="ai-toolbar">
-        <button id="generateChartBtn">📊 Generate Chart</button>
-        <button id="addChartBtn" class="success">➕ Add Chart To Video</button>
-      </div>
-      <canvas id="chartPreviewCanvas" width="1100" height="560"></canvas>
-
-      <hr>
-      <h3>🎥 Video Preview & Recording — Real Visuals + Audio</h3>
-      <div class="ai-toolbar">
-        <button id="recordAiVideoBtn" class="success">🎬 Create Animation Video</button>
-        <button id="previewVoiceBtn" class="secondary">🔊 Read Narration</button>
-        <button id="stopVoiceBtn" class="danger">Stop Voice</button>
-        <button id="saveAiDraftBtn" class="warning">💾 Save Draft</button>
-        <button id="publishAiVideoBtn" class="success">🚀 Publish Video</button>
-      </div>
-      <div id="aiPreviewWrap" class="hidden"><video id="aiPreviewVideo" controls></video></div>
-    </div>
-
-    <div id="aiDraftsTab" class="hidden"><div id="aiDraftsList"></div></div>
-    <div id="aiPublishedTab" class="hidden"><div id="aiAdminPublishedList"></div></div>
-  </section>
-</div>
-
-<!-- Existing YouTube modal -->
-<div id="modalVideoBg" class="modal hidden">
-  <div class="modal-box">
-    <button class="close danger" id="closeModalVideoBtn">×</button>
-    <video id="modalVideoFrame" controls></video>
+    <h3>Subscriptions Controls</h3>
+    <div id="subscriptionsAdmin"></div>
   </div>
-</div>
 
-<!-- AI modal -->
-<div id="aiVideoModalBg" class="modal hidden">
-  <div class="modal-box">
-    <button class="close danger" id="closeAiModalBtn">×</button>
-    <video id="aiVideoModalPlayer" controls></video>
-  </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/mespeak@2.0.2/src/mespeak.js"></script>
 <script type="module">
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-const supabaseUrl = "https://odwiqajuubcgrrqipyju.supabase.co";
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1dWJjZ3JycWlweWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzA4MjEsImV4cCI6MjA2ODg0NjgyMX0.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A'
-const supabase = createClient(supabaseUrl, supabaseKey);
-const ADMIN_EMAIL = "thrivesarchivers@gmail.com";
-const AI_VIDEO_FUNCTION_URL = `${supabaseUrl}/functions/v1/generate-video-script`;
+// --- SUPABASE CONFIG ---
+const supabaseUrl = 'https://odwiqajuubcgrrqipyju.supabase.co'
+const supabaseKey ='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1dWJjZ3JycWlweWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzA4MjEsImV4cCI6MjA2ODg0NjgyMX0.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A'
+const supabase = createClient(supabaseUrl, supabaseKey)
 
-let currentUser = null;
-let currentStoryboard = [];
-let currentChart = null;
-let currentVideoBlob = null;
-let currentVideoUrl = null;
-let sceneImages = [];
-let ttsReady = false;
-let ttsConfigReady = false;
-let ttsVoiceReady = false;
-let audioContext = null;
-let drafts = JSON.parse(localStorage.getItem("thrives_ai_drafts") || "[]");
-let published = JSON.parse(localStorage.getItem("thrives_ai_published") || "[]");
+// --- CONSTANTS ---
+const ADMIN_EMAIL = 'thrivesarchivers@gmail.com'
 
-/* ---------- Helpers ---------- */
-const $ = id => document.getElementById(id);
-const escapeHtml = s => String(s ?? "").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
-function isAdmin(){
-  const email = (currentUser?.email || currentUser?.user_metadata?.email || "").trim().toLowerCase();
-  return email === ADMIN_EMAIL.trim().toLowerCase();
+// --- ELEMENTS ---
+const container = document.getElementById('container')
+const modalVideoBg = document.getElementById('modalVideoBg')
+const modalVideoFrame = document.getElementById('modalVideoFrame')
+const closeModalVideoBtn = document.getElementById('closeModalVideoBtn')
+const adminPanel = document.getElementById('adminPanel')
+const addVideoForm = document.getElementById('addVideoForm')
+const existingVideosDiv = document.getElementById('existingVideos')
+const statusBar = document.getElementById('statusBar')
+const loginModal = document.getElementById('loginModal')
+const modalBg = document.getElementById('modalBg')
+const closeModalBtn = document.getElementById('closeModalBtn')
+const loginBtn = document.getElementById('loginBtn')
+const loginEmail = document.getElementById('loginEmail')
+const loginPassword = document.getElementById('loginPassword')
+const loginTopBtn = document.getElementById('loginTopBtn')
+const logoutBtn = document.getElementById('logoutBtn')
+const displayNameEl = document.getElementById('displayName')
+const subInfo = document.getElementById('subInfo')
+const subscriptionsAdmin = document.getElementById('subscriptionsAdmin')
+// Search bar elements
+const videoSearchInput = document.getElementById('videoSearchInput')
+const videoSearchBtn = document.getElementById('videoSearchBtn')
+const videoClearBtn = document.getElementById('videoClearBtn')
+
+// --- STATE ---
+let currentUser = null
+let subscription = null // row from subscription table
+let allVideos = []
+let filteredVideos = null // if search is active, filteredVideos is set
+
+// --- HELPERS ---
+function showLoginModal(){ loginModal.style.display = 'block'; modalBg.style.display = 'block' }
+function hideLoginModal(){ loginModal.style.display = 'none'; modalBg.style.display = 'none' }
+function normalizeCourses(str){
+  if(!str) return []
+  return str.split(',').map(s=>s.trim()).filter(Boolean)
 }
-function setAiStatus(text, type=""){ $("aiStatus").textContent=text; $("aiStatus").className="status "+type; }
-function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+function userDisplayName(user){
+  const meta = user?.user_metadata || {}
+  return meta.name || meta.full_name || meta.fullName || user?.email || 'User'
+}
+function formatStatus(){
+  if(!currentUser){
+    statusBar.textContent = 'Please log in to see your subscriptions and watch videos.'
+    subInfo.textContent = 'Not logged in'
+    displayNameEl.textContent = 'Guest'
+    return
+  }
+  const name = userDisplayName(currentUser)
+  const email = currentUser.email
+  displayNameEl.textContent = name
 
-/* ---------- Auth ---------- */
-async function initAuth(){
-  const {data:{session}} = await supabase.auth.getSession();
-  currentUser=session?.user || null;
-  updateAuthUI();
-  await loadPublishedAI();
-  if(isAdmin()){
-    $("aiAdmin").classList.remove("hidden");
-    renderDrafts(); renderAdminPublished();
+  if(!subscription){
+    statusBar.textContent = `${email} — You are not subscribed. Locked videos require a password.`
+    subInfo.textContent = 'No active subscription'
   } else {
-    $("aiAdmin").classList.add("hidden");
+    const courses = subscription.courses?.trim()
+    const list = courses ? normalizeCourses(courses).join(', ') : 'All'
+    statusBar.textContent = `${email} — Subscribed: ${list}. Start: ${subscription['start date']||'-'} | End: ${subscription['end date']||'-'}`
+    subInfo.textContent = `Subscribed: ${list}`
   }
 }
-function updateAuthUI(){
-  $("displayName").textContent=currentUser?.email || "Guest";
-  $("loginBtn").classList.toggle("hidden",!!currentUser);
-  $("logoutBtn").classList.toggle("hidden",!currentUser);
+function canAccessVideo(video){
+  if(!currentUser) return false
+  if(currentUser.email === ADMIN_EMAIL) return true
+  if(!subscription) return false
+  const courses = subscription.courses?.trim()
+  if(!courses) return true // blank means ALL courses
+  const allowed = new Set(normalizeCourses(courses).map(s=>s.toLowerCase()))
+  return allowed.has((video.section||'').toLowerCase())
 }
-$("loginBtn").onclick=async()=>{
-  const email=prompt("Email:");
-  const password=prompt("Password:");
-  if(!email||!password)return;
-  const {error}=await supabase.auth.signInWithPassword({email,password});
-  if(error)alert(error.message); else location.reload();
-};
-$("logoutBtn").onclick=async()=>{await supabase.auth.signOut();location.reload()};
-supabase.auth.onAuthStateChange((_e,session)=>{
-  currentUser=session?.user||null;
-  updateAuthUI();
-  if(isAdmin()){
-    $("aiAdmin").classList.remove("hidden");
-    renderDrafts();
-    renderAdminPublished();
+function passwordsFor(video){
+  return (video['password list']||'').split(',').map(s=>s.trim()).filter(Boolean)
+}
+
+// --- AUTH ---
+closeModalBtn.onclick = hideLoginModal
+loginTopBtn.onclick = showLoginModal
+logoutBtn.onclick = async ()=>{
+  await supabase.auth.signOut()
+  currentUser = null
+  subscription = null
+  adminPanel.style.display = 'none'
+  logoutBtn.style.display = 'none'
+  loginTopBtn.style.display = 'inline-block'
+  formatStatus()
+  renderVideos(allVideos)
+}
+
+loginBtn.onclick = async ()=>{
+  const email = loginEmail.value.trim()
+  const password = loginPassword.value.trim()
+  if(!email || !password) return alert('Please enter email and password.')
+
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+  if(error){ alert('Login failed: '+error.message); return }
+  currentUser = data.user
+  hideLoginModal()
+  logoutBtn.style.display = 'inline-block'
+  loginTopBtn.style.display = 'none'
+  if(currentUser.email === ADMIN_EMAIL){ adminPanel.style.display = 'block'; fetchSubscriptions() }
+  await fetchSubscriptionForUser(currentUser.email)
+  formatStatus()
+  await fetchVideos()
+}
+
+window.addEventListener('DOMContentLoaded', async ()=>{
+  const { data: { session } } = await supabase.auth.getSession()
+  if(session?.user){
+    currentUser = session.user
+    logoutBtn.style.display = 'inline-block'
+    loginTopBtn.style.display = 'none'
+    if(currentUser.email === ADMIN_EMAIL){ adminPanel.style.display = 'block'; fetchSubscriptions() }
+    await fetchSubscriptionForUser(currentUser.email)
+    formatStatus()
   } else {
-    $("aiAdmin").classList.add("hidden");
+    formatStatus()
+    showLoginModal()
   }
+  await fetchVideos()
+})
+
+// --- SUBSCRIPTION (for current user) ---
+async function fetchSubscriptionForUser(email){
+  subscription = null
+  const { data, error } = await supabase
+    .from('subscription')
+    .select('email, "start date", duration, "end date", courses')
+    .eq('email', email.toLowerCase())
+    .maybeSingle()
+  if(error){ console.error(error); return }
+  subscription = data || null
+}
+
+// --- VIDEOS ---
+async function fetchVideos(){
+  const { data, error } = await supabase
+    .from('Videos')
+    .select('id, title, "video id", "password list", section, semester, order')
+    .order('order', { ascending: true })
+  if(error){ container.innerHTML = '<b>Failed to load videos.</b>'; console.error(error); return }
+  allVideos = data || []
+  filteredVideos = null
+  renderVideos(allVideos)
+  if(currentUser?.email === ADMIN_EMAIL){ renderExistingVideos(allVideos) }
+}
+
+// --- SEARCH ---
+function searchVideos(query) {
+  if(!query || !query.trim()) return allVideos;
+  const q = query.trim().toLowerCase();
+  return allVideos.filter(video =>
+    (video.title && video.title.toLowerCase().includes(q)) ||
+    (video.section && video.section.toLowerCase().includes(q)) ||
+    (video.semester && video.semester.toLowerCase().includes(q))
+  );
+}
+function handleSearch() {
+  const query = videoSearchInput.value;
+  if(!query.trim()) {
+    filteredVideos = null;
+    renderVideos(allVideos);
+    return;
+  }
+  filteredVideos = searchVideos(query);
+  renderVideos(filteredVideos);
+}
+function handleClearSearch() {
+  videoSearchInput.value = '';
+  filteredVideos = null;
+  renderVideos(allVideos);
+}
+videoSearchBtn.onclick = handleSearch;
+videoSearchInput.addEventListener('keydown', e=>{
+  if(e.key==="Enter") handleSearch();
 });
+videoClearBtn.onclick = handleClearSearch;
 
-/* ---------- Existing YouTube area: safe loader ---------- */
-async function loadYouTubeVideos(search=""){
-  $("statusBar").textContent="Loading videos...";
-  try{
-    let q=supabase.from("Videos").select("*").order("videoOrder",{ascending:true});
-    const {data,error}=await q;
-    if(error)throw error;
-    const list=(data||[]).filter(v=>!search || JSON.stringify(v).toLowerCase().includes(search.toLowerCase()));
-    $("videoContainer").innerHTML=list.map(v=>{
-      const id=v.videoID||v.video_id||v.youtube_id||"";
-      return `<div class="video-card">
-        <div class="video-thumb"><button class="youtube" onclick="window.open('https://www.youtube.com/watch?v=${encodeURIComponent(id)}','_blank')">▶ YouTube</button></div>
-        <div class="video-info"><h3>${escapeHtml(v.title||"Untitled lesson")}</h3><div class="muted">${escapeHtml(v.section||"")}</div></div>
-      </div>`;
-    }).join("") || `<p class="muted">No videos found.</p>`;
-    $("statusBar").textContent=`${list.length} video(s) loaded.`;
-  }catch(e){
-    $("statusBar").textContent="YouTube lesson database could not be loaded: "+e.message;
-    $("statusBar").className="status error";
-  }
-}
-$("videoSearchBtn").onclick=()=>loadYouTubeVideos($("videoSearchInput").value.trim());
-$("videoClearBtn").onclick=()=>{$("videoSearchInput").value="";loadYouTubeVideos()};
+// --- RENDER ---
+function renderVideos(videos){
+  const grouped = {}
+  videos.forEach(v=>{
+    const sec = v.section || 'Other'
+    const sem = v.semester || 'Other'
+    grouped[sec] = grouped[sec] || {}
+    grouped[sec][sem] = grouped[sec][sem] || []
+    grouped[sec][sem].push(v)
+  })
 
-/* ---------- AI Storyboard ---------- */
-function normalizeStoryboard(raw){
-  let arr=Array.isArray(raw)?raw:(raw?.scenes||raw?.storyboard||raw?.result?.scenes||raw?.result?.storyboard||[]);
-  return arr.map((s,i)=>({
-    title:s.title||s.name||`Scene ${i+1}`,
-    narration:s.narration||s.voiceover||s.script||s.content||"",
-    points:Array.isArray(s.points)?s.points:(s.key_points||s.keyPoints||[]),
-    visual:s.visual||s.visualPrompt||s.description||"",
-    visualType:s.visualType||s.visual_type||inferVisualType(s),
-    labels:s.labels||[],
-    animation:s.animation||"fade",
-    chart:s.chart||null
-  }));
-}
-function inferVisualType(s){
-  const t=JSON.stringify(s).toLowerCase();
-  if(t.includes("chart")||t.includes("graph"))return "chart";
-  if(t.includes("heart")||t.includes("atrium")||t.includes("ventricle"))return "heart";
-  if(t.includes("blood flow")||t.includes("oxygenated")||t.includes("deoxygenated"))return "bloodflow";
-  if(t.includes("molecule")||t.includes("atom"))return "molecule";
-  if(t.includes("wave")||t.includes("oscillation"))return "wave";
-  return "diagram";
-}
-function createFallbackStoryboard(){
-  const title=$("aiTitle").value.trim()||"Educational Lesson";
-  const subject=($("aiSection").value.trim()||"General").toLowerCase();
-  const prompt=$("aiPrompt").value.trim();
-  if(/heart|cardiac|anatomy/.test((title+" "+prompt+" "+subject).toLowerCase())){
-    return [
-      {title:"Introduction to the Human Heart",narration:`The human heart is a muscular organ that pumps blood throughout the body. In this lesson we will examine its main structures and the pathway of blood flow.`,points:["Muscular organ","Four chambers","Maintains circulation"],visual:"Anatomical heart overview",visualType:"heart"},
-      {title:"The Four Chambers",narration:"The heart has four chambers. The right atrium and right ventricle handle mainly deoxygenated blood, while the left atrium and left ventricle handle oxygenated blood.",points:["Right atrium","Right ventricle","Left atrium","Left ventricle"],visual:"Four chamber heart diagram",visualType:"heart_chambers"},
-      {title:"Blood Flow",narration:"Deoxygenated blood returns from the body to the right side of the heart and is pumped to the lungs. Oxygenated blood returns from the lungs to the left side and is pumped to the body.",points:["Body to right heart","Right heart to lungs","Lungs to left heart","Left heart to body"],visual:"Animated oxygenated and deoxygenated blood flow",visualType:"bloodflow"},
-      {title:"Heart Valves",narration:"Four important valves help maintain one-way blood flow: tricuspid, pulmonary, mitral and aortic valves.",points:["Tricuspid","Pulmonary","Mitral","Aortic"],visual:"Valve positions",visualType:"valves"},
-      {title:"Summary and Exam Points",narration:"Remember that the right side sends deoxygenated blood to the lungs and the left side sends oxygenated blood to the body. Valves prevent backflow.",points:["Right = lungs","Left = body","Valves prevent backflow"],visual:"Summary diagram",visualType:"summary"}
-    ];
+  container.innerHTML = ''
+  // Show "No results" if search active and no results
+  if(filteredVideos && videos.length === 0) {
+    container.innerHTML = `<div style="text-align:center;padding:32px;font-size:1.2em;color:#888;">No videos found for your search.</div>`;
+    return;
   }
-  if(/physics|wave|motion|oscillation/.test(subject+" "+title+" "+prompt)){
-    return [
-      {title:"Introduction",narration:`Today we study ${title}. We begin with the basic idea and the quantities used to describe the phenomenon.`,points:["Definition","Key quantities","Units"],visualType:"diagram"},
-      {title:"Main Concept",narration:prompt||"The motion can be represented by a repeating wave pattern. Observe how amplitude and wavelength describe the wave.",points:["Amplitude","Wavelength","Frequency"],visualType:"wave"},
-      {title:"Exam Points",narration:"For examinations, define the quantities clearly, state their units and use the correct relationships.",points:["Definitions","Units","Equations"],visualType:"summary"}
-    ];
-  }
-  if(/chem|molecule|atom|biochem/.test(subject+" "+title+" "+prompt)){
-    return [
-      {title:"Introduction",narration:`This lesson introduces ${title}. We will identify the important chemical ideas and terminology.`,points:["Definitions","Structures","Key terms"],visualType:"molecule"},
-      {title:"Core Concept",narration:prompt||"Chemical structures and interactions can be represented using diagrams. Focus on the relationship between structure and function.",points:["Structure","Interaction","Function"],visualType:"molecule"},
-      {title:"Summary",narration:"Review the definitions, structures and important relationships before attempting examination questions.",points:["Definitions","Structures","Applications"],visualType:"summary"}
-    ];
-  }
-  return [
-    {title:"Introduction",narration:`Welcome to ${title}. In this lesson we will build the main idea step by step.`,points:["Topic introduction","Learning objective","Key terminology"],visual:"Educational introduction",visualType:"diagram"},
-    {title:"Main Concept",narration:prompt||`The central concept is ${title}. Study the diagram and connect each key point to the main idea.`,points:["Core concept","Important relationships","Application"],visual:"Concept diagram",visualType:"diagram"},
-    {title:"Exam Review",narration:"Review the definitions, relationships and applications. These are useful points to remember when preparing for examinations.",points:["Definition","Key relationships","Exam application"],visual:"Summary",visualType:"summary"}
-  ];
-}
-async function generateAiStoryboard(){
-  if(!isAdmin()){setAiStatus("Administrator access required.","error");return}
-  const payload={
-    title:$("aiTitle").value.trim(),
-    section:$("aiSection").value.trim(),
-    semester:$("aiSemester").value,
-    duration:Number($("aiDuration").value),
-    style:$("aiStyle").value,
-    difficulty:$("aiDifficulty").value,
-    prompt:$("aiPrompt").value.trim()
-  };
-  if(!payload.title){setAiStatus("Enter a lesson title.","error");return}
-  setAiStatus("Generating lesson content...");
-  try{
-    const {data:{session}}=await supabase.auth.getSession();
-    const res=await fetch(AI_VIDEO_FUNCTION_URL,{
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json",
-        ...(session?.access_token?{Authorization:`Bearer ${session.access_token}`}:{})
-      },
-      body:JSON.stringify(payload)
-    });
-    if(!res.ok)throw new Error(`AI service returned ${res.status}`);
-    const raw=await res.json();
-    currentStoryboard=normalizeStoryboard(raw);
-    if(!currentStoryboard.length)throw new Error("No scenes returned");
-    setAiStatus("AI lesson generated successfully.","ok");
-  }catch(e){
-    currentStoryboard=createFallbackStoryboard();
-    setAiStatus(`⚠️ AI service could not be reached (${e.message}). A useful local educational storyboard was created so you can still generate the animation.`,"");
-  }
-  renderStoryboard();
-}
+  Object.keys(grouped).sort().forEach(section=>{
+    const secDiv = document.createElement('div')
+    secDiv.className = 'section'
+    secDiv.innerHTML = `<h3>${section}</h3>`
 
-/* ---------- Storyboard UI ---------- */
-function renderStoryboard(){
-  $("aiStoryboard").innerHTML=currentStoryboard.map((s,i)=>`
-    <div class="scene-card">
-      <h3>Scene ${i+1}: ${escapeHtml(s.title)}</h3>
-      <div class="scene-meta">Visual: ${escapeHtml(s.visualType||"diagram")}</div>
-      <p>${escapeHtml(s.narration)}</p>
-      <ul>${(s.points||[]).map(p=>`<li>${escapeHtml(p)}</li>`).join("")}</ul>
-    </div>`).join("");
-}
-
-/* ---------- Chart Create ---------- */
-function parseChartData(){
-  return $("chartData").value.split("\n").map(x=>x.trim()).filter(Boolean).map(line=>{
-    const i=line.lastIndexOf(":");
-    if(i<1)return null;
-    const label=line.slice(0,i).trim();
-    const value=Number(line.slice(i+1).trim());
-    return Number.isFinite(value)?{label,value}:null;
-  }).filter(Boolean);
-}
-function drawChart(ctx,w,h,chart= currentChart){
-  ctx.clearRect(0,0,w,h);
-  ctx.fillStyle="#fff";ctx.fillRect(0,0,w,h);
-  if(!chart||!chart.data.length){
-    ctx.fillStyle="#777";ctx.font="24px Arial";ctx.fillText("Create a chart to preview it.",40,70);return;
-  }
-  ctx.fillStyle="#17202a";ctx.font="bold 28px Arial";ctx.fillText(chart.title||"Chart",40,45);
-  const left=100,right=40,top=85,bottom=90;
-  const cw=w-left-right,ch=h-top-bottom;
-  const max=Math.max(...chart.data.map(d=>d.value),1);
-  ctx.strokeStyle="#bbb";ctx.lineWidth=1;
-  for(let i=0;i<=5;i++){
-    const y=top+ch-(i/5)*ch;
-    ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(left+cw,y);ctx.stroke();
-    ctx.fillStyle="#555";ctx.font="13px Arial";ctx.fillText((max*i/5).toFixed(0),45,y+5);
-  }
-  if(chart.type==="pie"){
-    const cx=left+cw/2,cy=top+ch/2,r=Math.min(cw,ch)*.34;
-    let total=chart.data.reduce((a,d)=>a+d.value,0),a=-Math.PI/2;
-    chart.data.forEach((d,i)=>{
-      const da=d.value/total*Math.PI*2;
-      ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,a,a+da);ctx.closePath();
-      ctx.fillStyle=`hsl(${(i*67)%360} 65% 55%)`;ctx.fill();ctx.strokeStyle="#fff";ctx.stroke();
-      a+=da;
-    });
-  }else{
-    const step=cw/chart.data.length;
-    chart.data.forEach((d,i)=>{
-      const x=left+i*step+step*.2;
-      const bw=step*.6;
-      const y=top+ch-(d.value/max)*ch;
-      ctx.fillStyle="#1976d2";
-      if(chart.type==="bar"){
-        ctx.fillRect(x,y,bw,top+ch-y);
-      }else{
-        if(i>0){
-          const prev=chart.data[i-1];
-          const px=left+(i-1)*step+step/2;
-          const py=top+ch-(prev.value/max)*ch;
-          ctx.strokeStyle="#1976d2";ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(x+step*.3,y);ctx.stroke();
+    Object.keys(grouped[section]).sort().forEach(semester=>{
+      const semDiv = document.createElement('div')
+      semDiv.innerHTML = `<div class="semester-title">${semester}</div>`
+      grouped[section][semester].forEach(video=>{
+        const card = document.createElement('div')
+        const unlocked = canAccessVideo(video)
+        card.className = 'video-card'
+        // Added "Watch on YouTube" button next to Download.
+        card.innerHTML = `
+          <span style="display:flex; align-items:center; gap:6px;">
+            ${unlocked 
+              ? `<span>▶️</span>`
+              : '<span>🔒</span>'}
+            ${video.title}
+          </span>
+          <div style="display:flex;gap:8px;align-items:center">
+            <a class="watch-btn" href="#" title="Open on YouTube" onclick="event.stopPropagation();">Watch on YouTube</a>
+            <button class="youtube-download-icon download-btn"
+                    style="background:none; border:none; padding:0; cursor:pointer;"
+                    title="Download from YouTube">
+              <canvas width="32" height="32" class="yt-canvas"></canvas>
+              <span style="font-size:12px; color:#FF0000; font-weight:bold;">Download</span>
+            </button>
+          </div>
+        `
+        card.onclick = ()=> handleVideoClick(video, unlocked)
+        // Draw YouTube canvas icon for each button
+        const ytCanvas = card.querySelector('.yt-canvas');
+        if (ytCanvas) {
+          const ctx = ytCanvas.getContext('2d');
+          // Draw red rounded rectangle
+          ctx.beginPath();
+          const x = 2, y = 7, width = 28, height = 18, radius = 6;
+          ctx.moveTo(x + radius, y);
+          ctx.lineTo(x + width - radius, y);
+          ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+          ctx.lineTo(x + width, y + height - radius);
+          ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+          ctx.lineTo(x + radius, y + height);
+          ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+          ctx.lineTo(x, y + radius);
+          ctx.quadraticCurveTo(x, y, x + radius, y);
+          ctx.closePath();
+          ctx.fillStyle = "#FF0000";
+          ctx.fill();
+          // Draw white play triangle
+          ctx.beginPath();
+          ctx.moveTo(13, 12); // top
+          ctx.lineTo(13, 22); // bottom
+          ctx.lineTo(22, 17); // right
+          ctx.closePath();
+          ctx.fillStyle = "#FFFFFF";
+          ctx.fill();
         }
-        ctx.beginPath();ctx.arc(x+step*.3,y,6,0,Math.PI*2);ctx.fill();
-      }
-      ctx.fillStyle="#333";ctx.font="13px Arial";ctx.textAlign="center";ctx.fillText(d.label,x+bw/2,top+ch+25);
-    });
-  }
-  ctx.textAlign="center";ctx.fillStyle="#333";ctx.font="bold 15px Arial";ctx.fillText(chart.xLabel||"",left+cw/2,h-25);
-  ctx.save();ctx.translate(20,top+ch/2);ctx.rotate(-Math.PI/2);ctx.fillText(chart.yLabel||"",0,0);ctx.restore();
-  ctx.textAlign="left";
-}
-$("generateChartBtn").onclick=()=>{
-  currentChart={
-    type:$("chartType").value,title:$("chartTitle").value||"Chart",
-    xLabel:$("chartXLabel").value,yLabel:$("chartYLabel").value,data:parseChartData()
-  };
-  if(!currentChart.data.length){alert("Enter chart data such as 1:72, 2:85, 3:98");return}
-  drawChart($("chartPreviewCanvas").getContext("2d"),1100,560,currentChart);
-};
-$("addChartBtn").onclick=()=>{
-  if(!currentChart){$("generateChartBtn").click()}
-  if(!currentChart?.data?.length)return;
-  currentStoryboard.push({
-    title:currentChart.title,narration:`This chart shows ${currentChart.title}. The horizontal axis represents ${currentChart.xLabel||"the categories"}, while the vertical axis represents ${currentChart.yLabel||"the values"}.`,
-    points:currentChart.data.map(d=>`${d.label}: ${d.value}`),visualType:"chart",chart:currentChart
-  });
-  renderStoryboard();setAiStatus("Chart added as a video scene.","ok");
-};
 
-/* ---------- Real educational images + recorded narration ---------- */
-async function initTTS(){
-  if(ttsReady || !window.meSpeak) return ttsReady;
-  try{
-    await new Promise((resolve,reject)=>meSpeak.loadConfig("https://cdn.jsdelivr.net/npm/mespeak@2.0.2/src/mespeak_config.json",ok=>ok?resolve():reject(new Error("TTS config failed"))));
-    ttsConfigReady=true;
-    await new Promise((resolve,reject)=>meSpeak.loadVoice("https://cdn.jsdelivr.net/npm/mespeak@2.0.2/voices/en/en-us.json",(ok,msg)=>ok?resolve():reject(new Error(msg||"TTS voice failed"))));
-    ttsVoiceReady=true; ttsReady=true; return true;
-  }catch(e){ console.warn("meSpeak unavailable",e); return false; }
-}
-function imageQueryForScene(s){
-  const subject=($("aiSection").value||"").trim();
-  const raw=[subject,s.title,s.visual||"",(s.points||[]).slice(0,2).join(" ")].join(" ");
-  const low=raw.toLowerCase();
-  if(/heart|cardiac|atrium|ventricle|valve/.test(low)) return "human heart anatomy medical diagram";
-  if(/blood|circulation|oxygen/.test(low)) return "human cardiovascular blood circulation anatomy";
-  if(/brain|neuron|nerv/.test(low)) return "human brain anatomy medical";
-  if(/kidney|nephron/.test(low)) return "human kidney nephron anatomy";
-  if(/lung|respirat/.test(low)) return "human lungs respiratory anatomy";
-  if(/bone|skeleton|joint/.test(low)) return "human bone anatomy medical";
-  if(/muscle/.test(low)) return "human muscle anatomy medical";
-  if(/cell|bacteria|virus|microbio/.test(low)) return "microscope cell bacteria medical";
-  if(/molecule|atom|chem/.test(low)) return "molecular structure chemistry diagram";
-  return raw.slice(0,140)+" medical educational diagram";
-}
-async function searchMedicalImage(query){
-  const url="https://commons.wikimedia.org/w/api.php?origin=*&action=query&generator=search&gsrnamespace=6&gsrlimit=5&gsrsearch="+encodeURIComponent(query)+"&prop=imageinfo&iiprop=url|extmetadata&iiurlwidth=1600&format=json";
-  try{
-    const res=await fetch(url); if(!res.ok) throw new Error("image search failed");
-    const json=await res.json();
-    const pages=Object.values(json?.query?.pages||{});
-    for(const page of pages){
-      const info=page.imageinfo?.[0];
-      const src=info?.thumburl||info?.url;
-      if(src && /\.(jpg|jpeg|png|webp)(\?|$)/i.test(src)) return {src,title:page.title||"Wikimedia Commons",credit:info?.extmetadata?.Artist?.value||"Wikimedia Commons"};
-    }
-  }catch(e){console.warn("Medical image lookup failed",e)}
-  return null;
-}
-function loadImage(src){return new Promise(resolve=>{const img=new Image();img.crossOrigin="anonymous";img.onload=()=>resolve(img);img.onerror=()=>resolve(null);img.src=src;});}
-async function prepareSceneImages(){
-  sceneImages=[];
-  setAiStatus("Finding real medical visuals for each scene...");
-  for(let i=0;i<currentStoryboard.length;i++){
-    const s=currentStoryboard[i];
-    const found=await searchMedicalImage(imageQueryForScene(s));
-    const img=found?await loadImage(found.src):null;
-    sceneImages[i]={img,meta:found,query:imageQueryForScene(s)};
-  }
-}
-function drawRealImage(ctx,img,t){
-  if(!img) return false;
-  const iw=img.naturalWidth||img.width, ih=img.naturalHeight||img.height;
-  const scale=Math.max(W/iw,H/ih)*(1+0.035*Math.min(t,10));
-  const dw=iw*scale,dh=ih*scale;
-  const pan=Math.sin(t*.22)*18;
-  const x=(W-dw)/2+pan,y=(H-dh)/2;
-  ctx.save();ctx.globalAlpha=.98;ctx.drawImage(img,x,y,dw,dh);ctx.restore();
-  return true;
-}
-async function buildNarrationAudio(){
-  if(!(await initTTS())) return null;
-  const text=currentStoryboard.map(s=>s.narration).filter(Boolean).join(" ");
-  const wav=meSpeak.speak(text,{rawdata:true,amplitude:100,pitch:48,speed:150});
-  if(!wav) return null;
-  audioContext=new (window.AudioContext||window.webkitAudioContext)();
-  const audioBuffer=await audioContext.decodeAudioData(wav.slice(0));
-  const destination=audioContext.createMediaStreamDestination();
-  const source=audioContext.createBufferSource();source.buffer=audioBuffer;source.connect(destination);source.connect(audioContext.destination);
-  return {destination,source,audioBuffer};
+        // Watch button logic - allow subscribers OR correct password holders to open YouTube
+        const watchBtn = card.querySelector('.watch-btn')
+        if (watchBtn) {
+          watchBtn.onclick = (e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            if (unlocked) {
+              // Open the YouTube watch page in a new tab
+              window.open(`https://www.youtube.com/watch?v=${video['video id']}`, '_blank', 'noopener,noreferrer')
+              return
+            }
+            // Not unlocked — allow if user supplies a correct password for this video
+            const pw = prompt('You are not subscribed to this course. Enter password to watch on YouTube:')
+            if(pw === null) return
+            const passwords = passwordsFor(video).map(s=>s.toLowerCase())
+            if(passwords.includes(pw.trim().toLowerCase())){
+              window.open(`https://www.youtube.com/watch?v=${video['video id']}`, '_blank', 'noopener,noreferrer')
+            } else {
+              alert('Incorrect password or access denied.')
+            }
+          }
+        }
+
+        // Download button logic:
+        const dlBtn = card.querySelector('.download-btn')
+        if(dlBtn){
+          dlBtn.onclick = (e)=>{
+            e.stopPropagation()
+            if(unlocked){
+              window.open(`https://en1.savefrom.net/1-youtube-video-downloader-8jH/?url=https://www.youtube.com/watch?v=${video['video id']}`, '_blank')
+              alert('Successful download on YouTube.')
+            }else{
+              alert('To download this content, you need to subscribe.')
+            }
+          }
+        }
+        semDiv.appendChild(card)
+      })
+      secDiv.appendChild(semDiv)
+    })
+
+    container.appendChild(secDiv)
+  })
 }
 
-/* ---------- Educational Canvas renderer ---------- */
-const W=1280,H=720;
-function rounded(ctx,x,y,w,h,r){
-  ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill();
+// --- MODAL VIDEO LOGIC ---
+function showModalVideo(videoId) {
+  modalVideoFrame.src = `https://www.youtube.com/embed/${videoId}`
+  modalVideoBg.style.display = 'flex'
 }
-function arrow(ctx,x1,y1,x2,y2){
-  const a=Math.atan2(y2-y1,x2-x1),l=14;
-  ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
-  ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-l*Math.cos(a-.5),y2-l*Math.sin(a-.5));ctx.lineTo(x2-l*Math.cos(a+.5),y2-l*Math.sin(a+.5));ctx.closePath();ctx.fill();
+function hideModalVideo() {
+  modalVideoFrame.src = ''
+  modalVideoBg.style.display = 'none'
 }
-function textWrap(ctx,text,x,y,maxWidth,lineHeight=26,maxLines=5){
-  const words=String(text||"").split(/\s+/);let line="",lines=[];
-  for(const word of words){
-    const test=line?line+" "+word:word;
-    if(ctx.measureText(test).width>maxWidth&&line){lines.push(line);line=word;if(lines.length>=maxLines)break}else line=test;
+closeModalVideoBtn.onclick = hideModalVideo
+modalVideoBg.onclick = function(e) {
+  // Only close if clicking the background, not inside the modal
+  if (e.target === modalVideoBg) hideModalVideo()
+}
+
+// --- Update handleVideoClick to use modal ---
+async function handleVideoClick(video, unlocked){
+  if(unlocked){
+    showModalVideo(video['video id'])
+    return
   }
-  if(line&&lines.length<maxLines)lines.push(line);
-  lines.forEach((l,i)=>ctx.fillText(l,x,y+i*lineHeight));
-}
-function drawHeart(ctx,mode,t){
-  const cx=640,cy=365,scale=1;
-  ctx.save();ctx.translate(cx,cy);
-  ctx.fillStyle="#f6a6a6";
-  ctx.beginPath();
-  ctx.moveTo(0,190);
-  ctx.bezierCurveTo(-180,50,-185,-80,-90,-125);
-  ctx.bezierCurveTo(-35,-150,0,-105,0,-65);
-  ctx.bezierCurveTo(0,-105,35,-150,90,-125);
-  ctx.bezierCurveTo(185,-80,180,50,0,190);ctx.fill();
-  ctx.strokeStyle="#8b1e1e";ctx.lineWidth=5;ctx.stroke();
-  if(mode==="heart_chambers"||mode==="heart"){
-    ctx.fillStyle="#b91c1c";ctx.beginPath();ctx.ellipse(-65,-35,45,70,0,0,Math.PI*2);ctx.fill();
-    ctx.fillStyle="#b91c1c";ctx.beginPath();ctx.ellipse(65,-35,45,70,0,0,Math.PI*2);ctx.fill();
-    ctx.fillStyle="#e8d8d8";ctx.beginPath();ctx.ellipse(-58,85,55,70,0,0,Math.PI*2);ctx.fill();
-    ctx.fillStyle="#e8d8d8";ctx.beginPath();ctx.ellipse(58,85,55,70,0,0,Math.PI*2);ctx.fill();
-  }
-  ctx.fillStyle="#17202a";ctx.font="bold 18px Arial";ctx.textAlign="center";
-  ctx.fillText("Right Atrium",-100,-35);ctx.fillText("Left Atrium",100,-35);
-  ctx.fillText("Right Ventricle",-90,95);ctx.fillText("Left Ventricle",90,95);
-  if(Math.sin(t*5)>0){
-    ctx.fillStyle="#ff3333";ctx.beginPath();ctx.arc(0,0,8,0,Math.PI*2);ctx.fill();
-  }
-  ctx.restore();
-}
-function drawBloodFlow(ctx,t){
-  ctx.font="bold 24px Arial";ctx.textAlign="center";
-  ctx.fillStyle="#1976d2";ctx.fillText("BODY",180,300);
-  ctx.fillStyle="#e53935";ctx.fillText("LUNGS",1080,300);
-  ctx.fillStyle="#d96b6b";ctx.beginPath();ctx.arc(640,340,120,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle="#fff";ctx.fillText("HEART",640,348);
-  ctx.strokeStyle="#1976d2";ctx.fillStyle="#1976d2";ctx.lineWidth=10;
-  arrow(ctx,260,300,500,330);arrow(ctx,500,400,260,420);
-  ctx.strokeStyle="#e53935";ctx.fillStyle="#e53935";
-  arrow(ctx,780,330,1020,300);arrow(ctx,1020,420,780,400);
-  const phase=(t*130)%230;
-  ctx.fillStyle="#1976d2";ctx.beginPath();ctx.arc(260+phase,300+(phase/230)*30,9,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle="#e53935";ctx.beginPath();ctx.arc(790+phase,330-(phase/230)*30,9,0,Math.PI*2);ctx.fill();
-  ctx.font="18px Arial";ctx.fillStyle="#333";ctx.fillText("Deoxygenated blood",390,470);ctx.fillText("Oxygenated blood",890,470);
-}
-function drawValves(ctx){
-  ctx.textAlign="left";ctx.font="bold 22px Arial";ctx.fillStyle="#17202a";
-  const items=[["Tricuspid valve",280,250],["Pulmonary valve",730,250],["Mitral valve",280,420],["Aortic valve",730,420]];
-  items.forEach((a,i)=>{
-    ctx.fillStyle=i<2?"#1976d2":"#e53935";ctx.beginPath();ctx.arc(a[1],a[2],35,0,Math.PI*2);ctx.fill();
-    ctx.fillStyle="#333";ctx.fillText(a[0],a[1]+55,a[2]+8);
-  });
-  ctx.textAlign="center";ctx.fillStyle="#666";ctx.font="20px Arial";ctx.fillText("Valves open and close to maintain one-way blood flow.",640,570);
-}
-function drawMolecule(ctx,t){
-  const pts=[[640,340],[500,250],[780,250],[500,430],[780,430]];
-  ctx.strokeStyle="#1976d2";ctx.lineWidth=5;
-  pts.slice(1).forEach(p=>{ctx.beginPath();ctx.moveTo(640,340);ctx.lineTo(p[0],p[1]);ctx.stroke()});
-  pts.forEach((p,i)=>{ctx.fillStyle=i%2?"#90caf9":"#e53935";ctx.beginPath();ctx.arc(p[0],p[1],45+Math.sin(t*2+i)*4,0,Math.PI*2);ctx.fill()});
-  ctx.textAlign="center";ctx.fillStyle="#333";ctx.font="bold 18px Arial";ctx.fillText("Molecular structure",640,540);
-}
-function drawWave(ctx,t){
-  ctx.strokeStyle="#1976d2";ctx.lineWidth=5;ctx.beginPath();
-  for(let x=100;x<1180;x+=4){let y=360+90*Math.sin((x/110)*Math.PI*2-t*3);if(x===100)ctx.moveTo(x,y);else ctx.lineTo(x,y)}ctx.stroke();
-  ctx.fillStyle="#333";ctx.font="bold 20px Arial";ctx.textAlign="center";ctx.fillText("Amplitude and wavelength",640,520);
-}
-function drawDiagram(ctx,s,t){
-  const cx=640,cy=350;
-  ctx.strokeStyle="#1976d2";ctx.fillStyle="#e3f2fd";ctx.lineWidth=3;
-  ctx.beginPath();ctx.arc(cx,cy,100,0,Math.PI*2);ctx.fill();ctx.stroke();
-  ctx.fillStyle="#17202a";ctx.font="bold 22px Arial";ctx.textAlign="center";ctx.fillText("MAIN CONCEPT",cx,cy+8);
-  const labels=(s.points||[]).slice(0,4);
-  labels.forEach((p,i)=>{
-    const a=-Math.PI/2+i*Math.PI/2,x=cx+280*Math.cos(a),y=cy+220*Math.sin(a);
-    ctx.fillStyle="#fff";rounded(ctx,x-120,y-35,240,70,12);ctx.strokeStyle="#90caf9";ctx.stroke();
-    ctx.fillStyle="#333";ctx.font="18px Arial";textWrap(ctx,p,x-105,y-8,210,22,2);
-    ctx.strokeStyle="#1976d2";ctx.fillStyle="#1976d2";arrow(ctx,x-120*Math.cos(a),y-35*Math.sin(a),x-100*Math.cos(a),y-35*Math.sin(a));
-  });
-}
-function drawSummary(ctx,s){
-  ctx.textAlign="left";ctx.fillStyle="#17202a";ctx.font="bold 30px Arial";ctx.fillText("EXAM POINTS",110,190);
-  (s.points||[]).slice(0,6).forEach((p,i)=>{
-    ctx.fillStyle="#1976d2";ctx.beginPath();ctx.arc(130,250+i*60,8,0,Math.PI*2);ctx.fill();
-    ctx.fillStyle="#333";ctx.font="22px Arial";textWrap(ctx,p,155,258+i*60,950,26,1);
-  });
-}
-function drawChartScene(ctx,chart){
-  drawChart(ctx,W,H,{...chart});
-}
-function drawEducationalScene(ctx,s,index,total,t){
-  ctx.fillStyle="#fff";ctx.fillRect(0,0,W,H);
-  ctx.fillStyle="#17202a";ctx.fillRect(0,0,W,75);
-  ctx.fillStyle="#fff";ctx.font="bold 24px Arial";ctx.textAlign="left";ctx.fillText("THRIVES ARCHIVERS",35,48);
-  ctx.font="16px Arial";ctx.textAlign="right";ctx.fillText(`Scene ${index+1}/${total}`,1240,47);
-  ctx.fillStyle="#1976d2";ctx.font="bold 34px Arial";ctx.textAlign="center";ctx.fillText(s.title||"",640,125);
-  const type=s.visualType||"diagram";
-  const realImage=sceneImages[index]?.img;
-  const preferReal=!['chart','summary'].includes(type);
-  const drewReal=preferReal && drawRealImage(ctx,realImage,t);
-  if(!drewReal){
-    if(type==="heart"||type==="heart_chambers")drawHeart(ctx,type,t);
-    else if(type==="bloodflow")drawBloodFlow(ctx,t);
-    else if(type==="valves")drawValves(ctx);
-    else if(type==="molecule")drawMolecule(ctx,t);
-    else if(type==="wave")drawWave(ctx,t);
-    else if(type==="chart"&&s.chart)drawChartScene(ctx,s.chart);
-    else if(type==="summary")drawSummary(ctx,s);
-    else drawDiagram(ctx,s,t);
+  // Not subscribed for this section — ask for password
+  const pw = prompt('You are not subscribed to this course. Enter password to watch:')
+  if(pw===null) return
+  const passwords = passwordsFor(video).map(s=>s.toLowerCase())
+  if(passwords.includes(pw.trim().toLowerCase())){
+    showModalVideo(video['video id'])
   } else {
-    // Medical labels remain on top of the real image so students can follow the structure.
-    ctx.fillStyle="#0008";rounded(ctx,55,145,1170,74,12);
-    ctx.fillStyle="#fff";ctx.font="bold 22px Arial";ctx.textAlign="left";
-    ctx.fillText((s.visual||"Real medical visual").slice(0,90),80,190);
+    alert('Incorrect password or access denied.')
   }
-
-  // caption
-  ctx.fillStyle="#000c";rounded(ctx,55,590,1170,82,12);
-  ctx.fillStyle="#fff";ctx.font="18px Arial";ctx.textAlign="left";textWrap(ctx,s.narration,80,620,1110,25,2);
-  ctx.fillStyle="#1976d2";ctx.fillRect(55,684,1170*(Math.min(t/(Number($("aiDuration").value)*60),1)),7);
 }
-function getSceneDuration(){return Math.max(3,(Number($("aiDuration").value)*60)/(currentStoryboard.length||1));}
 
-/* ---------- Optional narration preview ---------- */
-$("previewVoiceBtn").onclick=()=>{
-  if(!currentStoryboard.length){alert("Generate a lesson first.");return}
-  speechSynthesis.cancel();
-  const text=currentStoryboard.map(s=>s.narration).join(" ");
-  const u=new SpeechSynthesisUtterance(text);u.rate=.92;u.pitch=1;
-  speechSynthesis.speak(u);
-};
-$("stopVoiceBtn").onclick=()=>speechSynthesis.cancel();
+// --- ADMIN: Video management ---
+function renderExistingVideos(data){
+  existingVideosDiv.innerHTML = '<h4>Existing Videos</h4>'
+  data.forEach(v=>{
+    const row = document.createElement('div')
+    row.style.borderBottom = '1px solid #eee'
+    row.style.padding = '6px 0'
+    row.innerHTML = `${v.title} (${v.section} — ${v.semester}) <button class="btn danger" data-id="${v.id}">Delete</button>`
+    existingVideosDiv.appendChild(row)
+  })
+  existingVideosDiv.querySelectorAll('button[data-id]').forEach(btn=>{
+    btn.onclick = async ()=>{
+      const id = btn.getAttribute('data-id')
+      if(!confirm('Delete this video?')) return
+      const { error } = await supabase.from('Videos').delete().eq('id', id)
+      if(error){ alert(error.message); return }
+      fetchVideos()
+    }
+  })
+}
 
-/* ---------- Canvas video recording ---------- */
-async function createAiVideo(){
-  if(!currentStoryboard.length){setAiStatus("Generate a lesson first.","error");return}
-  if(!window.MediaRecorder||!HTMLCanvasElement.prototype.captureStream){setAiStatus("This browser does not support Canvas video recording.","error");return}
-  await prepareSceneImages();
-  const audio=await buildNarrationAudio();
-  const canvas=document.createElement("canvas");canvas.width=W;canvas.height=H;
-  const ctx=canvas.getContext("2d");
-  const videoStream=canvas.captureStream(30);
-  const tracks=[...videoStream.getVideoTracks()];
-  if(audio) tracks.push(...audio.destination.stream.getAudioTracks());
-  const combined=new MediaStream(tracks);
-  let mime="video/webm;codecs=vp9,opus";
-  if(!MediaRecorder.isTypeSupported(mime)) mime="video/webm;codecs=vp8,opus";
-  if(!MediaRecorder.isTypeSupported(mime)) mime="video/webm";
-  const recorder=new MediaRecorder(combined,{mimeType:mime,videoBitsPerSecond:8000000,audioBitsPerSecond:128000});
-  const chunks=[];recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};
-  const done=new Promise(resolve=>recorder.onstop=resolve);
-  recorder.start(250);setAiStatus(audio?"Rendering high-quality visuals + narration audio...":"Rendering high-quality visuals... (narration could not be prepared)");
-  if(audio){await audio.source.start(0);}
-  const totalSeconds=Math.max(3,Number($("aiDuration").value)*60);
-  const startTime=performance.now(),sceneDur=getSceneDuration()*1000;let lastScene=-1;
-  while(performance.now()-startTime<totalSeconds*1000){
-    const elapsed=performance.now()-startTime;const si=Math.min(currentStoryboard.length-1,Math.floor(elapsed/sceneDur));
-    const local=(elapsed-si*sceneDur)/1000;
-    if(si!==lastScene){lastScene=si;setAiStatus(`Rendering scene ${si+1} of ${currentStoryboard.length}...`)}
-    drawEducationalScene(ctx,currentStoryboard[si],si,currentStoryboard.length,local);
-    await new Promise(requestAnimationFrame);
+addVideoForm.onsubmit = async (e)=>{
+  e.preventDefault()
+  if(!currentUser || currentUser.email !== ADMIN_EMAIL) return alert('Admins only.')
+  const title = document.getElementById('videoTitle').value.trim()
+  const video_id = document.getElementById('videoID').value.trim()
+  const password_list = document.getElementById('passwordList').value.trim()
+  const section = document.getElementById('videoSection').value
+  const semester = document.getElementById('videoSemester').value
+  const order = parseInt(document.getElementById('videoOrder').value)
+  if(!title || !video_id || !section || !semester || Number.isNaN(order)) return alert('Fill all fields.')
+
+  const { error } = await supabase.from('Videos').insert([{ 
+    title,
+    'video id': video_id,
+    'password list': password_list,
+    section,
+    semester,
+    order
+  }])
+  if(error){ alert(error.message); return }
+  addVideoForm.reset()
+  fetchVideos()
+}
+
+// --- ADMIN: Subscriptions management ---
+async function fetchSubscriptions(){
+  const { data, error } = await supabase
+    .from('subscription')
+    .select('email, "start date", duration, "end date", courses')
+    .order('email', { ascending: true })
+  if(error){ subscriptionsAdmin.innerHTML = 'Failed to fetch subscriptions.'; console.error(error); return }
+  renderSubscriptionsAdmin(data||[])
+}
+
+function renderSubscriptionsAdmin(data){
+  subscriptionsAdmin.innerHTML = `
+    <h4>All Subscriptions</h4>
+    <table>
+      <tr><th>Email</th><th>Start</th><th>Duration (months)</th><th>End</th><th>Courses</th><th>Action</th></tr>
+      ${data.map(sub=>`
+        <tr>
+          <td>${sub.email}</td>
+          <td>${sub['start date']||''}</td>
+          <td>${sub.duration||''}</td>
+          <td>${sub['end date']||''}</td>
+          <td>${sub.courses||''}</td>
+          <td>
+            <button class="btn ghost" data-edit="${sub.email}">Edit</button>
+            <button class="btn danger" data-del="${sub.email}">Delete</button>
+          </td>
+        </tr>`).join('')}
+    </table>
+    <h4 style="margin-top:14px">Add / Update Subscription</h4>
+    <form id="addSubForm">
+      <div class="grid">
+        <div><label>Email</label><input type="email" id="subEmail" placeholder="Email" required /></div>
+        <div><label>Start Date</label><input type="date" id="subStart" required /></div>
+        <div>
+          <label>Duration</label>
+          <select id="subDuration" required>
+            <option value="">Select Duration</option>
+            <option value="1">1 Month</option>
+            <option value="3">3 Months</option>
+            <option value="5">5 Months</option>
+          </select>
+        </div>
+        <div><label>Courses (comma separated; blank = ALL)</label><input type="text" id="subCourses" placeholder="e.g., Maths, Biology" /></div>
+      </div>
+      <div style="margin-top:10px"><button class="btn" type="submit">Save Subscription</button></div>
+    </form>
+  `
+
+  // row buttons
+  subscriptionsAdmin.querySelectorAll('button[data-edit]').forEach(btn=>{
+    btn.onclick = ()=>{
+      const email = btn.getAttribute('data-edit')
+      const tr = btn.closest('tr')
+      document.getElementById('subEmail').value = email
+      document.getElementById('subStart').value = tr.children[1].textContent
+      document.getElementById('subDuration').value = tr.children[2].textContent
+      document.getElementById('subCourses').value = tr.children[4].textContent
+    }
+  })
+  subscriptionsAdmin.querySelectorAll('button[data-del]').forEach(btn=>{
+    btn.onclick = async ()=>{
+      const email = btn.getAttribute('data-del')
+      if(!confirm('Delete subscription for '+email+'?')) return
+      const { error } = await supabase.from('subscription').delete().eq('email', email)
+      if(error){ alert('Error: '+error.message); return }
+      fetchSubscriptions()
+    }
+  })
+
+  // form submit
+  const addForm = document.getElementById('addSubForm')
+  addForm.onsubmit = async (e)=>{
+    e.preventDefault()
+    const email = document.getElementById('subEmail').value.trim().toLowerCase()
+    const start = document.getElementById('subStart').value
+    const duration = parseInt(document.getElementById('subDuration').value)
+    const courses = document.getElementById('subCourses').value.trim()
+    if(!email || !start || Number.isNaN(duration)) return alert('Fill required fields.')
+
+    // compute end
+    const startDate = new Date(start)
+    const endDate = new Date(startDate)
+    endDate.setMonth(endDate.getMonth()+duration)
+    const endStr = endDate.toISOString().split('T')[0]
+
+    const { error } = await supabase.from('subscription').upsert([{ 
+      email,
+      'start date': start,
+      duration,
+      'end date': endStr,
+      courses
+    }])
+    if(error){ alert('Error: '+error.message); return }
+
+    alert('Subscription saved/updated!')
+    fetchSubscriptions()
   }
-  if(audio){try{audio.source.stop()}catch(_){};try{await audioContext.close()}catch(_){}}
-  recorder.stop();await done;videoStream.getTracks().forEach(t=>t.stop());combined.getTracks().forEach(t=>t.stop());
-  currentVideoBlob=new Blob(chunks,{type:mime});
-  if(currentVideoUrl)URL.revokeObjectURL(currentVideoUrl);
-  currentVideoUrl=URL.createObjectURL(currentVideoBlob);
-  $("aiPreviewVideo").src=currentVideoUrl;$("aiPreviewWrap").classList.remove("hidden");
-  setAiStatus(`Video generated with ${audio?"recorded narration and":""} real medical visuals (${(currentVideoBlob.size/1024/1024).toFixed(1)} MB).`,"ok");
 }
-$("recordAiVideoBtn").onclick=createAiVideo;
-
-/* ---------- Save / publish ---------- */
-function videoRecord(){
-  return {
-    id:crypto.randomUUID?.()||String(Date.now()),
-    title:$("aiTitle").value.trim(),
-    section:$("aiSection").value.trim(),
-    semester:$("aiSemester").value,
-    duration:Number($("aiDuration").value),
-    style:$("aiStyle").value,
-    difficulty:$("aiDifficulty").value,
-    prompt:$("aiPrompt").value.trim(),
-    storyboard:currentStoryboard,
-    chart:currentChart,
-    video_url:currentVideoUrl,
-    created_at:new Date().toISOString()
-  };
-}
-$("saveAiDraftBtn").onclick=()=>{
-  if(!currentStoryboard.length){alert("Generate a lesson first.");return}
-  const d=videoRecord();drafts.unshift(d);localStorage.setItem("thrives_ai_drafts",JSON.stringify(drafts));
-  renderDrafts();setAiStatus("Draft saved in this browser.","ok");
-};
-$("publishAiVideoBtn").onclick=async()=>{
-  if(!currentVideoBlob){alert("Create the animation video first.");return}
-  if(!isAdmin()){alert("Administrator access required.");return}
-  setAiStatus("Publishing video...");
-  try{
-    const safe=($("aiTitle").value.trim()||"ai-video").replace(/[^a-z0-9_-]+/gi,"-").toLowerCase();
-    const path=`generated/${Date.now()}-${safe}.webm`;
-    const {error:uploadError}=await supabase.storage.from("ai-videos").upload(path,currentVideoBlob,{contentType:"video/webm",upsert:false});
-    if(uploadError)throw uploadError;
-    const {data}=supabase.storage.from("ai-videos").getPublicUrl(path);
-    const row={
-      title:$("aiTitle").value.trim(),section:$("aiSection").value.trim(),semester:$("aiSemester").value,
-      duration:Number($("aiDuration").value),prompt:$("aiPrompt").value.trim(),style:$("aiStyle").value,
-      difficulty:$("aiDifficulty").value,storyboard:currentStoryboard,video_url:data.publicUrl,
-      storage_path:path,published:true,created_by:currentUser?.id||null
-    };
-    const {error}=await supabase.from("AI_Videos").insert(row);
-    if(error)throw error;
-    await loadPublishedAI();renderAdminPublished();
-    setAiStatus("Video published successfully to the AI Video Library.","ok");
-  }catch(e){
-    // Keep local publishing as a fallback so the generated video is not lost.
-    const p=videoRecord();published.unshift(p);localStorage.setItem("thrives_ai_published",JSON.stringify(published));
-    renderPublishedLocal();renderAdminPublished();
-    setAiStatus(`Video generated, but Supabase publishing failed: ${e.message}. A local copy was kept in this browser.`,"");
-  }
-};
-
-/* ---------- AI public library ---------- */
-async function loadPublishedAI(){
-  try{
-    const {data,error}=await supabase.from("AI_Videos").select("*").eq("published",true).order("created_at",{ascending:false});
-    if(error)throw error;
-    renderPublished(data||[]);
-  }catch(e){renderPublishedLocal()}
-}
-function renderPublished(data){
-  const list=data||[];
-  $("aiPublishedVideos").innerHTML=list.map(v=>`
-    <div class="video-card">
-      <div class="video-thumb"><button onclick="window.open('${escapeHtml(v.video_url||"")}','_blank')">▶ Watch AI Lesson</button></div>
-      <div class="video-info"><h3>${escapeHtml(v.title)}</h3><div>${escapeHtml(v.section||"")} • ${escapeHtml(v.semester||"")}</div></div>
-    </div>`).join("")||"<p class='muted'>No published AI lessons yet.</p>";
-}
-function renderPublishedLocal(){renderPublished(published)}
-function renderDrafts(){
-  $("aiDraftsList").innerHTML=drafts.map((d,i)=>`
-    <div class="scene-card"><h3>${escapeHtml(d.title)}</h3>
-    <p>${escapeHtml(d.section)} • ${escapeHtml(d.duration)} min</p>
-    <button onclick="loadDraft(${i})">Load Draft</button>
-    </div>`).join("")||"<p class='muted'>No drafts.</p>";
-}
-window.loadDraft=i=>{
-  const d=drafts[i];if(!d)return;
-  $("aiTitle").value=d.title;$("aiSection").value=d.section;$("aiSemester").value=d.semester;
-  $("aiDuration").value=d.duration;$("aiStyle").value=d.style;$("aiDifficulty").value=d.difficulty;$("aiPrompt").value=d.prompt;
-  currentStoryboard=d.storyboard||[];currentChart=d.chart||null;renderStoryboard();
-  if(currentChart)drawChart($("chartPreviewCanvas").getContext("2d"),1100,560,currentChart);
-  if(d.video_url){currentVideoUrl=d.video_url;$("aiPreviewVideo").src=d.video_url;$("aiPreviewWrap").classList.remove("hidden")}
-};
-function renderAdminPublished(){
-  $("aiAdminPublishedList").innerHTML=published.map((p,i)=>`
-    <div class="scene-card"><h3>${escapeHtml(p.title)}</h3><p>${escapeHtml(p.section||"")}</p></div>`).join("")||"<p class='muted'>No local published items.</p>";
-}
-
-/* ---------- Tabs ---------- */
-document.querySelectorAll(".tabs button").forEach(btn=>btn.onclick=()=>{
-  document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));btn.classList.add("active");
-  $("aiGenerateTab").classList.toggle("hidden",btn.dataset.tab!=="generate");
-  $("aiDraftsTab").classList.toggle("hidden",btn.dataset.tab!=="drafts");
-  $("aiPublishedTab").classList.toggle("hidden",btn.dataset.tab!=="published");
-});
-$("generateAiBtn").onclick=generateAiStoryboard;
-$("clearAiBtn").onclick=()=>{
-  ["aiTitle","aiSection","aiPrompt","chartTitle","chartXLabel","chartYLabel","chartData"].forEach(id=>$(id).value="");
-  currentStoryboard=[];currentChart=null;currentVideoBlob=null;
-  $("aiStoryboard").innerHTML="";$("aiPreviewWrap").classList.add("hidden");
-  drawChart($("chartPreviewCanvas").getContext("2d"),1100,560,null);setAiStatus("Cleared.");
-};
-
-/* ---------- Modal close ---------- */
-$("closeModalVideoBtn").onclick=()=>$("modalVideoBg").classList.add("hidden");
-$("closeAiModalBtn").onclick=()=>$("aiVideoModalBg").classList.add("hidden");
-
-/* ---------- Start ---------- */
-drawChart($("chartPreviewCanvas").getContext("2d"),1100,560,null);
-loadYouTubeVideos();
-initAuth();
 </script>
 </body>
 </html>
