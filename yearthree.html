@@ -430,97 +430,6 @@ footer{
   background:#111827;
 }
 
-
-/* DOCUMENT VIEWER / DOWNLOAD / READ ALOUD */
-.document-toolbar{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  margin-top:18px;
-  padding:12px;
-  background:#f8fbff;
-  border:1px solid var(--border);
-  border-radius:10px;
-}
-.document-toolbar .btn{
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-}
-.read-status{
-  margin-top:8px;
-  color:var(--muted);
-  font-size:13px;
-}
-.document-export{
-  width:794px;
-  max-width:100%;
-  background:#fff;
-  color:#111827;
-  padding:34px 42px;
-  margin:0 auto;
-}
-.document-export-header{
-  text-align:center;
-  border-bottom:2px solid #0d47a1;
-  padding-bottom:18px;
-  margin-bottom:24px;
-}
-.document-export-logo{
-  display:block;
-  width:92px;
-  height:92px;
-  object-fit:contain;
-  margin:0 auto 10px;
-}
-.document-export-brand{
-  color:#0d47a1;
-  font-size:22px;
-  font-weight:800;
-  letter-spacing:.8px;
-}
-.document-export-title{
-  margin-top:10px;
-  font-size:25px;
-  color:#111827;
-}
-.document-export-meta{
-  margin-top:12px;
-  font-size:13px;
-  color:#4b5563;
-}
-.document-export-body{
-  line-height:1.65;
-  font-size:15px;
-  word-wrap:break-word;
-}
-.document-export-body img{
-  max-width:100%;
-  height:auto;
-}
-.document-export-footer{
-  margin-top:32px;
-  padding-top:14px;
-  border-top:1px solid #dbe4ef;
-  text-align:center;
-  color:#6b7280;
-  font-size:12px;
-}
-.pdf-loading{
-  opacity:.7;
-  pointer-events:none;
-}
-@media print{
-  body *{visibility:hidden!important}
-  #pdfPrintArea,#pdfPrintArea *{visibility:visible!important}
-  #pdfPrintArea{
-    position:absolute!important;
-    left:0!important;
-    top:0!important;
-    width:100%!important;
-  }
-}
-
 @media(max-width:700px){
   header{
     align-items:flex-start;
@@ -551,6 +460,169 @@ footer{
     flex-direction:column;
   }
 }
+
+
+/* =========================================================
+   BRANDED DOCUMENT VIEWER / PDF / PRINT
+   ========================================================= */
+.document-toolbar{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:18px;
+  padding:12px;
+  background:#f8fbff;
+  border:1px solid var(--border);
+  border-radius:10px;
+}
+.document-toolbar .btn{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+}
+.read-status{
+  flex-basis:100%;
+  margin-top:2px;
+  color:var(--muted);
+  font-size:13px;
+}
+.document-export{
+  width:190mm;
+  max-width:100%;
+  box-sizing:border-box;
+  background:#fff;
+  color:#111827;
+  padding:12mm 14mm;
+  margin:0 auto;
+}
+.document-export-header{
+  text-align:center;
+  border-bottom:2px solid #0d47a1;
+  padding-bottom:6mm;
+  margin-bottom:7mm;
+  break-inside:avoid;
+  page-break-inside:avoid;
+}
+.document-export-logo{
+  display:block;
+  width:25mm;
+  height:25mm;
+  object-fit:contain;
+  margin:0 auto 3mm;
+}
+.document-export-brand{
+  color:#0d47a1;
+  font-size:22px;
+  font-weight:800;
+  letter-spacing:.8px;
+}
+.document-export-title{
+  margin-top:3mm;
+  font-size:25px;
+  line-height:1.25;
+}
+.document-export-meta{
+  margin-top:3mm;
+  font-size:13px;
+  line-height:1.5;
+  color:#4b5563;
+}
+.document-export-body{
+  line-height:1.65;
+  font-size:15px;
+  word-wrap:break-word;
+  overflow-wrap:break-word;
+  word-break:normal;
+  orphans:3;
+  widows:3;
+}
+.document-export-body img{
+  max-width:100%;
+  height:auto;
+}
+.document-export-body table{
+  width:100%;
+  max-width:100%;
+  border-collapse:collapse;
+}
+.document-export-body pre{
+  white-space:pre-wrap;
+  overflow-wrap:break-word;
+}
+.document-export-body h1,
+.document-export-body h2,
+.document-export-body h3,
+.document-export-body h4,
+.document-export-body h5,
+.document-export-body h6,
+.document-export-body p,
+.document-export-body li,
+.document-export-body table,
+.document-export-body tr,
+.document-export-body blockquote,
+.document-export-body pre,
+.document-export-body figure,
+.document-export-body img,
+.pdf-avoid-break{
+  break-inside:avoid!important;
+  page-break-inside:avoid!important;
+}
+.document-export-promo{
+  margin-top:5mm;
+  padding:4mm;
+  border:1px solid #dbe4ef;
+  border-radius:3mm;
+  text-align:center;
+  background:#f8fbff;
+  line-height:1.6;
+  break-inside:avoid;
+  page-break-inside:avoid;
+}
+.document-export-promo strong{
+  color:#0d47a1;
+}
+.document-export-promo a{
+  color:#0d47a1;
+  text-decoration:none;
+  font-weight:700;
+  overflow-wrap:anywhere;
+}
+.document-export-footer{
+  margin-top:10mm;
+  padding-top:4mm;
+  border-top:1px solid #dbe4ef;
+  text-align:center;
+  color:#6b7280;
+  font-size:12px;
+  line-height:1.6;
+  break-inside:avoid;
+  page-break-inside:avoid;
+}
+.pdf-loading{
+  opacity:.7;
+  pointer-events:none;
+}
+
+@page{
+  size:A4 portrait;
+  margin:12mm;
+}
+
+@media print{
+  body *{visibility:hidden!important}
+  #pdfPrintArea,
+  #pdfPrintArea *{visibility:visible!important}
+  #pdfPrintArea{
+    position:absolute!important;
+    left:0!important;
+    top:0!important;
+    width:190mm!important;
+    max-width:190mm!important;
+    margin:0!important;
+    box-shadow:none!important;
+  }
+}
+
 </style>
 </head>
 
@@ -1126,6 +1198,14 @@ Existing Quizzes
 Everything is possible to achieve if we are together.
 </p>
 
+<p style="margin-top:12px">
+<a href="https://thrivesarchivers.github.io/Thrives-Archivers-Enduacation/" target="_blank" rel="noopener" style="color:white;font-weight:bold">Visit Thrives Archivers Website</a>
+</p>
+
+<p style="margin-top:8px">
+WhatsApp: <b>0762514399</b> — Inbox us to join our WhatsApp group.
+</p>
+
 </footer>
 
 <div id="loginModal" class="modal">
@@ -1198,7 +1278,7 @@ Login
   <button class="btn light" onclick="stopReadAloud()">⏹ Stop</button>
   <button class="btn green" onclick="downloadCurrentDocument()">⬇️ Download Document</button>
   <button class="btn orange" onclick="printCurrentDocument()">🖨️ Print / Save as PDF</button>
-  <button class="btn red" onclick="downloadCurrentDocumentPDF()">📄 Download PDF</button>
+  <button class="btn red" onclick="downloadCurrentDocumentPDF(event)">📄 Download PDF</button>
   <div id="readStatus" class="read-status">Ready.</div>
 </div>
 
@@ -2094,14 +2174,23 @@ function openResource(
     $("documentActions").classList.remove("hidden");
     $("readStatus").textContent = "Ready to read.";
 
-    const content =
-      item.content_html ||
-      `<pre>${escapeHtml(item.content_text || "")}</pre>`;
-
     html += `
+
 <div id="documentReaderContent" class="document-reader-content" style="margin-top:20px">
-${content}
+
+${
+  item.content_html ||
+  `
+  <pre>
+    ${escapeHtml(
+      item.content_text || ""
+    )}
+  </pre>
+  `
+}
+
 </div>
+
 `;
 
   }
@@ -2292,12 +2381,19 @@ Submit Quiz
 }
 
 
+
 /* =========================================================
    DOCUMENT EXPORT + READ ALOUD
    ========================================================= */
 
 const THRIVES_LOGO_URL =
   "https://thrivesarchivers.github.io/Thrives-Archivers-Enduacation/image1.jpg";
+
+const THRIVES_WEBSITE_URL =
+  "https://thrivesarchivers.github.io/Thrives-Archivers-Enduacation/";
+
+const THRIVES_WHATSAPP =
+  "0762514399";
 
 function getDocumentPlainText(doc){
   const raw = doc?.content_html || doc?.content_text || "";
@@ -2327,7 +2423,7 @@ function buildBrandedDocumentHTML(doc){
 
   return `
 <div id="pdfPrintArea" class="document-export">
-  <div class="document-export-header">
+  <div class="document-export-header pdf-avoid-break">
     <img class="document-export-logo" src="${THRIVES_LOGO_URL}" crossorigin="anonymous" alt="Thrives Archivers Logo">
     <div class="document-export-brand">THRIVES ARCHIVERS</div>
     <div class="document-export-title">${escapeHtml(title)}</div>
@@ -2337,9 +2433,19 @@ function buildBrandedDocumentHTML(doc){
       <b>Semester:</b> ${escapeHtml(semester || "Not specified")}
     </div>
   </div>
+
   <div class="document-export-body">${content}</div>
-  <div class="document-export-footer">
-    THRIVES ARCHIVERS • Year Three Learning Hub<br>
+
+  <div class="document-export-promo pdf-avoid-break">
+    <strong>Access More Thrives Archivers Learning Materials</strong><br>
+    Visit our website for more documents, videos, quizzes and lessons:<br>
+    <a href="${THRIVES_WEBSITE_URL}" target="_blank">${THRIVES_WEBSITE_URL}</a><br><br>
+    <strong>Join Our WhatsApp Group</strong><br>
+    Inbox <b>${THRIVES_WHATSAPP}</b> to join the Thrives Archivers WhatsApp group.
+  </div>
+
+  <div class="document-export-footer pdf-avoid-break">
+    <b>THRIVES ARCHIVERS • Year Three Learning Hub</b><br>
     Educational document generated from the Thrives Archivers platform.
   </div>
 </div>`;
@@ -2351,17 +2457,68 @@ function buildStandaloneDocumentHTML(doc){
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${escapeAttribute(doc?.title || "Thrives Archivers Document")}</title>
 <style>
-body{margin:0;background:#f4f7fb;color:#111827;font-family:Arial,Helvetica,sans-serif}
-.document-export{width:min(794px,calc(100% - 40px));margin:30px auto;background:#fff;padding:34px 42px;box-shadow:0 4px 18px #0001}
-.document-export-header{text-align:center;border-bottom:2px solid #0d47a1;padding-bottom:18px;margin-bottom:24px}
-.document-export-logo{display:block;width:92px;height:92px;object-fit:contain;margin:0 auto 10px}
+@page{size:A4 portrait;margin:12mm}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#fff;color:#111827;font-family:Arial,Helvetica,sans-serif}
+.document-export{width:190mm;max-width:100%;margin:0 auto;background:#fff;padding:12mm 14mm}
+.document-export-header{text-align:center;border-bottom:2px solid #0d47a1;padding-bottom:6mm;margin-bottom:7mm;break-inside:avoid;page-break-inside:avoid}
+.document-export-logo{display:block;width:25mm;height:25mm;object-fit:contain;margin:0 auto 3mm}
 .document-export-brand{color:#0d47a1;font-size:22px;font-weight:800;letter-spacing:.8px}
-.document-export-title{margin-top:10px;font-size:25px}
-.document-export-meta{margin-top:12px;font-size:13px;color:#4b5563}
-.document-export-body{line-height:1.65;font-size:15px;word-wrap:break-word}.document-export-body img{max-width:100%;height:auto}
-.document-export-footer{margin-top:32px;padding-top:14px;border-top:1px solid #dbe4ef;text-align:center;color:#6b7280;font-size:12px}
-@media(max-width:700px){.document-export{width:auto;margin:10px;padding:20px}}
+.document-export-title{margin-top:3mm;font-size:25px;line-height:1.25}
+.document-export-meta{margin-top:3mm;font-size:13px;line-height:1.5;color:#4b5563}
+.document-export-body{line-height:1.65;font-size:15px;word-wrap:break-word;overflow-wrap:break-word;word-break:normal;orphans:3;widows:3}
+.document-export-body img{max-width:100%;height:auto}
+.document-export-body table{width:100%;max-width:100%;border-collapse:collapse}
+.document-export-body pre{white-space:pre-wrap;overflow-wrap:break-word}
+.document-export-body h1,.document-export-body h2,.document-export-body h3,.document-export-body h4,.document-export-body h5,.document-export-body h6,.document-export-body p,.document-export-body li,.document-export-body table,.document-export-body tr,.document-export-body blockquote,.document-export-body pre,.document-export-body figure,.document-export-body img,.pdf-avoid-break{break-inside:avoid!important;page-break-inside:avoid!important}
+.document-export-promo{margin-top:5mm;padding:4mm;border:1px solid #dbe4ef;border-radius:3mm;text-align:center;background:#f8fbff;line-height:1.6;break-inside:avoid;page-break-inside:avoid}
+.document-export-promo strong{color:#0d47a1}
+.document-export-promo a{color:#0d47a1;text-decoration:none;font-weight:700;overflow-wrap:anywhere}
+.document-export-footer{margin-top:10mm;padding-top:4mm;border-top:1px solid #dbe4ef;text-align:center;color:#6b7280;font-size:12px;line-height:1.6;break-inside:avoid;page-break-inside:avoid}
 </style></head><body>${buildBrandedDocumentHTML(doc)}</body></html>`;
+}
+
+function sanitizeFileName(name){
+  return String(name).replace(/[\\/:*?"<>|]+/g,"-").replace(/\s+/g," ").trim().slice(0,120) || "document";
+}
+
+function createExportElement(doc){
+  const wrapper = document.createElement("div");
+  wrapper.innerHTML = buildBrandedDocumentHTML(doc);
+  const element = wrapper.firstElementChild;
+  preparePdfElement(element);
+  return element;
+}
+
+function preparePdfElement(element){
+  if(!element) return;
+
+  element.querySelectorAll(
+    "h1,h2,h3,h4,h5,h6,p,li,table,tr,blockquote,pre,figure,img"
+  ).forEach(node => node.classList.add("pdf-avoid-break"));
+
+  element.querySelectorAll("table").forEach(table => {
+    table.style.width = "100%";
+    table.style.maxWidth = "100%";
+    table.style.borderCollapse = "collapse";
+  });
+
+  element.querySelectorAll("img").forEach(img => {
+    img.style.maxWidth = "100%";
+    img.style.height = "auto";
+  });
+}
+
+async function waitForExportImages(element){
+  const images = Array.from(element.querySelectorAll("img"));
+  await Promise.all(images.map(img => {
+    if(img.complete && img.naturalWidth > 0) return Promise.resolve();
+    return new Promise(resolve => {
+      const done = () => resolve();
+      img.addEventListener("load",done,{once:true});
+      img.addEventListener("error",done,{once:true});
+    });
+  }));
 }
 
 function downloadCurrentDocument(){
@@ -2372,49 +2529,60 @@ function downloadCurrentDocument(){
   const a = document.createElement("a");
   a.href = url;
   a.download = `${sanitizeFileName(currentDocument.title || "Thrives-Archivers-Document")}.html`;
-  document.body.appendChild(a); a.click(); a.remove();
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
   setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 
-function sanitizeFileName(name){
-  return String(name).replace(/[\\/:*?"<>|]+/g,"-").replace(/\s+/g," ").trim().slice(0,120) || "document";
-}
-
-function createExportElement(doc){
-  const wrapper = document.createElement("div");
-  wrapper.innerHTML = buildBrandedDocumentHTML(doc);
-  return wrapper.firstElementChild;
-}
-
-async function downloadCurrentDocumentPDF(){
+async function downloadCurrentDocumentPDF(event){
   if(!currentDocument){ alert("Open a document first."); return; }
   if(typeof html2pdf === "undefined"){
     alert("PDF generator is still loading. Please try again.");
     return;
   }
 
-  const button = event?.currentTarget;
-  button?.classList.add("pdf-loading");
+  const button = event?.currentTarget || document.querySelector("#documentActions .btn.red");
   const oldText = button?.textContent;
+  button?.classList.add("pdf-loading");
   if(button) button.textContent = "Creating PDF...";
 
+  let element = null;
   try{
-    const element = createExportElement(currentDocument);
+    element = createExportElement(currentDocument);
+    element.style.position = "fixed";
+    element.style.left = "-100000px";
+    element.style.top = "0";
+    element.style.width = "190mm";
     document.body.appendChild(element);
+    await waitForExportImages(element);
+
     const options = {
       margin:[10,10,10,10],
       filename:`${sanitizeFileName(currentDocument.title || "Thrives-Archivers-Document")}.pdf`,
       image:{type:"jpeg",quality:0.98},
-      html2canvas:{scale:2,useCORS:true,backgroundColor:"#ffffff",logging:false},
-      jsPDF:{unit:"mm",format:"a4",orientation:"portrait"},
-      pagebreak:{mode:["css","legacy"]}
+      html2canvas:{
+        scale:2,
+        useCORS:true,
+        allowTaint:false,
+        backgroundColor:"#ffffff",
+        logging:false,
+        scrollX:0,
+        scrollY:0
+      },
+      jsPDF:{unit:"mm",format:"a4",orientation:"portrait",compress:true},
+      pagebreak:{
+        mode:["css","legacy"],
+        avoid:[".pdf-avoid-break"]
+      }
     };
+
     await html2pdf().set(options).from(element).save();
-    element.remove();
   }catch(error){
-    console.error(error);
+    console.error("PDF creation error:",error);
     alert("PDF creation failed. Use Print / Save as PDF instead.");
   }finally{
+    element?.remove();
     button?.classList.remove("pdf-loading");
     if(button) button.textContent = oldText || "📄 Download PDF";
   }
@@ -2427,7 +2595,7 @@ function printCurrentDocument(){
   const element = createExportElement(currentDocument);
   document.body.appendChild(element);
   window.print();
-  setTimeout(()=>element.remove(),500);
+  setTimeout(()=>element.remove(),1000);
 }
 
 function readDocumentAloud(){
@@ -2443,9 +2611,9 @@ function readDocumentAloud(){
   speechUtterance.lang = "en-US";
   speechUtterance.rate = 0.95;
   speechUtterance.pitch = 1;
-  speechUtterance.onstart = ()=>$("readStatus").textContent = "Reading document...";
-  speechUtterance.onend = ()=>$("readStatus").textContent = "Reading finished.";
-  speechUtterance.onerror = ()=>$("readStatus").textContent = "Read Aloud stopped or could not start.";
+  speechUtterance.onstart = () => $("readStatus").textContent = "Reading document...";
+  speechUtterance.onend = () => $("readStatus").textContent = "Reading finished.";
+  speechUtterance.onerror = () => $("readStatus").textContent = "Read Aloud stopped or could not start.";
   window.speechSynthesis.speak(speechUtterance);
 }
 
