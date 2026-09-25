@@ -6,6 +6,7 @@
 <title>Thrives Archivers | Year Three</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <style>
 :root{
@@ -429,6 +430,97 @@ footer{
   background:#111827;
 }
 
+
+/* DOCUMENT VIEWER / DOWNLOAD / READ ALOUD */
+.document-toolbar{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:18px;
+  padding:12px;
+  background:#f8fbff;
+  border:1px solid var(--border);
+  border-radius:10px;
+}
+.document-toolbar .btn{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+}
+.read-status{
+  margin-top:8px;
+  color:var(--muted);
+  font-size:13px;
+}
+.document-export{
+  width:794px;
+  max-width:100%;
+  background:#fff;
+  color:#111827;
+  padding:34px 42px;
+  margin:0 auto;
+}
+.document-export-header{
+  text-align:center;
+  border-bottom:2px solid #0d47a1;
+  padding-bottom:18px;
+  margin-bottom:24px;
+}
+.document-export-logo{
+  display:block;
+  width:92px;
+  height:92px;
+  object-fit:contain;
+  margin:0 auto 10px;
+}
+.document-export-brand{
+  color:#0d47a1;
+  font-size:22px;
+  font-weight:800;
+  letter-spacing:.8px;
+}
+.document-export-title{
+  margin-top:10px;
+  font-size:25px;
+  color:#111827;
+}
+.document-export-meta{
+  margin-top:12px;
+  font-size:13px;
+  color:#4b5563;
+}
+.document-export-body{
+  line-height:1.65;
+  font-size:15px;
+  word-wrap:break-word;
+}
+.document-export-body img{
+  max-width:100%;
+  height:auto;
+}
+.document-export-footer{
+  margin-top:32px;
+  padding-top:14px;
+  border-top:1px solid #dbe4ef;
+  text-align:center;
+  color:#6b7280;
+  font-size:12px;
+}
+.pdf-loading{
+  opacity:.7;
+  pointer-events:none;
+}
+@media print{
+  body *{visibility:hidden!important}
+  #pdfPrintArea,#pdfPrintArea *{visibility:visible!important}
+  #pdfPrintArea{
+    position:absolute!important;
+    left:0!important;
+    top:0!important;
+    width:100%!important;
+  }
+}
+
 @media(max-width:700px){
   header{
     align-items:flex-start;
@@ -459,81 +551,6 @@ footer{
     flex-direction:column;
   }
 }
-
-/* =========================================================
-   DOCUMENT READ ALOUD
-   ========================================================= */
-.read-aloud-panel{
-  margin-top:18px;
-  padding:16px;
-  border:1px solid var(--border);
-  border-radius:12px;
-  background:#f8fbff;
-}
-.read-aloud-title{
-  color:var(--dark);
-  font-weight:bold;
-  margin-bottom:10px;
-}
-.read-aloud-controls{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  align-items:center;
-}
-.read-aloud-controls .btn{
-  min-width:92px;
-}
-.read-aloud-speed{
-  width:auto;
-  min-width:110px;
-}
-.read-aloud-progress{
-  height:7px;
-  background:#e5e7eb;
-  border-radius:20px;
-  overflow:hidden;
-  margin-top:12px;
-}
-.read-aloud-progress-bar{
-  width:0%;
-  height:100%;
-  background:var(--blue);
-  transition:width .15s linear;
-}
-.read-aloud-status{
-  margin-top:8px;
-  color:var(--muted);
-  font-size:13px;
-}
-.read-aloud-highlight{
-  background:#fff3a3;
-  border-radius:4px;
-  padding:1px 2px;
-}
-.read-aloud-text{
-  margin-top:15px;
-  max-height:330px;
-  overflow:auto;
-  padding:14px;
-  border:1px solid var(--border);
-  border-radius:10px;
-  background:white;
-  line-height:1.8;
-  white-space:pre-wrap;
-}
-@media(max-width:700px){
-  .read-aloud-controls{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-  }
-  .read-aloud-controls .btn,
-  .read-aloud-speed{
-    width:100%;
-    min-width:0;
-  }
-}
-
 </style>
 </head>
 
@@ -1174,6 +1191,17 @@ Login
   ×
 </button>
 
+<div id="documentActions" class="document-toolbar hidden">
+  <button class="btn" onclick="readDocumentAloud()">🔊 Read Aloud</button>
+  <button class="btn light" onclick="pauseReadAloud()">⏸ Pause</button>
+  <button class="btn light" onclick="resumeReadAloud()">▶ Resume</button>
+  <button class="btn light" onclick="stopReadAloud()">⏹ Stop</button>
+  <button class="btn green" onclick="downloadCurrentDocument()">⬇️ Download Document</button>
+  <button class="btn orange" onclick="printCurrentDocument()">🖨️ Print / Save as PDF</button>
+  <button class="btn red" onclick="downloadCurrentDocumentPDF()">📄 Download PDF</button>
+  <div id="readStatus" class="read-status">Ready.</div>
+</div>
+
 <div
   id="viewerContent"
   class="viewer-content">
@@ -1229,6 +1257,8 @@ const QUIZ_FUNCTION =
 let currentUser = null;
 
 let allResources = [];
+let currentDocument = null;
+let speechUtterance = null;
 
 
 /* =========================================================
@@ -1306,8 +1336,6 @@ function closeLogin(){
 
 
 function closeViewer(){
-
-  stopDocumentReading();
 
   $("viewerModal")
     .classList
@@ -2043,6 +2071,10 @@ function openResource(
   item
 ){
 
+  stopReadAloud();
+  currentDocument = null;
+  $("documentActions").classList.add("hidden");
+
   let html =
     `<h2>${escapeHtml(item.title)}</h2>`;
 
@@ -2058,99 +2090,18 @@ function openResource(
     "Document"
   ){
 
-    const documentHtml =
+    currentDocument = item;
+    $("documentActions").classList.remove("hidden");
+    $("readStatus").textContent = "Ready to read.";
+
+    const content =
       item.content_html ||
       `<pre>${escapeHtml(item.content_text || "")}</pre>`;
 
-    const rawReadingText =
-      item.content_text ||
-      htmlToPlainText(item.content_html || "");
-
     html += `
-
-<div class="read-aloud-panel">
-
-  <div class="read-aloud-title">
-    🔊 Read this document aloud
-  </div>
-
-  <div class="read-aloud-controls">
-
-    <button
-      type="button"
-      class="btn"
-      onclick="readDocumentAloud()">
-      ▶ Read
-    </button>
-
-    <button
-      type="button"
-      class="btn light"
-      onclick="pauseDocumentReading()">
-      ⏸ Pause
-    </button>
-
-    <button
-      type="button"
-      class="btn light"
-      onclick="resumeDocumentReading()">
-      ▶ Resume
-    </button>
-
-    <button
-      type="button"
-      class="btn red"
-      onclick="stopDocumentReading()">
-      ⏹ Stop
-    </button>
-
-    <select
-      id="readAloudSpeed"
-      class="read-aloud-speed"
-      aria-label="Reading speed"
-      onchange="changeReadingSpeed(this.value)">
-      <option value="0.75">0.75× Slow</option>
-      <option value="1" selected>1× Normal</option>
-      <option value="1.25">1.25×</option>
-      <option value="1.5">1.5×</option>
-      <option value="1.75">1.75×</option>
-      <option value="2">2× Fast</option>
-    </select>
-
-    <select
-      id="readAloudVoice"
-      class="read-aloud-speed"
-      aria-label="Voice">
-      <option value="">Default voice</option>
-    </select>
-
-  </div>
-
-  <div class="read-aloud-progress">
-    <div
-      id="readAloudProgressBar"
-      class="read-aloud-progress-bar"></div>
-  </div>
-
-  <div
-    id="readAloudStatus"
-    class="read-aloud-status">
-    Ready to read this document.
-  </div>
-
-  <div
-    id="readAloudText"
-    class="read-aloud-text"
-    data-source-text="${escapeHtml(rawReadingText)}">
-    ${escapeHtml(rawReadingText)}
-  </div>
-
+<div id="documentReaderContent" class="document-reader-content" style="margin-top:20px">
+${content}
 </div>
-
-<div style="margin-top:20px">
-  ${documentHtml}
-</div>
-
 `;
 
   }
@@ -2342,540 +2293,183 @@ Submit Quiz
 
 
 /* =========================================================
-   DOCUMENT READ ALOUD
+   DOCUMENT EXPORT + READ ALOUD
    ========================================================= */
 
-let readAloudSentences = [];
-let readAloudIndex = 0;
-let readAloudUtterance = null;
-let readAloudPaused = false;
-let readAloudSpeed = 1;
-let readAloudIsReading = false;
+const THRIVES_LOGO_URL =
+  "https://thrivesarchivers.github.io/Thrives-Archivers-Enduacation/image1.jpg";
 
-function htmlToPlainText(html){
-
-  if(!html)
-    return "";
-
-  const temporary = document.createElement("div");
-
-  temporary.innerHTML = html;
-
-  return (temporary.innerText || temporary.textContent || "")
-    .replace(/\u00a0/g," ")
-    .replace(/[ \t]+\n/g,"\n")
-    .replace(/\n{3,}/g,"\n\n")
+function getDocumentPlainText(doc){
+  const raw = doc?.content_html || doc?.content_text || "";
+  const temp = document.createElement("div");
+  temp.innerHTML = raw;
+  return (temp.innerText || temp.textContent || "")
+    .replace(/\s+\n/g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
     .trim();
 }
 
-function splitTextIntoSentences(text){
-
-  const cleaned =
-    String(text || "")
-      .replace(/\r/g,"")
-      .replace(/[ \t]+/g," ")
-      .trim();
-
-  if(!cleaned)
-    return [];
-
-  /*
-     Keep sentences reasonably short so the browser speech engine
-     remains reliable on phones and desktop browsers.
-  */
-  const matches =
-    cleaned.match(
-      /[^.!?。！？]+[.!?。！？]+|[^.!?。！？]+$/g
-    );
-
-  const parts =
-    (matches || [cleaned])
-      .map(part => part.trim())
-      .filter(Boolean);
-
-  const finalParts = [];
-
-  parts.forEach(part => {
-
-    if(part.length <= 500){
-
-      finalParts.push(part);
-
-      return;
-    }
-
-    const chunks =
-      part.match(/.{1,450}(?:\s+|$)/g) || [part];
-
-    chunks
-      .map(chunk => chunk.trim())
-      .filter(Boolean)
-      .forEach(chunk => finalParts.push(chunk));
-
-  });
-
-  return finalParts;
+function escapeAttribute(value){
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/"/g,"&quot;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;");
 }
 
-function populateReadAloudVoices(){
+function buildBrandedDocumentHTML(doc){
+  const title = doc?.title || "Thrives Archivers Document";
+  const course = doc?.course || "";
+  const topic = doc?.topic || "";
+  const semester = doc?.semester || "";
+  const content = doc?.content_html ||
+    `<pre style="white-space:pre-wrap">${escapeHtml(doc?.content_text || "")}</pre>`;
 
-  const voiceSelect =
-    $("readAloudVoice");
+  return `
+<div id="pdfPrintArea" class="document-export">
+  <div class="document-export-header">
+    <img class="document-export-logo" src="${THRIVES_LOGO_URL}" crossorigin="anonymous" alt="Thrives Archivers Logo">
+    <div class="document-export-brand">THRIVES ARCHIVERS</div>
+    <div class="document-export-title">${escapeHtml(title)}</div>
+    <div class="document-export-meta">
+      <b>Course:</b> ${escapeHtml(course || "Not specified")} &nbsp; | &nbsp;
+      <b>Topic:</b> ${escapeHtml(topic || "Not specified")} &nbsp; | &nbsp;
+      <b>Semester:</b> ${escapeHtml(semester || "Not specified")}
+    </div>
+  </div>
+  <div class="document-export-body">${content}</div>
+  <div class="document-export-footer">
+    THRIVES ARCHIVERS • Year Three Learning Hub<br>
+    Educational document generated from the Thrives Archivers platform.
+  </div>
+</div>`;
+}
 
-  if(!voiceSelect ||
-     !("speechSynthesis" in window))
+function buildStandaloneDocumentHTML(doc){
+  return `<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${escapeAttribute(doc?.title || "Thrives Archivers Document")}</title>
+<style>
+body{margin:0;background:#f4f7fb;color:#111827;font-family:Arial,Helvetica,sans-serif}
+.document-export{width:min(794px,calc(100% - 40px));margin:30px auto;background:#fff;padding:34px 42px;box-shadow:0 4px 18px #0001}
+.document-export-header{text-align:center;border-bottom:2px solid #0d47a1;padding-bottom:18px;margin-bottom:24px}
+.document-export-logo{display:block;width:92px;height:92px;object-fit:contain;margin:0 auto 10px}
+.document-export-brand{color:#0d47a1;font-size:22px;font-weight:800;letter-spacing:.8px}
+.document-export-title{margin-top:10px;font-size:25px}
+.document-export-meta{margin-top:12px;font-size:13px;color:#4b5563}
+.document-export-body{line-height:1.65;font-size:15px;word-wrap:break-word}.document-export-body img{max-width:100%;height:auto}
+.document-export-footer{margin-top:32px;padding-top:14px;border-top:1px solid #dbe4ef;text-align:center;color:#6b7280;font-size:12px}
+@media(max-width:700px){.document-export{width:auto;margin:10px;padding:20px}}
+</style></head><body>${buildBrandedDocumentHTML(doc)}</body></html>`;
+}
+
+function downloadCurrentDocument(){
+  if(!currentDocument){ alert("Open a document first."); return; }
+  const html = buildStandaloneDocumentHTML(currentDocument);
+  const blob = new Blob([html], {type:"text/html;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${sanitizeFileName(currentDocument.title || "Thrives-Archivers-Document")}.html`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+function sanitizeFileName(name){
+  return String(name).replace(/[\\/:*?"<>|]+/g,"-").replace(/\s+/g," ").trim().slice(0,120) || "document";
+}
+
+function createExportElement(doc){
+  const wrapper = document.createElement("div");
+  wrapper.innerHTML = buildBrandedDocumentHTML(doc);
+  return wrapper.firstElementChild;
+}
+
+async function downloadCurrentDocumentPDF(){
+  if(!currentDocument){ alert("Open a document first."); return; }
+  if(typeof html2pdf === "undefined"){
+    alert("PDF generator is still loading. Please try again.");
     return;
-
-  const voices =
-    window.speechSynthesis.getVoices();
-
-  const previous =
-    voiceSelect.value;
-
-  voiceSelect.innerHTML =
-    '<option value="">Default voice</option>';
-
-  voices.forEach((voice,index) => {
-
-    const option =
-      document.createElement("option");
-
-    option.value = String(index);
-
-    option.textContent =
-      `${voice.name} (${voice.lang})`;
-
-    voiceSelect.appendChild(option);
-
-  });
-
-  if(
-    [...voiceSelect.options]
-      .some(option => option.value === previous)
-  ){
-
-    voiceSelect.value = previous;
-
   }
 
-}
-
-function updateReadAloudStatus(message){
-
-  const status =
-    $("readAloudStatus");
-
-  if(status)
-    status.textContent = message;
-
-}
-
-function updateReadAloudProgress(){
-
-  const bar =
-    $("readAloudProgressBar");
-
-  if(!bar)
-    return;
-
-  const total =
-    readAloudSentences.length;
-
-  const percentage =
-    total
-      ? Math.min(
-          100,
-          Math.round(
-            (readAloudIndex / total) * 100
-          )
-        )
-      : 0;
-
-  bar.style.width =
-    `${percentage}%`;
-
-}
-
-function renderReadAloudText(){
-
-  const container =
-    $("readAloudText");
-
-  if(!container)
-    return;
-
-  container.innerHTML =
-    readAloudSentences
-      .map(
-        (sentence,index) =>
-          `<span
-             id="readSentence-${index}"
-             data-index="${index}">
-             ${escapeHtml(sentence)}
-           </span>`
-      )
-      .join(" ");
-
-  highlightReadAloudSentence();
-}
-
-function highlightReadAloudSentence(){
-
-  document
-    .querySelectorAll(
-      "#readAloudText .read-aloud-highlight"
-    )
-    .forEach(element => {
-
-      element.classList
-        .remove("read-aloud-highlight");
-
-    });
-
-  const current =
-    $(`readSentence-${readAloudIndex}`);
-
-  if(current){
-
-    current.classList
-      .add("read-aloud-highlight");
-
-    current.scrollIntoView({
-      behavior:"smooth",
-      block:"center"
-    });
-
-  }
-
-}
-
-function getSelectedReadAloudVoice(){
-
-  const select =
-    $("readAloudVoice");
-
-  if(!select ||
-     !select.value ||
-     !("speechSynthesis" in window))
-    return null;
-
-  const voices =
-    window.speechSynthesis.getVoices();
-
-  return voices[
-    Number(select.value)
-  ] || null;
-}
-
-function speakCurrentReadAloudSentence(){
-
-  if(
-    !("speechSynthesis" in window)
-  ){
-
-    updateReadAloudStatus(
-      "Read Aloud is not supported by this browser."
-    );
-
-    return;
-
-  }
-
-  if(
-    readAloudIndex >=
-    readAloudSentences.length
-  ){
-
-    readAloudIsReading = false;
-    readAloudPaused = false;
-    readAloudIndex = 0;
-
-    updateReadAloudProgress();
-
-    updateReadAloudStatus(
-      "Finished reading the document."
-    );
-
-    highlightReadAloudSentence();
-
-    return;
-
-  }
-
-  const sentence =
-    readAloudSentences[
-      readAloudIndex
-    ];
-
-  if(!sentence){
-
-    readAloudIndex++;
-
-    speakCurrentReadAloudSentence();
-
-    return;
-
-  }
-
-  readAloudIsReading = true;
-  readAloudPaused = false;
-
-  highlightReadAloudSentence();
-  updateReadAloudProgress();
-
-  updateReadAloudStatus(
-    `Reading ${readAloudIndex + 1} of ${readAloudSentences.length}...`
-  );
-
-  readAloudUtterance =
-    new SpeechSynthesisUtterance(
-      sentence
-    );
-
-  readAloudUtterance.rate =
-    Number(readAloudSpeed) || 1;
-
-  readAloudUtterance.pitch = 1;
-  readAloudUtterance.volume = 1;
-
-  const selectedVoice =
-    getSelectedReadAloudVoice();
-
-  if(selectedVoice){
-
-    readAloudUtterance.voice =
-      selectedVoice;
-
-    readAloudUtterance.lang =
-      selectedVoice.lang;
-
-  }else{
-
-    readAloudUtterance.lang =
-      "en-US";
-
-  }
-
-  readAloudUtterance.onend =
-    () => {
-
-      if(!readAloudIsReading)
-        return;
-
-      readAloudIndex++;
-
-      speakCurrentReadAloudSentence();
-
+  const button = event?.currentTarget;
+  button?.classList.add("pdf-loading");
+  const oldText = button?.textContent;
+  if(button) button.textContent = "Creating PDF...";
+
+  try{
+    const element = createExportElement(currentDocument);
+    document.body.appendChild(element);
+    const options = {
+      margin:[10,10,10,10],
+      filename:`${sanitizeFileName(currentDocument.title || "Thrives-Archivers-Document")}.pdf`,
+      image:{type:"jpeg",quality:0.98},
+      html2canvas:{scale:2,useCORS:true,backgroundColor:"#ffffff",logging:false},
+      jsPDF:{unit:"mm",format:"a4",orientation:"portrait"},
+      pagebreak:{mode:["css","legacy"]}
     };
+    await html2pdf().set(options).from(element).save();
+    element.remove();
+  }catch(error){
+    console.error(error);
+    alert("PDF creation failed. Use Print / Save as PDF instead.");
+  }finally{
+    button?.classList.remove("pdf-loading");
+    if(button) button.textContent = oldText || "📄 Download PDF";
+  }
+}
 
-  readAloudUtterance.onerror =
-    event => {
-
-      console.warn(
-        "Speech synthesis error:",
-        event
-      );
-
-      if(
-        event.error === "canceled" ||
-        event.error === "interrupted"
-      )
-        return;
-
-      readAloudIsReading = false;
-
-      updateReadAloudStatus(
-        "The browser could not continue reading this document."
-      );
-
-    };
-
-  window.speechSynthesis.cancel();
-
-  window.speechSynthesis.speak(
-    readAloudUtterance
-  );
-
+function printCurrentDocument(){
+  if(!currentDocument){ alert("Open a document first."); return; }
+  const old = document.getElementById("pdfPrintArea");
+  if(old) old.remove();
+  const element = createExportElement(currentDocument);
+  document.body.appendChild(element);
+  window.print();
+  setTimeout(()=>element.remove(),500);
 }
 
 function readDocumentAloud(){
-
-  if(
-    !("speechSynthesis" in window)
-  ){
-
-    updateReadAloudStatus(
-      "Your browser does not support document reading."
-    );
-
+  if(!currentDocument){ alert("Open a document first."); return; }
+  if(!("speechSynthesis" in window)){
+    alert("Read Aloud is not supported by this browser.");
     return;
-
   }
-
-  stopDocumentReading();
-
-  const container =
-    $("readAloudText");
-
-  if(!container){
-
-    updateReadAloudStatus(
-      "No document text is available to read."
-    );
-
-    return;
-
-  }
-
-  const sourceText =
-    container.dataset.sourceText ||
-    container.textContent ||
-    "";
-
-  readAloudSentences =
-    splitTextIntoSentences(
-      sourceText
-    );
-
-  if(!readAloudSentences.length){
-
-    updateReadAloudStatus(
-      "This document has no readable text."
-    );
-
-    return;
-
-  }
-
-  readAloudIndex = 0;
-  readAloudIsReading = true;
-  readAloudPaused = false;
-
-  renderReadAloudText();
-
-  speakCurrentReadAloudSentence();
-
+  stopReadAloud();
+  const text = getDocumentPlainText(currentDocument);
+  if(!text){ alert("This document has no readable text."); return; }
+  speechUtterance = new SpeechSynthesisUtterance(text);
+  speechUtterance.lang = "en-US";
+  speechUtterance.rate = 0.95;
+  speechUtterance.pitch = 1;
+  speechUtterance.onstart = ()=>$("readStatus").textContent = "Reading document...";
+  speechUtterance.onend = ()=>$("readStatus").textContent = "Reading finished.";
+  speechUtterance.onerror = ()=>$("readStatus").textContent = "Read Aloud stopped or could not start.";
+  window.speechSynthesis.speak(speechUtterance);
 }
 
-function pauseDocumentReading(){
-
-  if(
-    !("speechSynthesis" in window)
-  )
-    return;
-
-  if(
-    window.speechSynthesis.speaking &&
-    !window.speechSynthesis.paused
-  ){
-
+function pauseReadAloud(){
+  if("speechSynthesis" in window && window.speechSynthesis.speaking){
     window.speechSynthesis.pause();
-
-    readAloudPaused = true;
-
-    updateReadAloudStatus(
-      "Reading paused."
-    );
-
+    $("readStatus").textContent = "Reading paused.";
   }
-
 }
 
-function resumeDocumentReading(){
-
-  if(
-    !("speechSynthesis" in window)
-  )
-    return;
-
-  if(window.speechSynthesis.paused){
-
+function resumeReadAloud(){
+  if("speechSynthesis" in window && window.speechSynthesis.paused){
     window.speechSynthesis.resume();
-
-    readAloudPaused = false;
-    readAloudIsReading = true;
-
-    updateReadAloudStatus(
-      `Reading ${readAloudIndex + 1} of ${readAloudSentences.length}...`
-    );
-
-  }else if(
-    !window.speechSynthesis.speaking &&
-    readAloudSentences.length
-  ){
-
-    speakCurrentReadAloudSentence();
-
+    $("readStatus").textContent = "Reading resumed.";
   }
-
 }
 
-function stopDocumentReading(){
-
-  if("speechSynthesis" in window)
-    window.speechSynthesis.cancel();
-
-  readAloudIsReading = false;
-  readAloudPaused = false;
-  readAloudIndex = 0;
-
-  updateReadAloudProgress();
-
-  const status =
-    $("readAloudStatus");
-
-  if(status)
-    status.textContent =
-      "Reading stopped.";
-
-  document
-    .querySelectorAll(
-      "#readAloudText .read-aloud-highlight"
-    )
-    .forEach(element => {
-
-      element.classList
-        .remove("read-aloud-highlight");
-
-    });
-
+function stopReadAloud(){
+  if("speechSynthesis" in window) window.speechSynthesis.cancel();
+  speechUtterance = null;
+  const status = document.getElementById("readStatus");
+  if(status) status.textContent = currentDocument ? "Ready to read." : "Ready.";
 }
 
-function changeReadingSpeed(value){
-
-  readAloudSpeed =
-    Number(value) || 1;
-
-  /*
-     If currently speaking, restart the current sentence
-     using the newly selected speed.
-  */
-  if(
-    readAloudIsReading &&
-    !readAloudPaused &&
-    "speechSynthesis" in window
-  ){
-
-    window.speechSynthesis.cancel();
-
-    setTimeout(
-      () => speakCurrentReadAloudSentence(),
-      80
-    );
-
-  }
-
-}
-
-/*
-   Browser voices can load asynchronously.
-*/
-if("speechSynthesis" in window){
-
-  window.speechSynthesis.onvoiceschanged =
-    populateReadAloudVoices;
-
-}
 
 /* =========================================================
    GRADE QUIZ
@@ -4326,8 +3920,6 @@ document.addEventListener(
   async () => {
 
     updateAdminUI();
-
-    populateReadAloudVoices();
 
     await restoreSession();
 
