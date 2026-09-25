@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -188,6 +189,11 @@ nav a{
 .btn.light{
   background:#e8f1ff;
   color:var(--dark);
+}
+
+.btn:disabled{
+  opacity:.65;
+  cursor:not-allowed;
 }
 
 .actions{
@@ -464,6 +470,7 @@ footer{
 /* =========================================================
    BRANDED DOCUMENT VIEWER / PDF / PRINT
    ========================================================= */
+
 .document-toolbar{
   display:flex;
   flex-wrap:wrap;
@@ -474,17 +481,20 @@ footer{
   border:1px solid var(--border);
   border-radius:10px;
 }
+
 .document-toolbar .btn{
   display:inline-flex;
   align-items:center;
   gap:6px;
 }
+
 .read-status{
   flex-basis:100%;
   margin-top:2px;
   color:var(--muted);
   font-size:13px;
 }
+
 .audio-speed-control{
   display:flex;
   align-items:center;
@@ -495,11 +505,13 @@ footer{
   border-radius:8px;
   background:white;
 }
+
 .audio-speed-control label{
   font-size:13px;
   font-weight:bold;
   color:var(--dark);
 }
+
 .audio-speed-control select{
   width:auto;
   min-width:150px;
@@ -515,6 +527,7 @@ footer{
   padding:12mm 14mm;
   margin:0 auto;
 }
+
 .document-export-header{
   text-align:center;
   border-bottom:2px solid #0d47a1;
@@ -523,6 +536,7 @@ footer{
   break-inside:avoid;
   page-break-inside:avoid;
 }
+
 .document-export-logo{
   display:block;
   width:25mm;
@@ -530,23 +544,27 @@ footer{
   object-fit:contain;
   margin:0 auto 3mm;
 }
+
 .document-export-brand{
   color:#0d47a1;
   font-size:22px;
   font-weight:800;
   letter-spacing:.8px;
 }
+
 .document-export-title{
   margin-top:3mm;
   font-size:25px;
   line-height:1.25;
 }
+
 .document-export-meta{
   margin-top:3mm;
   font-size:13px;
   line-height:1.5;
   color:#4b5563;
 }
+
 .document-export-body{
   line-height:1.65;
   font-size:15px;
@@ -556,19 +574,23 @@ footer{
   orphans:3;
   widows:3;
 }
+
 .document-export-body img{
   max-width:100%;
   height:auto;
 }
+
 .document-export-body table{
   width:100%;
   max-width:100%;
   border-collapse:collapse;
 }
+
 .document-export-body pre{
   white-space:pre-wrap;
   overflow-wrap:break-word;
 }
+
 .document-export-body h1,
 .document-export-body h2,
 .document-export-body h3,
@@ -587,6 +609,7 @@ footer{
   break-inside:avoid!important;
   page-break-inside:avoid!important;
 }
+
 .document-export-promo{
   margin-top:5mm;
   padding:4mm;
@@ -598,15 +621,18 @@ footer{
   break-inside:avoid;
   page-break-inside:avoid;
 }
+
 .document-export-promo strong{
   color:#0d47a1;
 }
+
 .document-export-promo a{
   color:#0d47a1;
   text-decoration:none;
   font-weight:700;
   overflow-wrap:anywhere;
 }
+
 .document-export-footer{
   margin-top:10mm;
   padding-top:4mm;
@@ -618,10 +644,12 @@ footer{
   break-inside:avoid;
   page-break-inside:avoid;
 }
+
 .pdf-loading{
   opacity:.7;
   pointer-events:none;
 }
+
 .document-preview-page{
   background:#fff;
   width:190mm;
@@ -629,6 +657,7 @@ footer{
   margin:0 auto;
   box-shadow:0 2px 15px #0003;
 }
+
 .audio-download-note{
   margin-top:8px;
   color:var(--muted);
@@ -641,9 +670,15 @@ footer{
 }
 
 @media print{
-  body *{visibility:hidden!important}
+  body *{
+    visibility:hidden!important;
+  }
+
   #pdfPrintArea,
-  #pdfPrintArea *{visibility:visible!important}
+  #pdfPrintArea *{
+    visibility:visible!important;
+  }
+
   #pdfPrintArea{
     position:absolute!important;
     left:0!important;
@@ -661,14 +696,18 @@ footer{
 <body>
 
 <header>
+
   <div class="logo">
     THRIVES ARCHIVERS
     <small>Year Three Learning Hub</small>
   </div>
 
   <nav>
+
     <a href="#home">Home</a>
+
     <a href="#courses">Courses</a>
+
     <a href="#resources">Resources</a>
 
     <a href="#admin" id="adminLink" class="hidden">
@@ -688,11 +727,16 @@ footer{
       onclick="logout()">
       Logout
     </button>
+
   </nav>
+
 </header>
 
+
 <section class="hero" id="home">
+
   <h1>YEAR THREE</h1>
+
   <h2>Thrives Archivers Academic Hub</h2>
 
   <p>
@@ -707,633 +751,870 @@ footer{
       </i>
     </b>
   </p>
+
 </section>
+
 
 <main class="container">
 
+
 <section id="courses">
 
-<div class="section-title">
-  <h2>Year Three Courses</h2>
-  <p>Select a course to view published resources.</p>
-</div>
+  <div class="section-title">
 
-<div class="courses">
+    <h2>Year Three Courses</h2>
 
-<div class="card course">
-  <div class="course-icon">🧬</div>
-  <h3>Pathology</h3>
-  <p>
-    Disease processes, causes, mechanisms and clinical manifestations.
-  </p>
-  <button
-    class="btn"
-    onclick="loadCourse('Pathology')">
-    View Resources
-  </button>
-</div>
+    <p>
+      Select a course to view published resources.
+    </p>
 
-<div class="card course">
-  <div class="course-icon">🌍</div>
-  <h3>Public Health</h3>
-  <p>
-    Disease prevention, health promotion, epidemiology and community health.
-  </p>
-  <button
-    class="btn"
-    onclick="loadCourse('Public Health')">
-    View Resources
-  </button>
-</div>
+  </div>
 
-<div class="card course">
-  <div class="course-icon">💊</div>
-  <h3>Pharmacology</h3>
-  <p>
-    Drugs, mechanisms of action, pharmacokinetics and adverse effects.
-  </p>
-  <button
-    class="btn"
-    onclick="loadCourse('Pharmacology')">
-    View Resources
-  </button>
-</div>
 
-<div class="card course">
-  <div class="course-icon">⚖️</div>
-  <h3>Medical Ethics</h3>
-  <p>
-    Ethical principles, professional conduct, patient rights and consent.
-  </p>
-  <button
-    class="btn"
-    onclick="loadCourse('Medical Ethics')">
-    View Resources
-  </button>
-</div>
+  <div class="courses">
 
-<div class="card course">
-  <div class="course-icon">🦠</div>
-  <h3>Microbiology</h3>
-  <p>
-    Microorganisms, bacteria, viruses, fungi, parasites and diagnosis.
-  </p>
-  <button
-    class="btn"
-    onclick="loadCourse('Microbiology')">
-    View Resources
-  </button>
-</div>
 
-</div>
+    <div class="card course">
+
+      <div class="course-icon">🧬</div>
+
+      <h3>Pathology</h3>
+
+      <p>
+        Disease processes, causes, mechanisms and clinical manifestations.
+      </p>
+
+      <button
+        class="btn"
+        onclick="loadCourse('Pathology')">
+        View Resources
+      </button>
+
+    </div>
+
+
+    <div class="card course">
+
+      <div class="course-icon">🌍</div>
+
+      <h3>Public Health</h3>
+
+      <p>
+        Disease prevention, health promotion, epidemiology and community health.
+      </p>
+
+      <button
+        class="btn"
+        onclick="loadCourse('Public Health')">
+        View Resources
+      </button>
+
+    </div>
+
+
+    <div class="card course">
+
+      <div class="course-icon">💊</div>
+
+      <h3>Pharmacology</h3>
+
+      <p>
+        Drugs, mechanisms of action, pharmacokinetics and adverse effects.
+      </p>
+
+      <button
+        class="btn"
+        onclick="loadCourse('Pharmacology')">
+        View Resources
+      </button>
+
+    </div>
+
+
+    <div class="card course">
+
+      <div class="course-icon">⚖️</div>
+
+      <h3>Medical Ethics</h3>
+
+      <p>
+        Ethical principles, professional conduct, patient rights and consent.
+      </p>
+
+      <button
+        class="btn"
+        onclick="loadCourse('Medical Ethics')">
+        View Resources
+      </button>
+
+    </div>
+
+
+    <div class="card course">
+
+      <div class="course-icon">🦠</div>
+
+      <h3>Microbiology</h3>
+
+      <p>
+        Microorganisms, bacteria, viruses, fungi, parasites and diagnosis.
+      </p>
+
+      <button
+        class="btn"
+        onclick="loadCourse('Microbiology')">
+        View Resources
+      </button>
+
+    </div>
+
+
+  </div>
+
 </section>
+
 
 <section id="resources">
 
-<div class="section-title">
-  <h2 id="resourceHeading">
-    Published Learning Resources
-  </h2>
+  <div class="section-title">
 
-  <p id="resourceDescription">
-    Choose a course or search all published resources.
-  </p>
-</div>
+    <h2 id="resourceHeading">
+      Published Learning Resources
+    </h2>
 
-<div class="search">
+    <p id="resourceDescription">
+      Choose a course or search all published resources.
+    </p>
 
-<input
-  id="resourceSearch"
-  placeholder="Search resources..."
-  oninput="filterResources()">
+  </div>
 
-<button
-  class="btn light"
-  onclick="loadPublishedResources()">
-  Refresh
-</button>
 
-</div>
+  <div class="search">
 
-<div id="resourceArea" class="resources">
+    <input
+      id="resourceSearch"
+      placeholder="Search resources..."
+      oninput="filterResources">
 
-<div class="card">
-  Loading resources...
-</div>
+    <button
+      class="btn light"
+      onclick="loadPublishedResources()">
+      Refresh
+    </button>
 
-</div>
+  </div>
+
+
+  <div
+    id="resourceArea"
+    class="resources">
+
+    <div class="card">
+      Loading resources...
+    </div>
+
+  </div>
 
 </section>
 
+
 <section id="admin" class="hidden">
 
-<div class="section-title">
-  <h2>Administrator Panel</h2>
-  <p>Manage Year Three learning resources.</p>
-</div>
+  <div class="section-title">
 
-<div class="admin">
+    <h2>Administrator Panel</h2>
 
-<div class="admin-layout">
+    <p>
+      Manage Year Three learning resources.
+    </p>
 
-<aside class="sidebar">
+  </div>
 
-<button
-  class="active"
-  onclick="showTab('dashboard',this)">
-  Dashboard
-</button>
 
-<button
-  onclick="showTab('documents',this)">
-  Documents
-</button>
+  <div class="admin">
 
-<button
-  onclick="showTab('videos',this)">
-  Videos
-</button>
+    <div class="admin-layout">
 
-<button
-  onclick="showTab('quizzes',this)">
-  Quizzes
-</button>
 
-</aside>
+      <aside class="sidebar">
 
-<div class="admin-content">
+        <button
+          class="active"
+          onclick="showTab('dashboard',this)">
+          Dashboard
+        </button>
 
-<div id="tab-dashboard" class="tab">
+        <button
+          onclick="showTab('documents',this)">
+          Documents
+        </button>
 
-<h2>Dashboard</h2>
+        <button
+          onclick="showTab('videos',this)">
+          Videos
+        </button>
 
-<div class="stats">
+        <button
+          onclick="showTab('quizzes',this)">
+          Quizzes
+        </button>
 
-<div class="stat">
-  Documents
-  <strong id="documentCount">0</strong>
-</div>
+      </aside>
 
-<div class="stat">
-  Videos
-  <strong id="videoCount">0</strong>
-</div>
 
-<div class="stat">
-  Quizzes
-  <strong id="quizCount">0</strong>
-</div>
+      <div class="admin-content">
 
-<div class="stat">
-  Published
-  <strong id="publishedCount">0</strong>
-</div>
 
-</div>
+        <div id="tab-dashboard" class="tab">
 
-<button
-  class="btn"
-  onclick="loadAdminData()">
-  Refresh Dashboard
-</button>
+          <h2>Dashboard</h2>
 
-<div id="adminStatus"></div>
 
-</div>
+          <div class="stats">
 
-<div id="tab-documents" class="tab hidden">
+            <div class="stat">
+              Documents
+              <strong id="documentCount">0</strong>
+            </div>
 
-<h2>Document Manager</h2>
+            <div class="stat">
+              Videos
+              <strong id="videoCount">0</strong>
+            </div>
 
-<div class="form-grid">
+            <div class="stat">
+              Quizzes
+              <strong id="quizCount">0</strong>
+            </div>
 
-<div class="field">
-<label>Document title</label>
+            <div class="stat">
+              Published
+              <strong id="publishedCount">0</strong>
+            </div>
 
-<input
-  id="documentTitle"
-  placeholder="Example: Inflammation">
+          </div>
 
-</div>
 
-<div class="field">
+          <button
+            class="btn"
+            onclick="loadAdminData()">
+            Refresh Dashboard
+          </button>
 
-<label>Course</label>
 
-<select id="documentCourse">
+          <div id="adminStatus"></div>
 
-<option>Pathology</option>
-<option>Public Health</option>
-<option>Pharmacology</option>
-<option>Medical Ethics</option>
-<option>Microbiology</option>
+        </div>
 
-</select>
 
-</div>
+        <div id="tab-documents" class="tab hidden">
 
-<div class="field">
+          <h2>Document Manager</h2>
 
-<label>Topic</label>
 
-<input
-  id="documentTopic"
-  placeholder="Topic or chapter">
+          <div class="form-grid">
 
-</div>
 
-<div class="field">
+            <div class="field">
 
-<label>Semester</label>
+              <label>
+                Document title
+              </label>
 
-<select id="documentSemester">
+              <input
+                id="documentTitle"
+                placeholder="Example: Inflammation">
 
-<option>Semester 1</option>
-<option>Semester 2</option>
-<option>Term 1</option>
-<option>Term 2</option>
+            </div>
 
-</select>
 
-</div>
+            <div class="field">
 
-<div class="field full">
+              <label>
+                Course
+              </label>
 
-<label>Source notes</label>
+              <select id="documentCourse">
 
-<textarea
-  id="documentSource"
-  placeholder="Paste source notes here for AI simplification"></textarea>
+                <option>Pathology</option>
+                <option>Public Health</option>
+                <option>Pharmacology</option>
+                <option>Medical Ethics</option>
+                <option>Microbiology</option>
 
-</div>
+              </select>
 
-<div class="field full">
+            </div>
 
-<label>Document content</label>
 
-<textarea
-  id="documentContent"
-  placeholder="Write or edit the document content here"></textarea>
+            <div class="field">
 
-</div>
+              <label>
+                Topic
+              </label>
 
-</div>
+              <input
+                id="documentTopic"
+                placeholder="Topic or chapter">
 
-<div class="actions">
+            </div>
 
-<button
-  class="btn"
-  onclick="simplifyDocument()">
-  AI Simplify
-</button>
 
-<button
-  class="btn green"
-  onclick="saveDocument('published')">
-  Publish Document
-</button>
+            <div class="field">
 
-<button
-  class="btn light"
-  onclick="saveDocument('draft')">
-  Save Draft
-</button>
+              <label>
+                Semester
+              </label>
 
-<button
-  class="btn light"
-  onclick="clearDocumentForm()">
-  Clear
-</button>
+              <select id="documentSemester">
 
-</div>
+                <option>Semester 1</option>
+                <option>Semester 2</option>
+                <option>Term 1</option>
+                <option>Term 2</option>
 
-<div id="documentStatus"></div>
+              </select>
 
-<h3 style="margin-top:25px">
-Existing Documents
-</h3>
+            </div>
 
-<div
-  id="documentList"
-  class="list">
-</div>
 
-</div>
+            <div class="field full">
 
-<div id="tab-videos" class="tab hidden">
+              <label>
+                Source notes
+              </label>
 
-<h2>Video Manager</h2>
+              <textarea
+                id="documentSource"
+                placeholder="Paste source notes here for AI simplification"></textarea>
 
-<div class="form-grid">
+            </div>
 
-<div class="field">
 
-<label>Video title</label>
+            <div class="field full">
 
-<input
-  id="videoTitle"
-  placeholder="Lesson title">
+              <label>
+                Document content
+              </label>
 
-</div>
+              <textarea
+                id="documentContent"
+                placeholder="Write or edit the document content here"></textarea>
 
-<div class="field">
+            </div>
 
-<label>Course</label>
 
-<select id="videoCourse">
+          </div>
 
-<option>Pathology</option>
-<option>Public Health</option>
-<option>Pharmacology</option>
-<option>Medical Ethics</option>
-<option>Microbiology</option>
 
-</select>
+          <div class="actions">
 
-</div>
+            <button
+              class="btn"
+              onclick="simplifyDocument()">
+              AI Simplify
+            </button>
 
-<div class="field full">
+            <button
+              class="btn green"
+              onclick="saveDocument('published')">
+              Publish Document
+            </button>
 
-<label>YouTube URL</label>
+            <button
+              class="btn light"
+              onclick="saveDocument('draft')">
+              Save Draft
+            </button>
 
-<input
-  id="videoUrl"
-  placeholder="https://www.youtube.com/watch?v=...">
+            <button
+              class="btn light"
+              onclick="clearDocumentForm()">
+              Clear
+            </button>
 
-</div>
+          </div>
 
-<div class="field full">
 
-<label>Description</label>
+          <div id="documentStatus"></div>
 
-<textarea id="videoDescription"></textarea>
 
-</div>
+          <h3 style="margin-top:25px">
+            Existing Documents
+          </h3>
 
-</div>
 
-<div class="actions">
+          <div
+            id="documentList"
+            class="list">
+          </div>
 
-<button
-  class="btn green"
-  onclick="saveVideo()">
-  Publish Video
-</button>
+        </div>
 
-</div>
 
-<div id="videoStatus"></div>
+        <div id="tab-videos" class="tab hidden">
 
-<h3 style="margin-top:25px">
-Existing Videos
-</h3>
+          <h2>Video Manager</h2>
 
-<div
-  id="videoList"
-  class="list">
-</div>
 
-</div>
+          <div class="form-grid">
 
-<div id="tab-quizzes" class="tab hidden">
 
-<h2>Quiz Manager</h2>
+            <div class="field">
 
-<div class="form-grid">
+              <label>
+                Video title
+              </label>
 
-<div class="field">
+              <input
+                id="videoTitle"
+                placeholder="Lesson title">
 
-<label>Quiz title</label>
+            </div>
 
-<input
-  id="quizTitle"
-  placeholder="Example: Inflammation Quiz">
 
-</div>
+            <div class="field">
 
-<div class="field">
+              <label>
+                Course
+              </label>
 
-<label>Course</label>
+              <select id="videoCourse">
 
-<select id="quizCourse">
+                <option>Pathology</option>
+                <option>Public Health</option>
+                <option>Pharmacology</option>
+                <option>Medical Ethics</option>
+                <option>Microbiology</option>
 
-<option>Pathology</option>
-<option>Public Health</option>
-<option>Pharmacology</option>
-<option>Medical Ethics</option>
-<option>Microbiology</option>
+              </select>
 
-</select>
+            </div>
 
-</div>
 
-<div class="field full">
+            <div class="field full">
 
-<label>Source notes</label>
+              <label>
+                YouTube URL
+              </label>
 
-<textarea
-  id="quizSource"
-  placeholder="Paste notes for quiz generation"></textarea>
+              <input
+                id="videoUrl"
+                placeholder="https://www.youtube.com/watch?v=...">
 
-</div>
+            </div>
 
-<div class="field">
 
-<label>Number of questions</label>
+            <div class="field full">
 
-<select id="quizCount">
+              <label>
+                Description
+              </label>
 
-<option>5</option>
-<option>10</option>
-<option>15</option>
-<option>20</option>
+              <textarea
+                id="videoDescription"></textarea>
 
-</select>
+            </div>
 
-</div>
 
-<div class="field">
+          </div>
 
-<label>Difficulty</label>
 
-<select id="quizDifficulty">
+          <div class="actions">
 
-<option>Easy</option>
-<option>Moderate</option>
-<option>Advanced</option>
+            <button
+              class="btn green"
+              onclick="saveVideo()">
+              Publish Video
+            </button>
 
-</select>
+          </div>
 
-</div>
 
-<div class="field full">
+          <div id="videoStatus"></div>
 
-<label>Quiz JSON</label>
 
-<textarea
-  id="quizJson"
-  placeholder="Generated quiz questions will appear here"></textarea>
+          <h3 style="margin-top:25px">
+            Existing Videos
+          </h3>
 
-</div>
 
-</div>
+          <div
+            id="videoList"
+            class="list">
+          </div>
 
-<div class="actions">
+        </div>
 
-<button
-  class="btn"
-  onclick="generateQuiz()">
-  AI Generate Quiz
-</button>
 
-<button
-  class="btn green"
-  onclick="saveQuiz('published')">
-  Publish Quiz
-</button>
+        <div id="tab-quizzes" class="tab hidden">
 
-<button
-  class="btn light"
-  onclick="saveQuiz('draft')">
-  Save Draft
-</button>
+          <h2>Quiz Manager</h2>
 
-</div>
 
-<div id="quizStatus"></div>
+          <div class="form-grid">
 
-<h3 style="margin-top:25px">
-Existing Quizzes
-</h3>
 
-<div
-  id="quizList"
-  class="list">
-</div>
+            <div class="field">
 
-</div>
+              <label>
+                Quiz title
+              </label>
 
-</div>
-</div>
-</div>
+              <input
+                id="quizTitle"
+                placeholder="Example: Inflammation Quiz">
+
+            </div>
+
+
+            <div class="field">
+
+              <label>
+                Course
+              </label>
+
+              <select id="quizCourse">
+
+                <option>Pathology</option>
+                <option>Public Health</option>
+                <option>Pharmacology</option>
+                <option>Medical Ethics</option>
+                <option>Microbiology</option>
+
+              </select>
+
+            </div>
+
+
+            <div class="field full">
+
+              <label>
+                Source notes
+              </label>
+
+              <textarea
+                id="quizSource"
+                placeholder="Paste notes for quiz generation"></textarea>
+
+            </div>
+
+
+            <div class="field">
+
+              <label>
+                Number of questions
+              </label>
+
+              <select id="quizCount">
+
+                <option>5</option>
+                <option>10</option>
+                <option>15</option>
+                <option>20</option>
+
+              </select>
+
+            </div>
+
+
+            <div class="field">
+
+              <label>
+                Difficulty
+              </label>
+
+              <select id="quizDifficulty">
+
+                <option>Easy</option>
+                <option>Moderate</option>
+                <option>Advanced</option>
+
+              </select>
+
+            </div>
+
+
+            <div class="field full">
+
+              <label>
+                Quiz JSON
+              </label>
+
+              <textarea
+                id="quizJson"
+                placeholder="Generated quiz questions will appear here"></textarea>
+
+            </div>
+
+
+          </div>
+
+
+          <div class="actions">
+
+            <button
+              class="btn"
+              onclick="generateQuiz()">
+              AI Generate Quiz
+            </button>
+
+            <button
+              class="btn green"
+              onclick="saveQuiz('published')">
+              Publish Quiz
+            </button>
+
+            <button
+              class="btn light"
+              onclick="saveQuiz('draft')">
+              Save Draft
+            </button>
+
+          </div>
+
+
+          <div id="quizStatus"></div>
+
+
+          <h3 style="margin-top:25px">
+            Existing Quizzes
+          </h3>
+
+
+          <div
+            id="quizList"
+            class="list">
+          </div>
+
+        </div>
+
+
+      </div>
+
+    </div>
+
+  </div>
+
 </section>
 
 </main>
 
+
 <footer>
 
-<h3>THRIVES ARCHIVERS</h3>
+  <h3>THRIVES ARCHIVERS</h3>
 
-<p>Year Three Learning Hub</p>
+  <p>Year Three Learning Hub</p>
 
-<p>
-Everything is possible to achieve if we are together.
-</p>
+  <p>
+    Everything is possible to achieve if we are together.
+  </p>
 
-<p style="margin-top:12px">
-<a href="https://thrivesarchivers.github.io/Thrives-Archivers-Enduacation/" target="_blank" rel="noopener" style="color:white;font-weight:bold">Visit Thrives Archivers Website</a>
-</p>
+  <p style="margin-top:12px">
 
-<p style="margin-top:8px">
-WhatsApp: <b>0762514399</b> — Inbox us to join our WhatsApp group.
-</p>
+    <a
+      href="https://thrivesarchivers.github.io/Thrives-Archivers-Enduacation/"
+      target="_blank"
+      rel="noopener"
+      style="color:white;font-weight:bold">
+
+      Visit Thrives Archivers Website
+
+    </a>
+
+  </p>
+
+  <p style="margin-top:8px">
+
+    WhatsApp:
+    <b>0762514399</b>
+    — Inbox us to join our WhatsApp group.
+
+  </p>
 
 </footer>
 
+
 <div id="loginModal" class="modal">
 
-<div
-  class="modal-box"
-  style="max-width:430px">
+  <div
+    class="modal-box"
+    style="max-width:430px">
 
-<button
-  class="close"
-  onclick="closeLogin()">
-  ×
-</button>
+    <button
+      class="close"
+      onclick="closeLogin()">
+      ×
+    </button>
 
-<h2>Administrator Login</h2>
+    <h2>Administrator Login</h2>
 
-<div
-  class="field"
-  style="margin-top:18px">
 
-<label>Email</label>
+    <div
+      class="field"
+      style="margin-top:18px">
 
-<input
-  id="loginEmail"
-  type="email"
-  value="thrivesarchivers@gmail.com">
+      <label>Email</label>
+
+      <input
+        id="loginEmail"
+        type="email"
+        value="thrivesarchivers@gmail.com">
+
+    </div>
+
+
+    <div
+      class="field"
+      style="margin-top:12px">
+
+      <label>Password</label>
+
+      <input
+        id="loginPassword"
+        type="password">
+
+    </div>
+
+
+    <button
+      class="btn"
+      style="width:100%;margin-top:15px"
+      onclick="login()">
+
+      Login
+
+    </button>
+
+
+    <div id="loginStatus"></div>
+
+  </div>
 
 </div>
 
-<div
-  class="field"
-  style="margin-top:12px">
-
-<label>Password</label>
-
-<input
-  id="loginPassword"
-  type="password">
-
-</div>
-
-<button
-  class="btn"
-  style="width:100%;margin-top:15px"
-  onclick="login()">
-
-Login
-
-</button>
-
-<div id="loginStatus"></div>
-
-</div>
-</div>
 
 <div id="viewerModal" class="modal">
 
-<div class="modal-box">
+  <div class="modal-box">
 
-<button
-  class="close"
-  onclick="closeViewer()">
-  ×
-</button>
+    <button
+      class="close"
+      onclick="closeViewer()">
+      ×
+    </button>
 
-<div id="documentActions" class="document-toolbar hidden">
-  <button class="btn" onclick="readDocumentAloud()">🔊 Read Aloud</button>
-  <button class="btn light" onclick="pauseReadAloud()">⏸ Pause</button>
-  <button class="btn light" onclick="resumeReadAloud()">▶ Resume</button>
-  <button class="btn light" onclick="stopReadAloud()">⏹ Stop</button>
-  <button class="btn orange" onclick="printCurrentDocument()">🖨️ Print / Save as PDF</button>
-  <button class="btn green" onclick="downloadDocumentAudio()">🎧 Download Audio</button>
 
-  <div class="audio-speed-control">
-    <label for="audioSpeed">🎚️ Audio Speed</label>
-    <select id="audioSpeed" onchange="changeAudioSpeed(this.value)">
-      <option value="0.5">Slowest (0.5×)</option>
-      <option value="0.75">Slow (0.75×)</option>
-      <option value="0.95" selected>Normal (0.95×)</option>
-      <option value="1.25">Fast (1.25×)</option>
-      <option value="1.5">Faster (1.5×)</option>
-      <option value="2">Very Fast (2×)</option>
-      <option value="2.5">Maximum (2.5×)</option>
-    </select>
+    <div
+      id="documentActions"
+      class="document-toolbar hidden">
+
+      <button
+        class="btn"
+        onclick="readDocumentAloud()">
+        🔊 Read Aloud
+      </button>
+
+
+      <button
+        class="btn light"
+        onclick="pauseReadAloud()">
+        ⏸ Pause
+      </button>
+
+
+      <button
+        class="btn light"
+        onclick="resumeReadAloud()">
+        ▶ Resume
+      </button>
+
+
+      <button
+        class="btn light"
+        onclick="stopReadAloud()">
+        ⏹ Stop
+      </button>
+
+
+      <button
+        class="btn orange"
+        onclick="printCurrentDocument()">
+        🖨️ Print / Save as PDF
+      </button>
+
+
+      <button
+        class="btn green"
+        onclick="downloadDocumentAudio()">
+        🎧 Download Audio
+      </button>
+
+
+      <div class="audio-speed-control">
+
+        <label for="audioSpeed">
+          🎚️ Audio Speed
+        </label>
+
+        <select
+          id="audioSpeed"
+          onchange="changeAudioSpeed(this.value)">
+
+          <option value="0.5">
+            Slowest (0.5×)
+          </option>
+
+          <option value="0.75">
+            Slow (0.75×)
+          </option>
+
+          <option
+            value="0.95"
+            selected>
+            Normal (0.95×)
+          </option>
+
+          <option value="1.25">
+            Fast (1.25×)
+          </option>
+
+          <option value="1.5">
+            Faster (1.5×)
+          </option>
+
+          <option value="2">
+            Very Fast (2×)
+          </option>
+
+          <option value="2.5">
+            Maximum (2.5×)
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div
+        id="readStatus"
+        class="read-status">
+        Ready.
+      </div>
+
+    </div>
+
+
+    <div
+      id="viewerContent"
+      class="viewer-content">
+    </div>
+
   </div>
 
-  <div id="readStatus" class="read-status">Ready.</div>
 </div>
 
-<div
-  id="viewerContent"
-  class="viewer-content">
-</div>
-
-</div>
-</div>
 
 <script>
 
@@ -1345,14 +1626,7 @@ const SUPABASE_URL =
 'https://odwiqajuubcgrrqipyju.supabase.co';
 
 const SUPABASE_ANON_KEY =
-'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1dWJjZ3JycWlweWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzA4MjEsImV4cCI6MjA2ODg0NjgyMX0.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A';
-
-/*
-   IMPORTANT:
-   There is ONLY ONE Supabase client.
-   The previous duplicate "const db" declaration
-   has been removed.
-*/
+'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFqYWp1dWJjZ3JycWlweWp1IiwicmVmIjoib2R3aXFhanV1YmNncnJxaXB5anUiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc1MzI3MDgyMSwiZXhwIjoyMDY4ODQ2ODIxfQ.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A';
 
 const db =
   window.supabase.createClient(
@@ -1382,7 +1656,9 @@ const QUIZ_FUNCTION =
 let currentUser = null;
 
 let allResources = [];
+
 let currentDocument = null;
+
 let speechUtterance = null;
 
 
@@ -1411,6 +1687,7 @@ function escapeHtml(value){
         "'":"&#039;"
       }[character])
     );
+
 }
 
 
@@ -1435,6 +1712,7 @@ function showStatus(
 
   element.textContent =
     message;
+
 }
 
 
@@ -1461,6 +1739,8 @@ function closeLogin(){
 
 
 function closeViewer(){
+
+  stopReadAloud();
 
   $("viewerModal")
     .classList
@@ -1489,6 +1769,7 @@ function showTab(
 
   const selectedTab =
     $(`tab-${name}`);
+
 
   if(selectedTab){
 
@@ -1538,17 +1819,21 @@ function isCurrentUserAdmin(){
   if(!currentUser)
     return false;
 
+
   const currentEmail =
     String(currentUser.email || "")
       .trim()
       .toLowerCase();
+
 
   const adminEmail =
     ADMIN_EMAIL
       .trim()
       .toLowerCase();
 
+
   return currentEmail === adminEmail;
+
 }
 
 
@@ -1569,10 +1854,12 @@ function updateAdminUI(){
       : "No user"
   );
 
+
   console.log(
     "Configured administrator:",
     ADMIN_EMAIL
   );
+
 
   console.log(
     "Administrator detected:",
@@ -1624,6 +1911,7 @@ async function login(){
     $("loginEmail")
       .value
       .trim();
+
 
   const password =
     $("loginPassword")
@@ -1681,6 +1969,7 @@ async function login(){
         error
       );
 
+
       showStatus(
         "loginStatus",
         error.message,
@@ -1702,11 +1991,6 @@ async function login(){
     );
 
 
-    /*
-       Check the authenticated account
-       after Supabase login.
-    */
-
     if(!isCurrentUserAdmin()){
 
       await db.auth.signOut();
@@ -1714,6 +1998,7 @@ async function login(){
       currentUser = null;
 
       updateAdminUI();
+
 
       showStatus(
         "loginStatus",
@@ -1739,14 +2024,16 @@ async function login(){
 
       updateAdminUI();
 
+
       $("admin")
         .scrollIntoView({
           behavior:"smooth"
         });
 
+
       loadAdminData();
 
-    }, 300);
+    },300);
 
 
   }catch(error){
@@ -1755,6 +2042,7 @@ async function login(){
       "Login exception:",
       error
     );
+
 
     showStatus(
       "loginStatus",
@@ -1786,6 +2074,7 @@ async function logout(){
     );
 
   }
+
 
   currentUser = null;
 
@@ -1941,9 +2230,11 @@ async function loadPublishedResources(
       documentQuery
         .eq("course",course);
 
+
     videoQuery =
       videoQuery
         .eq("course",course);
+
 
     quizQuery =
       quizQuery
@@ -2197,8 +2488,13 @@ function openResource(
 ){
 
   stopReadAloud();
+
   currentDocument = null;
-  $("documentActions").classList.add("hidden");
+
+  $("documentActions")
+    .classList
+    .add("hidden");
+
 
   let html =
     `<h2>${escapeHtml(item.title)}</h2>`;
@@ -2216,12 +2512,23 @@ function openResource(
   ){
 
     currentDocument = item;
-    $("documentActions").classList.remove("hidden");
-    $("readStatus").textContent = "Ready to read.";
+
+    $("documentActions")
+      .classList
+      .remove("hidden");
+
+
+    $("readStatus")
+      .textContent =
+      "Ready to read.";
+
 
     html += `
 
-<div id="documentReaderContent" class="document-reader-content" style="margin-top:20px">
+<div
+  id="documentReaderContent"
+  class="document-reader-content"
+  style="margin-top:20px">
 
 ${
   item.content_html ||
@@ -2426,9 +2733,8 @@ Submit Quiz
 }
 
 
-
 /* =========================================================
-   DOCUMENT EXPORT + READ ALOUD
+   DOCUMENT EXPORT
    ========================================================= */
 
 const THRIVES_LOGO_URL =
@@ -2443,283 +2749,1379 @@ const THRIVES_WEBSITE_URL =
 const THRIVES_WHATSAPP =
   "0762514399";
 
+
 function getDocumentPlainText(doc){
-  const raw = doc?.content_html || doc?.content_text || "";
-  const temp = document.createElement("div");
-  temp.innerHTML = raw;
-  return (temp.innerText || temp.textContent || "")
-    .replace(/\s+\n/g, "\n")
-    .replace(/\n{3,}/g, "\n\n")
+
+  const raw =
+    doc?.content_html ||
+    doc?.content_text ||
+    "";
+
+
+  const temp =
+    document.createElement("div");
+
+
+  temp.innerHTML =
+    raw;
+
+
+  return (
+    temp.innerText ||
+    temp.textContent ||
+    ""
+  )
+    .replace(/\s+\n/g,"\n")
+    .replace(/\n{3,}/g,"\n\n")
     .trim();
+
 }
 
+
 function escapeAttribute(value){
+
   return String(value ?? "")
     .replace(/&/g,"&amp;")
     .replace(/"/g,"&quot;")
     .replace(/</g,"&lt;")
     .replace(/>/g,"&gt;");
+
 }
+
 
 async function getLogoDataUrl(){
-  const urls = [THRIVES_LOGO_URL, THRIVES_LOGO_FALLBACK_URL];
-  for(const url of urls){
+
+  const urls = [
+
+    THRIVES_LOGO_URL,
+
+    THRIVES_LOGO_FALLBACK_URL
+
+  ];
+
+
+  for(
+    const url of urls
+  ){
+
     try{
-      const response = await fetch(url, {mode:"cors",cache:"no-store"});
-      if(!response.ok) continue;
-      const blob = await response.blob();
-      return await new Promise((resolve,reject)=>{
-        const reader = new FileReader();
-        reader.onload=()=>resolve(reader.result);
-        reader.onerror=reject;
-        reader.readAsDataURL(blob);
-      });
+
+      const response =
+        await fetch(
+          url,
+          {
+            mode:"cors",
+            cache:"no-store"
+          }
+        );
+
+
+      if(!response.ok)
+        continue;
+
+
+      const blob =
+        await response.blob();
+
+
+      return await new Promise(
+        (resolve,reject)=>{
+
+          const reader =
+            new FileReader();
+
+
+          reader.onload =
+            () =>
+              resolve(
+                reader.result
+              );
+
+
+          reader.onerror =
+            reject;
+
+
+          reader.readAsDataURL(
+            blob
+          );
+
+        }
+      );
+
     }catch(e){}
+
   }
+
+
   return null;
+
 }
 
-async function prepareExportDocument(doc){
-  if(!doc) return doc;
-  const copy = {...doc};
-  const logo = await getLogoDataUrl();
-  if(logo) copy._exportLogoDataUrl = logo;
+
+async function prepareExportDocument(
+  doc
+){
+
+  if(!doc)
+    return doc;
+
+
+  const copy =
+    {...doc};
+
+
+  const logo =
+    await getLogoDataUrl();
+
+
+  if(logo)
+    copy._exportLogoDataUrl =
+      logo;
+
+
   return copy;
+
 }
 
-function buildBrandedDocumentHTML(doc){
-  const title = doc?.title || "Thrives Archivers Document";
-  const course = doc?.course || "";
-  const topic = doc?.topic || "";
-  const semester = doc?.semester || "";
-  const content = doc?.content_html ||
-    `<pre style="white-space:pre-wrap">${escapeHtml(doc?.content_text || "")}</pre>`;
+
+function buildBrandedDocumentHTML(
+  doc
+){
+
+  const title =
+    doc?.title ||
+    "Thrives Archivers Document";
+
+
+  const course =
+    doc?.course ||
+    "";
+
+
+  const topic =
+    doc?.topic ||
+    "";
+
+
+  const semester =
+    doc?.semester ||
+    "";
+
+
+  const content =
+    doc?.content_html ||
+    `<pre style="white-space:pre-wrap">${escapeHtml(
+      doc?.content_text || ""
+    )}</pre>`;
+
 
   return `
-<div id="pdfPrintArea" class="document-export">
-  <div class="document-export-header pdf-avoid-break">
-    <img class="document-export-logo" src="${escapeAttribute(doc?._exportLogoDataUrl || THRIVES_LOGO_URL)}" crossorigin="anonymous" alt="Thrives Archivers Logo" onerror="this.onerror=null;this.src='${THRIVES_LOGO_FALLBACK_URL}'">
-    <div class="document-export-brand">THRIVES ARCHIVERS</div>
-    <div class="document-export-title">${escapeHtml(title)}</div>
-    <div class="document-export-meta">
-      <b>Course:</b> ${escapeHtml(course || "Not specified")} &nbsp; | &nbsp;
-      <b>Topic:</b> ${escapeHtml(topic || "Not specified")} &nbsp; | &nbsp;
-      <b>Semester:</b> ${escapeHtml(semester || "Not specified")}
+
+<div
+  id="pdfPrintArea"
+  class="document-export">
+
+  <div
+    class="document-export-header pdf-avoid-break">
+
+    <img
+      class="document-export-logo"
+      src="${escapeAttribute(
+        doc?._exportLogoDataUrl ||
+        THRIVES_LOGO_URL
+      )}"
+      crossorigin="anonymous"
+      alt="Thrives Archivers Logo"
+      onerror="this.onerror=null;this.src='${THRIVES_LOGO_FALLBACK_URL}'">
+
+    <div class="document-export-brand">
+      THRIVES ARCHIVERS
     </div>
+
+    <div class="document-export-title">
+      ${escapeHtml(title)}
+    </div>
+
+    <div class="document-export-meta">
+
+      <b>Course:</b>
+      ${escapeHtml(course || "Not specified")}
+
+      &nbsp; | &nbsp;
+
+      <b>Topic:</b>
+      ${escapeHtml(topic || "Not specified")}
+
+      &nbsp; | &nbsp;
+
+      <b>Semester:</b>
+      ${escapeHtml(semester || "Not specified")}
+
+    </div>
+
   </div>
 
-  <div class="document-export-body">${content}</div>
+
+  <div class="document-export-body">
+    ${content}
+  </div>
+
 
   <div class="document-export-promo pdf-avoid-break">
-    <strong>Access More Thrives Archivers Learning Materials</strong><br>
-    Visit our website for more documents, videos, quizzes and lessons:<br>
-    <a href="${THRIVES_WEBSITE_URL}" target="_blank">${THRIVES_WEBSITE_URL}</a><br><br>
-    <strong>Join Our WhatsApp Group</strong><br>
-    Inbox <b>${THRIVES_WHATSAPP}</b> to join the Thrives Archivers WhatsApp group.
+
+    <strong>
+      Access More Thrives Archivers Learning Materials
+    </strong>
+
+    <br>
+
+    Visit our website for more documents,
+    videos, quizzes and lessons:
+
+    <br>
+
+    <a
+      href="${THRIVES_WEBSITE_URL}"
+      target="_blank">
+
+      ${THRIVES_WEBSITE_URL}
+
+    </a>
+
+    <br><br>
+
+    <strong>
+      Join Our WhatsApp Group
+    </strong>
+
+    <br>
+
+    Inbox
+    <b>${THRIVES_WHATSAPP}</b>
+    to join the Thrives Archivers WhatsApp group.
+
   </div>
+
 
   <div class="document-export-footer pdf-avoid-break">
-    <b>THRIVES ARCHIVERS • Year Three Learning Hub</b><br>
-    Educational document generated from the Thrives Archivers platform.
+
+    <b>
+      THRIVES ARCHIVERS • Year Three Learning Hub
+    </b>
+
+    <br>
+
+    Educational document generated from the
+    Thrives Archivers platform.
+
   </div>
+
 </div>`;
+
 }
 
-function buildStandaloneDocumentHTML(doc){
-  return `<!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${escapeAttribute(doc?.title || "Thrives Archivers Document")}</title>
+
+function buildStandaloneDocumentHTML(
+  doc
+){
+
+  return `
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1">
+
+<title>
+  ${escapeAttribute(
+    doc?.title ||
+    "Thrives Archivers Document"
+  )}
+</title>
+
 <style>
-@page{size:A4 portrait;margin:12mm}
-*{box-sizing:border-box}
-html,body{margin:0;padding:0;background:#fff;color:#111827;font-family:Arial,Helvetica,sans-serif}
-.document-export{width:190mm;max-width:100%;margin:0 auto;background:#fff;padding:12mm 14mm}
-.document-export-header{text-align:center;border-bottom:2px solid #0d47a1;padding-bottom:6mm;margin-bottom:7mm;break-inside:avoid;page-break-inside:avoid}
-.document-export-logo{display:block;width:25mm;height:25mm;object-fit:contain;margin:0 auto 3mm}
-.document-export-brand{color:#0d47a1;font-size:22px;font-weight:800;letter-spacing:.8px}
-.document-export-title{margin-top:3mm;font-size:25px;line-height:1.25}
-.document-export-meta{margin-top:3mm;font-size:13px;line-height:1.5;color:#4b5563}
-.document-export-body{line-height:1.65;font-size:15px;word-wrap:break-word;overflow-wrap:break-word;word-break:normal;orphans:3;widows:3}
-.document-export-body img{max-width:100%;height:auto}
-.document-export-body table{width:100%;max-width:100%;border-collapse:collapse}
-.document-export-body pre{white-space:pre-wrap;overflow-wrap:break-word}
-.document-export-body h1,.document-export-body h2,.document-export-body h3,.document-export-body h4,.document-export-body h5,.document-export-body h6,.document-export-body p,.document-export-body li,.document-export-body table,.document-export-body tr,.document-export-body blockquote,.document-export-body pre,.document-export-body figure,.document-export-body img,.pdf-avoid-break{break-inside:avoid!important;page-break-inside:avoid!important}
-.document-export-promo{margin-top:5mm;padding:4mm;border:1px solid #dbe4ef;border-radius:3mm;text-align:center;background:#f8fbff;line-height:1.6;break-inside:avoid;page-break-inside:avoid}
-.document-export-promo strong{color:#0d47a1}
-.document-export-promo a{color:#0d47a1;text-decoration:none;font-weight:700;overflow-wrap:anywhere}
-.document-export-footer{margin-top:10mm;padding-top:4mm;border-top:1px solid #dbe4ef;text-align:center;color:#6b7280;font-size:12px;line-height:1.6;break-inside:avoid;page-break-inside:avoid}
-</style></head><body>${buildBrandedDocumentHTML(doc)}</body></html>`;
+
+@page{
+  size:A4 portrait;
+  margin:12mm;
 }
+
+*{
+  box-sizing:border-box;
+}
+
+html,body{
+  margin:0;
+  padding:0;
+  background:#fff;
+  color:#111827;
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+.document-export{
+  width:190mm;
+  max-width:100%;
+  margin:0 auto;
+  background:#fff;
+  padding:12mm 14mm;
+}
+
+.document-export-header{
+  text-align:center;
+  border-bottom:2px solid #0d47a1;
+  padding-bottom:6mm;
+  margin-bottom:7mm;
+  break-inside:avoid;
+  page-break-inside:avoid;
+}
+
+.document-export-logo{
+  display:block;
+  width:25mm;
+  height:25mm;
+  object-fit:contain;
+  margin:0 auto 3mm;
+}
+
+.document-export-brand{
+  color:#0d47a1;
+  font-size:22px;
+  font-weight:800;
+  letter-spacing:.8px;
+}
+
+.document-export-title{
+  margin-top:3mm;
+  font-size:25px;
+  line-height:1.25;
+}
+
+.document-export-meta{
+  margin-top:3mm;
+  font-size:13px;
+  line-height:1.5;
+  color:#4b5563;
+}
+
+.document-export-body{
+  line-height:1.65;
+  font-size:15px;
+  word-wrap:break-word;
+  overflow-wrap:break-word;
+  word-break:normal;
+  orphans:3;
+  widows:3;
+}
+
+.document-export-body img{
+  max-width:100%;
+  height:auto;
+}
+
+.document-export-body table{
+  width:100%;
+  max-width:100%;
+  border-collapse:collapse;
+}
+
+.document-export-body pre{
+  white-space:pre-wrap;
+  overflow-wrap:break-word;
+}
+
+.document-export-body h1,
+.document-export-body h2,
+.document-export-body h3,
+.document-export-body h4,
+.document-export-body h5,
+.document-export-body h6,
+.document-export-body p,
+.document-export-body li,
+.document-export-body table,
+.document-export-body tr,
+.document-export-body blockquote,
+.document-export-body pre,
+.document-export-body figure,
+.document-export-body img,
+.pdf-avoid-break{
+  break-inside:avoid!important;
+  page-break-inside:avoid!important;
+}
+
+.document-export-promo{
+  margin-top:5mm;
+  padding:4mm;
+  border:1px solid #dbe4ef;
+  border-radius:3mm;
+  text-align:center;
+  background:#f8fbff;
+  line-height:1.6;
+  break-inside:avoid;
+  page-break-inside:avoid;
+}
+
+.document-export-promo strong{
+  color:#0d47a1;
+}
+
+.document-export-promo a{
+  color:#0d47a1;
+  text-decoration:none;
+  font-weight:700;
+  overflow-wrap:anywhere;
+}
+
+.document-export-footer{
+  margin-top:10mm;
+  padding-top:4mm;
+  border-top:1px solid #dbe4ef;
+  text-align:center;
+  color:#6b7280;
+  font-size:12px;
+  line-height:1.6;
+  break-inside:avoid;
+  page-break-inside:avoid;
+}
+
+</style>
+
+</head>
+
+<body>
+
+${buildBrandedDocumentHTML(doc)}
+
+</body>
+
+</html>`;
+
+}
+
 
 function sanitizeFileName(name){
-  return String(name).replace(/[\\/:*?"<>|]+/g,"-").replace(/\s+/g," ").trim().slice(0,120) || "document";
+
+  return String(name)
+    .replace(
+      /[\\/:*?"<>|]+/g,
+      "-"
+    )
+    .replace(
+      /\s+/g,
+      " "
+    )
+    .trim()
+    .slice(
+      0,
+      120
+    ) ||
+    "document";
+
 }
 
-function createExportElement(doc){
-  const wrapper = document.createElement("div");
-  wrapper.innerHTML = buildBrandedDocumentHTML(doc);
-  const element = wrapper.firstElementChild;
-  preparePdfElement(element);
+
+function createExportElement(
+  doc
+){
+
+  const wrapper =
+    document.createElement("div");
+
+
+  wrapper.innerHTML =
+    buildBrandedDocumentHTML(
+      doc
+    );
+
+
+  const element =
+    wrapper.firstElementChild;
+
+
+  preparePdfElement(
+    element
+  );
+
+
   return element;
+
 }
 
-function preparePdfElement(element){
-  if(!element) return;
 
-  element.querySelectorAll(
-    "h1,h2,h3,h4,h5,h6,p,li,table,tr,blockquote,pre,figure,img"
-  ).forEach(node => node.classList.add("pdf-avoid-break"));
+function preparePdfElement(
+  element
+){
 
-  element.querySelectorAll("table").forEach(table => {
-    table.style.width = "100%";
-    table.style.maxWidth = "100%";
-    table.style.borderCollapse = "collapse";
-  });
+  if(!element)
+    return;
 
-  element.querySelectorAll("img").forEach(img => {
-    img.style.maxWidth = "100%";
-    img.style.height = "auto";
-  });
-}
 
-async function waitForExportImages(element){
-  const images = Array.from(element.querySelectorAll("img"));
-  await Promise.all(images.map(img => {
-    if(img.complete && img.naturalWidth > 0) return Promise.resolve();
-    return new Promise(resolve => {
-      const done = () => resolve();
-      img.addEventListener("load",done,{once:true});
-      img.addEventListener("error",done,{once:true});
+  element
+    .querySelectorAll(
+      "h1,h2,h3,h4,h5,h6,p,li,table,tr,blockquote,pre,figure,img"
+    )
+    .forEach(node =>
+      node.classList.add(
+        "pdf-avoid-break"
+      )
+    );
+
+
+  element
+    .querySelectorAll("table")
+    .forEach(table => {
+
+      table.style.width =
+        "100%";
+
+      table.style.maxWidth =
+        "100%";
+
+      table.style.borderCollapse =
+        "collapse";
+
     });
-  }));
+
+
+  element
+    .querySelectorAll("img")
+    .forEach(img => {
+
+      img.style.maxWidth =
+        "100%";
+
+      img.style.height =
+        "auto";
+
+    });
+
 }
+
+
+async function waitForExportImages(
+  element
+){
+
+  const images =
+    Array.from(
+      element.querySelectorAll("img")
+    );
+
+
+  await Promise.all(
+    images.map(img => {
+
+      if(
+        img.complete &&
+        img.naturalWidth > 0
+      ){
+
+        return Promise.resolve();
+
+      }
+
+
+      return new Promise(
+        resolve => {
+
+          const done =
+            () => resolve();
+
+
+          img.addEventListener(
+            "load",
+            done,
+            {once:true}
+          );
+
+
+          img.addEventListener(
+            "error",
+            done,
+            {once:true}
+          );
+
+        }
+      );
+
+    })
+  );
+
+}
+
 
 async function printCurrentDocument(){
-  if(!currentDocument){ alert("Open a document first."); return; }
-  const old = document.getElementById("pdfPrintArea");
-  if(old) old.remove();
-  const doc = await prepareExportDocument(currentDocument);
-  const element = createExportElement(doc);
-  document.body.appendChild(element);
+
+  if(!currentDocument){
+
+    alert(
+      "Open a document first."
+    );
+
+    return;
+
+  }
+
+
+  const old =
+    document.getElementById(
+      "pdfPrintArea"
+    );
+
+
+  if(old)
+    old.remove();
+
+
+  const doc =
+    await prepareExportDocument(
+      currentDocument
+    );
+
+
+  const element =
+    createExportElement(
+      doc
+    );
+
+
+  document.body.appendChild(
+    element
+  );
+
+
+  await waitForExportImages(
+    element
+  );
+
+
   window.print();
-  setTimeout(()=>element.remove(),1000);
+
+
+  setTimeout(
+    () => element.remove(),
+    1000
+  );
+
 }
+
+
+/* =========================================================
+   DOWNLOAD AUDIO
+   =========================================================
+   
+   IMPORTANT:
+   This uses the EXISTING Supabase Edge Function:
+
+       text-to-speech
+
+   The current Edge Function returns:
+
+       success
+       audio_base64
+       mime_type
+       model
+       voice
+       language
+       rate
+
+   It does NOT return "format".
+   ========================================================= */
 
 async function downloadDocumentAudio(){
-  if(!currentDocument){ alert("Open a document first."); return; }
-  const text = getDocumentPlainText(currentDocument);
-  if(!text){ alert("This document has no readable text."); return; }
 
-  // Browser SpeechSynthesis can speak the document, but it cannot expose
-  // its generated audio samples for direct MP3/WAV downloading.
-  // This button is wired for a Supabase Edge Function named text-to-speech.
+  if(!currentDocument){
+
+    alert(
+      "Open a document first."
+    );
+
+    return;
+
+  }
+
+
+  const text =
+    getDocumentPlainText(
+      currentDocument
+    );
+
+
+  if(!text){
+
+    alert(
+      "This document has no readable text."
+    );
+
+    return;
+
+  }
+
+
+  const button =
+    document.querySelector(
+      "#documentActions .btn.green"
+    );
+
+
+  const originalText =
+    button
+      ? button.textContent
+      : "🎧 Download Audio";
+
+
   try{
-    const result = await invokeFunction("text-to-speech", {
-      text,
-      title: currentDocument.title || "Thrives Archivers Document",
-      language: "en-US",
-      rate: getAudioSpeed(),
-      format: "mp3"
-    });
 
-    const base64 = result?.audio_base64 || result?.audio || result?.data?.audio_base64;
-    const url = result?.audio_url || result?.url || result?.data?.audio_url;
-    let blob = null;
+    if(button){
 
-    if(base64){
-      const clean = String(base64).replace(/^data:audio\/[^;]+;base64,/i,"");
-      const bytes = Uint8Array.from(atob(clean), c=>c.charCodeAt(0));
-      blob = new Blob([bytes], {type:"audio/mpeg"});
-    }else if(url){
-      const response = await fetch(url);
-      if(!response.ok) throw new Error("The audio file could not be downloaded.");
-      blob = await response.blob();
-    }else{
-      throw new Error("The text-to-speech function did not return an audio file.");
+      button.disabled =
+        true;
+
+      button.textContent =
+        "🎧 Generating Audio...";
+
     }
 
-    const objectUrl = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = objectUrl;
-    a.download = `${sanitizeFileName(currentDocument.title || "Thrives-Archivers-Document")}.mp3`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(()=>URL.revokeObjectURL(objectUrl),2000);
+
+    $("readStatus")
+      .textContent =
+      "Generating downloadable audio with Gemini AI...";
+
+
+    /*
+     * Call the EXISTING Edge Function.
+     */
+
+    const result =
+      await invokeFunction(
+        "text-to-speech",
+        {
+
+          text:
+            text,
+
+          title:
+            currentDocument.title ||
+            "Thrives Archivers Document",
+
+          language:
+            "en-US",
+
+          rate:
+            getAudioSpeed(),
+
+          voice:
+            "Kore"
+
+        }
+      );
+
+
+    /*
+     * Current Edge Function response:
+     *
+     * audio_base64
+     * mime_type
+     */
+
+    const base64 =
+      result?.audio_base64;
+
+
+    if(!base64){
+
+      throw new Error(
+        "The text-to-speech Edge Function did not return audio."
+      );
+
+    }
+
+
+    /*
+     * Remove a possible Data URL prefix.
+     */
+
+    const cleanBase64 =
+      String(base64)
+        .replace(
+          /^data:audio\/[^;]+;base64,/i,
+          ""
+        );
+
+
+    /*
+     * Decode Base64.
+     */
+
+    let binary;
+
+    try{
+
+      binary =
+        atob(cleanBase64);
+
+    }catch(error){
+
+      throw new Error(
+        "The Edge Function returned invalid Base64 audio data."
+      );
+
+    }
+
+
+    /*
+     * Convert decoded binary
+     * into Uint8Array.
+     */
+
+    const bytes =
+      new Uint8Array(
+        binary.length
+      );
+
+
+    for(
+      let i = 0;
+      i < binary.length;
+      i++
+    ){
+
+      bytes[i] =
+        binary.charCodeAt(i);
+
+    }
+
+
+    /*
+     * Gemini tells us what audio type
+     * was returned.
+     */
+
+    const returnedMimeType =
+      String(
+        result?.mime_type ||
+        "audio/wav"
+      );
+
+
+    /*
+     * Create Blob using Gemini's
+     * returned MIME type.
+     */
+
+    const blob =
+      new Blob(
+        [bytes],
+        {
+          type:
+            returnedMimeType
+        }
+      );
+
+
+    if(
+      !blob ||
+      blob.size === 0
+    ){
+
+      throw new Error(
+        "The generated audio file is empty."
+      );
+
+    }
+
+
+    /*
+     * Decide the extension.
+     */
+
+    const lowerMime =
+      returnedMimeType
+        .toLowerCase();
+
+
+    let extension =
+      "wav";
+
+
+    if(
+      lowerMime.includes("mpeg") ||
+      lowerMime.includes("mp3")
+    ){
+
+      extension =
+        "mp3";
+
+    }else if(
+      lowerMime.includes("ogg") ||
+      lowerMime.includes("opus")
+    ){
+
+      extension =
+        "ogg";
+
+    }else if(
+      lowerMime.includes("wav")
+    ){
+
+      extension =
+        "wav";
+
+    }else if(
+      lowerMime.includes("l16") ||
+      lowerMime.includes("pcm")
+    ){
+
+      /*
+       * Gemini commonly returns raw PCM/L16.
+       *
+       * The file is temporarily saved with
+       * a .pcm extension instead of pretending
+       * that raw PCM is a WAV container.
+       *
+       * This preserves the actual returned data.
+       */
+
+      extension =
+        "pcm";
+
+    }
+
+
+    /*
+     * Create temporary download URL.
+     */
+
+    const objectUrl =
+      URL.createObjectURL(
+        blob
+      );
+
+
+    /*
+     * Create download link.
+     */
+
+    const link =
+      document.createElement(
+        "a"
+      );
+
+
+    link.href =
+      objectUrl;
+
+
+    link.download =
+      `${sanitizeFileName(
+        currentDocument.title ||
+        "Thrives-Archivers-Document"
+      )}.${extension}`;
+
+
+    document.body.appendChild(
+      link
+    );
+
+
+    /*
+     * Start download.
+     */
+
+    link.click();
+
+
+    link.remove();
+
+
+    /*
+     * Release temporary URL.
+     */
+
+    setTimeout(
+      () => {
+
+        URL.revokeObjectURL(
+          objectUrl
+        );
+
+      },
+      5000
+    );
+
+
+    $("readStatus")
+      .textContent =
+      "✅ Audio downloaded successfully.";
+
+
   }catch(error){
-    alert("Audio download needs the Supabase Edge Function 'text-to-speech'. Read Aloud itself still works in your browser.\n\n" + (error.message || error));
+
+    console.error(
+      "Audio download error:",
+      error
+    );
+
+
+    $("readStatus")
+      .textContent =
+      "❌ Audio download failed.";
+
+
+    alert(
+      "Audio download failed.\n\n" +
+      (
+        error?.message ||
+        String(error)
+      )
+    );
+
+
+  }finally{
+
+    if(button){
+
+      button.disabled =
+        false;
+
+      button.textContent =
+        originalText;
+
+    }
+
   }
+
 }
+
+
+/* =========================================================
+   AUDIO SPEED
+   ========================================================= */
 
 function getAudioSpeed(){
-  const control = document.getElementById("audioSpeed");
-  const value = Number(control?.value || 0.95);
-  return Math.min(2.5, Math.max(0.5, value));
+
+  const control =
+    document.getElementById(
+      "audioSpeed"
+    );
+
+
+  const value =
+    Number(
+      control?.value ||
+      0.95
+    );
+
+
+  return Math.min(
+    2.5,
+    Math.max(
+      0.5,
+      value
+    )
+  );
+
 }
 
-function changeAudioSpeed(value){
-  const speed = Number(value);
-  if(!Number.isFinite(speed)) return;
 
-  if(speechUtterance && "speechSynthesis" in window && window.speechSynthesis.speaking){
-    const wasPaused = window.speechSynthesis.paused;
-    const text = getDocumentPlainText(currentDocument || {});
+function changeAudioSpeed(
+  value
+){
+
+  const speed =
+    Number(value);
+
+
+  if(!Number.isFinite(speed))
+    return;
+
+
+  if(
+    speechUtterance &&
+    "speechSynthesis" in window &&
+    window.speechSynthesis.speaking
+  ){
+
+    const wasPaused =
+      window.speechSynthesis.paused;
+
+
+    const text =
+      getDocumentPlainText(
+        currentDocument ||
+        {}
+      );
+
+
     window.speechSynthesis.cancel();
-    speechUtterance = new SpeechSynthesisUtterance(text);
-    speechUtterance.lang = "en-US";
-    speechUtterance.rate = speed;
-    speechUtterance.pitch = 1;
-    speechUtterance.onstart = () => $("readStatus").textContent = `Reading document at ${speed}× speed...`;
-    speechUtterance.onend = () => $("readStatus").textContent = "Reading finished.";
-    speechUtterance.onerror = () => $("readStatus").textContent = "Read Aloud stopped or could not start.";
-    window.speechSynthesis.speak(speechUtterance);
+
+
+    speechUtterance =
+      new SpeechSynthesisUtterance(
+        text
+      );
+
+
+    speechUtterance.lang =
+      "en-US";
+
+
+    speechUtterance.rate =
+      speed;
+
+
+    speechUtterance.pitch =
+      1;
+
+
+    speechUtterance.onstart =
+      () => {
+
+        $("readStatus")
+          .textContent =
+          `Reading document at ${speed}× speed...`;
+
+      };
+
+
+    speechUtterance.onend =
+      () => {
+
+        $("readStatus")
+          .textContent =
+          "Reading finished.";
+
+      };
+
+
+    speechUtterance.onerror =
+      () => {
+
+        $("readStatus")
+          .textContent =
+          "Read Aloud stopped or could not start.";
+
+      };
+
+
+    window.speechSynthesis.speak(
+      speechUtterance
+    );
+
+
     if(wasPaused){
-      setTimeout(() => window.speechSynthesis.pause(), 50);
+
+      setTimeout(
+        () =>
+          window.speechSynthesis.pause(),
+        50
+      );
+
     }
+
   }else if(currentDocument){
-    $("readStatus").textContent = `Audio speed set to ${speed}×. Press Read Aloud to start.`;
+
+    $("readStatus")
+      .textContent =
+      `Audio speed set to ${speed}×. Press Read Aloud to start.`;
+
   }
+
 }
+
+
+/* =========================================================
+   READ DOCUMENT ALOUD
+   ========================================================= */
 
 function readDocumentAloud(){
-  if(!currentDocument){ alert("Open a document first."); return; }
-  if(!("speechSynthesis" in window)){
-    alert("Read Aloud is not supported by this browser.");
+
+  if(!currentDocument){
+
+    alert(
+      "Open a document first."
+    );
+
     return;
+
   }
+
+
+  if(
+    !("speechSynthesis" in window)
+  ){
+
+    alert(
+      "Read Aloud is not supported by this browser."
+    );
+
+    return;
+
+  }
+
+
   stopReadAloud();
-  const text = getDocumentPlainText(currentDocument);
-  if(!text){ alert("This document has no readable text."); return; }
-  speechUtterance = new SpeechSynthesisUtterance(text);
-  speechUtterance.lang = "en-US";
-  speechUtterance.rate = getAudioSpeed();
-  speechUtterance.pitch = 1;
-  speechUtterance.onstart = () => $("readStatus").textContent = `Reading document at ${getAudioSpeed()}× speed...`;
-  speechUtterance.onend = () => $("readStatus").textContent = "Reading finished.";
-  speechUtterance.onerror = () => $("readStatus").textContent = "Read Aloud stopped or could not start.";
-  window.speechSynthesis.speak(speechUtterance);
+
+
+  const text =
+    getDocumentPlainText(
+      currentDocument
+    );
+
+
+  if(!text){
+
+    alert(
+      "This document has no readable text."
+    );
+
+    return;
+
+  }
+
+
+  speechUtterance =
+    new SpeechSynthesisUtterance(
+      text
+    );
+
+
+  speechUtterance.lang =
+    "en-US";
+
+
+  speechUtterance.rate =
+    getAudioSpeed();
+
+
+  speechUtterance.pitch =
+    1;
+
+
+  speechUtterance.onstart =
+    () => {
+
+      $("readStatus")
+        .textContent =
+        `Reading document at ${getAudioSpeed()}× speed...`;
+
+    };
+
+
+  speechUtterance.onend =
+    () => {
+
+      $("readStatus")
+        .textContent =
+        "Reading finished.";
+
+    };
+
+
+  speechUtterance.onerror =
+    () => {
+
+      $("readStatus")
+        .textContent =
+        "Read Aloud stopped or could not start.";
+
+    };
+
+
+  window.speechSynthesis.speak(
+    speechUtterance
+  );
+
 }
+
+
+/* =========================================================
+   PAUSE
+   ========================================================= */
 
 function pauseReadAloud(){
-  if("speechSynthesis" in window && window.speechSynthesis.speaking){
+
+  if(
+    "speechSynthesis" in window &&
+    window.speechSynthesis.speaking
+  ){
+
     window.speechSynthesis.pause();
-    $("readStatus").textContent = "Reading paused.";
+
+
+    $("readStatus")
+      .textContent =
+      "Reading paused.";
+
   }
+
 }
+
+
+/* =========================================================
+   RESUME
+   ========================================================= */
 
 function resumeReadAloud(){
-  if("speechSynthesis" in window && window.speechSynthesis.paused){
+
+  if(
+    "speechSynthesis" in window &&
+    window.speechSynthesis.paused
+  ){
+
     window.speechSynthesis.resume();
-    $("readStatus").textContent = "Reading resumed.";
+
+
+    $("readStatus")
+      .textContent =
+      "Reading resumed.";
+
   }
+
 }
 
+
+/* =========================================================
+   STOP
+   ========================================================= */
+
 function stopReadAloud(){
-  if("speechSynthesis" in window) window.speechSynthesis.cancel();
-  speechUtterance = null;
-  const status = document.getElementById("readStatus");
-  if(status) status.textContent = currentDocument ? "Ready to read." : "Ready.";
+
+  if(
+    "speechSynthesis" in window
+  ){
+
+    window.speechSynthesis.cancel();
+
+  }
+
+
+  speechUtterance =
+    null;
+
+
+  const status =
+    document.getElementById(
+      "readStatus"
+    );
+
+
+  if(status){
+
+    status.textContent =
+      currentDocument
+        ? "Ready to read."
+        : "Ready.";
+
+  }
+
 }
 
 
@@ -2731,7 +4133,8 @@ function gradeQuiz(
   questions
 ){
 
-  let score = 0;
+  let score =
+    0;
 
 
   questions.forEach(
@@ -2891,6 +4294,7 @@ async function simplifyDocument(){
       await invokeFunction(
         DOCUMENT_FUNCTION,
         {
+
           title,
 
           course:
@@ -3522,6 +4926,7 @@ ${
 
 </button>
 
+
 <button
   class="btn red"
   onclick="deleteItem(
@@ -3634,6 +5039,7 @@ ${
 }
 
 </button>
+
 
 <button
   class="btn red"
@@ -3748,6 +5154,7 @@ ${
 
 </button>
 
+
 <button
   class="btn red"
   onclick="deleteItem(
@@ -3806,7 +5213,10 @@ async function toggleStatus(
       .update({
         status:newStatus
       })
-      .eq("id",id);
+      .eq(
+        "id",
+        id
+      );
 
 
   if(error){
@@ -3883,7 +5293,10 @@ async function deleteItem(
     await db
       .from(table)
       .delete()
-      .eq("id",id);
+      .eq(
+        "id",
+        id
+      );
 
 
   if(error){
@@ -4053,6 +5466,7 @@ async function restoreSession(){
         error
       );
 
+
       currentUser = null;
 
       updateAdminUI();
@@ -4092,6 +5506,7 @@ async function restoreSession(){
       "Session restore error:",
       error
     );
+
 
     currentUser = null;
 
@@ -4184,3 +5599,4 @@ document.addEventListener(
 
 </body>
 </html>
+```
