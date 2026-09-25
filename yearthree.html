@@ -6,7 +6,6 @@
 <title>Thrives Archivers | Year Three</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <style>
 :root{
@@ -486,6 +485,27 @@ footer{
   color:var(--muted);
   font-size:13px;
 }
+.audio-speed-control{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+  padding:8px 10px;
+  border:1px solid var(--border);
+  border-radius:8px;
+  background:white;
+}
+.audio-speed-control label{
+  font-size:13px;
+  font-weight:bold;
+  color:var(--dark);
+}
+.audio-speed-control select{
+  width:auto;
+  min-width:150px;
+  padding:8px 10px;
+}
+
 .document-export{
   width:190mm;
   max-width:100%;
@@ -1273,14 +1293,6 @@ Login
 </div>
 </div>
 
-<div id="documentPreviewModal" class="modal">
-  <div class="modal-box" style="width:min(1000px,100%);max-height:94vh">
-    <button class="close" onclick="closeDocumentPreview()">×</button>
-    <h2 style="margin-bottom:12px;color:#0d47a1">Document Export Preview</h2>
-    <div id="documentPreviewContent" style="background:#e5e7eb;padding:15px;border-radius:10px;overflow:auto"></div>
-  </div>
-</div>
-
 <div id="viewerModal" class="modal">
 
 <div class="modal-box">
@@ -1296,11 +1308,22 @@ Login
   <button class="btn light" onclick="pauseReadAloud()">⏸ Pause</button>
   <button class="btn light" onclick="resumeReadAloud()">▶ Resume</button>
   <button class="btn light" onclick="stopReadAloud()">⏹ Stop</button>
-  <button class="btn light" onclick="previewCurrentDocument()">👁️ Preview Export</button>
-  <button class="btn green" onclick="downloadCurrentDocument()">⬇️ Download Document</button>
   <button class="btn orange" onclick="printCurrentDocument()">🖨️ Print / Save as PDF</button>
-  <button class="btn red" onclick="downloadCurrentDocumentPDF(event)">📄 Download PDF</button>
-  <button class="btn" onclick="downloadDocumentAudio()">🎧 Download Audio</button>
+  <button class="btn green" onclick="downloadDocumentAudio()">🎧 Download Audio</button>
+
+  <div class="audio-speed-control">
+    <label for="audioSpeed">🎚️ Audio Speed</label>
+    <select id="audioSpeed" onchange="changeAudioSpeed(this.value)">
+      <option value="0.5">Slowest (0.5×)</option>
+      <option value="0.75">Slow (0.75×)</option>
+      <option value="0.95" selected>Normal (0.95×)</option>
+      <option value="1.25">Fast (1.25×)</option>
+      <option value="1.5">Faster (1.5×)</option>
+      <option value="2">Very Fast (2×)</option>
+      <option value="2.5">Maximum (2.5×)</option>
+    </select>
+  </div>
+
   <div id="readStatus" class="read-status">Ready.</div>
 </div>
 
@@ -2464,29 +2487,6 @@ async function prepareExportDocument(doc){
   return copy;
 }
 
-function previewCurrentDocument(){
-  if(!currentDocument){ alert("Open a document first."); return; }
-  const target = $("documentPreviewContent");
-  target.innerHTML = "Loading preview...";
-  $("documentPreviewModal").classList.add("show");
-  (async()=>{
-    try{
-      const doc = await prepareExportDocument(currentDocument);
-      target.innerHTML = buildBrandedDocumentHTML(doc);
-      const page = target.firstElementChild;
-      if(page) page.classList.add("document-preview-page");
-      await waitForExportImages(target);
-    }catch(error){
-      target.innerHTML = `<div class="status err">Preview failed: ${escapeHtml(error.message || error)}</div>`;
-    }
-  })();
-}
-
-function closeDocumentPreview(){
-  $("documentPreviewModal").classList.remove("show");
-  $("documentPreviewContent").innerHTML = "";
-}
-
 function buildBrandedDocumentHTML(doc){
   const title = doc?.title || "Thrives Archivers Document";
   const course = doc?.course || "";
@@ -2595,75 +2595,6 @@ async function waitForExportImages(element){
   }));
 }
 
-async function downloadCurrentDocument(){
-  if(!currentDocument){ alert("Open a document first."); return; }
-  const doc = await prepareExportDocument(currentDocument);
-  const html = buildStandaloneDocumentHTML(doc);
-  const blob = new Blob([html], {type:"text/html;charset=utf-8"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `${sanitizeFileName(currentDocument.title || "Thrives-Archivers-Document")}.html`;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  setTimeout(()=>URL.revokeObjectURL(url),1000);
-}
-
-async function downloadCurrentDocumentPDF(event){
-  if(!currentDocument){ alert("Open a document first."); return; }
-  if(typeof html2pdf === "undefined"){
-    alert("PDF generator is still loading. Please try again.");
-    return;
-  }
-
-  const button = event?.currentTarget || document.querySelector("#documentActions .btn.red");
-  const oldText = button?.textContent;
-  button?.classList.add("pdf-loading");
-  if(button) button.textContent = "Creating PDF...";
-
-  let element = null;
-  try{
-    const exportDoc = await prepareExportDocument(currentDocument);
-    element = createExportElement(exportDoc);
-    element.style.position = "fixed";
-    element.style.left = "-100000px";
-    element.style.top = "0";
-    element.style.width = "190mm";
-    document.body.appendChild(element);
-    await waitForExportImages(element);
-
-    const options = {
-      margin:[10,10,10,10],
-      filename:`${sanitizeFileName(currentDocument.title || "Thrives-Archivers-Document")}.pdf`,
-      image:{type:"jpeg",quality:0.98},
-      html2canvas:{
-        scale:2,
-        useCORS:true,
-        allowTaint:false,
-        backgroundColor:"#ffffff",
-        logging:false,
-        scrollX:0,
-        scrollY:0
-      },
-      jsPDF:{unit:"mm",format:"a4",orientation:"portrait",compress:true},
-      pagebreak:{
-        mode:["css","legacy"],
-        avoid:[".pdf-avoid-break"]
-      }
-    };
-
-    await html2pdf().set(options).from(element).save();
-  }catch(error){
-    console.error("PDF creation error:",error);
-    alert("PDF creation failed. Use Print / Save as PDF instead.");
-  }finally{
-    element?.remove();
-    button?.classList.remove("pdf-loading");
-    if(button) button.textContent = oldText || "📄 Download PDF";
-  }
-}
-
 async function printCurrentDocument(){
   if(!currentDocument){ alert("Open a document first."); return; }
   const old = document.getElementById("pdfPrintArea");
@@ -2688,6 +2619,7 @@ async function downloadDocumentAudio(){
       text,
       title: currentDocument.title || "Thrives Archivers Document",
       language: "en-US",
+      rate: getAudioSpeed(),
       format: "mp3"
     });
 
@@ -2720,6 +2652,36 @@ async function downloadDocumentAudio(){
   }
 }
 
+function getAudioSpeed(){
+  const control = document.getElementById("audioSpeed");
+  const value = Number(control?.value || 0.95);
+  return Math.min(2.5, Math.max(0.5, value));
+}
+
+function changeAudioSpeed(value){
+  const speed = Number(value);
+  if(!Number.isFinite(speed)) return;
+
+  if(speechUtterance && "speechSynthesis" in window && window.speechSynthesis.speaking){
+    const wasPaused = window.speechSynthesis.paused;
+    const text = getDocumentPlainText(currentDocument || {});
+    window.speechSynthesis.cancel();
+    speechUtterance = new SpeechSynthesisUtterance(text);
+    speechUtterance.lang = "en-US";
+    speechUtterance.rate = speed;
+    speechUtterance.pitch = 1;
+    speechUtterance.onstart = () => $("readStatus").textContent = `Reading document at ${speed}× speed...`;
+    speechUtterance.onend = () => $("readStatus").textContent = "Reading finished.";
+    speechUtterance.onerror = () => $("readStatus").textContent = "Read Aloud stopped or could not start.";
+    window.speechSynthesis.speak(speechUtterance);
+    if(wasPaused){
+      setTimeout(() => window.speechSynthesis.pause(), 50);
+    }
+  }else if(currentDocument){
+    $("readStatus").textContent = `Audio speed set to ${speed}×. Press Read Aloud to start.`;
+  }
+}
+
 function readDocumentAloud(){
   if(!currentDocument){ alert("Open a document first."); return; }
   if(!("speechSynthesis" in window)){
@@ -2731,9 +2693,9 @@ function readDocumentAloud(){
   if(!text){ alert("This document has no readable text."); return; }
   speechUtterance = new SpeechSynthesisUtterance(text);
   speechUtterance.lang = "en-US";
-  speechUtterance.rate = 0.95;
+  speechUtterance.rate = getAudioSpeed();
   speechUtterance.pitch = 1;
-  speechUtterance.onstart = () => $("readStatus").textContent = "Reading document...";
+  speechUtterance.onstart = () => $("readStatus").textContent = `Reading document at ${getAudioSpeed()}× speed...`;
   speechUtterance.onend = () => $("readStatus").textContent = "Reading finished.";
   speechUtterance.onerror = () => $("readStatus").textContent = "Read Aloud stopped or could not start.";
   window.speechSynthesis.speak(speechUtterance);
