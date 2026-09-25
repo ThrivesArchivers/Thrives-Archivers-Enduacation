@@ -459,6 +459,81 @@ footer{
     flex-direction:column;
   }
 }
+
+/* =========================================================
+   DOCUMENT READ ALOUD
+   ========================================================= */
+.read-aloud-panel{
+  margin-top:18px;
+  padding:16px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:#f8fbff;
+}
+.read-aloud-title{
+  color:var(--dark);
+  font-weight:bold;
+  margin-bottom:10px;
+}
+.read-aloud-controls{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  align-items:center;
+}
+.read-aloud-controls .btn{
+  min-width:92px;
+}
+.read-aloud-speed{
+  width:auto;
+  min-width:110px;
+}
+.read-aloud-progress{
+  height:7px;
+  background:#e5e7eb;
+  border-radius:20px;
+  overflow:hidden;
+  margin-top:12px;
+}
+.read-aloud-progress-bar{
+  width:0%;
+  height:100%;
+  background:var(--blue);
+  transition:width .15s linear;
+}
+.read-aloud-status{
+  margin-top:8px;
+  color:var(--muted);
+  font-size:13px;
+}
+.read-aloud-highlight{
+  background:#fff3a3;
+  border-radius:4px;
+  padding:1px 2px;
+}
+.read-aloud-text{
+  margin-top:15px;
+  max-height:330px;
+  overflow:auto;
+  padding:14px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  background:white;
+  line-height:1.8;
+  white-space:pre-wrap;
+}
+@media(max-width:700px){
+  .read-aloud-controls{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+  }
+  .read-aloud-controls .btn,
+  .read-aloud-speed{
+    width:100%;
+    min-width:0;
+  }
+}
+
 </style>
 </head>
 
@@ -1232,6 +1307,8 @@ function closeLogin(){
 
 function closeViewer(){
 
+  stopDocumentReading();
+
   $("viewerModal")
     .classList
     .remove("show");
@@ -1981,21 +2058,97 @@ function openResource(
     "Document"
   ){
 
+    const documentHtml =
+      item.content_html ||
+      `<pre>${escapeHtml(item.content_text || "")}</pre>`;
+
+    const rawReadingText =
+      item.content_text ||
+      htmlToPlainText(item.content_html || "");
+
     html += `
 
+<div class="read-aloud-panel">
+
+  <div class="read-aloud-title">
+    🔊 Read this document aloud
+  </div>
+
+  <div class="read-aloud-controls">
+
+    <button
+      type="button"
+      class="btn"
+      onclick="readDocumentAloud()">
+      ▶ Read
+    </button>
+
+    <button
+      type="button"
+      class="btn light"
+      onclick="pauseDocumentReading()">
+      ⏸ Pause
+    </button>
+
+    <button
+      type="button"
+      class="btn light"
+      onclick="resumeDocumentReading()">
+      ▶ Resume
+    </button>
+
+    <button
+      type="button"
+      class="btn red"
+      onclick="stopDocumentReading()">
+      ⏹ Stop
+    </button>
+
+    <select
+      id="readAloudSpeed"
+      class="read-aloud-speed"
+      aria-label="Reading speed"
+      onchange="changeReadingSpeed(this.value)">
+      <option value="0.75">0.75× Slow</option>
+      <option value="1" selected>1× Normal</option>
+      <option value="1.25">1.25×</option>
+      <option value="1.5">1.5×</option>
+      <option value="1.75">1.75×</option>
+      <option value="2">2× Fast</option>
+    </select>
+
+    <select
+      id="readAloudVoice"
+      class="read-aloud-speed"
+      aria-label="Voice">
+      <option value="">Default voice</option>
+    </select>
+
+  </div>
+
+  <div class="read-aloud-progress">
+    <div
+      id="readAloudProgressBar"
+      class="read-aloud-progress-bar"></div>
+  </div>
+
+  <div
+    id="readAloudStatus"
+    class="read-aloud-status">
+    Ready to read this document.
+  </div>
+
+  <div
+    id="readAloudText"
+    class="read-aloud-text"
+    data-source-text="${escapeHtml(rawReadingText)}">
+    ${escapeHtml(rawReadingText)}
+  </div>
+
+</div>
+
 <div style="margin-top:20px">
-
-${
-  item.content_html ||
-  `
-  <pre>
-    ${escapeHtml(
-      item.content_text || ""
-    )}
-  </pre>
-  `
-}
-
+  ${documentHtml}
 </div>
 
 `;
@@ -2187,6 +2340,542 @@ Submit Quiz
 
 }
 
+
+/* =========================================================
+   DOCUMENT READ ALOUD
+   ========================================================= */
+
+let readAloudSentences = [];
+let readAloudIndex = 0;
+let readAloudUtterance = null;
+let readAloudPaused = false;
+let readAloudSpeed = 1;
+let readAloudIsReading = false;
+
+function htmlToPlainText(html){
+
+  if(!html)
+    return "";
+
+  const temporary = document.createElement("div");
+
+  temporary.innerHTML = html;
+
+  return (temporary.innerText || temporary.textContent || "")
+    .replace(/\u00a0/g," ")
+    .replace(/[ \t]+\n/g,"\n")
+    .replace(/\n{3,}/g,"\n\n")
+    .trim();
+}
+
+function splitTextIntoSentences(text){
+
+  const cleaned =
+    String(text || "")
+      .replace(/\r/g,"")
+      .replace(/[ \t]+/g," ")
+      .trim();
+
+  if(!cleaned)
+    return [];
+
+  /*
+     Keep sentences reasonably short so the browser speech engine
+     remains reliable on phones and desktop browsers.
+  */
+  const matches =
+    cleaned.match(
+      /[^.!?。！？]+[.!?。！？]+|[^.!?。！？]+$/g
+    );
+
+  const parts =
+    (matches || [cleaned])
+      .map(part => part.trim())
+      .filter(Boolean);
+
+  const finalParts = [];
+
+  parts.forEach(part => {
+
+    if(part.length <= 500){
+
+      finalParts.push(part);
+
+      return;
+    }
+
+    const chunks =
+      part.match(/.{1,450}(?:\s+|$)/g) || [part];
+
+    chunks
+      .map(chunk => chunk.trim())
+      .filter(Boolean)
+      .forEach(chunk => finalParts.push(chunk));
+
+  });
+
+  return finalParts;
+}
+
+function populateReadAloudVoices(){
+
+  const voiceSelect =
+    $("readAloudVoice");
+
+  if(!voiceSelect ||
+     !("speechSynthesis" in window))
+    return;
+
+  const voices =
+    window.speechSynthesis.getVoices();
+
+  const previous =
+    voiceSelect.value;
+
+  voiceSelect.innerHTML =
+    '<option value="">Default voice</option>';
+
+  voices.forEach((voice,index) => {
+
+    const option =
+      document.createElement("option");
+
+    option.value = String(index);
+
+    option.textContent =
+      `${voice.name} (${voice.lang})`;
+
+    voiceSelect.appendChild(option);
+
+  });
+
+  if(
+    [...voiceSelect.options]
+      .some(option => option.value === previous)
+  ){
+
+    voiceSelect.value = previous;
+
+  }
+
+}
+
+function updateReadAloudStatus(message){
+
+  const status =
+    $("readAloudStatus");
+
+  if(status)
+    status.textContent = message;
+
+}
+
+function updateReadAloudProgress(){
+
+  const bar =
+    $("readAloudProgressBar");
+
+  if(!bar)
+    return;
+
+  const total =
+    readAloudSentences.length;
+
+  const percentage =
+    total
+      ? Math.min(
+          100,
+          Math.round(
+            (readAloudIndex / total) * 100
+          )
+        )
+      : 0;
+
+  bar.style.width =
+    `${percentage}%`;
+
+}
+
+function renderReadAloudText(){
+
+  const container =
+    $("readAloudText");
+
+  if(!container)
+    return;
+
+  container.innerHTML =
+    readAloudSentences
+      .map(
+        (sentence,index) =>
+          `<span
+             id="readSentence-${index}"
+             data-index="${index}">
+             ${escapeHtml(sentence)}
+           </span>`
+      )
+      .join(" ");
+
+  highlightReadAloudSentence();
+}
+
+function highlightReadAloudSentence(){
+
+  document
+    .querySelectorAll(
+      "#readAloudText .read-aloud-highlight"
+    )
+    .forEach(element => {
+
+      element.classList
+        .remove("read-aloud-highlight");
+
+    });
+
+  const current =
+    $(`readSentence-${readAloudIndex}`);
+
+  if(current){
+
+    current.classList
+      .add("read-aloud-highlight");
+
+    current.scrollIntoView({
+      behavior:"smooth",
+      block:"center"
+    });
+
+  }
+
+}
+
+function getSelectedReadAloudVoice(){
+
+  const select =
+    $("readAloudVoice");
+
+  if(!select ||
+     !select.value ||
+     !("speechSynthesis" in window))
+    return null;
+
+  const voices =
+    window.speechSynthesis.getVoices();
+
+  return voices[
+    Number(select.value)
+  ] || null;
+}
+
+function speakCurrentReadAloudSentence(){
+
+  if(
+    !("speechSynthesis" in window)
+  ){
+
+    updateReadAloudStatus(
+      "Read Aloud is not supported by this browser."
+    );
+
+    return;
+
+  }
+
+  if(
+    readAloudIndex >=
+    readAloudSentences.length
+  ){
+
+    readAloudIsReading = false;
+    readAloudPaused = false;
+    readAloudIndex = 0;
+
+    updateReadAloudProgress();
+
+    updateReadAloudStatus(
+      "Finished reading the document."
+    );
+
+    highlightReadAloudSentence();
+
+    return;
+
+  }
+
+  const sentence =
+    readAloudSentences[
+      readAloudIndex
+    ];
+
+  if(!sentence){
+
+    readAloudIndex++;
+
+    speakCurrentReadAloudSentence();
+
+    return;
+
+  }
+
+  readAloudIsReading = true;
+  readAloudPaused = false;
+
+  highlightReadAloudSentence();
+  updateReadAloudProgress();
+
+  updateReadAloudStatus(
+    `Reading ${readAloudIndex + 1} of ${readAloudSentences.length}...`
+  );
+
+  readAloudUtterance =
+    new SpeechSynthesisUtterance(
+      sentence
+    );
+
+  readAloudUtterance.rate =
+    Number(readAloudSpeed) || 1;
+
+  readAloudUtterance.pitch = 1;
+  readAloudUtterance.volume = 1;
+
+  const selectedVoice =
+    getSelectedReadAloudVoice();
+
+  if(selectedVoice){
+
+    readAloudUtterance.voice =
+      selectedVoice;
+
+    readAloudUtterance.lang =
+      selectedVoice.lang;
+
+  }else{
+
+    readAloudUtterance.lang =
+      "en-US";
+
+  }
+
+  readAloudUtterance.onend =
+    () => {
+
+      if(!readAloudIsReading)
+        return;
+
+      readAloudIndex++;
+
+      speakCurrentReadAloudSentence();
+
+    };
+
+  readAloudUtterance.onerror =
+    event => {
+
+      console.warn(
+        "Speech synthesis error:",
+        event
+      );
+
+      if(
+        event.error === "canceled" ||
+        event.error === "interrupted"
+      )
+        return;
+
+      readAloudIsReading = false;
+
+      updateReadAloudStatus(
+        "The browser could not continue reading this document."
+      );
+
+    };
+
+  window.speechSynthesis.cancel();
+
+  window.speechSynthesis.speak(
+    readAloudUtterance
+  );
+
+}
+
+function readDocumentAloud(){
+
+  if(
+    !("speechSynthesis" in window)
+  ){
+
+    updateReadAloudStatus(
+      "Your browser does not support document reading."
+    );
+
+    return;
+
+  }
+
+  stopDocumentReading();
+
+  const container =
+    $("readAloudText");
+
+  if(!container){
+
+    updateReadAloudStatus(
+      "No document text is available to read."
+    );
+
+    return;
+
+  }
+
+  const sourceText =
+    container.dataset.sourceText ||
+    container.textContent ||
+    "";
+
+  readAloudSentences =
+    splitTextIntoSentences(
+      sourceText
+    );
+
+  if(!readAloudSentences.length){
+
+    updateReadAloudStatus(
+      "This document has no readable text."
+    );
+
+    return;
+
+  }
+
+  readAloudIndex = 0;
+  readAloudIsReading = true;
+  readAloudPaused = false;
+
+  renderReadAloudText();
+
+  speakCurrentReadAloudSentence();
+
+}
+
+function pauseDocumentReading(){
+
+  if(
+    !("speechSynthesis" in window)
+  )
+    return;
+
+  if(
+    window.speechSynthesis.speaking &&
+    !window.speechSynthesis.paused
+  ){
+
+    window.speechSynthesis.pause();
+
+    readAloudPaused = true;
+
+    updateReadAloudStatus(
+      "Reading paused."
+    );
+
+  }
+
+}
+
+function resumeDocumentReading(){
+
+  if(
+    !("speechSynthesis" in window)
+  )
+    return;
+
+  if(window.speechSynthesis.paused){
+
+    window.speechSynthesis.resume();
+
+    readAloudPaused = false;
+    readAloudIsReading = true;
+
+    updateReadAloudStatus(
+      `Reading ${readAloudIndex + 1} of ${readAloudSentences.length}...`
+    );
+
+  }else if(
+    !window.speechSynthesis.speaking &&
+    readAloudSentences.length
+  ){
+
+    speakCurrentReadAloudSentence();
+
+  }
+
+}
+
+function stopDocumentReading(){
+
+  if("speechSynthesis" in window)
+    window.speechSynthesis.cancel();
+
+  readAloudIsReading = false;
+  readAloudPaused = false;
+  readAloudIndex = 0;
+
+  updateReadAloudProgress();
+
+  const status =
+    $("readAloudStatus");
+
+  if(status)
+    status.textContent =
+      "Reading stopped.";
+
+  document
+    .querySelectorAll(
+      "#readAloudText .read-aloud-highlight"
+    )
+    .forEach(element => {
+
+      element.classList
+        .remove("read-aloud-highlight");
+
+    });
+
+}
+
+function changeReadingSpeed(value){
+
+  readAloudSpeed =
+    Number(value) || 1;
+
+  /*
+     If currently speaking, restart the current sentence
+     using the newly selected speed.
+  */
+  if(
+    readAloudIsReading &&
+    !readAloudPaused &&
+    "speechSynthesis" in window
+  ){
+
+    window.speechSynthesis.cancel();
+
+    setTimeout(
+      () => speakCurrentReadAloudSentence(),
+      80
+    );
+
+  }
+
+}
+
+/*
+   Browser voices can load asynchronously.
+*/
+if("speechSynthesis" in window){
+
+  window.speechSynthesis.onvoiceschanged =
+    populateReadAloudVoices;
+
+}
 
 /* =========================================================
    GRADE QUIZ
@@ -3637,6 +4326,8 @@ document.addEventListener(
   async () => {
 
     updateAdminUI();
+
+    populateReadAloudVoices();
 
     await restoreSession();
 
