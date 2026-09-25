@@ -602,6 +602,18 @@ footer{
   opacity:.7;
   pointer-events:none;
 }
+.document-preview-page{
+  background:#fff;
+  width:190mm;
+  max-width:100%;
+  margin:0 auto;
+  box-shadow:0 2px 15px #0003;
+}
+.audio-download-note{
+  margin-top:8px;
+  color:var(--muted);
+  font-size:12px;
+}
 
 @page{
   size:A4 portrait;
@@ -1261,6 +1273,14 @@ Login
 </div>
 </div>
 
+<div id="documentPreviewModal" class="modal">
+  <div class="modal-box" style="width:min(1000px,100%);max-height:94vh">
+    <button class="close" onclick="closeDocumentPreview()">×</button>
+    <h2 style="margin-bottom:12px;color:#0d47a1">Document Export Preview</h2>
+    <div id="documentPreviewContent" style="background:#e5e7eb;padding:15px;border-radius:10px;overflow:auto"></div>
+  </div>
+</div>
+
 <div id="viewerModal" class="modal">
 
 <div class="modal-box">
@@ -1276,9 +1296,11 @@ Login
   <button class="btn light" onclick="pauseReadAloud()">⏸ Pause</button>
   <button class="btn light" onclick="resumeReadAloud()">▶ Resume</button>
   <button class="btn light" onclick="stopReadAloud()">⏹ Stop</button>
+  <button class="btn light" onclick="previewCurrentDocument()">👁️ Preview Export</button>
   <button class="btn green" onclick="downloadCurrentDocument()">⬇️ Download Document</button>
   <button class="btn orange" onclick="printCurrentDocument()">🖨️ Print / Save as PDF</button>
   <button class="btn red" onclick="downloadCurrentDocumentPDF(event)">📄 Download PDF</button>
+  <button class="btn" onclick="downloadDocumentAudio()">🎧 Download Audio</button>
   <div id="readStatus" class="read-status">Ready.</div>
 </div>
 
@@ -2387,6 +2409,9 @@ Submit Quiz
    ========================================================= */
 
 const THRIVES_LOGO_URL =
+  "./image1.jpg";
+
+const THRIVES_LOGO_FALLBACK_URL =
   "https://thrivesarchivers.github.io/Thrives-Archivers-Enduacation/image1.jpg";
 
 const THRIVES_WEBSITE_URL =
@@ -2413,6 +2438,55 @@ function escapeAttribute(value){
     .replace(/>/g,"&gt;");
 }
 
+async function getLogoDataUrl(){
+  const urls = [THRIVES_LOGO_URL, THRIVES_LOGO_FALLBACK_URL];
+  for(const url of urls){
+    try{
+      const response = await fetch(url, {mode:"cors",cache:"no-store"});
+      if(!response.ok) continue;
+      const blob = await response.blob();
+      return await new Promise((resolve,reject)=>{
+        const reader = new FileReader();
+        reader.onload=()=>resolve(reader.result);
+        reader.onerror=reject;
+        reader.readAsDataURL(blob);
+      });
+    }catch(e){}
+  }
+  return null;
+}
+
+async function prepareExportDocument(doc){
+  if(!doc) return doc;
+  const copy = {...doc};
+  const logo = await getLogoDataUrl();
+  if(logo) copy._exportLogoDataUrl = logo;
+  return copy;
+}
+
+function previewCurrentDocument(){
+  if(!currentDocument){ alert("Open a document first."); return; }
+  const target = $("documentPreviewContent");
+  target.innerHTML = "Loading preview...";
+  $("documentPreviewModal").classList.add("show");
+  (async()=>{
+    try{
+      const doc = await prepareExportDocument(currentDocument);
+      target.innerHTML = buildBrandedDocumentHTML(doc);
+      const page = target.firstElementChild;
+      if(page) page.classList.add("document-preview-page");
+      await waitForExportImages(target);
+    }catch(error){
+      target.innerHTML = `<div class="status err">Preview failed: ${escapeHtml(error.message || error)}</div>`;
+    }
+  })();
+}
+
+function closeDocumentPreview(){
+  $("documentPreviewModal").classList.remove("show");
+  $("documentPreviewContent").innerHTML = "";
+}
+
 function buildBrandedDocumentHTML(doc){
   const title = doc?.title || "Thrives Archivers Document";
   const course = doc?.course || "";
@@ -2424,7 +2498,7 @@ function buildBrandedDocumentHTML(doc){
   return `
 <div id="pdfPrintArea" class="document-export">
   <div class="document-export-header pdf-avoid-break">
-    <img class="document-export-logo" src="${THRIVES_LOGO_URL}" crossorigin="anonymous" alt="Thrives Archivers Logo">
+    <img class="document-export-logo" src="${escapeAttribute(doc?._exportLogoDataUrl || THRIVES_LOGO_URL)}" crossorigin="anonymous" alt="Thrives Archivers Logo" onerror="this.onerror=null;this.src='${THRIVES_LOGO_FALLBACK_URL}'">
     <div class="document-export-brand">THRIVES ARCHIVERS</div>
     <div class="document-export-title">${escapeHtml(title)}</div>
     <div class="document-export-meta">
@@ -2521,9 +2595,10 @@ async function waitForExportImages(element){
   }));
 }
 
-function downloadCurrentDocument(){
+async function downloadCurrentDocument(){
   if(!currentDocument){ alert("Open a document first."); return; }
-  const html = buildStandaloneDocumentHTML(currentDocument);
+  const doc = await prepareExportDocument(currentDocument);
+  const html = buildStandaloneDocumentHTML(doc);
   const blob = new Blob([html], {type:"text/html;charset=utf-8"});
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -2549,7 +2624,8 @@ async function downloadCurrentDocumentPDF(event){
 
   let element = null;
   try{
-    element = createExportElement(currentDocument);
+    const exportDoc = await prepareExportDocument(currentDocument);
+    element = createExportElement(exportDoc);
     element.style.position = "fixed";
     element.style.left = "-100000px";
     element.style.top = "0";
@@ -2588,14 +2664,60 @@ async function downloadCurrentDocumentPDF(event){
   }
 }
 
-function printCurrentDocument(){
+async function printCurrentDocument(){
   if(!currentDocument){ alert("Open a document first."); return; }
   const old = document.getElementById("pdfPrintArea");
   if(old) old.remove();
-  const element = createExportElement(currentDocument);
+  const doc = await prepareExportDocument(currentDocument);
+  const element = createExportElement(doc);
   document.body.appendChild(element);
   window.print();
   setTimeout(()=>element.remove(),1000);
+}
+
+async function downloadDocumentAudio(){
+  if(!currentDocument){ alert("Open a document first."); return; }
+  const text = getDocumentPlainText(currentDocument);
+  if(!text){ alert("This document has no readable text."); return; }
+
+  // Browser SpeechSynthesis can speak the document, but it cannot expose
+  // its generated audio samples for direct MP3/WAV downloading.
+  // This button is wired for a Supabase Edge Function named text-to-speech.
+  try{
+    const result = await invokeFunction("text-to-speech", {
+      text,
+      title: currentDocument.title || "Thrives Archivers Document",
+      language: "en-US",
+      format: "mp3"
+    });
+
+    const base64 = result?.audio_base64 || result?.audio || result?.data?.audio_base64;
+    const url = result?.audio_url || result?.url || result?.data?.audio_url;
+    let blob = null;
+
+    if(base64){
+      const clean = String(base64).replace(/^data:audio\/[^;]+;base64,/i,"");
+      const bytes = Uint8Array.from(atob(clean), c=>c.charCodeAt(0));
+      blob = new Blob([bytes], {type:"audio/mpeg"});
+    }else if(url){
+      const response = await fetch(url);
+      if(!response.ok) throw new Error("The audio file could not be downloaded.");
+      blob = await response.blob();
+    }else{
+      throw new Error("The text-to-speech function did not return an audio file.");
+    }
+
+    const objectUrl = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = objectUrl;
+    a.download = `${sanitizeFileName(currentDocument.title || "Thrives-Archivers-Document")}.mp3`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(objectUrl),2000);
+  }catch(error){
+    alert("Audio download needs the Supabase Edge Function 'text-to-speech'. Read Aloud itself still works in your browser.\n\n" + (error.message || error));
+  }
 }
 
 function readDocumentAloud(){
