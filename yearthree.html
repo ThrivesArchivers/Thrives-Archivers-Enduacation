@@ -1,0 +1,4187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thrives Archivers | Year Three</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>if(window.pdfjsLib){window.pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";}</script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+
+<style>
+:root{
+  --blue:#1976d2;
+  --dark:#0d47a1;
+  --green:#16834a;
+  --red:#dc2626;
+  --orange:#d97706;
+  --bg:#f4f7fb;
+  --card:#fff;
+  --text:#1f2937;
+  --muted:#6b7280;
+  --border:#dbe4ef;
+}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.5;
+}
+
+button,input,textarea,select{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+header{
+  background:linear-gradient(135deg,var(--dark),var(--blue));
+  color:white;
+  padding:16px 5%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:20px;
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+
+.logo{
+  font-size:21px;
+  font-weight:bold;
+}
+
+.logo small{
+  display:block;
+  font-size:12px;
+  font-weight:normal;
+  opacity:.85;
+}
+
+nav{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  flex-wrap:wrap;
+}
+
+nav a{
+  color:white;
+  text-decoration:none;
+  font-weight:bold;
+  font-size:14px;
+}
+
+.container{
+  width:92%;
+  max-width:1200px;
+  margin:30px auto;
+}
+
+.hero{
+  padding:75px 20px;
+  text-align:center;
+  color:white;
+  background:
+    linear-gradient(135deg,#0d47a1ee,#1976d2ee),
+    radial-gradient(circle at top right,#90caf9,transparent 40%);
+}
+
+.hero h1{
+  font-size:52px;
+  margin-bottom:8px;
+}
+
+.hero h2{
+  font-weight:normal;
+  margin-bottom:15px;
+}
+
+.hero p{
+  max-width:760px;
+  margin:8px auto;
+}
+
+.section-title{
+  text-align:center;
+  margin:38px 0 22px;
+}
+
+.section-title h2{
+  color:var(--dark);
+}
+
+.section-title p{
+  color:var(--muted);
+}
+
+.courses,
+.resources{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:18px;
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:20px;
+  box-shadow:0 6px 20px #0000000b;
+}
+
+.course{
+  border-top:5px solid var(--blue);
+}
+
+.course h3,
+.resource h3{
+  color:var(--dark);
+  margin-bottom:8px;
+}
+
+.course p,
+.resource p{
+  color:var(--muted);
+  font-size:14px;
+}
+
+.course-icon{
+  font-size:35px;
+  margin-bottom:8px;
+}
+
+.btn{
+  border:0;
+  border-radius:8px;
+  padding:10px 14px;
+  background:var(--blue);
+  color:white;
+  font-weight:bold;
+}
+
+.btn:hover{
+  filter:brightness(.9);
+}
+
+.btn.green{
+  background:var(--green);
+}
+
+.btn.red{
+  background:var(--red);
+}
+
+.btn.orange{
+  background:var(--orange);
+}
+
+.btn.light{
+  background:#e8f1ff;
+  color:var(--dark);
+}
+
+.actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:14px;
+}
+
+.search{
+  display:flex;
+  gap:10px;
+  margin:15px 0;
+}
+
+.search input{
+  flex:1;
+}
+
+input,textarea,select{
+  width:100%;
+  padding:11px;
+  border:1px solid var(--border);
+  border-radius:8px;
+  background:white;
+}
+
+textarea{
+  min-height:140px;
+  resize:vertical;
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+}
+
+.field{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.field.full{
+  grid-column:1/-1;
+}
+
+.field label{
+  color:var(--dark);
+  font-weight:bold;
+  font-size:13px;
+}
+
+.hidden{
+  display:none!important;
+}
+
+.status{
+  padding:11px;
+  border-radius:8px;
+  background:#f3f4f6;
+  margin:12px 0;
+  font-size:14px;
+}
+
+.status.ok{
+  background:#dcfce7;
+  color:#166534;
+}
+
+.status.err{
+  background:#fee2e2;
+  color:#991b1b;
+}
+
+.status.warn{
+  background:#fef3c7;
+  color:#92400e;
+}
+
+.badge{
+  display:inline-block;
+  margin-top:10px;
+  padding:4px 9px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:bold;
+  background:#e8f1ff;
+  color:var(--dark);
+}
+
+.resource{
+  cursor:pointer;
+  transition:.2s;
+}
+
+.resource:hover{
+  transform:translateY(-3px);
+  box-shadow:0 10px 25px #0002;
+}
+
+.resource-icon{
+  font-size:34px;
+}
+
+.admin{
+  background:white;
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:0 8px 30px #00000012;
+}
+
+.admin-layout{
+  display:grid;
+  grid-template-columns:210px 1fr;
+}
+
+.sidebar{
+  background:var(--dark);
+  padding:15px;
+}
+
+.sidebar button{
+  display:block;
+  width:100%;
+  border:0;
+  background:transparent;
+  color:white;
+  text-align:left;
+  padding:12px;
+  border-radius:7px;
+  margin-bottom:5px;
+  font-weight:bold;
+}
+
+.sidebar button:hover,
+.sidebar button.active{
+  background:#ffffff25;
+}
+
+.admin-content{
+  padding:24px;
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:12px;
+  margin:15px 0;
+}
+
+.stat{
+  padding:18px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  background:#f8fbff;
+}
+
+.stat strong{
+  display:block;
+  font-size:30px;
+  color:var(--dark);
+}
+
+.list{
+  display:grid;
+  gap:10px;
+  margin-top:15px;
+}
+
+.list-item{
+  border:1px solid var(--border);
+  border-radius:9px;
+  padding:13px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+}
+
+.list-item small{
+  color:var(--muted);
+}
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:#0009;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:15px;
+  z-index:30;
+}
+
+.modal.show{
+  display:flex;
+}
+
+.modal-box{
+  background:white;
+  border-radius:14px;
+  padding:24px;
+  width:min(850px,100%);
+  max-height:90vh;
+  overflow:auto;
+  position:relative;
+}
+
+.close{
+  position:absolute;
+  right:15px;
+  top:10px;
+  border:0;
+  background:none;
+  font-size:28px;
+}
+
+.viewer-content{
+  margin-top:20px;
+  white-space:normal;
+}
+
+.viewer-content img{
+  max-width:100%;
+}
+
+.viewer-content pre{
+  white-space:pre-wrap;
+  font-family:inherit;
+}
+
+footer{
+  margin-top:60px;
+  padding:35px;
+  text-align:center;
+  color:white;
+  background:#111827;
+}
+
+@media(max-width:700px){
+  header{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .hero h1{
+    font-size:38px;
+  }
+
+  .form-grid,
+  .admin-layout{
+    grid-template-columns:1fr;
+  }
+
+  .sidebar{
+    display:flex;
+    overflow:auto;
+    gap:5px;
+  }
+
+  .sidebar button{
+    min-width:max-content;
+  }
+
+  .list-item{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+}
+
+
+/* =========================================================
+   BRANDED DOCUMENT VIEWER / PDF / PRINT
+   ========================================================= */
+.document-toolbar{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:18px;
+  padding:12px;
+  background:#f8fbff;
+  border:1px solid var(--border);
+  border-radius:10px;
+}
+.document-toolbar .btn{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+}
+.read-status{
+  flex-basis:100%;
+  margin-top:2px;
+  color:var(--muted);
+  font-size:13px;
+}
+.audio-speed-control{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+  padding:8px 10px;
+  border:1px solid var(--border);
+  border-radius:8px;
+  background:white;
+}
+.audio-speed-control label{
+  font-size:13px;
+  font-weight:bold;
+  color:var(--dark);
+}
+.audio-speed-control select{
+  width:auto;
+  min-width:150px;
+  padding:8px 10px;
+}
+
+.document-export{
+  width:190mm;
+  max-width:100%;
+  box-sizing:border-box;
+  background:#fff;
+  color:#111827;
+  padding:12mm 14mm;
+  margin:0 auto;
+}
+.document-export-header{
+  text-align:center;
+  border-bottom:2px solid #0d47a1;
+  padding-bottom:6mm;
+  margin-bottom:7mm;
+  break-inside:avoid;
+  page-break-inside:avoid;
+}
+.document-export-logo{
+  display:block;
+  width:25mm;
+  height:25mm;
+  object-fit:contain;
+  margin:0 auto 3mm;
+}
+.document-export-brand{
+  color:#0d47a1;
+  font-size:22px;
+  font-weight:800;
+  letter-spacing:.8px;
+}
+.document-export-title{
+  margin-top:3mm;
+  font-size:25px;
+  line-height:1.25;
+}
+.document-export-meta{
+  margin-top:3mm;
+  font-size:13px;
+  line-height:1.5;
+  color:#4b5563;
+}
+.document-export-body{
+  line-height:1.65;
+  font-size:15px;
+  word-wrap:break-word;
+  overflow-wrap:break-word;
+  word-break:normal;
+  orphans:3;
+  widows:3;
+}
+.document-export-body img{
+  max-width:100%;
+  height:auto;
+}
+.document-export-body table{
+  width:100%;
+  max-width:100%;
+  border-collapse:collapse;
+}
+.document-export-body pre{
+  white-space:pre-wrap;
+  overflow-wrap:break-word;
+}
+.document-export-body h1,
+.document-export-body h2,
+.document-export-body h3,
+.document-export-body h4,
+.document-export-body h5,
+.document-export-body h6,
+.document-export-body p,
+.document-export-body li,
+.document-export-body table,
+.document-export-body tr,
+.document-export-body blockquote,
+.document-export-body pre,
+.document-export-body figure,
+.document-export-body img,
+.pdf-avoid-break{
+  break-inside:avoid!important;
+  page-break-inside:avoid!important;
+}
+.document-export-promo{
+  margin-top:5mm;
+  padding:4mm;
+  border:1px solid #dbe4ef;
+  border-radius:3mm;
+  text-align:center;
+  background:#f8fbff;
+  line-height:1.6;
+  break-inside:avoid;
+  page-break-inside:avoid;
+}
+.document-export-promo strong{
+  color:#0d47a1;
+}
+.document-export-promo a{
+  color:#0d47a1;
+  text-decoration:none;
+  font-weight:700;
+  overflow-wrap:anywhere;
+}
+.document-export-footer{
+  margin-top:10mm;
+  padding-top:4mm;
+  border-top:1px solid #dbe4ef;
+  text-align:center;
+  color:#6b7280;
+  font-size:12px;
+  line-height:1.6;
+  break-inside:avoid;
+  page-break-inside:avoid;
+}
+.pdf-loading{
+  opacity:.7;
+  pointer-events:none;
+}
+.document-preview-page{
+  background:#fff;
+  width:190mm;
+  max-width:100%;
+  margin:0 auto;
+  box-shadow:0 2px 15px #0003;
+}
+.drive-document-wrapper iframe{background:#fff}
+.drive-document-wrapper .btn{display:inline-block;text-decoration:none}
+.audio-download-note{
+  margin-top:8px;
+  color:var(--muted);
+  font-size:12px;
+}
+
+@page{
+  size:A4 portrait;
+  margin:12mm;
+}
+
+@media print{
+  body *{visibility:hidden!important}
+  #pdfPrintArea,
+  #pdfPrintArea *{visibility:visible!important}
+  #pdfPrintArea{
+    position:absolute!important;
+    left:0!important;
+    top:0!important;
+    width:190mm!important;
+    max-width:190mm!important;
+    margin:0!important;
+    box-shadow:none!important;
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">
+    THRIVES ARCHIVERS
+    <small>Year Three Learning Hub</small>
+  </div>
+
+  <nav>
+    <a href="#home">Home</a>
+    <a href="#courses">Courses</a>
+    <a href="#resources">Resources</a>
+
+    <a href="#admin" id="adminLink" class="hidden">
+      Admin
+    </a>
+
+    <button
+      id="loginButton"
+      class="btn light"
+      onclick="openLogin()">
+      Admin Login
+    </button>
+
+    <button
+      id="logoutButton"
+      class="btn light hidden"
+      onclick="logout()">
+      Logout
+    </button>
+  </nav>
+</header>
+
+<section class="hero" id="home">
+  <h1>YEAR THREE</h1>
+  <h2>Thrives Archivers Academic Hub</h2>
+
+  <p>
+    Access simplified documents, video lessons, quizzes and organized
+    learning resources in one place.
+  </p>
+
+  <p>
+    <b>
+      <i>
+        "Everything is possible to achieve if we are together."
+      </i>
+    </b>
+  </p>
+</section>
+
+<main class="container">
+
+<section id="courses">
+
+<div class="section-title">
+  <h2>Year Three Courses</h2>
+  <p>Select a course to view published resources.</p>
+</div>
+
+<div class="courses">
+
+<div class="card course">
+  <div class="course-icon">🧬</div>
+  <h3>Pathology</h3>
+  <p>
+    Disease processes, causes, mechanisms and clinical manifestations.
+  </p>
+  <button
+    class="btn"
+    onclick="loadCourse('Pathology')">
+    View Resources
+  </button>
+</div>
+
+<div class="card course">
+  <div class="course-icon">🌍</div>
+  <h3>Public Health</h3>
+  <p>
+    Disease prevention, health promotion, epidemiology and community health.
+  </p>
+  <button
+    class="btn"
+    onclick="loadCourse('Public Health')">
+    View Resources
+  </button>
+</div>
+
+<div class="card course">
+  <div class="course-icon">💊</div>
+  <h3>Pharmacology</h3>
+  <p>
+    Drugs, mechanisms of action, pharmacokinetics and adverse effects.
+  </p>
+  <button
+    class="btn"
+    onclick="loadCourse('Pharmacology')">
+    View Resources
+  </button>
+</div>
+
+<div class="card course">
+  <div class="course-icon">⚖️</div>
+  <h3>Medical Ethics</h3>
+  <p>
+    Ethical principles, professional conduct, patient rights and consent.
+  </p>
+  <button
+    class="btn"
+    onclick="loadCourse('Medical Ethics')">
+    View Resources
+  </button>
+</div>
+
+<div class="card course">
+  <div class="course-icon">🦠</div>
+  <h3>Microbiology</h3>
+  <p>
+    Microorganisms, bacteria, viruses, fungi, parasites and diagnosis.
+  </p>
+  <button
+    class="btn"
+    onclick="loadCourse('Microbiology')">
+    View Resources
+  </button>
+</div>
+
+</div>
+</section>
+
+<section id="resources">
+
+<div class="section-title">
+  <h2 id="resourceHeading">
+    Published Learning Resources
+  </h2>
+
+  <p id="resourceDescription">
+    Choose a course or search all published resources.
+  </p>
+</div>
+
+<div class="search">
+
+<input
+  id="resourceSearch"
+  placeholder="Search resources..."
+  oninput="filterResources()">
+
+<button
+  class="btn light"
+  onclick="loadPublishedResources()">
+  Refresh
+</button>
+
+</div>
+
+<div id="resourceArea" class="resources">
+
+<div class="card">
+  Loading resources...
+</div>
+
+</div>
+
+</section>
+
+<section id="admin" class="hidden">
+
+<div class="section-title">
+  <h2>Administrator Panel</h2>
+  <p>Manage Year Three learning resources.</p>
+</div>
+
+<div class="admin">
+
+<div class="admin-layout">
+
+<aside class="sidebar">
+
+<button
+  class="active"
+  onclick="showTab('dashboard',this)">
+  Dashboard
+</button>
+
+<button
+  onclick="showTab('documents',this)">
+  Documents
+</button>
+
+<button
+  onclick="showTab('videos',this)">
+  Videos
+</button>
+
+<button
+  onclick="showTab('quizzes',this)">
+  Quizzes
+</button>
+
+</aside>
+
+<div class="admin-content">
+
+<div id="tab-dashboard" class="tab">
+
+<h2>Dashboard</h2>
+
+<div class="stats">
+
+<div class="stat">
+  Documents
+  <strong id="documentCount">0</strong>
+</div>
+
+<div class="stat">
+  Videos
+  <strong id="videoCount">0</strong>
+</div>
+
+<div class="stat">
+  Quizzes
+  <strong id="quizCount">0</strong>
+</div>
+
+<div class="stat">
+  Published
+  <strong id="publishedCount">0</strong>
+</div>
+
+</div>
+
+<button
+  class="btn"
+  onclick="loadAdminData()">
+  Refresh Dashboard
+</button>
+
+<div id="adminStatus"></div>
+
+</div>
+
+<div id="tab-documents" class="tab hidden">
+
+<h2>Document Manager</h2>
+
+<p style="color:var(--muted)">
+  Add a normal document by Google Drive link, or use AI to summarize text, PDF or PowerPoint files.
+  Students see the document normally; the source method is not shown to them.
+</p>
+
+<div class="form-grid" style="margin-top:18px">
+
+<div class="field">
+<label>Document title</label>
+<input id="documentTitle" placeholder="Example: Inflammation">
+</div>
+
+<div class="field">
+<label>Course</label>
+<select id="documentCourse">
+<option>Pathology</option>
+<option>Public Health</option>
+<option>Pharmacology</option>
+<option>Medical Ethics</option>
+<option>Microbiology</option>
+</select>
+</div>
+
+<div class="field">
+<label>Topic</label>
+<input id="documentTopic" placeholder="Topic or chapter">
+</div>
+
+<div class="field">
+<label>Semester</label>
+<select id="documentSemester">
+<option>Semester 1</option>
+<option>Semester 2</option>
+<option>Term 1</option>
+<option>Term 2</option>
+</select>
+</div>
+
+<div class="field full">
+<label>Google Drive document link <span style="color:var(--muted);font-weight:normal">(optional)</span></label>
+<input id="documentDriveUrl" type="url" placeholder="Paste Google Drive file link here">
+<div style="font-size:12px;color:var(--muted);margin-top:6px">
+  Use this when you want to publish the original PDF/PowerPoint without AI summarising it.
+</div>
+</div>
+
+<div class="field full">
+<label>Upload PDF or PowerPoint for AI</label>
+<input id="documentFile" type="file" accept="application/pdf,.pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,.pptx,application/vnd.ms-powerpoint,.ppt">
+<div id="documentFileInfo" style="font-size:12px;color:var(--muted);margin-top:6px">
+  Select a PDF or PowerPoint, then click AI Simplify.
+</div>
+</div>
+
+<div class="field full">
+<label>Source notes</label>
+<textarea id="documentSource" placeholder="Or type / paste source notes here for AI simplification"></textarea>
+</div>
+
+<div class="field full">
+<label>Document content</label>
+<textarea id="documentContent" placeholder="AI-generated summary or your own document content will appear here"></textarea>
+</div>
+
+</div>
+
+<div class="actions">
+
+<button class="btn" onclick="simplifyDocument()">
+  🤖 AI Simplify / Read File
+</button>
+
+<button class="btn light" onclick="openDrivePreviewFromForm()">
+  🔗 Test Drive Link
+</button>
+
+<button class="btn green" onclick="saveDocument('published')">
+  Publish Document
+</button>
+
+<button class="btn light" onclick="saveDocument('draft')">
+  Save Draft
+</button>
+
+<button class="btn light" onclick="clearDocumentForm()">
+  Clear
+</button>
+
+</div>
+
+<div id="documentStatus"></div>
+
+<h3 style="margin-top:25px">Existing Documents</h3>
+<div id="documentList" class="list"></div>
+
+</div>
+
+<div id="tab-videos" class="tab hidden">
+
+<h2>Video Manager</h2>
+
+<div class="form-grid">
+
+<div class="field">
+
+<label>Video title</label>
+
+<input
+  id="videoTitle"
+  placeholder="Lesson title">
+
+</div>
+
+<div class="field">
+
+<label>Course</label>
+
+<select id="videoCourse">
+
+<option>Pathology</option>
+<option>Public Health</option>
+<option>Pharmacology</option>
+<option>Medical Ethics</option>
+<option>Microbiology</option>
+
+</select>
+
+</div>
+
+<div class="field full">
+
+<label>YouTube URL</label>
+
+<input
+  id="videoUrl"
+  placeholder="https://www.youtube.com/watch?v=...">
+
+</div>
+
+<div class="field full">
+
+<label>Description</label>
+
+<textarea id="videoDescription"></textarea>
+
+</div>
+
+</div>
+
+<div class="actions">
+
+<button
+  class="btn green"
+  onclick="saveVideo()">
+  Publish Video
+</button>
+
+</div>
+
+<div id="videoStatus"></div>
+
+<h3 style="margin-top:25px">
+Existing Videos
+</h3>
+
+<div
+  id="videoList"
+  class="list">
+</div>
+
+</div>
+
+<div id="tab-quizzes" class="tab hidden">
+
+<h2>Quiz Manager</h2>
+
+<div class="form-grid">
+
+<div class="field">
+
+<label>Quiz title</label>
+
+<input
+  id="quizTitle"
+  placeholder="Example: Inflammation Quiz">
+
+</div>
+
+<div class="field">
+
+<label>Course</label>
+
+<select id="quizCourse">
+
+<option>Pathology</option>
+<option>Public Health</option>
+<option>Pharmacology</option>
+<option>Medical Ethics</option>
+<option>Microbiology</option>
+
+</select>
+
+</div>
+
+<div class="field full">
+
+<label>Source notes</label>
+
+<textarea
+  id="quizSource"
+  placeholder="Paste notes for quiz generation"></textarea>
+
+</div>
+
+<div class="field">
+
+<label>Number of questions</label>
+
+<select id="quizCount">
+
+<option>5</option>
+<option>10</option>
+<option>15</option>
+<option>20</option>
+
+</select>
+
+</div>
+
+<div class="field">
+
+<label>Difficulty</label>
+
+<select id="quizDifficulty">
+
+<option>Easy</option>
+<option>Moderate</option>
+<option>Advanced</option>
+
+</select>
+
+</div>
+
+<div class="field full">
+
+<label>Quiz JSON</label>
+
+<textarea
+  id="quizJson"
+  placeholder="Generated quiz questions will appear here"></textarea>
+
+</div>
+
+</div>
+
+<div class="actions">
+
+<button
+  class="btn"
+  onclick="generateQuiz()">
+  AI Generate Quiz
+</button>
+
+<button
+  class="btn green"
+  onclick="saveQuiz('published')">
+  Publish Quiz
+</button>
+
+<button
+  class="btn light"
+  onclick="saveQuiz('draft')">
+  Save Draft
+</button>
+
+</div>
+
+<div id="quizStatus"></div>
+
+<h3 style="margin-top:25px">
+Existing Quizzes
+</h3>
+
+<div
+  id="quizList"
+  class="list">
+</div>
+
+</div>
+
+</div>
+</div>
+</div>
+</section>
+
+</main>
+
+<footer>
+
+<h3>THRIVES ARCHIVERS</h3>
+
+<p>Year Three Learning Hub</p>
+
+<p>
+Everything is possible to achieve if we are together.
+</p>
+
+<p style="margin-top:12px">
+<a href="https://thrivesarchivers.github.io/Thrives-Archivers-Enduacation/" target="_blank" rel="noopener" style="color:white;font-weight:bold">Visit Thrives Archivers Website</a>
+</p>
+
+<p style="margin-top:8px">
+WhatsApp: <b>0762514399</b> — Inbox us to join our WhatsApp group.
+</p>
+
+</footer>
+
+<div id="loginModal" class="modal">
+
+<div
+  class="modal-box"
+  style="max-width:430px">
+
+<button
+  class="close"
+  onclick="closeLogin()">
+  ×
+</button>
+
+<h2>Administrator Login</h2>
+
+<div
+  class="field"
+  style="margin-top:18px">
+
+<label>Email</label>
+
+<input
+  id="loginEmail"
+  type="email"
+  value="thrivesarchivers@gmail.com">
+
+</div>
+
+<div
+  class="field"
+  style="margin-top:12px">
+
+<label>Password</label>
+
+<input
+  id="loginPassword"
+  type="password">
+
+</div>
+
+<button
+  class="btn"
+  style="width:100%;margin-top:15px"
+  onclick="login()">
+
+Login
+
+</button>
+
+<div id="loginStatus"></div>
+
+</div>
+</div>
+
+<div id="viewerModal" class="modal">
+
+<div class="modal-box">
+
+<button
+  class="close"
+  onclick="closeViewer()">
+  ×
+</button>
+
+<div id="documentActions" class="document-toolbar hidden">
+  <button class="btn" onclick="readDocumentAloud()">🔊 Read Aloud</button>
+  <button class="btn light" onclick="pauseReadAloud()">⏸ Pause</button>
+  <button class="btn light" onclick="resumeReadAloud()">▶ Resume</button>
+  <button class="btn light" onclick="stopReadAloud()">⏹ Stop</button>
+  <button class="btn orange" onclick="printCurrentDocument()">🖨️ Print / Save as PDF</button>
+  <button class="btn green" onclick="downloadDocumentAudio()">🎧 Download Audio</button>
+
+  <div class="audio-speed-control">
+    <label for="audioSpeed">🎚️ Audio Speed</label>
+    <select id="audioSpeed" onchange="changeAudioSpeed(this.value)">
+      <option value="0.5">Slowest (0.5×)</option>
+      <option value="0.75">Slow (0.75×)</option>
+      <option value="0.95" selected>Normal (0.95×)</option>
+      <option value="1.25">Fast (1.25×)</option>
+      <option value="1.5">Faster (1.5×)</option>
+      <option value="2">Very Fast (2×)</option>
+      <option value="2.5">Maximum (2.5×)</option>
+    </select>
+  </div>
+
+  <div id="readStatus" class="read-status">Ready.</div>
+</div>
+
+<div
+  id="viewerContent"
+  class="viewer-content">
+</div>
+
+</div>
+</div>
+
+<script>
+
+/* =========================================================
+   SUPABASE CONFIGURATION
+   ========================================================= */
+
+const SUPABASE_URL =
+'https://odwiqajuubcgrrqipyju.supabase.co';
+
+const SUPABASE_ANON_KEY =
+'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1dWJjZ3JycWlweWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzA4MjEsImV4cCI6MjA2ODg0NjgyMX0.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A';
+
+/*
+   IMPORTANT:
+   There is ONLY ONE Supabase client.
+   The previous duplicate "const db" declaration
+   has been removed.
+*/
+
+const db =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
+
+
+/* =========================================================
+   ADMIN CONFIGURATION
+   ========================================================= */
+
+const ADMIN_EMAIL =
+  'thrivesarchivers@gmail.com';
+
+const DOCUMENT_FUNCTION =
+  'simplify-document';
+
+const QUIZ_FUNCTION =
+  'generate-quiz-from-notes';
+
+
+/* =========================================================
+   GLOBAL VARIABLES
+   ========================================================= */
+
+let currentUser = null;
+
+let allResources = [];
+let currentDocument = null;
+let speechUtterance = null;
+
+
+/* =========================================================
+   SHORT DOM FUNCTION
+   ========================================================= */
+
+const $ = id =>
+  document.getElementById(id);
+
+
+/* =========================================================
+   HTML ESCAPE
+   ========================================================= */
+
+function escapeHtml(value){
+
+  return String(value ?? "")
+    .replace(
+      /[&<>"']/g,
+      character => ({
+        "&":"&amp;",
+        "<":"&lt;",
+        ">":"&gt;",
+        '"':"&quot;",
+        "'":"&#039;"
+      }[character])
+    );
+}
+
+
+/* =========================================================
+   STATUS MESSAGE
+   ========================================================= */
+
+function showStatus(
+  id,
+  message,
+  type=""
+){
+
+  const element = $(id);
+
+  if(!element) return;
+
+  element.className =
+    type
+      ? `status ${type}`
+      : "status";
+
+  element.textContent =
+    message;
+}
+
+
+/* =========================================================
+   LOGIN MODAL
+   ========================================================= */
+
+function openLogin(){
+
+  $("loginModal")
+    .classList
+    .add("show");
+
+}
+
+
+function closeLogin(){
+
+  $("loginModal")
+    .classList
+    .remove("show");
+
+}
+
+
+function closeViewer(){
+
+  $("viewerModal")
+    .classList
+    .remove("show");
+
+}
+
+
+/* =========================================================
+   ADMIN TAB
+   ========================================================= */
+
+function showTab(
+  name,
+  button
+){
+
+  document
+    .querySelectorAll(".tab")
+    .forEach(tab => {
+
+      tab.classList.add("hidden");
+
+    });
+
+
+  const selectedTab =
+    $(`tab-${name}`);
+
+  if(selectedTab){
+
+    selectedTab
+      .classList
+      .remove("hidden");
+
+  }
+
+
+  document
+    .querySelectorAll(".sidebar button")
+    .forEach(item => {
+
+      item.classList
+        .remove("active");
+
+    });
+
+
+  if(button){
+
+    button.classList
+      .add("active");
+
+  }
+
+
+  if(name === "documents")
+    loadDocuments();
+
+  if(name === "videos")
+    loadVideos();
+
+  if(name === "quizzes")
+    loadQuizzes();
+
+}
+
+
+/* =========================================================
+   CHECK ADMIN
+   ========================================================= */
+
+function isCurrentUserAdmin(){
+
+  if(!currentUser)
+    return false;
+
+  const currentEmail =
+    String(currentUser.email || "")
+      .trim()
+      .toLowerCase();
+
+  const adminEmail =
+    ADMIN_EMAIL
+      .trim()
+      .toLowerCase();
+
+  return currentEmail === adminEmail;
+}
+
+
+/* =========================================================
+   UPDATE ADMIN UI
+   ========================================================= */
+
+function updateAdminUI(){
+
+  const admin =
+    isCurrentUserAdmin();
+
+
+  console.log(
+    "Current Supabase user:",
+    currentUser
+      ? currentUser.email
+      : "No user"
+  );
+
+  console.log(
+    "Configured administrator:",
+    ADMIN_EMAIL
+  );
+
+  console.log(
+    "Administrator detected:",
+    admin
+  );
+
+
+  $("admin")
+    .classList
+    .toggle(
+      "hidden",
+      !admin
+    );
+
+
+  $("adminLink")
+    .classList
+    .toggle(
+      "hidden",
+      !admin
+    );
+
+
+  $("loginButton")
+    .classList
+    .toggle(
+      "hidden",
+      admin
+    );
+
+
+  $("logoutButton")
+    .classList
+    .toggle(
+      "hidden",
+      !admin
+    );
+
+}
+
+
+/* =========================================================
+   LOGIN
+   ========================================================= */
+
+async function login(){
+
+  const email =
+    $("loginEmail")
+      .value
+      .trim();
+
+  const password =
+    $("loginPassword")
+      .value;
+
+
+  if(!email){
+
+    showStatus(
+      "loginStatus",
+      "Enter your email.",
+      "err"
+    );
+
+    return;
+
+  }
+
+
+  if(!password){
+
+    showStatus(
+      "loginStatus",
+      "Enter your password.",
+      "err"
+    );
+
+    return;
+
+  }
+
+
+  showStatus(
+    "loginStatus",
+    "Signing in..."
+  );
+
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await db.auth.signInWithPassword({
+        email,
+        password
+      });
+
+
+    if(error){
+
+      console.error(
+        "Supabase login error:",
+        error
+      );
+
+      showStatus(
+        "loginStatus",
+        error.message,
+        "err"
+      );
+
+      return;
+
+    }
+
+
+    currentUser =
+      data.user;
+
+
+    console.log(
+      "Successfully authenticated:",
+      currentUser.email
+    );
+
+
+    /*
+       Check the authenticated account
+       after Supabase login.
+    */
+
+    if(!isCurrentUserAdmin()){
+
+      await db.auth.signOut();
+
+      currentUser = null;
+
+      updateAdminUI();
+
+      showStatus(
+        "loginStatus",
+        "Login successful, but this Supabase account is not the configured administrator account.",
+        "err"
+      );
+
+      return;
+
+    }
+
+
+    showStatus(
+      "loginStatus",
+      "Administrator login successful.",
+      "ok"
+    );
+
+
+    setTimeout(() => {
+
+      closeLogin();
+
+      updateAdminUI();
+
+      $("admin")
+        .scrollIntoView({
+          behavior:"smooth"
+        });
+
+      loadAdminData();
+
+    }, 300);
+
+
+  }catch(error){
+
+    console.error(
+      "Login exception:",
+      error
+    );
+
+    showStatus(
+      "loginStatus",
+      error.message ||
+      "Login failed.",
+      "err"
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   LOGOUT
+   ========================================================= */
+
+async function logout(){
+
+  try{
+
+    await db.auth.signOut();
+
+  }catch(error){
+
+    console.error(
+      "Logout error:",
+      error
+    );
+
+  }
+
+  currentUser = null;
+
+  updateAdminUI();
+
+}
+
+
+/* =========================================================
+   EDGE FUNCTION
+   ========================================================= */
+
+async function invokeFunction(
+  functionName,
+  payload
+){
+
+  const {
+    data:sessionData
+  } =
+    await db.auth.getSession();
+
+
+  if(!sessionData.session){
+
+    throw new Error(
+      "Please log in again."
+    );
+
+  }
+
+
+  const result =
+    await db.functions.invoke(
+      functionName,
+      {
+        body:payload
+      }
+    );
+
+
+  if(result.error){
+
+    let message =
+      result.error.message ||
+      "Edge Function failed.";
+
+
+    if(result.error.context){
+
+      try{
+
+        const responseText =
+          await result
+            .error
+            .context
+            .text();
+
+
+        if(responseText){
+
+          try{
+
+            const body =
+              JSON.parse(responseText);
+
+
+            message =
+              body.error ||
+              body.message ||
+              responseText;
+
+          }catch{
+
+            message =
+              responseText;
+
+          }
+
+        }
+
+      }catch{}
+
+    }
+
+
+    throw new Error(
+      `${functionName}: ${message}`
+    );
+
+  }
+
+
+  if(result.data?.error){
+
+    throw new Error(
+      result.data.error
+    );
+
+  }
+
+
+  return result.data;
+
+}
+
+
+/* =========================================================
+   PUBLISHED RESOURCES
+   ========================================================= */
+
+async function loadPublishedResources(
+  course=""
+){
+
+  $("resourceArea").innerHTML =
+    "<div class='card'>Loading resources...</div>";
+
+
+  let documentQuery =
+    db
+      .from("year_three_documents")
+      .select("*")
+      .eq(
+        "status",
+        "published"
+      );
+
+
+  let videoQuery =
+    db
+      .from("year_three_videos")
+      .select("*")
+      .eq(
+        "status",
+        "published"
+      );
+
+
+  let quizQuery =
+    db
+      .from("year_three_quizzes")
+      .select("*")
+      .eq(
+        "status",
+        "published"
+      );
+
+
+  if(course){
+
+    documentQuery =
+      documentQuery
+        .eq("course",course);
+
+    videoQuery =
+      videoQuery
+        .eq("course",course);
+
+    quizQuery =
+      quizQuery
+        .eq("course",course);
+
+  }
+
+
+  const [
+    documents,
+    videos,
+    quizzes
+  ] =
+    await Promise.all([
+
+      documentQuery,
+
+      videoQuery,
+
+      quizQuery
+
+    ]);
+
+
+  const error =
+    documents.error ||
+    videos.error ||
+    quizzes.error;
+
+
+  if(error){
+
+    $("resourceArea").innerHTML =
+      `
+      <div class="status err">
+        ${escapeHtml(error.message)}
+      </div>
+      `;
+
+    return;
+
+  }
+
+
+  allResources = [
+
+    ...(documents.data || [])
+      .map(item => ({
+
+        ...item,
+
+        resourceType:"Document"
+
+      })),
+
+    ...(videos.data || [])
+      .map(item => ({
+
+        ...item,
+
+        resourceType:"Video"
+
+      })),
+
+    ...(quizzes.data || [])
+      .map(item => ({
+
+        ...item,
+
+        resourceType:"Quiz"
+
+      }))
+
+  ];
+
+
+  renderResources(
+    allResources
+  );
+
+
+  if(course){
+
+    $("resourceHeading")
+      .textContent =
+      `${course} Resources`;
+
+
+    $("resourceDescription")
+      .textContent =
+      `Published resources for ${course}.`;
+
+  }else{
+
+    $("resourceHeading")
+      .textContent =
+      "Published Learning Resources";
+
+
+    $("resourceDescription")
+      .textContent =
+      "Published documents, videos and quizzes.";
+
+  }
+
+}
+
+
+/* =========================================================
+   RENDER RESOURCES
+   ========================================================= */
+
+function renderResources(
+  resources
+){
+
+  if(!resources.length){
+
+    $("resourceArea").innerHTML =
+      "<div class='card'>No published resources found.</div>";
+
+    return;
+
+  }
+
+
+  $("resourceArea").innerHTML =
+    resources.map(item => {
+
+      const icon =
+        item.resourceType === "Document"
+          ? "📚"
+          :
+        item.resourceType === "Video"
+          ? "🎥"
+          :
+          "📝";
+
+
+      const description =
+        item.topic ||
+        item.description ||
+        item.course ||
+        "";
+
+
+      const safeItem =
+        JSON.stringify(item)
+          .replace(/</g,"\\u003c")
+          .replace(/>/g,"\\u003e")
+          .replace(/&/g,"\\u0026")
+          .replace(/'/g,"&#039;");
+
+
+      return `
+
+<article
+  class="card resource"
+  data-search="${escapeHtml(
+    `${item.title} ${description} ${item.course}`
+  )}"
+  onclick='openResource(${safeItem})'>
+
+  <div class="resource-icon">
+    ${icon}
+  </div>
+
+  <h3>
+    ${escapeHtml(item.title)}
+  </h3>
+
+  <p>
+    ${escapeHtml(description)}
+  </p>
+
+  <span class="badge">
+    ${escapeHtml(item.resourceType)}
+  </span>
+
+</article>
+
+`;
+
+    }).join("");
+
+}
+
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+function filterResources(){
+
+  const query =
+    $("resourceSearch")
+      .value
+      .toLowerCase()
+      .trim();
+
+
+  const filtered =
+    allResources.filter(item =>
+
+      `
+      ${item.title}
+      ${item.topic || ""}
+      ${item.description || ""}
+      ${item.course || ""}
+      `
+      .toLowerCase()
+      .includes(query)
+
+    );
+
+
+  renderResources(
+    filtered
+  );
+
+}
+
+
+/* =========================================================
+   COURSE
+   ========================================================= */
+
+function loadCourse(
+  course
+){
+
+  loadPublishedResources(
+    course
+  );
+
+
+  $("resources")
+    .scrollIntoView({
+      behavior:"smooth"
+    });
+
+}
+
+
+/* =========================================================
+   OPEN RESOURCE
+   ========================================================= */
+
+function openResource(
+  item
+){
+
+  stopReadAloud();
+  currentDocument = null;
+  $("documentActions").classList.add("hidden");
+
+  let html =
+    `<h2>${escapeHtml(item.title)}</h2>`;
+
+
+  html +=
+    `<p class="badge">
+      ${escapeHtml(item.course || "")}
+    </p>`;
+
+
+  if(
+    item.resourceType ===
+    "Document"
+  ){
+
+    currentDocument = item;
+    $("documentActions").classList.remove("hidden");
+    $("readStatus").textContent = "Ready to read.";
+
+    html += `
+
+<div id="documentReaderContent" class="document-reader-content" style="margin-top:20px">
+
+${
+  item.content_html ||
+  `
+  <pre>
+    ${escapeHtml(
+      item.content_text || ""
+    )}
+  </pre>
+  `
+}
+
+</div>
+
+`;
+
+  }
+
+
+  if(
+    item.resourceType ===
+    "Video"
+  ){
+
+    const videoId =
+      getYoutubeId(
+        item.url
+      );
+
+
+    html += `
+
+<p style="margin-top:15px">
+  ${escapeHtml(
+    item.description || ""
+  )}
+</p>
+
+`;
+
+
+    if(videoId){
+
+      html += `
+
+<div
+  style="
+    position:relative;
+    padding-bottom:56.25%;
+    height:0;
+    margin-top:18px
+  ">
+
+<iframe
+  src="https://www.youtube.com/embed/${escapeHtml(videoId)}"
+  style="
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    border:0
+  "
+  allowfullscreen>
+</iframe>
+
+</div>
+
+`;
+
+    }else{
+
+      html += `
+
+<a
+  class="btn"
+  href="${escapeHtml(item.url)}"
+  target="_blank">
+
+Open Video
+
+</a>
+
+`;
+
+    }
+
+  }
+
+
+  if(
+    item.resourceType ===
+    "Quiz"
+  ){
+
+    let questions = [];
+
+
+    try{
+
+      questions =
+        Array.isArray(item.questions)
+          ? item.questions
+          :
+          JSON.parse(
+            item.questions || "[]"
+          );
+
+    }catch{
+
+      questions = [];
+
+    }
+
+
+    html +=
+      `<div style="margin-top:20px">`;
+
+
+    questions.forEach(
+      (question,index) => {
+
+        html += `
+
+<div
+  class="card"
+  style="margin:12px 0">
+
+<b>
+  ${index + 1}.
+  ${escapeHtml(
+    question.question
+  )}
+</b>
+
+${
+  (question.options || [])
+    .map(
+      (option,optionIndex) => `
+
+<label
+  style="
+    display:block;
+    margin-top:8px
+  ">
+
+<input
+  type="radio"
+  name="question-${index}"
+  value="${optionIndex}">
+
+${String.fromCharCode(
+  65 + optionIndex
+)}.
+
+${escapeHtml(option)}
+
+</label>
+
+`
+    )
+    .join("")
+}
+
+</div>
+
+`;
+
+      }
+    );
+
+
+    html += `
+
+<button
+  class="btn green"
+  onclick='gradeQuiz(${JSON.stringify(
+    questions
+  )})'>
+
+Submit Quiz
+
+</button>
+
+<div id="quizResult"></div>
+
+</div>
+
+`;
+
+  }
+
+
+  $("viewerContent")
+    .innerHTML =
+    html;
+
+
+  $("viewerModal")
+    .classList
+    .add("show");
+
+}
+
+
+
+/* =========================================================
+   DOCUMENT EXPORT + READ ALOUD
+   ========================================================= */
+
+const THRIVES_LOGO_URL =
+  "./image1.jpg";
+
+const THRIVES_LOGO_FALLBACK_URL =
+  "https://thrivesarchivers.github.io/Thrives-Archivers-Enduacation/image1.jpg";
+
+const THRIVES_WEBSITE_URL =
+  "https://thrivesarchivers.github.io/Thrives-Archivers-Enduacation/";
+
+const THRIVES_WHATSAPP =
+  "0762514399";
+
+function getDocumentPlainText(doc){
+  const raw = doc?.content_html || doc?.content_text || "";
+  const temp = document.createElement("div");
+  temp.innerHTML = raw;
+  return (temp.innerText || temp.textContent || "")
+    .replace(/\s+\n/g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+function escapeAttribute(value){
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/"/g,"&quot;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;");
+}
+
+async function getLogoDataUrl(){
+  const urls = [THRIVES_LOGO_URL, THRIVES_LOGO_FALLBACK_URL];
+  for(const url of urls){
+    try{
+      const response = await fetch(url, {mode:"cors",cache:"no-store"});
+      if(!response.ok) continue;
+      const blob = await response.blob();
+      return await new Promise((resolve,reject)=>{
+        const reader = new FileReader();
+        reader.onload=()=>resolve(reader.result);
+        reader.onerror=reject;
+        reader.readAsDataURL(blob);
+      });
+    }catch(e){}
+  }
+  return null;
+}
+
+async function prepareExportDocument(doc){
+  if(!doc) return doc;
+  const copy = {...doc};
+  const logo = await getLogoDataUrl();
+  if(logo) copy._exportLogoDataUrl = logo;
+  return copy;
+}
+
+function buildBrandedDocumentHTML(doc){
+  const title = doc?.title || "Thrives Archivers Document";
+  const course = doc?.course || "";
+  const topic = doc?.topic || "";
+  const semester = doc?.semester || "";
+  const content = doc?.content_html ||
+    `<pre style="white-space:pre-wrap">${escapeHtml(doc?.content_text || "")}</pre>`;
+
+  return `
+<div id="pdfPrintArea" class="document-export">
+  <div class="document-export-header pdf-avoid-break">
+    <img class="document-export-logo" src="${escapeAttribute(doc?._exportLogoDataUrl || THRIVES_LOGO_URL)}" crossorigin="anonymous" alt="Thrives Archivers Logo" onerror="this.onerror=null;this.src='${THRIVES_LOGO_FALLBACK_URL}'">
+    <div class="document-export-brand">THRIVES ARCHIVERS</div>
+    <div class="document-export-title">${escapeHtml(title)}</div>
+    <div class="document-export-meta">
+      <b>Course:</b> ${escapeHtml(course || "Not specified")} &nbsp; | &nbsp;
+      <b>Topic:</b> ${escapeHtml(topic || "Not specified")} &nbsp; | &nbsp;
+      <b>Semester:</b> ${escapeHtml(semester || "Not specified")}
+    </div>
+  </div>
+
+  <div class="document-export-body">${content}</div>
+
+  <div class="document-export-promo pdf-avoid-break">
+    <strong>Access More Thrives Archivers Learning Materials</strong><br>
+    Visit our website for more documents, videos, quizzes and lessons:<br>
+    <a href="${THRIVES_WEBSITE_URL}" target="_blank">${THRIVES_WEBSITE_URL}</a><br><br>
+    <strong>Join Our WhatsApp Group</strong><br>
+    Inbox <b>${THRIVES_WHATSAPP}</b> to join the Thrives Archivers WhatsApp group.
+  </div>
+
+  <div class="document-export-footer pdf-avoid-break">
+    <b>THRIVES ARCHIVERS • Year Three Learning Hub</b><br>
+    Educational document generated from the Thrives Archivers platform.
+  </div>
+</div>`;
+}
+
+function buildStandaloneDocumentHTML(doc){
+  return `<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${escapeAttribute(doc?.title || "Thrives Archivers Document")}</title>
+<style>
+@page{size:A4 portrait;margin:12mm}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#fff;color:#111827;font-family:Arial,Helvetica,sans-serif}
+.document-export{width:190mm;max-width:100%;margin:0 auto;background:#fff;padding:12mm 14mm}
+.document-export-header{text-align:center;border-bottom:2px solid #0d47a1;padding-bottom:6mm;margin-bottom:7mm;break-inside:avoid;page-break-inside:avoid}
+.document-export-logo{display:block;width:25mm;height:25mm;object-fit:contain;margin:0 auto 3mm}
+.document-export-brand{color:#0d47a1;font-size:22px;font-weight:800;letter-spacing:.8px}
+.document-export-title{margin-top:3mm;font-size:25px;line-height:1.25}
+.document-export-meta{margin-top:3mm;font-size:13px;line-height:1.5;color:#4b5563}
+.document-export-body{line-height:1.65;font-size:15px;word-wrap:break-word;overflow-wrap:break-word;word-break:normal;orphans:3;widows:3}
+.document-export-body img{max-width:100%;height:auto}
+.document-export-body table{width:100%;max-width:100%;border-collapse:collapse}
+.document-export-body pre{white-space:pre-wrap;overflow-wrap:break-word}
+.document-export-body h1,.document-export-body h2,.document-export-body h3,.document-export-body h4,.document-export-body h5,.document-export-body h6,.document-export-body p,.document-export-body li,.document-export-body table,.document-export-body tr,.document-export-body blockquote,.document-export-body pre,.document-export-body figure,.document-export-body img,.pdf-avoid-break{break-inside:avoid!important;page-break-inside:avoid!important}
+.document-export-promo{margin-top:5mm;padding:4mm;border:1px solid #dbe4ef;border-radius:3mm;text-align:center;background:#f8fbff;line-height:1.6;break-inside:avoid;page-break-inside:avoid}
+.document-export-promo strong{color:#0d47a1}
+.document-export-promo a{color:#0d47a1;text-decoration:none;font-weight:700;overflow-wrap:anywhere}
+.document-export-footer{margin-top:10mm;padding-top:4mm;border-top:1px solid #dbe4ef;text-align:center;color:#6b7280;font-size:12px;line-height:1.6;break-inside:avoid;page-break-inside:avoid}
+</style></head><body>${buildBrandedDocumentHTML(doc)}</body></html>`;
+}
+
+function sanitizeFileName(name){
+  return String(name).replace(/[\\/:*?"<>|]+/g,"-").replace(/\s+/g," ").trim().slice(0,120) || "document";
+}
+
+function createExportElement(doc){
+  const wrapper = document.createElement("div");
+  wrapper.innerHTML = buildBrandedDocumentHTML(doc);
+  const element = wrapper.firstElementChild;
+  preparePdfElement(element);
+  return element;
+}
+
+function preparePdfElement(element){
+  if(!element) return;
+
+  element.querySelectorAll(
+    "h1,h2,h3,h4,h5,h6,p,li,table,tr,blockquote,pre,figure,img"
+  ).forEach(node => node.classList.add("pdf-avoid-break"));
+
+  element.querySelectorAll("table").forEach(table => {
+    table.style.width = "100%";
+    table.style.maxWidth = "100%";
+    table.style.borderCollapse = "collapse";
+  });
+
+  element.querySelectorAll("img").forEach(img => {
+    img.style.maxWidth = "100%";
+    img.style.height = "auto";
+  });
+}
+
+async function waitForExportImages(element){
+  const images = Array.from(element.querySelectorAll("img"));
+  await Promise.all(images.map(img => {
+    if(img.complete && img.naturalWidth > 0) return Promise.resolve();
+    return new Promise(resolve => {
+      const done = () => resolve();
+      img.addEventListener("load",done,{once:true});
+      img.addEventListener("error",done,{once:true});
+    });
+  }));
+}
+
+async function printCurrentDocument(){
+  if(!currentDocument){ alert("Open a document first."); return; }
+  const old = document.getElementById("pdfPrintArea");
+  if(old) old.remove();
+  const doc = await prepareExportDocument(currentDocument);
+  const element = createExportElement(doc);
+  document.body.appendChild(element);
+  window.print();
+  setTimeout(()=>element.remove(),1000);
+}
+
+async function downloadDocumentAudio(){
+  if(!currentDocument){ alert("Open a document first."); return; }
+  const text = getDocumentPlainText(currentDocument);
+  if(!text){ alert("This document has no readable text."); return; }
+
+  // Browser SpeechSynthesis can speak the document, but it cannot expose
+  // its generated audio samples for direct MP3/WAV downloading.
+  // This button is wired for a Supabase Edge Function named text-to-speech.
+  try{
+    const result = await invokeFunction("text-to-speech", {
+      text,
+      title: currentDocument.title || "Thrives Archivers Document",
+      language: "en-US",
+      rate: getAudioSpeed(),
+      format: "mp3"
+    });
+
+    const base64 = result?.audio_base64 || result?.audio || result?.data?.audio_base64;
+    const url = result?.audio_url || result?.url || result?.data?.audio_url;
+    let blob = null;
+
+    if(base64){
+      const clean = String(base64).replace(/^data:audio\/[^;]+;base64,/i,"");
+      const bytes = Uint8Array.from(atob(clean), c=>c.charCodeAt(0));
+      blob = new Blob([bytes], {type:"audio/mpeg"});
+    }else if(url){
+      const response = await fetch(url);
+      if(!response.ok) throw new Error("The audio file could not be downloaded.");
+      blob = await response.blob();
+    }else{
+      throw new Error("The text-to-speech function did not return an audio file.");
+    }
+
+    const objectUrl = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = objectUrl;
+    a.download = `${sanitizeFileName(currentDocument.title || "Thrives-Archivers-Document")}.mp3`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(objectUrl),2000);
+  }catch(error){
+    alert("Audio download needs the Supabase Edge Function 'text-to-speech'. Read Aloud itself still works in your browser.\n\n" + (error.message || error));
+  }
+}
+
+function getAudioSpeed(){
+  const control = document.getElementById("audioSpeed");
+  const value = Number(control?.value || 0.95);
+  return Math.min(2.5, Math.max(0.5, value));
+}
+
+function changeAudioSpeed(value){
+  const speed = Number(value);
+  if(!Number.isFinite(speed)) return;
+
+  if(speechUtterance && "speechSynthesis" in window && window.speechSynthesis.speaking){
+    const wasPaused = window.speechSynthesis.paused;
+    const text = getDocumentPlainText(currentDocument || {});
+    window.speechSynthesis.cancel();
+    speechUtterance = new SpeechSynthesisUtterance(text);
+    speechUtterance.lang = "en-US";
+    speechUtterance.rate = speed;
+    speechUtterance.pitch = 1;
+    speechUtterance.onstart = () => $("readStatus").textContent = `Reading document at ${speed}× speed...`;
+    speechUtterance.onend = () => $("readStatus").textContent = "Reading finished.";
+    speechUtterance.onerror = () => $("readStatus").textContent = "Read Aloud stopped or could not start.";
+    window.speechSynthesis.speak(speechUtterance);
+    if(wasPaused){
+      setTimeout(() => window.speechSynthesis.pause(), 50);
+    }
+  }else if(currentDocument){
+    $("readStatus").textContent = `Audio speed set to ${speed}×. Press Read Aloud to start.`;
+  }
+}
+
+function readDocumentAloud(){
+  if(!currentDocument){ alert("Open a document first."); return; }
+  if(!("speechSynthesis" in window)){
+    alert("Read Aloud is not supported by this browser.");
+    return;
+  }
+  stopReadAloud();
+  const text = getDocumentPlainText(currentDocument);
+  if(!text){ alert("This document has no readable text."); return; }
+  speechUtterance = new SpeechSynthesisUtterance(text);
+  speechUtterance.lang = "en-US";
+  speechUtterance.rate = getAudioSpeed();
+  speechUtterance.pitch = 1;
+  speechUtterance.onstart = () => $("readStatus").textContent = `Reading document at ${getAudioSpeed()}× speed...`;
+  speechUtterance.onend = () => $("readStatus").textContent = "Reading finished.";
+  speechUtterance.onerror = () => $("readStatus").textContent = "Read Aloud stopped or could not start.";
+  window.speechSynthesis.speak(speechUtterance);
+}
+
+function pauseReadAloud(){
+  if("speechSynthesis" in window && window.speechSynthesis.speaking){
+    window.speechSynthesis.pause();
+    $("readStatus").textContent = "Reading paused.";
+  }
+}
+
+function resumeReadAloud(){
+  if("speechSynthesis" in window && window.speechSynthesis.paused){
+    window.speechSynthesis.resume();
+    $("readStatus").textContent = "Reading resumed.";
+  }
+}
+
+function stopReadAloud(){
+  if("speechSynthesis" in window) window.speechSynthesis.cancel();
+  speechUtterance = null;
+  const status = document.getElementById("readStatus");
+  if(status) status.textContent = currentDocument ? "Ready to read." : "Ready.";
+}
+
+
+/* =========================================================
+   GRADE QUIZ
+   ========================================================= */
+
+function gradeQuiz(
+  questions
+){
+
+  let score = 0;
+
+
+  questions.forEach(
+    (question,index) => {
+
+      const selected =
+        document.querySelector(
+          `input[name="question-${index}"]:checked`
+        );
+
+
+      if(
+        selected &&
+        Number(selected.value) ===
+        Number(question.correctIndex)
+      ){
+
+        score++;
+
+      }
+
+    }
+  );
+
+
+  const percentage =
+    questions.length
+      ? Math.round(
+          score /
+          questions.length *
+          100
+        )
+      : 0;
+
+
+  const result =
+    $("quizResult");
+
+
+  if(result){
+
+    result.innerHTML = `
+
+<div class="status ok">
+
+Score:
+${score}/${questions.length}
+(${percentage}%)
+
+</div>
+
+`;
+
+  }
+
+}
+
+
+/* =========================================================
+   YOUTUBE ID
+   ========================================================= */
+
+function getYoutubeId(
+  url
+){
+
+  try{
+
+    const parsed =
+      new URL(url);
+
+
+    if(
+      parsed.hostname
+        .includes("youtu.be")
+    ){
+
+      return parsed
+        .pathname
+        .slice(1)
+        .split("/")[0];
+
+    }
+
+
+    if(
+      parsed.searchParams
+        .get("v")
+    ){
+
+      return parsed
+        .searchParams
+        .get("v");
+
+    }
+
+
+    const match =
+      parsed.pathname.match(
+        /\/(embed|shorts|live)\/([^/?]+)/
+      );
+
+
+    return match
+      ? match[2]
+      : null;
+
+  }catch{
+
+    return null;
+
+  }
+
+}
+
+
+/* =========================================================
+   DOCUMENT INPUT HELPERS
+   ========================================================= */
+
+function getDriveFileId(url){
+  try{
+    const parsed = new URL(String(url || '').trim());
+    if(!parsed.hostname.includes('drive.google.com')) return null;
+    const pathMatch = parsed.pathname.match(/\/file\/d\/([^/]+)/);
+    if(pathMatch) return pathMatch[1];
+    const queryId = parsed.searchParams.get('id');
+    return queryId || null;
+  }catch{
+    return null;
+  }
+}
+
+function getDrivePreviewUrl(url){
+  const id = getDriveFileId(url);
+  return id ? `https://drive.google.com/file/d/${encodeURIComponent(id)}/preview` : null;
+}
+
+function buildDriveDocumentHtml(url, title){
+  const preview = getDrivePreviewUrl(url);
+  if(!preview) return '';
+  return `
+<div class="drive-document-wrapper" style="margin-top:18px">
+  <div style="position:relative;width:100%;padding-bottom:75%;background:#f4f7fb;border-radius:12px;overflow:hidden;border:1px solid #dbe4ef">
+    <iframe
+      src="${escapeAttribute(preview)}"
+      title="${escapeAttribute(title || 'Document')}"
+      style="position:absolute;inset:0;width:100%;height:100%;border:0"
+      allow="autoplay"
+      allowfullscreen>
+    </iframe>
+  </div>
+  <div style="margin-top:10px;text-align:center">
+    <a class="btn" href="${escapeAttribute(url)}" target="_blank" rel="noopener">Open Document</a>
+  </div>
+</div>`;
+}
+
+function openDrivePreviewFromForm(){
+  const url = $("documentDriveUrl")?.value.trim();
+  if(!url){
+    showStatus("documentStatus","Paste a Google Drive document link first.","err");
+    return;
+  }
+  const preview = getDrivePreviewUrl(url);
+  if(!preview){
+    showStatus("documentStatus","Please enter a valid Google Drive file link.","err");
+    return;
+  }
+  window.open(preview,"_blank","noopener");
+}
+
+function updateDocumentFileInfo(){
+  const file = $("documentFile")?.files?.[0];
+  const info = $("documentFileInfo");
+  if(!info) return;
+  if(!file){
+    info.textContent = "Select a PDF or PowerPoint, then click AI Simplify.";
+    return;
+  }
+  const mb = (file.size / 1024 / 1024).toFixed(2);
+  info.textContent = `${file.name} • ${mb} MB`;
+}
+
+async function extractPdfText(file){
+  const arrayBuffer = await file.arrayBuffer();
+  if(!window.pdfjsLib){
+    throw new Error("PDF reader is still loading. Please wait a moment and try again.");
+  }
+  const pdf = await window.pdfjsLib.getDocument({data:arrayBuffer}).promise;
+  const pages = [];
+  for(let pageNo=1; pageNo<=pdf.numPages; pageNo++){
+    const page = await pdf.getPage(pageNo);
+    const textContent = await page.getTextContent();
+    const text = textContent.items.map(item => item.str || '').join(' ');
+    if(text.trim()) pages.push(`PAGE ${pageNo}\n${text}`);
+  }
+  return pages.join('\n\n');
+}
+
+async function extractPowerPointText(file){
+  if(!window.JSZip) throw new Error("PowerPoint reader is not available. Refresh the page and try again.");
+  const zip = await window.JSZip.loadAsync(await file.arrayBuffer());
+  const names = Object.keys(zip.files)
+    .filter(name => /^ppt\/slides\/slide\d+\.xml$/i.test(name))
+    .sort((a,b)=>Number(a.match(/slide(\d+)\.xml/i)?.[1]||0)-Number(b.match(/slide(\d+)\.xml/i)?.[1]||0));
+  if(!names.length) throw new Error("No readable PowerPoint slides were found.");
+  const slides=[];
+  for(const name of names){
+    const xml = await zip.files[name].async('text');
+    const doc = new DOMParser().parseFromString(xml,'application/xml');
+    const texts = [...doc.getElementsByTagNameNS('*','t')].map(node=>node.textContent || '').filter(Boolean);
+    if(texts.length) slides.push(`SLIDE ${name.match(/slide(\d+)\.xml/i)?.[1] || ''}\n${texts.join(' ')}`);
+  }
+  return slides.join('\n\n');
+}
+
+async function extractUploadedDocumentText(file){
+  const type = String(file.type || '').toLowerCase();
+  const name = file.name.toLowerCase();
+  if(type === 'application/pdf' || name.endsWith('.pdf')) return extractPdfText(file);
+  if(name.endsWith('.pptx') || type.includes('presentationml.presentation')) return extractPowerPointText(file);
+  if(name.endsWith('.ppt')) throw new Error("Legacy .ppt files are not supported in the browser reader. Save it as .pptx or use a Google Drive link.");
+  throw new Error("Please select a PDF or PowerPoint file.");
+}
+
+/* =========================================================
+   AI DOCUMENT SIMPLIFICATION
+   ========================================================= */
+
+async function simplifyDocument(){
+
+  const title = $("documentTitle").value.trim();
+  const source = $("documentSource").value.trim();
+  const file = $("documentFile")?.files?.[0] || null;
+
+  if(!title){
+    showStatus("documentStatus","Enter a document title first.","err");
+    return;
+  }
+
+  if(!source && !file){
+    showStatus("documentStatus","Type/paste notes or select a PDF/PowerPoint first.","err");
+    return;
+  }
+
+  showStatus("documentStatus", file ? "Reading the uploaded document..." : "AI is simplifying the document...");
+
+  try{
+    let sourceForAi = source;
+
+    if(file){
+      sourceForAi = await extractUploadedDocumentText(file);
+      if(!sourceForAi.trim()){
+        throw new Error("No selectable text was found in this file. If it is a scanned/image-only PDF, upload the original through Google Drive instead.");
+      }
+      const maxChars = 180000;
+      if(sourceForAi.length > maxChars){
+        sourceForAi = sourceForAi.slice(0,145000) + "\n\n[Middle of document omitted for request size]\n\n" + sourceForAi.slice(-35000);
+      }
+    }
+
+    showStatus("documentStatus", "AI is summarising the document...");
+
+    const result = await invokeFunction(
+      DOCUMENT_FUNCTION,
+      {
+        title,
+        course: $("documentCourse").value,
+        topic: $("documentTopic").value.trim(),
+        source: sourceForAi
+      }
+    );
+
+    $("documentContent").value =
+      result.content_html || result.content || result.text || "";
+
+    showStatus("documentStatus","AI draft generated. Review it before saving.","ok");
+
+  }catch(error){
+    console.error(error);
+    showStatus("documentStatus",error.message || String(error),"err");
+  }
+}
+
+/* =========================================================
+   SAVE DOCUMENT
+   ========================================================= */
+
+async function saveDocument(status){
+
+  if(!isCurrentUserAdmin()){
+    showStatus("documentStatus","Administrator authentication required.","err");
+    return;
+  }
+
+  const title = $("documentTitle").value.trim();
+  const driveUrl = $("documentDriveUrl")?.value.trim() || "";
+  let content = $("documentContent").value.trim();
+
+  if(!title){
+    showStatus("documentStatus","Document title is required.","err");
+    return;
+  }
+
+  if(driveUrl){
+    if(!getDrivePreviewUrl(driveUrl)){
+      showStatus("documentStatus","Please enter a valid Google Drive file link.","err");
+      return;
+    }
+    content = buildDriveDocumentHtml(driveUrl,title);
+  }
+
+  if(!content){
+    showStatus("documentStatus","Add a Google Drive link, generate an AI summary, or enter document content.","err");
+    return;
+  }
+
+  const {error} = await db.from("year_three_documents").insert({
+    title,
+    course: $("documentCourse").value,
+    topic: $("documentTopic").value.trim(),
+    semester: $("documentSemester").value,
+    content_html: content,
+    content_text: driveUrl ? `Google Drive document: ${title}` : content.replace(/<[^>]*>/g, ""),
+    status,
+    created_by: currentUser.id
+  });
+
+  if(error){
+    showStatus("documentStatus",error.message,"err");
+    return;
+  }
+
+  showStatus("documentStatus",status === "published" ? "Document published successfully." : "Document saved as a draft.","ok");
+
+  clearDocumentForm();
+  loadDocuments();
+  loadAdminData();
+  loadPublishedResources();
+}
+
+/* =========================================================
+   CLEAR DOCUMENT
+   ========================================================= */
+
+function clearDocumentForm(){
+  ["documentTitle","documentTopic","documentDriveUrl","documentSource","documentContent"].forEach(id=>{
+    if($(id)) $(id).value = "";
+  });
+  if($("documentFile")) $("documentFile").value = "";
+  updateDocumentFileInfo();
+}
+
+/* =========================================================
+   SAVE VIDEO
+   ========================================================= */
+
+async function saveVideo(){
+
+  if(!isCurrentUserAdmin()){
+
+    showStatus(
+      "videoStatus",
+      "Administrator authentication required.",
+      "err"
+    );
+
+    return;
+
+  }
+
+
+  const title =
+    $("videoTitle")
+      .value
+      .trim();
+
+
+  const url =
+    $("videoUrl")
+      .value
+      .trim();
+
+
+  if(!title || !url){
+
+    showStatus(
+      "videoStatus",
+      "Video title and URL are required.",
+      "err"
+    );
+
+    return;
+
+  }
+
+
+  if(!getYoutubeId(url)){
+
+    showStatus(
+      "videoStatus",
+      "Enter a valid YouTube URL.",
+      "err"
+    );
+
+    return;
+
+  }
+
+
+  const {
+    error
+  } =
+    await db
+      .from("year_three_videos")
+      .insert({
+
+        title,
+
+        course:
+          $("videoCourse")
+            .value,
+
+        url,
+
+        description:
+          $("videoDescription")
+            .value
+            .trim(),
+
+        status:
+          "published",
+
+        created_by:
+          currentUser.id
+
+      });
+
+
+  if(error){
+
+    showStatus(
+      "videoStatus",
+      error.message,
+      "err"
+    );
+
+    return;
+
+  }
+
+
+  showStatus(
+    "videoStatus",
+    "Video published successfully.",
+    "ok"
+  );
+
+
+  $("videoTitle").value = "";
+
+  $("videoUrl").value = "";
+
+  $("videoDescription").value = "";
+
+
+  loadVideos();
+
+  loadAdminData();
+
+  loadPublishedResources();
+
+}
+
+
+/* =========================================================
+   GENERATE QUIZ
+   ========================================================= */
+
+async function generateQuiz(){
+
+  const source =
+    $("quizSource")
+      .value
+      .trim();
+
+
+  if(!source){
+
+    showStatus(
+      "quizStatus",
+      "Enter source notes first.",
+      "err"
+    );
+
+    return;
+
+  }
+
+
+  if(!isCurrentUserAdmin()){
+
+    showStatus(
+      "quizStatus",
+      "Administrator authentication required.",
+      "err"
+    );
+
+    return;
+
+  }
+
+
+  showStatus(
+    "quizStatus",
+    "AI is generating the quiz..."
+  );
+
+
+  try{
+
+    const result =
+      await invokeFunction(
+        QUIZ_FUNCTION,
+        {
+
+          source_text:
+            source,
+
+          title:
+            $("quizTitle")
+              .value
+              .trim(),
+
+          course:
+            $("quizCourse")
+              .value,
+
+          count:
+            Number(
+              $("quizCount")
+                .value
+            ),
+
+          difficulty:
+            $("quizDifficulty")
+              .value
+
+        }
+      );
+
+
+    const questions =
+      result.questions ||
+      result.quiz ||
+      result.data ||
+      [];
+
+
+    $("quizJson")
+      .value =
+      JSON.stringify(
+        questions,
+        null,
+        2
+      );
+
+
+    showStatus(
+      "quizStatus",
+      "Quiz generated. Review the questions before publishing.",
+      "ok"
+    );
+
+
+  }catch(error){
+
+    showStatus(
+      "quizStatus",
+      error.message,
+      "err"
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   SAVE QUIZ
+   ========================================================= */
+
+async function saveQuiz(
+  status
+){
+
+  if(!isCurrentUserAdmin()){
+
+    showStatus(
+      "quizStatus",
+      "Administrator authentication required.",
+      "err"
+    );
+
+    return;
+
+  }
+
+
+  let questions;
+
+
+  try{
+
+    questions =
+      JSON.parse(
+        $("quizJson").value
+      );
+
+  }catch{
+
+    showStatus(
+      "quizStatus",
+      "Quiz JSON is invalid.",
+      "err"
+    );
+
+    return;
+
+  }
+
+
+  if(
+    !Array.isArray(questions) ||
+    !questions.length
+  ){
+
+    showStatus(
+      "quizStatus",
+      "Generate or enter quiz questions first.",
+      "err"
+    );
+
+    return;
+
+  }
+
+
+  const {
+    error
+  } =
+    await db
+      .from("year_three_quizzes")
+      .insert({
+
+        title:
+          $("quizTitle")
+            .value
+            .trim() ||
+          "Year Three Quiz",
+
+        course:
+          $("quizCourse")
+            .value,
+
+        questions,
+
+        status,
+
+        created_by:
+          currentUser.id
+
+      });
+
+
+  if(error){
+
+    showStatus(
+      "quizStatus",
+      error.message,
+      "err"
+    );
+
+    return;
+
+  }
+
+
+  showStatus(
+    "quizStatus",
+    "Quiz saved successfully.",
+    "ok"
+  );
+
+
+  $("quizJson")
+    .value = "";
+
+
+  loadQuizzes();
+
+  loadAdminData();
+
+  loadPublishedResources();
+
+}
+
+
+/* =========================================================
+   LOAD DOCUMENTS
+   ========================================================= */
+
+async function loadDocuments(){
+
+  if(!isCurrentUserAdmin())
+    return;
+
+
+  const {
+    data,
+    error
+  } =
+    await db
+      .from("year_three_documents")
+      .select("*");
+
+
+  if(error){
+
+    $("documentList")
+      .innerHTML =
+      `
+      <div class="status err">
+        ${escapeHtml(
+          error.message
+        )}
+      </div>
+      `;
+
+    return;
+
+  }
+
+
+  const documents =
+    data || [];
+
+
+  $("documentList")
+    .innerHTML =
+    documents.map(item => `
+
+<div class="list-item">
+
+<div>
+
+<b>
+  ${escapeHtml(
+    item.title
+  )}
+</b>
+
+<br>
+
+<small>
+
+${escapeHtml(
+  item.course
+)}
+
+ ·
+
+${escapeHtml(
+  item.status
+)}
+
+</small>
+
+</div>
+
+<div class="actions">
+
+<button
+  class="btn orange"
+  onclick="toggleStatus(
+    'year_three_documents',
+    '${escapeHtml(item.id)}',
+    '${escapeHtml(item.status)}'
+  )">
+
+${
+  item.status === "published"
+    ? "Unpublish"
+    : "Publish"
+}
+
+</button>
+
+<button
+  class="btn red"
+  onclick="deleteItem(
+    'year_three_documents',
+    '${escapeHtml(item.id)}',
+    loadDocuments
+  )">
+
+Delete
+
+</button>
+
+</div>
+
+</div>
+
+`).join("") ||
+
+"<div class='card'>No documents yet.</div>";
+
+}
+
+
+/* =========================================================
+   LOAD VIDEOS
+   ========================================================= */
+
+async function loadVideos(){
+
+  if(!isCurrentUserAdmin())
+    return;
+
+
+  const {
+    data,
+    error
+  } =
+    await db
+      .from("year_three_videos")
+      .select("*");
+
+
+  if(error){
+
+    $("videoList")
+      .innerHTML =
+      `
+      <div class="status err">
+        ${escapeHtml(
+          error.message
+        )}
+      </div>
+      `;
+
+    return;
+
+  }
+
+
+  const videos =
+    data || [];
+
+
+  $("videoList")
+    .innerHTML =
+    videos.map(item => `
+
+<div class="list-item">
+
+<div>
+
+<b>
+  ${escapeHtml(
+    item.title
+  )}
+</b>
+
+<br>
+
+<small>
+
+${escapeHtml(
+  item.course
+)}
+
+ ·
+
+${escapeHtml(
+  item.status
+)}
+
+</small>
+
+</div>
+
+<div class="actions">
+
+<button
+  class="btn orange"
+  onclick="toggleStatus(
+    'year_three_videos',
+    '${escapeHtml(item.id)}',
+    '${escapeHtml(item.status)}'
+  )">
+
+${
+  item.status === "published"
+    ? "Unpublish"
+    : "Publish"
+}
+
+</button>
+
+<button
+  class="btn red"
+  onclick="deleteItem(
+    'year_three_videos',
+    '${escapeHtml(item.id)}',
+    loadVideos
+  )">
+
+Delete
+
+</button>
+
+</div>
+
+</div>
+
+`).join("") ||
+
+"<div class='card'>No videos yet.</div>";
+
+}
+
+
+/* =========================================================
+   LOAD QUIZZES
+   ========================================================= */
+
+async function loadQuizzes(){
+
+  if(!isCurrentUserAdmin())
+    return;
+
+
+  const {
+    data,
+    error
+  } =
+    await db
+      .from("year_three_quizzes")
+      .select("*");
+
+
+  if(error){
+
+    $("quizList")
+      .innerHTML =
+      `
+      <div class="status err">
+        ${escapeHtml(
+          error.message
+        )}
+      </div>
+      `;
+
+    return;
+
+  }
+
+
+  const quizzes =
+    data || [];
+
+
+  $("quizList")
+    .innerHTML =
+    quizzes.map(item => `
+
+<div class="list-item">
+
+<div>
+
+<b>
+  ${escapeHtml(
+    item.title
+  )}
+</b>
+
+<br>
+
+<small>
+
+${escapeHtml(
+  item.course
+)}
+
+ ·
+
+${escapeHtml(
+  item.status
+)}
+
+</small>
+
+</div>
+
+<div class="actions">
+
+<button
+  class="btn orange"
+  onclick="toggleStatus(
+    'year_three_quizzes',
+    '${escapeHtml(item.id)}',
+    '${escapeHtml(item.status)}'
+  )">
+
+${
+  item.status === "published"
+    ? "Unpublish"
+    : "Publish"
+}
+
+</button>
+
+<button
+  class="btn red"
+  onclick="deleteItem(
+    'year_three_quizzes',
+    '${escapeHtml(item.id)}',
+    loadQuizzes
+  )">
+
+Delete
+
+</button>
+
+</div>
+
+</div>
+
+`).join("") ||
+
+"<div class='card'>No quizzes yet.</div>";
+
+}
+
+
+/* =========================================================
+   TOGGLE STATUS
+   ========================================================= */
+
+async function toggleStatus(
+  table,
+  id,
+  currentStatus
+){
+
+  if(!isCurrentUserAdmin()){
+
+    alert(
+      "Administrator authentication required."
+    );
+
+    return;
+
+  }
+
+
+  const newStatus =
+    currentStatus === "published"
+      ? "draft"
+      : "published";
+
+
+  const {
+    error
+  } =
+    await db
+      .from(table)
+      .update({
+        status:newStatus
+      })
+      .eq("id",id);
+
+
+  if(error){
+
+    alert(
+      error.message
+    );
+
+    return;
+
+  }
+
+
+  loadAdminData();
+
+  loadPublishedResources();
+
+
+  if(
+    table ===
+    "year_three_documents"
+  )
+    loadDocuments();
+
+
+  if(
+    table ===
+    "year_three_videos"
+  )
+    loadVideos();
+
+
+  if(
+    table ===
+    "year_three_quizzes"
+  )
+    loadQuizzes();
+
+}
+
+
+/* =========================================================
+   DELETE
+   ========================================================= */
+
+async function deleteItem(
+  table,
+  id,
+  refresh
+){
+
+  if(!isCurrentUserAdmin()){
+
+    alert(
+      "Administrator authentication required."
+    );
+
+    return;
+
+  }
+
+
+  if(
+    !confirm(
+      "Delete this resource permanently?"
+    )
+  )
+    return;
+
+
+  const {
+    error
+  } =
+    await db
+      .from(table)
+      .delete()
+      .eq("id",id);
+
+
+  if(error){
+
+    alert(
+      error.message
+    );
+
+    return;
+
+  }
+
+
+  refresh();
+
+  loadAdminData();
+
+  loadPublishedResources();
+
+}
+
+
+/* =========================================================
+   ADMIN DASHBOARD
+   ========================================================= */
+
+async function loadAdminData(){
+
+  if(!isCurrentUserAdmin())
+    return;
+
+
+  const tables = [
+
+    "year_three_documents",
+
+    "year_three_videos",
+
+    "year_three_quizzes"
+
+  ];
+
+
+  const counts =
+    await Promise.all(
+
+      tables.map(
+        table =>
+          db
+            .from(table)
+            .select(
+              "id",
+              {
+                count:"exact",
+                head:true
+              }
+            )
+      )
+
+    );
+
+
+  const published =
+    await Promise.all(
+
+      tables.map(
+        table =>
+          db
+            .from(table)
+            .select(
+              "id",
+              {
+                count:"exact",
+                head:true
+              }
+            )
+            .eq(
+              "status",
+              "published"
+            )
+      )
+
+    );
+
+
+  $("documentCount")
+    .textContent =
+    counts[0].count || 0;
+
+
+  $("videoCount")
+    .textContent =
+    counts[1].count || 0;
+
+
+  $("quizCount")
+    .textContent =
+    counts[2].count || 0;
+
+
+  $("publishedCount")
+    .textContent =
+    published.reduce(
+      (
+        total,
+        result
+      ) =>
+        total +
+        (
+          result.count || 0
+        ),
+      0
+    );
+
+
+  if(
+    counts.some(
+      result => result.error
+    )
+  ){
+
+    showStatus(
+      "adminStatus",
+      "One or more database tables could not be read. Check your Supabase table names and RLS policies.",
+      "warn"
+    );
+
+  }else{
+
+    showStatus(
+      "adminStatus",
+      "Administrator dashboard connected successfully.",
+      "ok"
+    );
+
+  }
+
+
+  loadDocuments();
+
+  loadVideos();
+
+  loadQuizzes();
+
+}
+
+
+/* =========================================================
+   RESTORE SUPABASE SESSION
+   ========================================================= */
+
+async function restoreSession(){
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await db.auth.getSession();
+
+
+    if(error){
+
+      console.error(
+        "Session error:",
+        error
+      );
+
+      currentUser = null;
+
+      updateAdminUI();
+
+      return;
+
+    }
+
+
+    currentUser =
+      data?.session?.user ||
+      null;
+
+
+    console.log(
+      "Restored session:",
+      currentUser
+        ? currentUser.email
+        : "No active session"
+    );
+
+
+    updateAdminUI();
+
+
+    if(
+      isCurrentUserAdmin()
+    ){
+
+      loadAdminData();
+
+    }
+
+  }catch(error){
+
+    console.error(
+      "Session restore error:",
+      error
+    );
+
+    currentUser = null;
+
+    updateAdminUI();
+
+  }
+
+}
+
+
+/* =========================================================
+   AUTH STATE LISTENER
+   ========================================================= */
+
+db.auth.onAuthStateChange(
+  (
+    event,
+    session
+  ) => {
+
+    currentUser =
+      session?.user ||
+      null;
+
+
+    console.log(
+      "Auth event:",
+      event,
+      "User:",
+      currentUser
+        ? currentUser.email
+        : "None"
+    );
+
+
+    updateAdminUI();
+
+
+    if(
+      isCurrentUserAdmin()
+    ){
+
+      loadAdminData();
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   ADMIN LINK
+   ========================================================= */
+
+$("adminLink")
+  .addEventListener(
+    "click",
+    event => {
+
+      event.preventDefault();
+
+
+      $("admin")
+        .scrollIntoView({
+          behavior:"smooth"
+        });
+
+    }
+  );
+
+
+/* =========================================================
+   INITIAL PAGE LOAD
+   ========================================================= */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  async () => {
+
+    updateAdminUI();
+
+    await restoreSession();
+
+    loadPublishedResources();
+
+  }
+);
+
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  $("documentFile")?.addEventListener("change", updateDocumentFileInfo);
+});
+</script>
+
+</body>
+</html>
