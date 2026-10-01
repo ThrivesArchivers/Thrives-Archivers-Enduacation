@@ -3970,13 +3970,11 @@ function filesToDataUrls(files){
 async function invokeAiFunction(functionName, payload) {
     const { data: { session }, error: sessionError } =
         await db.auth.getSession();
-
     if (sessionError || !session?.access_token) {
         throw new Error(
             'Please log in again before using the AI function.'
         );
     }
-
     const response = await fetch(
         `${SUPABASE_URL}/functions/v1/${encodeURIComponent(functionName)}`,
         {
@@ -3989,15 +3987,12 @@ async function invokeAiFunction(functionName, payload) {
             body: JSON.stringify(payload)
         }
     );
-
     const responseText = await response.text();
-
     if (!response.ok) {
         throw new Error(
             responseText || `AI request failed (${response.status})`
         );
     }
-
     try {
         return JSON.parse(responseText);
     } catch {
