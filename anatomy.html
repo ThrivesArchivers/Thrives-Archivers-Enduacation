@@ -3967,125 +3967,45 @@ function filesToDataUrls(files){
    AI FUNCTIONS
 ========================================================= */
 
-async
- 
-function
- 
-invokeAiFunction
-(
-functionName, payload
-) 
-{
-    
-const
- {
-        
-data
-: { session },
-        
-error
-: sessionError
-    } = 
-await
- db.auth.getSession();
-    
-if
- (sessionError || !session?.access_token) {
-        
-throw
- 
-new
- 
-Error
-(
-'Please log in again before using the AI function.'
-);
-    }
-    
-const
- response = 
-await
- fetch(
-        
-`
-${SUPABASE_URL}
-/functions/v1/
-${functionName}
-`
-,
-        {
-            
-method
-: 
-'POST'
-,
-            
-headers
-: {
-                
-'Content-Type'
-: 
-'application/json'
-,
-                
-'apikey'
-: SUPABASE_ANON_KEY,
-                
-'Authorization'
-: 
-`Bearer 
-${session.access_token}
-`
+async function invokeAiFunction(functionName, payload) {
+    const { data: { session }, error: sessionError } =
+        await db.auth.getSession();
 
+    if (sessionError || !session?.access_token) {
+        throw new Error(
+            'Please log in again before using the AI function.'
+        );
+    }
+
+    const response = await fetch(
+        `${SUPABASE_URL}/functions/v1/${encodeURIComponent(functionName)}`,
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'apikey': SUPABASE_ANON_KEY,
+                'Authorization': `Bearer ${session.access_token}`
             },
-            
-body
-: 
-JSON
-.stringify(payload)
+            body: JSON.stringify(payload)
         }
     );
-    
-const
- responseText = 
-await
- response.text();
-    
-if
- (!response.ok) {
-        
-throw
- 
-new
- 
-Error
-(responseText || 
-`AI request failed (
-${response.status}
-)`
-);
+
+    const responseText = await response.text();
+
+    if (!response.ok) {
+        throw new Error(
+            responseText || `AI request failed (${response.status})`
+        );
     }
-    
-try
- {
-        
-return
- 
-JSON
-.parse(responseText);
-    } 
-catch
- {
-        
-throw
- 
-new
- 
-Error
-(
-'The AI function returned a response that was not valid JSON.'
-);
+
+    try {
+        return JSON.parse(responseText);
+    } catch {
+        throw new Error(
+            'The AI function returned a response that was not valid JSON.'
+        );
     }
+}
 async function generateDocumentDraft(){
 
     if(!isAdmin()){
