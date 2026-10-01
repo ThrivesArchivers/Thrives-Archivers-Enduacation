@@ -1,673 +1,5692 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width,initial-scale=1.0"> <title>Thrives Archivers - Second Year</title> <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> <style> *{ box-sizing:border-box; } :root{ --primary:#5b5bea; --primary2:#7667ff; --dark:#17172b; --bg:#f5f6ff; --card:#ffffff; --text:#202134; --muted:#70738a; --border:#e5e7f0; --success:#16a34a; --danger:#dc2626; --warning:#d97706; --shadow:0 8px 25px rgba(40,40,80,.08); } body{ margin:0; font-family:Arial,Helvetica,sans-serif; background:var(--bg); color:var(--text); } /* ========================= HEADER ========================= */ .header{ background:linear-gradient(135deg,#3434a0,#5b5bea,#7667ff); color:white; padding:28px 18px; text-align:center; } .header h1{ margin:0; font-size:32px; } .header p{ margin:8px 0 0; opacity:.9; } /* ========================= TOP BAR ========================= */ .topbar{ background:#17172b; color:white; padding:10px 18px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; } .top-left{ font-weight:bold; } .top-right{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; } .pill{ background:#282844; padding:7px 11px; border-radius:20px; font-size:12px; } /* ========================= BUTTONS ========================= */ .btn{ border:0; border-radius:9px; padding:10px 15px; cursor:pointer; background:var(--primary); color:white; font-weight:bold; } .btn:hover{ opacity:.9; } .btn.dark{ background:#33334c; } .btn.danger{ background:var(--danger); } .btn.success{ background:var(--success); } .btn.warning{ background:var(--warning); } .btn.small{ padding:7px 10px; font-size:12px; } /* ========================= CONTAINER ========================= */ .container{ width:94%; max-width:1300px; margin:auto; } /* ========================= STATUS ========================= */ .status-bar{ margin:15px auto; width:94%; max-width:1300px; padding:13px; background:white; border-radius:12px; box-shadow:var(--shadow); text-align:center; color:var(--muted); } /* ========================= DASHBOARD ========================= */ .dashboard{ padding:22px 0; } .hero-card{ background:linear-gradient(135deg,#ffffff,#f0efff); border-radius:20px; padding:28px; box-shadow:var(--shadow); margin-bottom:20px; } .hero-card h2{ margin:0 0 8px; color:var(--primary); } .hero-card p{ margin:0; color:var(--muted); } /* ========================= QUICK ACTIONS ========================= */ .quick-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:15px; margin-bottom:25px; } .quick-card{ background:white; padding:20px; border-radius:16px; box-shadow:var(--shadow); text-align:center; cursor:pointer; transition:.2s; } .quick-card:hover{ transform:translateY(-3px); } .quick-card .icon{ font-size:30px; display:block; margin-bottom:8px; } .quick-card strong{ display:block; } .quick-card span{ color:var(--muted); font-size:13px; } /* ========================= SEARCH ========================= */ .search-panel{ background:white; padding:18px; border-radius:16px; box-shadow:var(--shadow); margin-bottom:20px; } .search-row{ display:flex; gap:10px; } .search-row input{ flex:1; } input, select, textarea{ width:100%; padding:11px; border:1px solid var(--border); border-radius:9px; outline:none; background:white; } input:focus, select:focus, textarea:focus{ border-color:var(--primary); } /* ========================= FILTERS ========================= */ .filters{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px; } .filter{ background:white; border:1px solid var(--border); border-radius:30px; padding:9px 14px; cursor:pointer; } .filter.active{ background:var(--primary); color:white; border-color:var(--primary); } /* ========================= COURSES ========================= */ .course-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(310px,1fr)); gap:20px; } .course-card{ background:white; border-radius:18px; padding:18px; box-shadow:var(--shadow); } .course-title{ margin:-18px -18px 15px; padding:17px; border-radius:18px 18px 0 0; background:linear-gradient(135deg,#f0efff,#f7f6ff); color:var(--primary); font-size:20px; font-weight:bold; } .semester-title{ margin:15px 0 8px; font-weight:bold; color:#444; } .resource{ background:#f8f9ff; border:1px solid #e8e9f8; padding:12px; border-radius:10px; margin-bottom:8px; cursor:pointer; display:flex; justify-content:space-between; gap:10px; align-items:center; } .resource:hover{ background:#f0f1ff; } .resource-title{ font-size:14px; } .resource-icon{ font-size:18px; } /* ========================= VIDEO MODAL ========================= */ .modal-bg{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.75); z-index:9000; align-items:center; justify-content:center; padding:15px; } .modal{ width:100%; max-width:1000px; background:#111; border-radius:15px; overflow:hidden; position:relative; } .modal iframe{ width:100%; height:550px; border:0; display:block; } .close{ position:absolute; right:10px; top:10px; width:38px; height:38px; border:0; border-radius:50%; background:white; font-size:24px; cursor:pointer; z-index:2; } /* ========================= LOGIN ========================= */ .login-modal{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.75); z-index:10000; align-items:center; justify-content:center; padding:20px; } .login-box{ background:white; width:100%; max-width:420px; padding:25px; border-radius:18px; } .login-box h2{ margin-top:0; color:var(--primary); } .login-box input{ margin-bottom:12px; } /* ========================= ADMIN ========================= */ .admin-panel{ display:none; margin:30px 0; } .admin-header{ background:linear-gradient(135deg,#27275c,#5b5bea); color:white; padding:22px; border-radius:18px 18px 0 0; } .admin-header h2{ margin:0; } .admin-content{ background:white; padding:20px; border-radius:0 0 18px 18px; box-shadow:var(--shadow); } .admin-tabs{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px; } .admin-tab{ border:0; padding:10px 14px; border-radius:9px; cursor:pointer; background:#eeeef8; } .admin-tab.active{ background:var(--primary); color:white; } .admin-section{ display:none; } .admin-section.active{ display:block; } /* ========================= ADMIN FORMS ========================= */ .form-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; } .form-group label{ display:block; margin-bottom:5px; font-size:12px; color:var(--muted); font-weight:bold; } .form-actions{ margin-top:15px; display:flex; gap:8px; flex-wrap:wrap; } /* ========================= ADMIN LIST ========================= */ .admin-list{ margin-top:20px; } .admin-item{ border:1px solid var(--border); padding:14px; border-radius:12px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; } .admin-item-info{ flex:1; } .admin-item-title{ font-weight:bold; } .admin-item-meta{ font-size:12px; color:var(--muted); margin-top:4px; } .admin-actions{ display:flex; gap:6px; } /* ========================= SUBSCRIPTIONS ========================= */ .subscription-card{ background:white; border:1px solid var(--border); border-radius:14px; padding:15px; margin-bottom:10px; } .subscription-top{ display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; } .subscription-email{ font-weight:bold; } .status-badge{ padding:6px 10px; border-radius:20px; font-size:11px; font-weight:bold; } .status-active{ background:#dcfce7; color:#15803d; } .status-expired{ background:#fee2e2; color:#b91c1c; } .status-none{ background:#fef3c7; color:#92400e; } .subscription-details{ display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:8px; margin-top:12px; } .subscription-detail{ background:#f8f9ff; padding:9px; border-radius:8px; font-size:12px; } .subscription-detail strong{ display:block; font-size:11px; color:var(--muted); margin-bottom:3px; } /* ========================= AI NOTES ADMIN ========================= */
-.ai-notes-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.ai-audio-box{background:#f8f9ff;border:1px solid var(--border);border-radius:12px;padding:12px;margin-top:12px}
-.ai-audio-box audio{width:100%;margin-top:8px}
-/* ========================= DOCUMENT EDITOR ========================= */
-.document-editor-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:16px;margin-top:15px;box-shadow:var(--shadow)}
-.document-toolbar{display:flex;gap:6px;flex-wrap:wrap;padding:10px;background:#f7f7ff;border:1px solid var(--border);border-radius:10px 10px 0 0}
-.document-toolbar button{border:1px solid var(--border);background:#fff;border-radius:7px;padding:7px 10px;cursor:pointer;font-weight:bold}
-.document-toolbar button:hover{background:#eeeef8}
-.document-editor{min-height:520px;border:1px solid var(--border);border-top:0;border-radius:0 0 10px 10px;padding:20px;outline:none;line-height:1.7;background:#fff;overflow:auto}
-.document-editor:focus{box-shadow:inset 0 0 0 2px rgba(91,91,234,.12)}
-.document-editor h1,.document-editor h2,.document-editor h3{color:#30306f}
-.document-editor img{max-width:100%;height:auto;border-radius:8px}
-.document-editor a{color:#3b4fd8;text-decoration:underline}
-.document-editor table{width:100%;border-collapse:collapse;margin:14px 0}
-.document-editor th,.document-editor td{border:1px solid #dfe1ee;padding:8px;vertical-align:top}
-.document-editor blockquote{border-left:4px solid var(--primary);margin:15px 0;padding:8px 15px;background:#f7f7ff}
-.source-drop{border:2px dashed #cfd2ea;border-radius:12px;padding:16px;text-align:center;background:#fafaff;margin-top:10px}
-.source-drop input{margin-top:8px}
-.document-preview{background:#fafaff;border:1px solid var(--border);border-radius:12px;padding:18px;margin-top:15px;display:none}
-.document-preview-body{background:#fff;padding:22px;border-radius:10px;line-height:1.7;overflow:auto}
-.document-preview-body img{max-width:100%;height:auto}
-.document-preview-body a{color:#3b4fd8;text-decoration:underline}
-.document-viewer-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9500;align-items:center;justify-content:center;padding:15px}
-.document-viewer{width:100%;max-width:1050px;max-height:92vh;background:#fff;border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
-.document-viewer-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:10px}
-.document-viewer-body{padding:24px;overflow:auto;line-height:1.75}
-.document-viewer-body img{max-width:100%;height:auto}
-.document-viewer-body a{color:#3548cf;text-decoration:underline}
-.document-viewer-body table{width:100%;border-collapse:collapse}
-.document-viewer-body th,.document-viewer-body td{border:1px solid #ddd;padding:8px}
-.status-message{margin-top:10px;padding:10px;border-radius:9px;background:#f5f6ff;color:#555;display:none}
-.status-message.ok{background:#ecfdf3;color:#15803d}.status-message.err{background:#fff1f2;color:#b91c1c}
-/* ========================= EMPTY ========================= */ .empty{ text-align:center; padding:35px; color:var(--muted); } /* ========================= FOOTER ========================= */ footer{ text-align:center; padding:30px 15px; color:var(--muted); } /* ========================= MOBILE ========================= */ @media(max-width:650px){ .header h1{ font-size:25px; } .search-row{ flex-direction:column; } .course-grid{ grid-template-columns:1fr; } .modal iframe{ height:400px; }  } </style> </head> <body> <!-- ===================================================== HEADER ===================================================== --> <div class="header"> <h1>THRIVES ARCHIVERS</h1> <p>Second Year Online Learning Hub</p> </div> <!-- ===================================================== TOP BAR ===================================================== --> <div class="topbar"> <div class="top-left"> Welcome, <span id="displayName">Guest</span> </div> <div class="top-right"> <span class="pill" id="subInfo"> Not logged in </span> <button class="btn" id="loginTopBtn"> Login </button> <button class="btn dark" id="logoutBtn" style="display:none"> Logout </button> </div> </div> <div class="status-bar" id="statusBar"> Please log in to access your learning materials. </div> <!-- ===================================================== MAIN ===================================================== --> <div class="container"> <section class="dashboard"> <div class="hero-card"> <h2> Welcome to Second Year </h2> <p> Access your Anatomy, Physiology, Pharmacology, Medical Biochemistry, Public Health and Behavioral Science learning materials. </p> </div> <!-- QUICK ACTIONS --> <div class="quick-grid"> <div class="quick-card" onclick="scrollToCourses()"> <span class="icon">📚</span> <strong>Courses</strong> <span> Browse learning materials </span> </div> <div class="quick-card" onclick="document.getElementById('searchInput').focus()"> <span class="icon">🔎</span> <strong>Search</strong> <span> Find documents and videos </span> </div> <div class="quick-card" onclick="openWhatsApp()"> <span class="icon">💬</span> <strong> Contact Thrives </strong> <span> WhatsApp support </span> </div> </div> <!-- SEARCH --> <div class="search-panel"> <div class="search-row"> <input type="text" id="searchInput" placeholder="Search documents and videos..." oninput="searchResources()"> <button class="btn" onclick="clearSearch()"> Clear </button> </div> </div> <!-- FILTERS --> <div class="filters" id="courseFilters"></div> <!-- DATABASE CONTENT --> <div class="course-grid" id="courseGrid"> <div class="empty"> Loading Second-Year course materials... </div> </div>
-<!-- ================================================= ADMIN PANEL ================================================== --> <section class="admin-panel" id="adminPanel"> <div class="admin-header"> <h2> ⚙️ Thrives Archivers Admin Panel </h2> <p> Manage Second-Year courses, documents, videos and subscriptions. </p> </div> <div class="admin-content"> <!-- ADMIN TABS --> <div class="admin-tabs"> <button class="admin-tab active" onclick="openAdminTab('documentsAdmin',this)"> 📄 Documents </button> <button class="admin-tab" onclick="openAdminTab('coursesAdmin',this)"> 📚 Courses </button>  <button class="admin-tab" onclick="openAdminTab('videosAdmin',this)"> 🎥 Videos </button> <button class="admin-tab" onclick="openAdminTab('subscriptionsAdmin',this)"> 💳 Subscriptions </button> </div> <!-- ================================================= COURSE ADMIN ================================================== -->
-<div class="admin-section" id="coursesAdmin">
-<h3>📚 Add / Edit Second-Year Course</h3>
-<form id="courseForm">
-<input type="hidden" id="editCourseId">
-<div class="form-grid">
-<div class="form-group"><label>Course Name</label><input id="courseName" required></div>
-<div class="form-group"><label>Icon</label><input id="courseIcon" placeholder="📚" maxlength="4"></div>
-<div class="form-group"><label>Display Order</label><input type="number" id="courseOrder" value="1" required></div>
-<div class="form-group"><label>Status</label><select id="courseStatus"><option value="published">Published</option><option value="draft">Draft</option></select></div>
-<div class="form-group" style="grid-column:1/-1"><label>Description</label><textarea id="courseDescription" placeholder="Short course description"></textarea></div>
-</div>
-<div class="form-actions">
-<button class="btn success" type="submit">Save Course</button>
-<button class="btn dark" type="button" onclick="resetCourseForm()">Clear</button>
-</div>
-</form>
-<div class="admin-list" id="existingCourses">Loading courses...</div>
-</div>
-<!-- ================================================= DOCUMENT ADMIN ================================================== -->
-<div class="admin-section active" id="documentsAdmin">
-  <h3>📄 Document Manager</h3>
-  <p style="color:var(--muted);font-size:13px;margin-top:4px">
-    Prepare a complete learning document, review it, then publish it to the selected course.
-  </p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <input type="hidden" id="editDocumentId">
-  <input type="hidden" id="documentSourceUrl">
+<title>Thrives Archivers - Second Year</title>
 
-  <div class="form-grid">
-    <div class="form-group">
-      <label>Document Title</label>
-      <input id="documentTitle" placeholder="Example: The Elbow Joint" required>
-    </div>
-    <div class="form-group">
-      <label>Course</label>
-      <select id="documentSection" required>
-        <option value="">Select Course</option>
-        <option>Anatomy</option><option>Physiology</option><option>Pharmacology</option>
-        <option>Biochemistry</option><option>Public Health</option><option>Behavioral Science</option>
-        <option>Communication Skills</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Topic</label>
-      <input id="documentTopic" placeholder="Example: Elbow Joint">
-    </div>
-    <div class="form-group">
-      <label>Semester / Term</label>
-      <select id="documentSemester" required>
-        <option value="">Select</option><option>Semester One</option><option>Semester Two</option>
-        <option>Term One</option><option>Term Two</option><option>Term Three</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Access Passwords (optional)</label>
-      <input id="documentPasswords" placeholder="password1, password2">
-    </div>
-    <div class="form-group">
-      <label>Display Order</label>
-      <input type="number" id="documentOrder" value="1" min="1" required>
-    </div>
-  </div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <div class="document-editor-card">
-    <h4 style="margin:0 0 8px">1. Source Notes</h4>
-    <p style="font-size:12px;color:var(--muted)">Paste your lecturer notes below. You can also add images of handwritten, printed or photographed notes.</p>
-    <textarea id="documentSource" style="min-height:180px" placeholder="Paste the source notes here..."></textarea>
-
-    <div class="source-drop">
-      <strong>📷 Add Note Images</strong>
-      <div style="font-size:12px;color:var(--muted);margin-top:5px">Select one or more images. They are sent with the source for document generation.</div>
-      <input type="file" id="documentImages" accept="image/*" multiple onchange="showSelectedDocumentImages()">
-      <div id="documentImageList" style="font-size:12px;margin-top:8px"></div>
-    </div>
-
-    <div class="form-actions">
-      <button class="btn" type="button" onclick="generateDocumentDraft()">✨ Generate Document</button>
-      <button class="btn dark" type="button" onclick="clearDocumentForm()">Clear</button>
-    </div>
-    <div id="documentStatus" class="status-message"></div>
-  </div>
-
-  <div class="document-editor-card">
-    <h4 style="margin:0 0 8px">2. Review & Edit Document</h4>
-    <p style="font-size:12px;color:var(--muted)">Everything below is editable. Links remain clickable when the document is published.</p>
-    <div class="document-toolbar" aria-label="Document formatting toolbar">
-      <button type="button" onclick="formatDocument('bold')"><b>B</b></button>
-      <button type="button" onclick="formatDocument('italic')"><i>I</i></button>
-      <button type="button" onclick="formatDocument('underline')"><u>U</u></button>
-      <button type="button" onclick="formatDocument('insertUnorderedList')">• List</button>
-      <button type="button" onclick="formatDocument('insertOrderedList')">1. List</button>
-      <button type="button" onclick="formatDocument('formatBlock','h2')">H2</button>
-      <button type="button" onclick="formatDocument('formatBlock','h3')">H3</button>
-      <button type="button" onclick="insertDocumentLink()">🔗 Link</button>
-      <button type="button" onclick="insertDocumentImage()">🖼️ Image</button>
-      <button type="button" onclick="formatDocument('removeFormat')">Clear Format</button>
-    </div>
-    <div id="documentContent" class="document-editor" contenteditable="true" spellcheck="true"></div>
-
-    <div class="form-actions">
-      <button class="btn" type="button" onclick="previewDocument()">👁 Preview</button>
-      <button class="btn success" type="button" onclick="saveDocument('published')">Publish Document</button>
-      <button class="btn warning" type="button" onclick="saveDocument('draft')">Save Draft</button>
-      <button class="btn dark" type="button" onclick="readCurrentDocumentAloud()">🔊 Read Aloud</button>
-      <button class="btn dark" type="button" onclick="stopDocumentAudio()">⏹ Stop Audio</button>
-    </div>
-  </div>
-
-  <div class="document-preview" id="documentPreview">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
-      <h4 style="margin:0">Document Preview</h4>
-      <button class="btn small dark" type="button" onclick="closeDocumentPreview()">Close Preview</button>
-    </div>
-    <div id="documentPreviewBody" class="document-preview-body"></div>
-  </div>
-
-  <div class="admin-list" id="existingDocuments">Loading documents...</div>
-</div>
-<!-- ================================================= VIDEO ADMIN ================================================== --> <div class="admin-section" id="videosAdmin"> <h3> Add / Edit Video </h3> <form id="videoForm"> <input type="hidden" id="editVideoId"> <div class="form-grid"> <div class="form-group"> <label> Video Title </label> <input id="videoTitle" required> </div> <div class="form-group"> <label> YouTube Video ID </label> <input id="videoID" placeholder="Example: dQw4w9WgXcQ" required> </div> <div class="form-group"> <label> Password List </label> <input id="videoPasswords" placeholder="password1, password2"> </div> <div class="form-group"> <label> Course </label> <select id="videoSection" required> <option value=""> Select Course </option> <option> Anatomy </option> <option> Physiology </option> <option> Pharmacology </option> <option> Biochemistry </option> <option> Public Health </option> <option> Behavioral Science </option> <option> Communication Skills </option> </select> </div> <div class="form-group"> <label> Semester / Term </label> <select id="videoSemester" required> <option value=""> Select </option> <option> Semester One </option> <option> Semester Two </option> <option> Term One </option> <option> Term Two </option> <option> Term Three </option> </select> </div> <div class="form-group"> <label> Order </label> <input type="number" id="videoOrder" value="1" required> </div> </div> <div class="form-actions"> <button class="btn" type="submit"> Save Video </button> <button class="btn dark" type="button" onclick="resetVideoForm()"> Clear </button> </div> </form> <div class="admin-list" id="existingVideos"> Loading videos... </div> </div> <!-- ================================================= AI NOTES ADMIN ================================================== -->
-<div class="admin-section" id="aiAdmin">
-  <h3>🤖 AI Notes — Summarise & Read Aloud</h3>
-  <p style="color:#777;font-size:13px">
-    Administrator-only tool. Paste your notes below, generate a simplified summary, then use the same
-    Thrives Archivers audio Edge Function to read the notes or summary aloud.
-  </p>
-
-  <div class="form-grid">
-    <div class="form-group">
-      <label>Title</label>
-      <input id="aiNotesTitle" placeholder="Example: Anatomy — Upper Limb">
-    </div>
-    <div class="form-group">
-      <label>Course</label>
-      <select id="aiNotesCourse">
-        <option value="">Select Course</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Topic</label>
-      <input id="aiNotesTopic" placeholder="Example: Brachial Plexus">
-    </div>
-    <div class="form-group">
-      <label>Audio Speed</label>
-      <select id="aiAudioSpeed">
-        <option value="0.75">0.75×</option>
-        <option value="0.9">0.9×</option>
-        <option value="0.95" selected>0.95×</option>
-        <option value="1">1×</option>
-        <option value="1.15">1.15×</option>
-        <option value="1.25">1.25×</option>
-        <option value="1.5">1.5×</option>
-        <option value="1.75">1.75×</option>
-        <option value="2">2×</option>
-      </select>
-    </div>
-  </div>
-
-  <div class="form-group" style="margin-top:12px">
-    <label>Paste Notes</label>
-    <textarea id="aiSourceNotes" style="min-height:220px" placeholder="Paste the notes here..."></textarea>
-  </div>
-
-  <div class="form-actions">
-    <button class="btn" type="button" onclick="aiSummariseNotes()">🤖 AI Summarise Notes</button>
-    <button class="btn success" type="button" onclick="aiReadNotesAloud()">🔊 Read Notes Aloud</button>
-    <button class="btn dark" type="button" onclick="aiPauseAudio()">⏸ Pause</button>
-    <button class="btn dark" type="button" onclick="aiResumeAudio()">▶ Resume</button>
-    <button class="btn warning" type="button" onclick="aiStopAudio()">⏹ Stop</button>
-    <button class="btn" type="button" onclick="aiDownloadAudio()">🎧 Download Audio</button>
-    <button class="btn dark" type="button" onclick="clearAiNotes()">Clear</button>
-  </div>
-
-  <div id="aiNotesStatus" class="status-bar" style="width:100%;margin:15px 0 0;display:none"></div>
-
-  <div class="form-group" style="margin-top:15px">
-    <label>AI Summary</label>
-    <textarea id="aiSummary" style="min-height:300px" placeholder="The AI-generated summary will appear here..."></textarea>
-  </div>
-
-  <div id="aiAudioInfo" style="display:none;margin-top:10px;padding:10px;border-radius:9px;background:#f8f9ff;color:#555"></div>
-  <div id="aiAudioPlayerBox" style="margin-top:10px"></div>
-</div>
-<!-- ================================================= SUBSCRIPTIONS ================================================== --> <div class="admin-section" id="subscriptionsAdmin"> <h3> 💳 Subscription & Payment Status </h3> <p style="color:#777;font-size:13px"> Subscriptions are managed using the existing <strong>subscription</strong> table. The status below is calculated from the subscription dates. </p> <form id="subscriptionForm"> <input type="hidden" id="originalSubscriptionEmail"> <div class="form-grid"> <div class="form-group"> <label> Student Email </label> <input type="email" id="subscriptionEmail" required> </div> <div class="form-group"> <label> Start Date </label> <input type="date" id="subscriptionStart" required> </div> <div class="form-group"> <label> Duration </label> <select id="subscriptionDuration" required> <option value=""> Select </option> <option value="1"> 1 Month </option> <option value="3"> 3 Months </option> <option value="5"> 5 Months </option> <option value="6"> 6 Months </option> <option value="12"> 12 Months </option> </select> </div> <div class="form-group"> <label> Courses </label> <input id="subscriptionCourses" placeholder="Anatomy, Physiology"> </div> </div> <div class="form-actions"> <button class="btn success" type="submit"> Save Subscription / Payment </button> <button class="btn dark" type="button" onclick="resetSubscriptionForm()"> Clear </button> </div> </form> <div class="admin-list" id="subscriptionList"> Loading subscriptions... </div> </div> </div> </section> </section> </div> <!-- ===================================================== DOCUMENT VIEWER ===================================================== -->
-<div class="document-viewer-bg" id="documentViewerBg">
-  <div class="document-viewer">
-    <div class="document-viewer-head">
-      <strong id="documentViewerTitle">Thrives Archivers Document</strong>
-      <button class="close" style="position:static" onclick="closeDocumentViewer()">×</button>
-    </div>
-    <div class="document-viewer-body" id="documentViewerBody"></div>
-  </div>
-</div>
-<!-- ===================================================== VIDEO MODAL ===================================================== --> <div class="modal-bg" id="videoModalBg"> <div class="modal"> <button class="close" onclick="closeVideo()"> × </button> <iframe id="videoFrame" src="" allow="autoplay; encrypted-media" allowfullscreen> </iframe> </div> </div> <!-- ===================================================== LOGIN MODAL ===================================================== --> <div class="login-modal" id="loginModal"> <div class="login-box"> <h2> Student Login </h2> <p style="color:#777"> Log in to access your subscribed materials. </p> <input type="email" id="loginEmail" placeholder="Email"> <input type="password" id="loginPassword" placeholder="Password"> <button class="btn" id="loginBtn" style="width:100%"> Login </button> <button class="btn dark" onclick="closeLogin()" style="width:100%;margin-top:8px"> Cancel </button> </div> </div> <footer> © 2026 Thrives Archivers — Second Year Online Learning Hub </footer> <script> const { createClient } = supabase; /* ===================================================== SUPABASE ===================================================== */ const supabaseUrl = 'https://odwiqajuubcgrrqipyju.supabase.co'; 
-const supabaseKey =
-'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lxYWp1dWJjZ3JycWlweWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMyNzA4MjEsImV4cCI6MjA2ODg0NjgyMX0.CPyCmqvr0QIx3PJUsZkYqRR3nGzG0kHlvStj49_U24A'; const db = createClient( supabaseUrl, supabaseKey ); /* ===================================================== ADMIN ===================================================== */ const ADMIN_EMAIL = 'thrivesarchivers@gmail.com'; /* ===================================================== STATE ===================================================== */ let currentUser = null; let currentSubscription = null; let allDocuments = []; let allVideos = []; let currentFilter = 'all'; /* ===================================================== ELEMENTS ===================================================== */ const courseGrid = document.getElementById('courseGrid'); const displayName = document.getElementById('displayName'); const subInfo = document.getElementById('subInfo'); const statusBar = document.getElementById('statusBar'); const adminPanel = document.getElementById('adminPanel'); /* ===================================================== SECOND-YEAR SECTIONS ===================================================== */ let SECOND_YEAR_COURSES = [ 'Anatomy', 'Physiology', 'Pharmacology', 'Biochemistry', 'Public Health', 'Behavioral Science', 'Communication Skills' ]; const DEFAULT_COURSE_META = { 'Anatomy':['🦴','Anatomy'], 'Physiology':['🫀','Physiology'], 'Pharmacology':['💊','Pharmacology'], 'Biochemistry':['🧪','Biochemistry'], 'Public Health':['🌍','Public Health'], 'Behavioral Science':['🗣️','Behavioral Science'], 'Communication Skills':['💬','Communication Skills'] }; let allCourses = []; /* ===================================================== HELPERS ===================================================== */ function escapeHTML(value){ const div = document.createElement('div'); div.textContent = value ?? ''; return div.innerHTML; } function normalizeCourses(value){ if(!value) return []; return value .split(',') .map(x => x.trim()) .filter(Boolean); } function isAdmin(){ return ( currentUser && currentUser.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase() ); } function subscriptionStatus(sub){ if(!sub) return { text:'Not Paid / No Subscription', className:'status-none' }; const today = new Date(); const end = new Date( sub['end date'] ); if( !isNaN(end.getTime()) && end >= today ){ return { text:'ACTIVE / PAID', className:'status-active' }; } return { text:'EXPIRED', className:'status-expired' }; } /* ===================================================== AUTH ===================================================== */ document .getElementById('loginTopBtn') .addEventListener( 'click', () => { document .getElementById('loginModal') .style.display = 'flex'; } ); function closeLogin(){ document .getElementById('loginModal') .style.display = 'none'; } document .getElementById('loginBtn') .addEventListener( 'click', loginUser ); async function loginUser(){ const email = document .getElementById('loginEmail') .value .trim(); const password = document .getElementById('loginPassword') .value .trim(); if(!email || !password){ alert( 'Please enter your email and password.' ); return; } const { data, error } = await db.auth.signInWithPassword({ email, password }); if(error){ alert( 'Login failed: ' + error.message ); return; } currentUser = data.user; closeLogin(); await loadSubscription(); updateUserStatus(); await loadAllContent(); } /* ===================================================== LOGOUT ===================================================== */ document .getElementById('logoutBtn') .addEventListener( 'click', async () => { await db.auth.signOut(); currentUser = null; currentSubscription = null; adminPanel.style.display = 'none'; document .getElementById('logoutBtn') .style.display = 'none'; document .getElementById('loginTopBtn') .style.display = 'inline-block'; updateUserStatus(); renderContent(); } ); /* ===================================================== LOAD SUBSCRIPTION ===================================================== */ async function loadSubscription(){ currentSubscription = null; if(!currentUser) return; const { data, error } = await db .from('subscription') .select('*') .eq( 'email', currentUser.email.toLowerCase() ) .maybeSingle(); if(error){ console.error( 'Subscription error:', error ); return; } currentSubscription = data || null; } /* ===================================================== USER STATUS ===================================================== */ function updateUserStatus(){ if(!currentUser){ displayName.textContent = 'Guest'; subInfo.textContent = 'Not logged in'; statusBar.textContent = 'Please log in to access your subscribed materials.'; adminPanel.style.display = 'none'; return; } displayName.textContent = currentUser.email; if(currentSubscription){ const courses = currentSubscription.courses?.trim(); const courseText = courses || 'All'; const status = subscriptionStatus( currentSubscription ); subInfo.textContent = status.text; statusBar.innerHTML = `<strong>${escapeHTML(currentUser.email)}</strong> — ${escapeHTML(status.text)} — Courses: ${escapeHTML(courseText)} — Start: ${escapeHTML(currentSubscription['start date'] || '-')} — End: ${escapeHTML(currentSubscription['end date'] || '-')}`; }else{ subInfo.textContent = 'No active subscription'; statusBar.textContent = currentUser.email + ' — No active subscription.'; } if(isAdmin()){ adminPanel.style.display = 'block'; }else{ adminPanel.style.display = 'none'; } } /* ===================================================== LOAD DOCUMENTS ===================================================== */ async function loadCourses(){
-  const {data,error}=await db.from('year_two_courses').select('*').eq('status','published').order('display_order',{ascending:true});
-  if(error){
-    console.warn('year_two_courses unavailable; using default courses.',error.message);
-    allCourses=SECOND_YEAR_COURSES.map((name,i)=>({id:null,name,icon:DEFAULT_COURSE_META[name]?.[0]||'📚',description:DEFAULT_COURSE_META[name]?.[1]||name,display_order:i+1,status:'published'}));
-  }else{
-    allCourses=data||[];
-    const names=allCourses.map(c=>String(c.name||'').trim()).filter(Boolean);
-    if(names.length) SECOND_YEAR_COURSES=names;
-  }
-  renderCourseFilters();
-  populateAiCourseSelect();
+<style>
+:root{
+    --primary:#5b5bea;
+    --primary-dark:#4545c7;
+    --secondary:#7c3aed;
+    --success:#16a34a;
+    --danger:#dc2626;
+    --warning:#d97706;
+    --info:#0284c7;
+    --dark:#111827;
+    --text:#1f2937;
+    --muted:#6b7280;
+    --light:#f3f4f6;
+    --border:#e5e7eb;
+    --white:#ffffff;
+    --shadow:0 10px 30px rgba(0,0,0,.08);
+    --radius:16px;
 }
+
+*{
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    margin:0;
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f6f7fb;
+    color:var(--text);
+}
+
+button,
+input,
+select,
+textarea{
+    font:inherit;
+}
+
+button{
+    cursor:pointer;
+}
+
+.hidden{
+    display:none!important;
+}
+
+.container{
+    width:min(1400px,94%);
+    margin:auto;
+}
+
+/* HEADER */
+
+.header{
+    background:linear-gradient(135deg,#4f46e5,#5b5bea,#7c3aed);
+    color:white;
+    position:sticky;
+    top:0;
+    z-index:1000;
+    box-shadow:0 5px 20px rgba(0,0,0,.15);
+}
+
+.header-inner{
+    min-height:76px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.brand-logo{
+    width:48px;
+    height:48px;
+    border-radius:14px;
+    background:rgba(255,255,255,.18);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:25px;
+}
+
+.brand h1{
+    margin:0;
+    font-size:20px;
+}
+
+.brand p{
+    margin:4px 0 0;
+    opacity:.85;
+    font-size:13px;
+}
+
+.header-actions{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.status-pill{
+    padding:8px 12px;
+    border-radius:30px;
+    background:rgba(255,255,255,.15);
+    font-size:13px;
+}
+
+.btn{
+    border:0;
+    border-radius:10px;
+    padding:10px 15px;
+    font-weight:600;
+    transition:.2s;
+}
+
+.btn:hover{
+    transform:translateY(-1px);
+}
+
+.btn-primary{
+    background:var(--primary);
+    color:white;
+}
+
+.btn-secondary{
+    background:#eef2ff;
+    color:#3730a3;
+}
+
+.btn-success{
+    background:var(--success);
+    color:white;
+}
+
+.btn-danger{
+    background:var(--danger);
+    color:white;
+}
+
+.btn-warning{
+    background:var(--warning);
+    color:white;
+}
+
+.btn-dark{
+    background:#111827;
+    color:white;
+}
+
+.btn-light{
+    background:white;
+    color:var(--text);
+    border:1px solid var(--border);
+}
+
+.btn-info{
+    background:var(--info);
+    color:white;
+}
+
+.btn-sm{
+    padding:7px 10px;
+    font-size:12px;
+}
+
+/* STATUS BAR */
+
+.status-bar{
+    background:#fff;
+    border-bottom:1px solid var(--border);
+}
+
+.status-inner{
+    min-height:42px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+    font-size:13px;
+}
+
+#systemStatus{
+    color:var(--muted);
+}
+
+/* MAIN */
+
+main{
+    padding:28px 0 60px;
+}
+
+.hero{
+    background:linear-gradient(135deg,#111827,#312e81);
+    color:white;
+    border-radius:24px;
+    padding:35px;
+    margin-bottom:25px;
+    box-shadow:var(--shadow);
+}
+
+.hero h2{
+    margin:0 0 10px;
+    font-size:32px;
+}
+
+.hero p{
+    margin:0;
+    max-width:750px;
+    line-height:1.6;
+    color:#dbeafe;
+}
+
+/* QUICK CARDS */
+
+.quick-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
+    margin-bottom:25px;
+}
+
+.quick-card{
+    background:white;
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:22px;
+    box-shadow:var(--shadow);
+    transition:.2s;
+}
+
+.quick-card:hover{
+    transform:translateY(-3px);
+}
+
+.quick-icon{
+    font-size:28px;
+    margin-bottom:10px;
+}
+
+.quick-card h3{
+    margin:0 0 6px;
+}
+
+.quick-card p{
+    margin:0 0 15px;
+    color:var(--muted);
+    font-size:14px;
+}
+
+/* SEARCH */
+
+.search-box{
+    background:white;
+    padding:18px;
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    margin-bottom:20px;
+}
+
+.search-input{
+    width:100%;
+    border:1px solid var(--border);
+    padding:14px 16px;
+    border-radius:12px;
+    outline:none;
+}
+
+.search-input:focus{
+    border-color:var(--primary);
+    box-shadow:0 0 0 3px rgba(91,91,234,.1);
+}
+
+/* FILTERS */
+
+.filter-bar{
+    display:flex;
+    flex-wrap:wrap;
+    gap:9px;
+    margin-bottom:25px;
+}
+
+.filter-btn{
+    background:white;
+    border:1px solid var(--border);
+    color:var(--text);
+    padding:9px 14px;
+    border-radius:30px;
+    cursor:pointer;
+}
+
+.filter-btn.active{
+    background:var(--primary);
+    color:white;
+    border-color:var(--primary);
+}
+
+/* COURSE GRID */
+
+.course-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:18px;
+}
+
+.course-card{
+    background:white;
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:20px;
+    box-shadow:var(--shadow);
+}
+
+.course-icon{
+    width:52px;
+    height:52px;
+    border-radius:15px;
+    background:#eef2ff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:26px;
+    margin-bottom:14px;
+}
+
+.course-card h3{
+    margin:0 0 6px;
+}
+
+.course-card p{
+    color:var(--muted);
+    font-size:13px;
+    margin:0 0 14px;
+}
+
+.course-count{
+    font-size:12px;
+    color:var(--primary);
+    font-weight:bold;
+}
+
+/* CONTENT */
+
+.content-section{
+    margin-top:30px;
+}
+
+.content-heading{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+    margin-bottom:15px;
+}
+
+.content-heading h2{
+    margin:0;
+}
+
+.semester-block{
+    margin-bottom:28px;
+}
+
+.semester-title{
+    font-size:18px;
+    margin-bottom:13px;
+    padding-bottom:8px;
+    border-bottom:2px solid var(--border);
+}
+
+.document-grid,
+.video-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+}
+
+.document-card,
+.video-card{
+    background:white;
+    border:1px solid var(--border);
+    border-radius:15px;
+    padding:18px;
+    box-shadow:0 5px 18px rgba(0,0,0,.05);
+}
+
+.document-card h4,
+.video-card h4{
+    margin:0 0 8px;
+}
+
+.document-meta,
+.video-meta{
+    color:var(--muted);
+    font-size:12px;
+    margin-bottom:12px;
+}
+
+.card-actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:7px;
+}
+
+/* ADMIN */
+
+.admin-panel{
+    background:white;
+    border:1px solid var(--border);
+    border-radius:20px;
+    box-shadow:var(--shadow);
+    margin-top:35px;
+    overflow:hidden;
+}
+
+.admin-header{
+    background:#111827;
+    color:white;
+    padding:20px;
+}
+
+.admin-header h2{
+    margin:0;
+}
+
+.admin-tabs{
+    display:flex;
+    flex-wrap:wrap;
+    gap:5px;
+    padding:12px;
+    border-bottom:1px solid var(--border);
+}
+
+.admin-tab{
+    border:0;
+    background:#f3f4f6;
+    padding:10px 14px;
+    border-radius:9px;
+}
+
+.admin-tab.active{
+    background:var(--primary);
+    color:white;
+}
+
+.admin-section{
+    padding:22px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:15px;
+}
+
+.form-group{
+    margin-bottom:15px;
+}
+
+.form-group.full{
+    grid-column:1/-1;
+}
+
+.form-group label{
+    display:block;
+    font-weight:bold;
+    margin-bottom:7px;
+    font-size:13px;
+}
+
+.form-control{
+    width:100%;
+    padding:11px 12px;
+    border:1px solid var(--border);
+    border-radius:9px;
+    outline:none;
+    background:white;
+}
+
+.form-control:focus{
+    border-color:var(--primary);
+}
+
+textarea.form-control{
+    min-height:130px;
+    resize:vertical;
+}
+
+/* EDITOR */
+
+.editor-toolbar{
+    display:flex;
+    flex-wrap:wrap;
+    gap:5px;
+    padding:8px;
+    border:1px solid var(--border);
+    border-bottom:0;
+    border-radius:9px 9px 0 0;
+    background:#f9fafb;
+}
+
+.editor-toolbar button{
+    border:1px solid var(--border);
+    background:white;
+    border-radius:6px;
+    padding:7px 10px;
+}
+
+.editor{
+    min-height:400px;
+    border:1px solid var(--border);
+    border-radius:0 0 9px 9px;
+    padding:18px;
+    outline:none;
+    background:white;
+}
+
+.editor img{
+    max-width:100%;
+    height:auto;
+}
+
+.editor table{
+    border-collapse:collapse;
+    width:100%;
+}
+
+.editor table td,
+.editor table th{
+    border:1px solid #ccc;
+    padding:7px;
+}
+
+/* ADMIN LIST */
+
+.admin-list{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin-top:20px;
+}
+
+.admin-list-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    border:1px solid var(--border);
+    padding:14px;
+    border-radius:10px;
+}
+
+.admin-list-item small{
+    color:var(--muted);
+}
+
+.admin-actions{
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+}
+
+/* AI */
+
+.ai-box{
+    background:linear-gradient(135deg,#eef2ff,#faf5ff);
+    border:1px solid #ddd6fe;
+    padding:20px;
+    border-radius:16px;
+}
+
+.ai-title{
+    margin-top:0;
+}
+
+.ai-output{
+    min-height:250px;
+    background:white;
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:15px;
+    white-space:pre-wrap;
+}
+
+/* MODALS */
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.65);
+    z-index:3000;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+
+.modal-box{
+    width:min(1000px,100%);
+    max-height:90vh;
+    overflow:auto;
+    background:white;
+    border-radius:18px;
+    box-shadow:0 25px 70px rgba(0,0,0,.35);
+}
+
+.modal-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+    padding:18px 22px;
+    border-bottom:1px solid var(--border);
+    position:sticky;
+    top:0;
+    background:white;
+    z-index:2;
+}
+
+.modal-header h2{
+    margin:0;
+}
+
+.modal-close{
+    border:0;
+    background:#f3f4f6;
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    font-size:20px;
+}
+
+.modal-body{
+    padding:22px;
+}
+
+.document-viewer{
+    line-height:1.75;
+}
+
+.document-viewer img{
+    max-width:100%;
+    height:auto;
+}
+
+.document-viewer table{
+    border-collapse:collapse;
+    width:100%;
+}
+
+.document-viewer td,
+.document-viewer th{
+    border:1px solid #ccc;
+    padding:8px;
+}
+
+.video-container{
+    position:relative;
+    padding-bottom:56.25%;
+    height:0;
+    overflow:hidden;
+    border-radius:12px;
+}
+
+.video-container iframe{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    border:0;
+}
+
+/* NOTIFICATIONS */
+
+.notice{
+    padding:12px 14px;
+    border-radius:9px;
+    margin-bottom:15px;
+    font-size:14px;
+}
+
+.notice.ok{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.notice.err{
+    background:#fee2e2;
+    color:#991b1b;
+}
+
+.notice.info{
+    background:#dbeafe;
+    color:#1e40af;
+}
+
+.empty{
+    background:white;
+    border:1px dashed var(--border);
+    border-radius:15px;
+    padding:35px;
+    text-align:center;
+    color:var(--muted);
+}
+
+/* LOGIN */
+
+.login-box{
+    width:min(430px,100%);
+}
+
+.login-logo{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.login-logo strong{
+    font-size:25px;
+}
+
+/* TABLE */
+
+.table-wrap{
+    overflow:auto;
+}
+
+table.data-table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.data-table th,
+.data-table td{
+    border-bottom:1px solid var(--border);
+    padding:11px;
+    text-align:left;
+    font-size:13px;
+}
+
+.data-table th{
+    background:#f9fafb;
+}
+
+/* FOOTER */
+
+footer{
+    padding:30px 0;
+    background:#111827;
+    color:#cbd5e1;
+    text-align:center;
+    margin-top:40px;
+}
+
+/* MOBILE */
+
+@media(max-width:1100px){
+    .course-grid{
+        grid-template-columns:repeat(3,1fr);
+    }
+
+    .document-grid,
+    .video-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media(max-width:800px){
+    .quick-grid,
+    .course-grid,
+    .document-grid,
+    .video-grid{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .form-group.full{
+        grid-column:auto;
+    }
+
+    .header-inner{
+        flex-direction:column;
+        padding:12px 0;
+        align-items:flex-start;
+    }
+
+    .header-actions{
+        width:100%;
+        flex-wrap:wrap;
+    }
+}
+
+@media(max-width:560px){
+    .quick-grid,
+    .course-grid,
+    .document-grid,
+    .video-grid{
+        grid-template-columns:1fr;
+    }
+
+    .hero{
+        padding:25px;
+    }
+
+    .hero h2{
+        font-size:25px;
+    }
+
+    .status-inner{
+        flex-direction:column;
+        align-items:flex-start;
+        padding:9px 0;
+    }
+
+    .admin-section{
+        padding:15px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+    <div class="container header-inner">
+
+        <div class="brand">
+            <div class="brand-logo">📚</div>
+
+            <div>
+                <h1>THRIVES ARCHIVERS</h1>
+                <p>Second Year Online Learning Hub</p>
+            </div>
+        </div>
+
+        <div class="header-actions">
+
+            <span id="subscriptionStatus" class="status-pill">
+                Checking subscription...
+            </span>
+
+            <button
+                id="loginBtn"
+                class="btn btn-light btn-sm"
+                onclick="openLoginModal()">
+                Login
+            </button>
+
+            <button
+                id="logoutBtn"
+                class="btn btn-light btn-sm hidden"
+                onclick="logout()">
+                Logout
+            </button>
+
+        </div>
+    </div>
+</header>
+
+<div class="status-bar">
+    <div class="container status-inner">
+        <span id="systemStatus">Connecting to learning system...</span>
+        <span id="userEmailDisplay"></span>
+    </div>
+</div>
+
+
+<main>
+
+<div class="container">
+
+    <section class="hero">
+
+        <h2>Welcome to Second Year</h2>
+
+        <p>
+            Access your Second Year learning materials, documents,
+            videos and revision resources through Thrives Archivers.
+            Select your course below to begin studying.
+        </p>
+
+    </section>
+
+
+    <!-- QUICK CARDS -->
+
+    <section class="quick-grid">
+
+        <div class="quick-card">
+
+            <div class="quick-icon">📖</div>
+
+            <h3>Courses</h3>
+
+            <p>
+                Access Second Year courses and learning materials.
+            </p>
+
+            <button
+                class="btn btn-primary"
+                onclick="document.getElementById('coursesArea').scrollIntoView()">
+                View Courses
+            </button>
+
+        </div>
+
+
+        <div class="quick-card">
+
+            <div class="quick-icon">🔎</div>
+
+            <h3>Search</h3>
+
+            <p>
+                Search documents and learning materials quickly.
+            </p>
+
+            <button
+                class="btn btn-secondary"
+                onclick="document.getElementById('searchInput').focus()">
+                Search Materials
+            </button>
+
+        </div>
+
+
+        <div class="quick-card">
+
+            <div class="quick-icon">💬</div>
+
+            <h3>WhatsApp</h3>
+
+            <p>
+                Join the Thrives Archivers learning community.
+            </p>
+
+            <button
+                class="btn btn-success"
+                onclick="openWhatsApp()">
+                Join WhatsApp
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- SEARCH -->
+
+    <section class="search-box">
+
+        <input
+            id="searchInput"
+            class="search-input"
+            type="search"
+            placeholder="Search documents, topics, courses..."
+            oninput="handleSearch(this.value)">
+
+    </section>
+
+
+    <!-- COURSE FILTER -->
+
+    <section id="coursesArea">
+
+        <div class="content-heading">
+
+            <h2>Second Year Courses</h2>
+
+        </div>
+
+        <div id="courseFilters" class="filter-bar"></div>
+
+        <div id="courseGrid" class="course-grid"></div>
+
+    </section>
+
+
+    <!-- CONTENT -->
+
+    <section class="content-section">
+
+        <div class="content-heading">
+
+            <h2>Learning Materials</h2>
+
+            <span id="contentCount" class="course-count"></span>
+
+        </div>
+
+        <div id="contentArea"></div>
+
+    </section>
+
+
+    <!-- ADMIN -->
+
+    <section id="adminPanel" class="admin-panel hidden">
+
+        <div class="admin-header">
+
+            <h2>⚙️ Thrives Archivers Admin Panel</h2>
+
+            <p>
+                Manage Second Year documents, courses, videos,
+                subscriptions and AI notes.
+            </p>
+
+        </div>
+
+
+        <div class="admin-tabs">
+
+            <button
+                class="admin-tab active"
+                onclick="showAdminTab('documents',this)">
+                Documents
+            </button>
+
+            <button
+                class="admin-tab"
+                onclick="showAdminTab('courses',this)">
+                Courses
+            </button>
+
+            <button
+                class="admin-tab"
+                onclick="showAdminTab('videos',this)">
+                Videos
+            </button>
+
+            <button
+                class="admin-tab"
+                onclick="showAdminTab('subscriptions',this)">
+                Subscriptions
+            </button>
+
+            <button
+                class="admin-tab"
+                onclick="showAdminTab('aiAdmin',this)">
+                AI Notes
+            </button>
+
+        </div>
+
+
+        <!-- DOCUMENT ADMIN -->
+
+        <div id="admin-documents" class="admin-section admin-tab-section">
+
+            <h3>Document Manager</h3>
+
+            <div id="documentMessage"></div>
+
+            <input
+                type="hidden"
+                id="editDocumentId">
+
+            <!-- IMPORTANT:
+                 This remains empty when there is no external URL.
+                 saveDocument() sends '' rather than NULL.
+            -->
+
+            <input
+                type="hidden"
+                id="documentSourceUrl">
+
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label>Document Title</label>
+
+                    <input
+                        id="documentTitle"
+                        class="form-control"
+                        placeholder="Enter document title">
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Course</label>
+
+                    <select
+                        id="documentSection"
+                        class="form-control">
+
+                        <option value="">Select Course</option>
+                        <option>Anatomy</option>
+                        <option>Physiology</option>
+                        <option>Pharmacology</option>
+                        <option>Biochemistry</option>
+                        <option>Public Health</option>
+                        <option>Behavioral Science</option>
+                        <option>Communication Skills</option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Topic</label>
+
+                    <input
+                        id="documentTopic"
+                        class="form-control"
+                        placeholder="Enter topic">
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Semester</label>
+
+                    <select
+                        id="documentSemester"
+                        class="form-control">
+
+                        <option value="">Select Semester</option>
+                        <option value="Semester 1">Semester 1</option>
+                        <option value="Semester 2">Semester 2</option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Password(s)</label>
+
+                    <input
+                        id="documentPasswords"
+                        class="form-control"
+                        placeholder="Optional password">
+
+                    <small>
+                        For multiple passwords, separate them with commas.
+                    </small>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Display Order</label>
+
+                    <input
+                        id="documentOrder"
+                        type="number"
+                        class="form-control"
+                        value="1">
+
+                </div>
+
+
+                <div class="form-group full">
+
+                    <label>
+                        Source Notes / Text
+                    </label>
+
+                    <textarea
+                        id="documentSource"
+                        class="form-control"
+                        placeholder="Paste source notes here if you want AI to generate the document..."></textarea>
+
+                </div>
+
+
+                <div class="form-group full">
+
+                    <label>
+                        Add Images
+                    </label>
+
+                    <input
+                        id="documentImages"
+                        class="form-control"
+                        type="file"
+                        accept="image/*"
+                        multiple>
+
+                </div>
+
+
+                <div class="form-group full">
+
+                    <label>Document Editor</label>
+
+                    <div class="editor-toolbar">
+
+                        <button onclick="formatDoc('bold')">
+                            <b>B</b>
+                        </button>
+
+                        <button onclick="formatDoc('italic')">
+                            <i>I</i>
+                        </button>
+
+                        <button onclick="formatDoc('underline')">
+                            <u>U</u>
+                        </button>
+
+                        <button onclick="formatDoc('insertUnorderedList')">
+                            • List
+                        </button>
+
+                        <button onclick="formatDoc('insertOrderedList')">
+                            1. List
+                        </button>
+
+                        <button onclick="formatDoc('justifyLeft')">
+                            Left
+                        </button>
+
+                        <button onclick="formatDoc('justifyCenter')">
+                            Center
+                        </button>
+
+                        <button onclick="formatDoc('justifyRight')">
+                            Right
+                        </button>
+
+                        <button onclick="insertHeading('h2')">
+                            H2
+                        </button>
+
+                        <button onclick="insertHeading('h3')">
+                            H3
+                        </button>
+
+                        <button onclick="insertLink()">
+                            Link
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        id="documentContent"
+                        class="editor"
+                        contenteditable="true">
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+
+                <button
+                    class="btn btn-primary"
+                    onclick="generateDocumentDraft()">
+                    🤖 AI Generate Document
+                </button>
+
+                <button
+                    class="btn btn-info"
+                    onclick="previewDocument()">
+                    👁 Preview
+                </button>
+
+                <button
+                    class="btn btn-success"
+                    onclick="saveDocument('published')">
+                    Publish Document
+                </button>
+
+                <button
+                    class="btn btn-warning"
+                    onclick="saveDocument('draft')">
+                    Save Draft
+                </button>
+
+                <button
+                    class="btn btn-secondary"
+                    onclick="documentReadAloud()">
+                    🔊 Read Aloud
+                </button>
+
+                <button
+                    class="btn btn-danger"
+                    onclick="stopAudio()">
+                    ⏹ Stop Audio
+                </button>
+
+                <button
+                    class="btn btn-light"
+                    onclick="resetDocumentForm()">
+                    Clear
+                </button>
+
+            </div>
+
+
+            <div id="documentPreview"
+                 class="hidden"
+                 style="margin-top:20px">
+
+                <h3>Document Preview</h3>
+
+                <div
+                    id="documentPreviewBody"
+                    class="document-viewer">
+                </div>
+
+            </div>
+
+
+            <h3 style="margin-top:30px">
+                Existing Documents
+            </h3>
+
+            <div id="existingDocuments"
+                 class="admin-list">
+            </div>
+
+        </div>
+
+
+        <!-- COURSES ADMIN -->
+
+        <div
+            id="admin-courses"
+            class="admin-section admin-tab-section hidden">
+
+            <h3>Course Manager</h3>
+
+            <div id="courseMessage"></div>
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label>Course Name</label>
+
+                    <input
+                        id="courseName"
+                        class="form-control"
+                        placeholder="Course name">
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Course Icon</label>
+
+                    <input
+                        id="courseIcon"
+                        class="form-control"
+                        placeholder="📚"
+                        value="📚">
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Description</label>
+
+                    <textarea
+                        id="courseDescription"
+                        class="form-control"
+                        placeholder="Course description"></textarea>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Display Order</label>
+
+                    <input
+                        id="courseOrder"
+                        type="number"
+                        class="form-control"
+                        value="1">
+
+                </div>
+
+            </div>
+
+
+            <button
+                class="btn btn-primary"
+                onclick="saveCourse()">
+                Add Course
+            </button>
+
+
+            <div id="existingCourses"
+                 class="admin-list">
+            </div>
+
+        </div>
+
+
+        <!-- VIDEO ADMIN -->
+
+        <div
+            id="admin-videos"
+            class="admin-section admin-tab-section hidden">
+
+            <h3>Video Manager</h3>
+
+            <div id="videoMessage"></div>
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label>Video Title</label>
+
+                    <input
+                        id="videoTitle"
+                        class="form-control">
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>YouTube Video ID</label>
+
+                    <input
+                        id="videoId"
+                        class="form-control"
+                        placeholder="Example: dQw4w9WgXcQ">
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Password</label>
+
+                    <input
+                        id="videoPassword"
+                        class="form-control">
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Course</label>
+
+                    <select
+                        id="videoSection"
+                        class="form-control">
+
+                        <option>Anatomy</option>
+                        <option>Physiology</option>
+                        <option>Pharmacology</option>
+                        <option>Biochemistry</option>
+                        <option>Public Health</option>
+                        <option>Behavioral Science</option>
+                        <option>Communication Skills</option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Semester</label>
+
+                    <select
+                        id="videoSemester"
+                        class="form-control">
+
+                        <option>Semester 1</option>
+                        <option>Semester 2</option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Order</label>
+
+                    <input
+                        id="videoOrder"
+                        type="number"
+                        class="form-control"
+                        value="1">
+
+                </div>
+
+            </div>
+
+
+            <button
+                class="btn btn-primary"
+                onclick="saveVideo()">
+                Add Video
+            </button>
+
+
+            <div
+                id="existingVideos"
+                class="admin-list">
+            </div>
+
+        </div>
+
+
+        <!-- SUBSCRIPTIONS -->
+
+        <div
+            id="admin-subscriptions"
+            class="admin-section admin-tab-section hidden">
+
+            <h3>Subscription Manager</h3>
+
+            <div id="subscriptionMessage"></div>
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label>Email</label>
+
+                    <input
+                        id="subscriptionEmail"
+                        type="email"
+                        class="form-control">
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Start Date</label>
+
+                    <input
+                        id="subscriptionStartDate"
+                        type="date"
+                        class="form-control">
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Duration</label>
+
+                    <select
+                        id="subscriptionDuration"
+                        class="form-control">
+
+                        <option value="1">1 Month</option>
+                        <option value="3">3 Months</option>
+                        <option value="6">6 Months</option>
+                        <option value="12">12 Months</option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Courses</label>
+
+                    <input
+                        id="subscriptionCourses"
+                        class="form-control"
+                        placeholder="Anatomy, Physiology">
+
+                </div>
+
+            </div>
+
+
+            <button
+                class="btn btn-success"
+                onclick="saveSubscription()">
+                Add Subscription
+            </button>
+
+
+            <div
+                id="subscriptionList"
+                style="margin-top:20px">
+            </div>
+
+        </div>
+
+
+        <!-- AI ADMIN -->
+
+        <div
+            id="admin-aiAdmin"
+            class="admin-section admin-tab-section hidden">
+
+            <div class="ai-box">
+
+                <h3 class="ai-title">
+                    🤖 AI Notes
+                </h3>
+
+                <p>
+                    Paste notes below and use the AI system to
+                    simplify and organize them for students.
+                </p>
+
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+
+                        <label>Title</label>
+
+                        <input
+                            id="aiTitle"
+                            class="form-control"
+                            placeholder="Notes title">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>Course</label>
+
+                        <select
+                            id="aiCourse"
+                            class="form-control">
+
+                            <option>Anatomy</option>
+                            <option>Physiology</option>
+                            <option>Pharmacology</option>
+                            <option>Biochemistry</option>
+                            <option>Public Health</option>
+                            <option>Behavioral Science</option>
+                            <option>Communication Skills</option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>Topic</label>
+
+                        <input
+                            id="aiTopic"
+                            class="form-control">
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>Audio Speed</label>
+
+                        <select
+                            id="aiAudioSpeed"
+                            class="form-control">
+
+                            <option value="0.8">0.8x</option>
+                            <option value="1" selected>1x</option>
+                            <option value="1.2">1.2x</option>
+                            <option value="1.5">1.5x</option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group full">
+
+                        <label>Source Notes</label>
+
+                        <textarea
+                            id="aiSourceNotes"
+                            class="form-control"
+                            style="min-height:250px"
+                            placeholder="Paste your notes here..."></textarea>
+
+                    </div>
+
+                </div>
+
+
+                <div style="display:flex;gap:8px;flex-wrap:wrap">
+
+                    <button
+                        class="btn btn-primary"
+                        onclick="aiSummariseNotes()">
+                        🤖 AI Summarise
+                    </button>
+
+                    <button
+                        class="btn btn-info"
+                        onclick="aiReadNotesAloud()">
+                        🔊 Read Notes Aloud
+                    </button>
+
+                    <button
+                        class="btn btn-warning"
+                        onclick="pauseAudio()">
+                        ⏸ Pause
+                    </button>
+
+                    <button
+                        class="btn btn-secondary"
+                        onclick="resumeAudio()">
+                        ▶ Resume
+                    </button>
+
+                    <button
+                        class="btn btn-danger"
+                        onclick="stopAudio()">
+                        ⏹ Stop
+                    </button>
+
+                </div>
+
+
+                <h4>AI Summary</h4>
+
+                <textarea
+                    id="aiSummary"
+                    class="form-control"
+                    style="min-height:300px"
+                    placeholder="AI-generated summary will appear here..."></textarea>
+
+
+                <div id="aiAudioInfo"
+                     style="margin-top:15px">
+                </div>
+
+                <audio
+                    id="aiAudioPlayer"
+                    controls
+                    style="width:100%;margin-top:10px">
+                </audio>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+</main>
+
+
+<!-- DOCUMENT MODAL -->
+
+<div
+    id="documentModal"
+    class="modal hidden"
+    onclick="closeModalOnBackground(event,'documentModal')">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <h2 id="documentModalTitle">
+                Document
+            </h2>
+
+            <button
+                class="modal-close"
+                onclick="closeModal('documentModal')">
+                ×
+            </button>
+
+        </div>
+
+        <div class="modal-body">
+
+            <div
+                id="documentViewerBody"
+                class="document-viewer">
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- VIDEO MODAL -->
+
+<div
+    id="videoModal"
+    class="modal hidden"
+    onclick="closeModalOnBackground(event,'videoModal')">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <h2 id="videoModalTitle">
+                Video
+            </h2>
+
+            <button
+                class="modal-close"
+                onclick="closeModal('videoModal')">
+                ×
+            </button>
+
+        </div>
+
+        <div class="modal-body">
+
+            <div
+                id="videoViewer"
+                class="video-container">
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- LOGIN MODAL -->
+
+<div
+    id="loginModal"
+    class="modal hidden">
+
+    <div class="modal-box login-box">
+
+        <div class="modal-header">
+
+            <h2>Login</h2>
+
+            <button
+                class="modal-close"
+                onclick="closeModal('loginModal')">
+                ×
+            </button>
+
+        </div>
+
+        <div class="modal-body">
+
+            <div class="login-logo">
+
+                <strong>
+                    THRIVES ARCHIVERS
+                </strong>
+
+                <p>
+                    Second Year Learning Hub
+                </p>
+
+            </div>
+
+
+            <div id="loginMessage"></div>
+
+
+            <div class="form-group">
+
+                <label>Email</label>
+
+                <input
+                    id="loginEmail"
+                    type="email"
+                    class="form-control"
+                    placeholder="Enter email">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Password</label>
+
+                <input
+                    id="loginPassword"
+                    type="password"
+                    class="form-control"
+                    placeholder="Enter password">
+
+            </div>
+
+
+            <button
+                class="btn btn-primary"
+                style="width:100%"
+                onclick="login()">
+
+                Login
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<footer>
+
+    <div class="container">
+
+        <strong>
+            THRIVES ARCHIVERS
+        </strong>
+
+        <p>
+            Second Year Online Learning Hub
+        </p>
+
+        <small>
+            Learn • Revise • Understand • Succeed
+        </small>
+
+    </div>
+
+</footer>
+
+
+<script>
+
+/* =========================================================
+   SUPABASE
+========================================================= */
+
+const SUPABASE_URL =
+    'https://odwiqajuubcgrrqipyju.supabase.co';
+
+const SUPABASE_ANON_KEY =
+    'YOUR_SUPABASE_ANON_KEY';
+
+const { createClient } = supabase;
+
+const db = createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+);
+
+
+const ADMIN_EMAIL =
+    'thrivesarchivers@gmail.com';
+
+
+const DOCUMENT_FUNCTION =
+    'simplify-document';
+
+
+const SMART_PROCESSOR_FUNCTION =
+    'smart-processor';
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+let currentUser = null;
+
+let currentSubscription = null;
+
+let allDocuments = [];
+
+let allVideos = [];
+
+let allCourses = [];
+
+let allSubscriptions = [];
+
+let currentFilter = 'all';
+
+let currentSearch = '';
+
+let audioObjectUrl = null;
+
+
+/* =========================================================
+   DEFAULT COURSES
+========================================================= */
+
+const DEFAULT_COURSES = [
+
+    'Anatomy',
+
+    'Physiology',
+
+    'Pharmacology',
+
+    'Biochemistry',
+
+    'Public Health',
+
+    'Behavioral Science',
+
+    'Communication Skills'
+
+];
+
+
+const DEFAULT_COURSE_META = {
+
+    Anatomy:{
+        icon:'🫀',
+        description:'Study human anatomy and structural organization.'
+    },
+
+    Physiology:{
+        icon:'🧠',
+        description:'Study normal functions of the human body.'
+    },
+
+    Pharmacology:{
+        icon:'💊',
+        description:'Study drugs, mechanisms and therapeutic effects.'
+    },
+
+    Biochemistry:{
+        icon:'🧬',
+        description:'Study biochemical processes and molecular medicine.'
+    },
+
+    'Public Health':{
+        icon:'🌍',
+        description:'Study population health and disease prevention.'
+    },
+
+    'Behavioral Science':{
+        icon:'🧑‍🤝‍🧑',
+        description:'Study behavior and its relationship to health.'
+    },
+
+    'Communication Skills':{
+        icon:'💬',
+        description:'Develop professional communication skills.'
+    }
+
+};
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function escapeHTML(value){
+
+    return String(value ?? '')
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;')
+        .replace(/'/g,'&#039;');
+
+}
+
+
+function setSystemStatus(message){
+
+    const el =
+        document.getElementById('systemStatus');
+
+    if(el){
+        el.textContent = message;
+    }
+
+}
+
+
+function showMessage(elementId,message,type='info'){
+
+    const el =
+        document.getElementById(elementId);
+
+    if(!el) return;
+
+    el.innerHTML =
+        `<div class="notice ${type}">
+            ${escapeHTML(message)}
+        </div>`;
+
+}
+
+
+function documentStatus(message,type){
+
+    showMessage(
+        'documentMessage',
+        message,
+        type
+    );
+
+}
+
+
+function isAdmin(){
+
+    return !!currentUser &&
+        currentUser.email?.toLowerCase() ===
+        ADMIN_EMAIL.toLowerCase();
+
+}
+
+
+function openWhatsApp(){
+
+    window.open(
+        'https://wa.me/',
+        '_blank'
+    );
+
+}
+
+
+/* =========================================================
+   AUTH
+========================================================= */
+
+async function login(){
+
+    const email =
+        document.getElementById('loginEmail').value.trim();
+
+    const password =
+        document.getElementById('loginPassword').value;
+
+    if(!email || !password){
+
+        showMessage(
+            'loginMessage',
+            'Enter your email and password.',
+            'err'
+        );
+
+        return;
+    }
+
+
+    showMessage(
+        'loginMessage',
+        'Logging in...',
+        'info'
+    );
+
+
+    const result =
+        await db.auth.signInWithPassword({
+            email,
+            password
+        });
+
+
+    if(result.error){
+
+        showMessage(
+            'loginMessage',
+            result.error.message,
+            'err'
+        );
+
+        return;
+    }
+
+
+    currentUser =
+        result.data.user;
+
+
+    closeModal('loginModal');
+
+    await initializeUser();
+
+}
+
+
+async function logout(){
+
+    await db.auth.signOut();
+
+    currentUser = null;
+
+    currentSubscription = null;
+
+    document.getElementById('adminPanel')
+        .classList.add('hidden');
+
+    document.getElementById('loginBtn')
+        .classList.remove('hidden');
+
+    document.getElementById('logoutBtn')
+        .classList.add('hidden');
+
+    document.getElementById('userEmailDisplay')
+        .textContent = '';
+
+    document.getElementById('subscriptionStatus')
+        .textContent = 'Not logged in';
+
+    setSystemStatus(
+        'You are browsing as a guest.'
+    );
+
+    renderContent();
+
+}
+
+
+async function initializeUser(){
+
+    if(!currentUser) return;
+
+
+    document.getElementById('loginBtn')
+        .classList.add('hidden');
+
+    document.getElementById('logoutBtn')
+        .classList.remove('hidden');
+
+
+    document.getElementById('userEmailDisplay')
+        .textContent =
+        currentUser.email || '';
+
+
+    if(isAdmin()){
+
+        document.getElementById('adminPanel')
+            .classList.remove('hidden');
+
+        document.getElementById('subscriptionStatus')
+            .textContent = 'Administrator';
+
+    }else{
+
+        document.getElementById('adminPanel')
+            .classList.add('hidden');
+
+        await loadSubscription();
+
+    }
+
+}
+
+
+/* =========================================================
+   SUBSCRIPTION
+========================================================= */
+
+async function loadSubscription(){
+
+    if(!currentUser?.email){
+
+        currentSubscription = null;
+
+        updateSubscriptionStatus();
+
+        return;
+    }
+
+
+    const result =
+        await db
+        .from('subscription')
+        .select('*')
+        .eq('email',currentUser.email)
+        .order('end date',{ascending:false})
+        .limit(1);
+
+
+    if(result.error){
+
+        console.error(result.error);
+
+        currentSubscription = null;
+
+    }else{
+
+        currentSubscription =
+            result.data?.[0] || null;
+
+    }
+
+
+    updateSubscriptionStatus();
+
+}
+
+
+function updateSubscriptionStatus(){
+
+    const el =
+        document.getElementById(
+            'subscriptionStatus'
+        );
+
+
+    if(isAdmin()){
+
+        el.textContent =
+            '👑 Admin';
+
+        return;
+
+    }
+
+
+    if(!currentSubscription){
+
+        el.textContent =
+            'No active subscription';
+
+        return;
+
+    }
+
+
+    const endDate =
+        currentSubscription['end date'];
+
+
+    if(endDate &&
+       new Date(endDate) < new Date()){
+
+        el.textContent =
+            'Subscription expired';
+
+        return;
+
+    }
+
+
+    el.textContent =
+        '✓ Subscription active';
+
+}
+
+
+function parseCourses(value){
+
+    if(Array.isArray(value)){
+        return value;
+    }
+
+
+    if(!value){
+        return [];
+    }
+
+
+    return String(value)
+        .split(',')
+        .map(x => x.trim())
+        .filter(Boolean);
+
+}
+
+
+function hasCourseAccess(course){
+
+    if(isAdmin()) return true;
+
+
+    if(!currentSubscription) return false;
+
+
+    const endDate =
+        currentSubscription['end date'];
+
+
+    if(endDate &&
+       new Date(endDate) < new Date()){
+
+        return false;
+
+    }
+
+
+    const courses =
+        parseCourses(
+            currentSubscription.courses
+        );
+
+
+    if(courses.length === 0){
+
+        return false;
+
+    }
+
+
+    return courses.some(
+        item =>
+            item.toLowerCase() ===
+            course.toLowerCase()
+    );
+
+}
+
+
+/* =========================================================
+   COURSES
+========================================================= */
+
+async function loadCourses(){
+
+    const result =
+        await db
+        .from('year_two_courses')
+        .select('*')
+        .order('order',{ascending:true});
+
+
+    if(result.error){
+
+        console.warn(
+            'Course table:',
+            result.error.message
+        );
+
+        allCourses = [];
+
+    }else{
+
+        allCourses =
+            result.data || [];
+
+    }
+
+
+    renderCourseFilters();
+
+    renderCourseGrid();
+
+}
+
+
+function getCourseNames(){
+
+    const names =
+        [...DEFAULT_COURSES];
+
+
+    allCourses.forEach(course => {
+
+        const name =
+            course.name ||
+            course.title ||
+            course.course;
+
+        if(
+            name &&
+            !names.some(
+                x =>
+                x.toLowerCase() ===
+                name.toLowerCase()
+            )
+        ){
+
+            names.push(name);
+
+        }
+
+    });
+
+
+    return names;
+
+}
+
+
 function renderCourseFilters(){
-  const box=document.getElementById('courseFilters'); if(!box)return;
-  box.innerHTML='<button class="filter active" data-filter="all" onclick="setFilter(\'all\',this)"> All Courses </button>'+
-    SECOND_YEAR_COURSES.map(section=>'<button class="filter" data-filter="'+escapeHTML(section)+'" onclick="setFilter(\''+
-    String(section).replace(/'/g,"\\'")+'\',this)">'+escapeHTML(DEFAULT_COURSE_META[section]?.[0]||'📚')+' '+escapeHTML(section)+'</button>').join('');
-}
-async function loadDocuments(){ const { data, error } = await db .from('documents') .select('*') .order( 'order', { ascending:true } ); if(error){ console.error(error); allDocuments = []; return; } const rows=(data || []).filter(doc => SECOND_YEAR_COURSES.some(section => section.toLowerCase() === String(doc.section || '').toLowerCase())); allDocuments=isAdmin()?rows:rows.filter(doc => !doc.status || doc.status === 'published'); } /* ===================================================== LOAD VIDEOS ===================================================== */ async function loadVideos(){ const { data, error } = await db .from('Videos') .select('*') .order( 'order', { ascending:true } ); if(error){ console.error(error); allVideos = []; return; } allVideos = (data || []) .filter(video => SECOND_YEAR_COURSES .some(section => section.toLowerCase() === String(video.section || '') .toLowerCase() ) ); } /* ===================================================== LOAD ALL ===================================================== */ async function loadAllContent(){ await loadCourses(); await loadDocuments(); await loadVideos(); renderContent(); if(isAdmin()){ renderExistingCourses(); renderExistingDocuments(); renderExistingVideos(); fetchSubscriptions(); } } /* ===================================================== ACCESS CHECK ===================================================== */ function canAccessCourse(section){ if(isAdmin()) return true; if(!currentUser) return false; if(!currentSubscription) return false; const end = new Date( currentSubscription['end date'] ); if( !isNaN(end.getTime()) && end < new Date() ){ return false; } const courses = currentSubscription.courses?.trim(); if(!courses) return true; const allowed = normalizeCourses( courses ) .map( x => x.toLowerCase() ); return allowed.includes( String(section) .toLowerCase() ); } /* ===================================================== PASSWORDS ===================================================== */ function documentPasswords(doc){ return ( doc.password_list || '' ) .split(',') .map(x => x.trim().toLowerCase()) .filter(Boolean); } function videoPasswords(video){ return ( video['password list'] || '' ) .split(',') .map(x => x.trim().toLowerCase()) .filter(Boolean); } /* ===================================================== DOCUMENT CLICK ===================================================== */ function openDocument(doc){
-  const unlocked=canAccessCourse(doc.section);
-  if(!unlocked){
-    const password=prompt('This document requires access. Enter your password:'); if(password===null)return;
-    if(!documentPasswords(doc).includes(password.trim().toLowerCase())){alert('Incorrect password or access denied.');return;}
-  }
-  openDocumentViewer(doc);
+
+    const container =
+        document.getElementById(
+            'courseFilters'
+        );
+
+
+    container.innerHTML = '';
+
+
+    const allButton =
+        document.createElement('button');
+
+    allButton.className =
+        'filter-btn ' +
+        (currentFilter === 'all'
+            ? 'active'
+            : '');
+
+    allButton.textContent =
+        'All Courses';
+
+    allButton.onclick =
+        () => {
+
+            currentFilter = 'all';
+
+            renderCourseFilters();
+
+            renderContent();
+
+        };
+
+
+    container.appendChild(allButton);
+
+
+    getCourseNames().forEach(course => {
+
+        const button =
+            document.createElement('button');
+
+        button.className =
+            'filter-btn ' +
+            (
+                currentFilter.toLowerCase() ===
+                course.toLowerCase()
+                    ? 'active'
+                    : ''
+            );
+
+        button.textContent =
+            course;
+
+        button.onclick =
+            () => {
+
+                currentFilter =
+                    course;
+
+                renderCourseFilters();
+
+                renderContent();
+
+            };
+
+
+        container.appendChild(button);
+
+    });
+
 }
 
-function openDocumentViewer(doc){
-  const modal=document.getElementById('documentViewerBg');
-  const body=document.getElementById('documentViewerBody');
-  const title=document.getElementById('documentViewerTitle');
-  title.textContent=doc.title||'Thrives Archivers Document';
-  let html=sanitizeDocumentHTML(doc.content_html||'');
-  if(!html && doc.content_text) html=linkifyPlainText(doc.content_text);
-  if(html){ body.innerHTML=`<div style="font-size:12px;color:#777;margin-bottom:18px">${escapeHTML(doc.section||'')}${doc.topic?' • '+escapeHTML(doc.topic):''}${doc.semester?' • '+escapeHTML(doc.semester):''}</div>${html}`; }
-  else if(doc.url){ body.innerHTML=`<p>This resource is available here:</p><p><a href="${escapeAttribute(doc.url)}" target="_blank" rel="noopener noreferrer">Open document</a></p>`; }
-  else body.innerHTML='<p>No document content is available.</p>';
-  modal.style.display='flex';
-}
-function closeDocumentViewer(){document.getElementById('documentViewerBg').style.display='none';document.getElementById('documentViewerBody').innerHTML='';}
 
-/* ===================================================== VIDEO CLICK ===================================================== */ function openVideo(video){ const unlocked = canAccessCourse( video.section ); if(unlocked){ showVideo( video['video id'] ); return; } const password = prompt( 'This video requires access. Enter your password:' ); if(password === null) return; if( videoPasswords(video) .includes( password.trim().toLowerCase() ) ){ showVideo( video['video id'] ); }else{ alert( 'Incorrect password or access denied.' ); } } /* ===================================================== VIDEO MODAL ===================================================== */ function showVideo(id){ document .getElementById('videoFrame') .src = 'https://www.youtube.com/embed/' + encodeURIComponent(id) + '?autoplay=1'; document .getElementById('videoModalBg') .style.display = 'flex'; } function closeVideo(){ document .getElementById('videoModalBg') .style.display = 'none'; document .getElementById('videoFrame') .src = ''; } /* ===================================================== RENDER CONTENT ===================================================== */ function renderContent(){ const query = document .getElementById('searchInput') .value .trim() .toLowerCase(); const grouped = {}; SECOND_YEAR_COURSES .forEach(section => { grouped[section] = {}; }); allDocuments .forEach(doc => { if( currentFilter !== 'all' && doc.section !== currentFilter ) return; if( query && !( String(doc.title || '') .toLowerCase() .includes(query) || String(doc.section || '') .toLowerCase() .includes(query) || String(doc.semester || '') .toLowerCase() .includes(query) ) ) return; const section = doc.section || 'Other'; const semester = doc.semester || 'Other'; if(!grouped[section]) grouped[section] = {}; if(!grouped[section][semester]) grouped[section][semester] = { documents:[], videos:[] }; grouped[section][semester] .documents .push(doc); }); allVideos .forEach(video => { if( currentFilter !== 'all' && video.section !== currentFilter ) return; if( query && !( String(video.title || '') .toLowerCase() .includes(query) || String(video.section || '') .toLowerCase() .includes(query) || String(video.semester || '') .toLowerCase() .includes(query) ) ) return; const section = video.section || 'Other'; const semester = video.semester || 'Other'; if(!grouped[section]) grouped[section] = {}; if(!grouped[section][semester]) grouped[section][semester] = { documents:[], videos:[] }; grouped[section][semester] .videos .push(video); }); courseGrid.innerHTML = ''; let count = 0; Object.keys(grouped) .forEach(section => { const semesters = grouped[section]; const hasContent = Object.keys(semesters) .some( semester => semesters[semester] .documents.length || semesters[semester] .videos.length ); if(!hasContent) return; count++; const card = document.createElement('div'); card.className = 'course-card'; card.innerHTML = `<div class="course-title"> ${getCourseIcon(section)} ${escapeHTML(section)} </div>`; Object.keys(semesters) .forEach(semester => { const data = semesters[semester]; if( !data.documents.length && !data.videos.length ) return; const title = document.createElement('div'); title.className = 'semester-title'; title.textContent = semester; card.appendChild(title); data.documents .forEach(doc => { const item = document.createElement('div'); item.className = 'resource'; const unlocked = canAccessCourse( section ); item.innerHTML = `<span class="resource-title"> 📄 ${escapeHTML(doc.title)} </span> <span class="resource-icon"> ${unlocked ? '📖' : '🔒'} </span>`; item.onclick = () => openDocument(doc); card.appendChild(item); }); data.videos .forEach(video => { const item = document.createElement('div'); item.className = 'resource'; const unlocked = canAccessCourse( section ); item.innerHTML = `<span class="resource-title"> 🎥 ${escapeHTML(video.title)} </span> <span class="resource-icon"> ${unlocked ? '▶️' : '🔒'} </span>`; item.onclick = () => openVideo(video); card.appendChild(item); }); }); courseGrid.appendChild(card); }); if(count === 0){ courseGrid.innerHTML = `<div class="empty"> No Second-Year course materials found. </div>`; } } /* ===================================================== ICON ===================================================== */ function getCourseIcon(section){ const icons = { 'Anatomy':'🦴', 'Physiology':'🫀', 'Pharmacology':'💊', 'Biochemistry':'🧪', 'Public Health':'🌍', 'Behavioral Science':'🗣️', 'Communication Skills':'💬' }; return icons[section] || '📚'; } /* ===================================================== SEARCH ===================================================== */ function searchResources(){ renderContent(); } function clearSearch(){ document .getElementById('searchInput') .value = ''; renderContent(); } /* ===================================================== FILTER ===================================================== */ function setFilter(filter,button){ currentFilter = filter; document .querySelectorAll('.filter') .forEach( btn => btn.classList.remove('active') ); button.classList.add('active'); renderContent(); } /* ===================================================== QUICK ACTIONS ===================================================== */ function scrollToCourses(){ document .getElementById('courseGrid') .scrollIntoView({ behavior:'smooth' }); } function openWhatsApp(){ window.open( 'https://wa.me/260973178100', '_blank' ); } /* ===================================================== ADMIN TABS ===================================================== */ function openAdminTab(id,button){ document.querySelectorAll('.admin-tab').forEach(x=>x.classList.remove('active')); document.querySelectorAll('.admin-section').forEach(x=>x.classList.remove('active')); button.classList.add('active'); document.getElementById(id).classList.add('active'); if(id==='coursesAdmin')loadAdminCourses(); if(id==='subscriptionsAdmin')fetchSubscriptions(); } /* ===================================================== COURSE ADMIN ===================================================== */
-document.getElementById('courseForm').addEventListener('submit',saveCourse);
-async function saveCourse(event){
-  event.preventDefault(); if(!isAdmin())return alert('Admin access required.');
-  const id=document.getElementById('editCourseId').value;
-  const name=document.getElementById('courseName').value.trim();
-  const icon=document.getElementById('courseIcon').value.trim()||'📚';
-  const description=document.getElementById('courseDescription').value.trim();
-  const display_order=parseInt(document.getElementById('courseOrder').value,10)||1;
-  const status=document.getElementById('courseStatus').value;
-  if(!name)return alert('Course name is required.');
-  const record={name,icon,description,display_order,status};
-  const result=id?await db.from('year_two_courses').update(record).eq('id',id):await db.from('year_two_courses').insert([record]);
-  if(result.error){alert('Course error: '+result.error.message);return;}
-  alert(id?'Course updated successfully.':'Course added successfully.');
-  resetCourseForm(); await loadCourses(); await loadDocuments(); await loadVideos(); renderContent(); await loadAdminCourses();
-}
-async function loadAdminCourses(){
-  if(!isAdmin())return;
-  const {data,error}=await db.from('year_two_courses').select('*').order('display_order',{ascending:true});
-  if(error){document.getElementById('existingCourses').innerHTML='<div class="empty">Could not load courses. Create the year_two_courses table first.</div>';return;}
-  allCourses=data||[]; renderExistingCourses();
-}
-function renderExistingCourses(){
-  const box=document.getElementById('existingCourses'); if(!box)return;
-  if(!allCourses.length){box.innerHTML='<div class="empty">No courses found.</div>';return;}
-  box.innerHTML='<h3>Existing Second-Year Courses</h3>';
-  allCourses.forEach(course=>{
-    const item=document.createElement('div'); item.className='admin-item';
-    item.innerHTML='<div class="admin-item-info"><div class="admin-item-title">'+escapeHTML(course.icon||'📚')+' '+escapeHTML(course.name||'')+
-      '</div><div class="admin-item-meta">'+escapeHTML(course.description||'')+' · '+escapeHTML(course.status||'')+
-      '</div></div><div class="admin-actions"><button class="btn small" onclick="editCourse(\''+course.id+
-      '\')">Edit</button><button class="btn small danger" onclick="deleteCourse(\''+course.id+'\')">Delete</button></div>';
-    box.appendChild(item);
-  });
-}
-function editCourse(id){
-  const course=allCourses.find(x=>String(x.id)===String(id)); if(!course)return;
-  document.getElementById('editCourseId').value=course.id;
-  document.getElementById('courseName').value=course.name||'';
-  document.getElementById('courseIcon').value=course.icon||'📚';
-  document.getElementById('courseDescription').value=course.description||'';
-  document.getElementById('courseOrder').value=course.display_order||1;
-  document.getElementById('courseStatus').value=course.status||'published';
-  document.getElementById('courseName').scrollIntoView({behavior:'smooth'});
-}
-async function deleteCourse(id){
-  if(!isAdmin())return; if(!confirm('Delete this course?'))return;
-  const {error}=await db.from('year_two_courses').delete().eq('id',id);
-  if(error){alert(error.message);return;}
-  await loadCourses(); await loadDocuments(); await loadVideos(); renderContent(); await loadAdminCourses();
-}
-function resetCourseForm(){
-  document.getElementById('courseForm').reset();
-  document.getElementById('editCourseId').value='';
-  document.getElementById('courseOrder').value=1;
-  document.getElementById('courseStatus').value='published';
-}
-/* ===================================================== DOCUMENT ADMIN ===================================================== */
-document.getElementById('documentContent').addEventListener('paste', function(event){
-  // Preserve normal rich-text pastes when possible, but keep the editor safe.
-  setTimeout(()=>{ this.innerHTML = sanitizeDocumentHTML(this.innerHTML); },0);
-});
+function renderCourseGrid(){
 
-function documentStatus(message,type=''){
-  const el=document.getElementById('documentStatus'); if(!el)return;
-  el.style.display='block'; el.className='status-message '+(type||''); el.textContent=message;
+    const grid =
+        document.getElementById(
+            'courseGrid'
+        );
+
+
+    grid.innerHTML = '';
+
+
+    getCourseNames().forEach(course => {
+
+        const meta =
+            DEFAULT_COURSE_META[course] || {
+
+                icon:'📚',
+
+                description:
+                    'Second Year learning course.'
+
+            };
+
+
+        const documentCount =
+            allDocuments.filter(
+                d =>
+                    String(d.section || '')
+                        .toLowerCase() ===
+                    course.toLowerCase()
+            ).length;
+
+
+        const videoCount =
+            allVideos.filter(
+                v =>
+                    String(v.section || '')
+                        .toLowerCase() ===
+                    course.toLowerCase()
+            ).length;
+
+
+        const card =
+            document.createElement('div');
+
+        card.className =
+            'course-card';
+
+
+        card.innerHTML = `
+
+            <div class="course-icon">
+                ${meta.icon}
+            </div>
+
+            <h3>
+                ${escapeHTML(course)}
+            </h3>
+
+            <p>
+                ${escapeHTML(meta.description)}
+            </p>
+
+            <div class="course-count">
+                ${documentCount} documents
+                •
+                ${videoCount} videos
+            </div>
+
+            <br>
+
+            <button
+                class="btn btn-primary btn-sm"
+                onclick="selectCourse('${escapeHTML(course).replace(/'/g,"\\'")}')">
+                Open Course
+            </button>
+
+        `;
+
+
+        grid.appendChild(card);
+
+    });
+
 }
+
+
+function selectCourse(course){
+
+    currentFilter =
+        course;
+
+    renderCourseFilters();
+
+    renderContent();
+
+    document.getElementById(
+        'contentArea'
+    ).scrollIntoView({
+        behavior:'smooth'
+    });
+
+}
+
+
+/* =========================================================
+   DOCUMENTS
+========================================================= */
+
+async function loadDocuments(){
+
+    const result =
+        await db
+        .from('documents')
+        .select('*')
+        .order('order',{
+            ascending:true
+        });
+
+
+    if(result.error){
+
+        console.error(result.error);
+
+        allDocuments = [];
+
+        setSystemStatus(
+            'Could not load documents: ' +
+            result.error.message
+        );
+
+        return;
+
+    }
+
+
+    let docs =
+        result.data || [];
+
+
+    if(!isAdmin()){
+
+        docs =
+            docs.filter(
+                d =>
+                    String(d.status || 'published')
+                        .toLowerCase() ===
+                    'published'
+            );
+
+    }
+
+
+    const courses =
+        getCourseNames()
+            .map(x => x.toLowerCase());
+
+
+    docs =
+        docs.filter(
+            d =>
+                courses.includes(
+                    String(d.section || '')
+                        .toLowerCase()
+                )
+        );
+
+
+    allDocuments =
+        docs;
+
+
+    renderContent();
+
+    renderExistingDocuments();
+
+    renderCourseGrid();
+
+}
+
 
 function sanitizeDocumentHTML(html){
-  const parser=new DOMParser();
-  const doc=parser.parseFromString('<div>'+String(html||'')+'</div>','text/html');
-  const allowed=new Set(['DIV','P','BR','H1','H2','H3','H4','H5','H6','UL','OL','LI','B','STRONG','I','EM','U','S','BLOCKQUOTE','TABLE','THEAD','TBODY','TR','TH','TD','A','IMG','PRE','CODE','HR','SPAN']);
-  const root=doc.body.firstElementChild;
-  root.querySelectorAll('*').forEach(el=>{
-    if(!allowed.has(el.tagName)){ el.replaceWith(...Array.from(el.childNodes)); return; }
-    Array.from(el.attributes).forEach(attr=>{
-      const n=attr.name.toLowerCase(), v=attr.value||'';
-      if(n.startsWith('on') || n==='style' || n==='srcdoc') el.removeAttribute(attr.name);
-      if(el.tagName==='A' && n==='href'){
-        if(!/^https?:\/\//i.test(v) && !/^mailto:/i.test(v)) el.removeAttribute('href');
-      } else if(el.tagName==='IMG' && n==='src'){
-        if(!/^https?:\/\//i.test(v) && !/^data:image\//i.test(v)) el.removeAttribute('src');
-      } else if(!['href','src','alt','title','target','rel','colspan','rowspan'].includes(n)) el.removeAttribute(attr.name);
-    });
-    if(el.tagName==='A' && el.getAttribute('href')){ el.setAttribute('target','_blank'); el.setAttribute('rel','noopener noreferrer'); }
-  });
-  return root.innerHTML;
+
+    const parser =
+        new DOMParser();
+
+    const doc =
+        parser.parseFromString(
+            html || '',
+            'text/html'
+        );
+
+
+    const allowedTags = new Set([
+
+        'DIV',
+        'P',
+        'BR',
+        'H1',
+        'H2',
+        'H3',
+        'H4',
+        'H5',
+        'H6',
+        'UL',
+        'OL',
+        'LI',
+        'B',
+        'STRONG',
+        'I',
+        'EM',
+        'U',
+        'S',
+        'BLOCKQUOTE',
+        'TABLE',
+        'THEAD',
+        'TBODY',
+        'TR',
+        'TH',
+        'TD',
+        'A',
+        'IMG',
+        'PRE',
+        'CODE',
+        'HR',
+        'SPAN'
+
+    ]);
+
+
+    function cleanNode(node){
+
+        if(node.nodeType === 1){
+
+            if(!allowedTags.has(node.tagName)){
+
+                const parent =
+                    node.parentNode;
+
+                while(node.firstChild){
+
+                    parent.insertBefore(
+                        node.firstChild,
+                        node
+                    );
+
+                }
+
+                parent.removeChild(node);
+
+                return;
+
+            }
+
+
+            [...node.attributes]
+                .forEach(attr => {
+
+                    const name =
+                        attr.name.toLowerCase();
+
+                    const value =
+                        attr.value;
+
+
+                    if(
+                        name.startsWith('on') ||
+                        name === 'style' ||
+                        name === 'srcdoc'
+                    ){
+
+                        node.removeAttribute(
+                            attr.name
+                        );
+
+                        return;
+
+                    }
+
+
+                    if(
+                        node.tagName === 'A' &&
+                        name === 'href'
+                    ){
+
+                        if(
+                            !/^https?:\/\//i.test(value)
+                        ){
+
+                            node.removeAttribute(
+                                'href'
+                            );
+
+                        }
+
+                    }
+
+
+                    if(
+                        node.tagName === 'IMG' &&
+                        name === 'src'
+                    ){
+
+                        if(
+                            !/^https?:\/\//i.test(value) &&
+                            !/^data:image\//i.test(value)
+                        ){
+
+                            node.removeAttribute(
+                                'src'
+                            );
+
+                        }
+
+                    }
+
+                });
+
+        }
+
+
+        [...node.childNodes]
+            .forEach(cleanNode);
+
+    }
+
+
+    cleanNode(doc.body);
+
+
+    return doc.body.innerHTML;
+
 }
+
 
 function linkifyPlainText(text){
-  const escaped=escapeHTML(text||'');
-  return escaped.replace(/(https?:\/\/[^\s<]+)/gi, url=>`<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`).replace(/\n/g,'<br>');
+
+    const escaped =
+        escapeHTML(text);
+
+
+    return escaped
+        .replace(
+            /(https?:\/\/[^\s]+)/g,
+            '<a href="$1" target="_blank" rel="noopener">$1</a>'
+        )
+        .replace(/\n/g,'<br>');
+
 }
 
-async function filesToDataUrls(files){
-  const selected=Array.from(files||[]).slice(0,8);
-  return Promise.all(selected.map(file=>new Promise((resolve,reject)=>{
-    const reader=new FileReader(); reader.onload=()=>resolve({name:file.name,type:file.type,data_url:reader.result}); reader.onerror=reject; reader.readAsDataURL(file);
-  })));
+
+function renderContent(){
+
+    const area =
+        document.getElementById(
+            'contentArea'
+        );
+
+
+    if(!area) return;
+
+
+    let docs =
+        [...allDocuments];
+
+
+    let videos =
+        [...allVideos];
+
+
+    if(currentFilter !== 'all'){
+
+        docs =
+            docs.filter(
+                d =>
+                    String(d.section || '')
+                        .toLowerCase() ===
+                    currentFilter.toLowerCase()
+            );
+
+
+        videos =
+            videos.filter(
+                v =>
+                    String(v.section || '')
+                        .toLowerCase() ===
+                    currentFilter.toLowerCase()
+            );
+
+    }
+
+
+    if(currentSearch){
+
+        const search =
+            currentSearch.toLowerCase();
+
+
+        docs =
+            docs.filter(d => {
+
+                const text = [
+
+                    d.title,
+                    d.topic,
+                    d.section,
+                    d.semester,
+                    d.content_text
+
+                ]
+                .join(' ')
+                .toLowerCase();
+
+
+                return text.includes(search);
+
+            });
+
+
+        videos =
+            videos.filter(v => {
+
+                const text = [
+
+                    v.title,
+                    v.section,
+                    v.semester
+
+                ]
+                .join(' ')
+                .toLowerCase();
+
+
+                return text.includes(search);
+
+            });
+
+    }
+
+
+    document.getElementById(
+        'contentCount'
+    ).textContent =
+        `${docs.length} documents • ${videos.length} videos`;
+
+
+    if(
+        docs.length === 0 &&
+        videos.length === 0
+    ){
+
+        area.innerHTML = `
+
+            <div class="empty">
+
+                <h3>No learning materials found</h3>
+
+                <p>
+                    Try another course or search term.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    const grouped = {};
+
+
+    docs.forEach(doc => {
+
+        const section =
+            doc.section || 'Other';
+
+        const semester =
+            doc.semester || 'Other';
+
+
+        if(!grouped[section])
+            grouped[section] = {};
+
+
+        if(!grouped[section][semester])
+            grouped[section][semester] = [];
+
+
+        grouped[section][semester]
+            .push({
+                type:'document',
+                item:doc
+            });
+
+    });
+
+
+    videos.forEach(video => {
+
+        const section =
+            video.section || 'Other';
+
+        const semester =
+            video.semester || 'Other';
+
+
+        if(!grouped[section])
+            grouped[section] = {};
+
+
+        if(!grouped[section][semester])
+            grouped[section][semester] = [];
+
+
+        grouped[section][semester]
+            .push({
+                type:'video',
+                item:video
+            });
+
+    });
+
+
+    let html = '';
+
+
+    Object.keys(grouped)
+        .sort()
+        .forEach(section => {
+
+            html += `
+
+                <div class="semester-block">
+
+                    <h3 class="semester-title">
+                        ${escapeHTML(section)}
+                    </h3>
+
+            `;
+
+
+            Object.keys(grouped[section])
+                .sort()
+                .forEach(semester => {
+
+                    html += `
+
+                        <h4>
+                            ${escapeHTML(semester)}
+                        </h4>
+
+                        <div class="document-grid">
+
+                    `;
+
+
+                    grouped[section][semester]
+                        .forEach(entry => {
+
+                            if(
+                                entry.type ===
+                                'document'
+                            ){
+
+                                const doc =
+                                    entry.item;
+
+
+                                html += `
+
+                                    <div class="document-card">
+
+                                        <h4>
+                                            ${escapeHTML(doc.title)}
+                                        </h4>
+
+                                        <div class="document-meta">
+
+                                            ${escapeHTML(
+                                                doc.topic || ''
+                                            )}
+
+                                        </div>
+
+                                        <div class="card-actions">
+
+                                            <button
+                                                class="btn btn-primary btn-sm"
+                                                onclick="openDocument('${doc.id}')">
+                                                📖 Read
+                                            </button>
+
+                                        </div>
+
+                                    </div>
+
+                                `;
+
+                            }else{
+
+                                const video =
+                                    entry.item;
+
+
+                                html += `
+
+                                    <div class="video-card">
+
+                                        <h4>
+                                            ${escapeHTML(video.title)}
+                                        </h4>
+
+                                        <div class="video-meta">
+
+                                            ${escapeHTML(
+                                                video.section || ''
+                                            )}
+
+                                        </div>
+
+                                        <div class="card-actions">
+
+                                            <button
+                                                class="btn btn-danger btn-sm"
+                                                onclick="openVideo('${video.id}')">
+                                                ▶ Watch
+                                            </button>
+
+                                        </div>
+
+                                    </div>
+
+                                `;
+
+                            }
+
+                        });
+
+
+                    html += `</div>`;
+
+                });
+
+
+            html += `</div>`;
+
+        });
+
+
+    area.innerHTML =
+        html;
+
 }
 
-function showSelectedDocumentImages(){
-  const files=document.getElementById('documentImages').files;
-  document.getElementById('documentImageList').textContent=files.length?`${Math.min(files.length,8)} image(s) selected.`:'No images selected.';
+
+function handleSearch(value){
+
+    currentSearch =
+        value.trim();
+
+    renderContent();
+
 }
 
-function formatDocument(command,value=null){ document.getElementById('documentContent').focus(); document.execCommand(command,false,value); }
 
-function insertDocumentLink(){
-  const url=prompt('Enter the full link (https://...)'); if(!url)return;
-  if(!/^https?:\/\//i.test(url)){alert('Please enter a valid https:// or http:// link.');return;}
-  const label=prompt('Text to display for this link:',url)||url;
-  document.getElementById('documentContent').focus();
-  document.execCommand('insertHTML',false,`<a href="${escapeAttribute(url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(label)}</a>`);
+/* =========================================================
+   DOCUMENT VIEWER
+========================================================= */
+
+function findDocument(id){
+
+    return allDocuments.find(
+        d => String(d.id) === String(id)
+    );
+
 }
 
-function insertDocumentImage(){
-  const url=prompt('Paste an image URL (https://...)'); if(!url)return;
-  if(!/^https?:\/\//i.test(url)){alert('Please enter a valid image URL.');return;}
-  document.getElementById('documentContent').focus();
-  document.execCommand('insertHTML',false,`<img src="${escapeAttribute(url)}" alt="Document image" style="max-width:100%;height:auto">`);
+
+async function openDocument(id){
+
+    const doc =
+        findDocument(id);
+
+
+    if(!doc) return;
+
+
+    if(!hasCourseAccess(doc.section)){
+
+        const password =
+            prompt(
+                'Enter document password:'
+            );
+
+
+        if(!password){
+
+            alert(
+                'Access denied.'
+            );
+
+            return;
+
+        }
+
+
+        const allowed =
+            String(
+                doc.password_list || ''
+            )
+            .split(',')
+            .map(x => x.trim())
+            .filter(Boolean);
+
+
+        if(
+            allowed.length &&
+            !allowed.includes(password)
+        ){
+
+            alert(
+                'Incorrect password.'
+            );
+
+            return;
+
+        }
+
+
+        if(!allowed.length){
+
+            alert(
+                'You do not have access to this course.'
+            );
+
+            return;
+
+        }
+
+    }
+
+
+    const title =
+        document.getElementById(
+            'documentModalTitle'
+        );
+
+
+    const body =
+        document.getElementById(
+            'documentViewerBody'
+        );
+
+
+    title.textContent =
+        doc.title || 'Document';
+
+
+    let html =
+        sanitizeDocumentHTML(
+            doc.content_html || ''
+        );
+
+
+    if(
+        !html &&
+        doc.content_text
+    ){
+
+        html =
+            linkifyPlainText(
+                doc.content_text
+            );
+
+    }
+
+
+    if(
+        !html &&
+        doc.url
+    ){
+
+        html = `
+
+            <p>
+                <a
+                    href="${escapeHTML(doc.url)}"
+                    target="_blank"
+                    rel="noopener">
+                    Open document source
+                </a>
+            </p>
+
+        `;
+
+    }
+
+
+    if(!html){
+
+        html =
+            '<p>No document content is available.</p>';
+
+    }
+
+
+    body.innerHTML =
+        html;
+
+
+    openModal(
+        'documentModal'
+    );
+
 }
 
-async function generateDocumentDraft(){
-  if(!isAdmin()){alert('Admin access required.');return;}
-  const title=document.getElementById('documentTitle').value.trim()||'Thrives Archivers Notes';
-  const course=document.getElementById('documentSection').value;
-  const topic=document.getElementById('documentTopic').value.trim();
-  const source=document.getElementById('documentSource').value.trim();
-  const files=document.getElementById('documentImages').files;
-  if(!source && !files.length){documentStatus('Paste source notes or select at least one note image.','err');return;}
-  documentStatus('Preparing the document...');
-  try{
-    const images=await filesToDataUrls(files);
-    const result=await invokeAiFunction(DOCUMENT_FUNCTION,{title,course,topic,source,images});
-    let html=result?.content_html||result?.content||result?.text||'';
-    if(!html) throw new Error('No document content was returned.');
-    if(!/<[a-z][\s\S]*>/i.test(html)) html=linkifyPlainText(html);
-    document.getElementById('documentContent').innerHTML=sanitizeDocumentHTML(html);
-    documentStatus('Document generated. Review and edit it before publishing.','ok');
-    document.getElementById('documentContent').scrollIntoView({behavior:'smooth',block:'center'});
-  }catch(error){console.error(error);documentStatus(error.message||'Document generation failed.','err');}
-}
-
-async function saveDocument(status){
-  if(!isAdmin()){alert('Admin access required.');return;}
-  const id=document.getElementById('editDocumentId').value;
-  const title=document.getElementById('documentTitle').value.trim();
-  const section=document.getElementById('documentSection').value;
-  const topic=document.getElementById('documentTopic').value.trim();
-  const semester=document.getElementById('documentSemester').value;
-  const content=sanitizeDocumentHTML(document.getElementById('documentContent').innerHTML).trim();
-  if(!title||!section||!semester||!content){documentStatus('Title, course, semester and document content are required.','err');return;}
-  const contentText=(new DOMParser().parseFromString(content,'text/html').body.innerText||'').trim();
-  const record={title,section,topic,semester,content_html:content,content_text:contentText,status,password_list:document.getElementById('documentPasswords').value.trim(),order:parseInt(document.getElementById('documentOrder').value,10)||1,url:document.getElementById('documentSourceUrl').value.trim()||null};
-  let result;
-  if(id) result=await db.from('documents').update(record).eq('id',id); else result=await db.from('documents').insert([record]);
-  if(result.error){documentStatus(result.error.message,'err');return;}
-  documentStatus(status==='published'?'Document published successfully.':'Document saved as a draft.','ok');
-  resetDocumentForm(); await loadDocuments(); renderContent(); renderExistingDocuments();
-}
 
 function previewDocument(){
-  const html=sanitizeDocumentHTML(document.getElementById('documentContent').innerHTML).trim();
-  if(!html){documentStatus('Generate or write the document first.','err');return;}
-  const box=document.getElementById('documentPreview');
-  document.getElementById('documentPreviewBody').innerHTML=`<h2>${escapeHTML(document.getElementById('documentTitle').value||'Thrives Archivers Document')}</h2><div style="font-size:12px;color:#777;margin-bottom:18px">${escapeHTML(document.getElementById('documentSection').value||'')} ${document.getElementById('documentTopic').value?'• '+escapeHTML(document.getElementById('documentTopic').value):''}</div>${html}`;
-  box.style.display='block'; box.scrollIntoView({behavior:'smooth',block:'center'});
-}
-function closeDocumentPreview(){document.getElementById('documentPreview').style.display='none';}
 
-function renderExistingDocuments(){
-  const box=document.getElementById('existingDocuments'); if(!box)return;
-  if(!allDocuments.length){box.innerHTML='<div class="empty">No Second-Year documents found.</div>';return;}
-  box.innerHTML='<h3>Existing Second-Year Documents</h3>';
-  allDocuments.forEach(doc=>{
-    const item=document.createElement('div'); item.className='admin-item';
-    const status=doc.status||'published';
-    item.innerHTML=`<div class="admin-item-info"><div class="admin-item-title">${escapeHTML(doc.title)}</div><div class="admin-item-meta">${escapeHTML(doc.section||'')} — ${escapeHTML(doc.topic||'')} — ${escapeHTML(doc.semester||'')} — ${escapeHTML(status)}</div></div><div class="admin-actions"><button class="btn small" onclick="editDocument('${doc.id}')">Edit</button><button class="btn small danger" onclick="deleteDocument('${doc.id}')">Delete</button></div>`;
-    box.appendChild(item);
-  });
-}
+    const content =
+        sanitizeDocumentHTML(
+            document.getElementById(
+                'documentContent'
+            ).innerHTML
+        );
 
-function editDocument(id){
-  const doc=allDocuments.find(x=>String(x.id)===String(id)); if(!doc)return;
-  document.getElementById('editDocumentId').value=doc.id||'';
-  document.getElementById('documentTitle').value=doc.title||'';
-  document.getElementById('documentSection').value=doc.section||'';
-  document.getElementById('documentTopic').value=doc.topic||'';
-  document.getElementById('documentSemester').value=doc.semester||'';
-  document.getElementById('documentPasswords').value=doc.password_list||'';
-  document.getElementById('documentOrder').value=doc.order||1;
-  document.getElementById('documentSourceUrl').value=doc.url||'';
-  document.getElementById('documentSource').value='';
-  document.getElementById('documentContent').innerHTML=sanitizeDocumentHTML(doc.content_html||linkifyPlainText(doc.content_text||''));
-  document.getElementById('documentsAdmin').scrollIntoView({behavior:'smooth'});
+
+    const preview =
+        document.getElementById(
+            'documentPreview'
+        );
+
+
+    const body =
+        document.getElementById(
+            'documentPreviewBody'
+        );
+
+
+    body.innerHTML =
+        content ||
+        '<p>No content.</p>';
+
+
+    preview.classList.remove(
+        'hidden'
+    );
+
 }
 
-async function deleteDocument(id){
-  if(!isAdmin())return; if(!confirm('Delete this document?'))return;
-  const {error}=await db.from('documents').delete().eq('id',id); if(error){alert(error.message);return;}
-  await loadDocuments(); renderContent(); renderExistingDocuments();
-}
+
+/* =========================================================
+   DOCUMENT ADMIN
+========================================================= */
 
 function resetDocumentForm(){
-  document.getElementById('editDocumentId').value='';
-  document.getElementById('documentTitle').value=''; document.getElementById('documentSection').value='';
-  document.getElementById('documentTopic').value=''; document.getElementById('documentSemester').value='';
-  document.getElementById('documentPasswords').value=''; document.getElementById('documentOrder').value=1;
-  document.getElementById('documentSourceUrl').value=''; document.getElementById('documentSource').value='';
-  document.getElementById('documentContent').innerHTML=''; document.getElementById('documentImages').value='';
-  document.getElementById('documentImageList').textContent=''; closeDocumentPreview();
-  const st=document.getElementById('documentStatus');st.style.display='none';st.textContent='';
-  stopDocumentAudio();
+
+    document.getElementById(
+        'editDocumentId'
+    ).value = '';
+
+
+    document.getElementById(
+        'documentSourceUrl'
+    ).value = '';
+
+
+    document.getElementById(
+        'documentTitle'
+    ).value = '';
+
+
+    document.getElementById(
+        'documentSection'
+    ).value = '';
+
+
+    document.getElementById(
+        'documentTopic'
+    ).value = '';
+
+
+    document.getElementById(
+        'documentSemester'
+    ).value = '';
+
+
+    document.getElementById(
+        'documentPasswords'
+    ).value = '';
+
+
+    document.getElementById(
+        'documentOrder'
+    ).value = '1';
+
+
+    document.getElementById(
+        'documentSource'
+    ).value = '';
+
+
+    document.getElementById(
+        'documentContent'
+    ).innerHTML = '';
+
+
+    document.getElementById(
+        'documentPreview'
+    ).classList.add(
+        'hidden'
+    );
+
+
+    documentStatus(
+        '',
+        'info'
+    );
+
+
+    document.getElementById(
+        'documentMessage'
+    ).innerHTML = '';
+
 }
 
-/* ========================= DOCUMENT AUDIO ========================= */
-let documentAudioPlayer=null,documentAudioBlob=null,documentAudioUrl=null;
-async function readCurrentDocumentAloud(){
-  if(!isAdmin())return;
-  const text=(new DOMParser().parseFromString(document.getElementById('documentContent').innerHTML,'text/html').body.innerText||'').trim();
-  if(!text){documentStatus('Write or generate a document first.','err');return;}
-  try{
-    documentStatus('Preparing audio...');
-    const data=await invokeAiFunction(TTS_FUNCTION,{text,title:document.getElementById('documentTitle').value||'Thrives Archivers Document',language:'en-US',rate:.95,voice:'Kore'});
-    const extracted=extractAiAudio(data); const bytes=base64ToBytesAi(extracted.base64);
-    documentAudioBlob=String(extracted.mime||'').includes('pcm')||String(extracted.mime||'').includes('l16')?pcmToWavBlobAi(bytes,extracted.sampleRate||24000):new Blob([bytes],{type:extracted.mime||'audio/wav'});
-    if(documentAudioUrl)URL.revokeObjectURL(documentAudioUrl); documentAudioUrl=URL.createObjectURL(documentAudioBlob);
-    if(documentAudioPlayer)documentAudioPlayer.remove(); documentAudioPlayer=new Audio(documentAudioUrl); documentAudioPlayer.playbackRate=.95; documentAudioPlayer.onended=()=>documentStatus('Audio finished.','ok');
-    await documentAudioPlayer.play(); documentStatus('Reading the document aloud.','ok');
-  }catch(error){console.error(error);documentStatus(error.message||'Audio could not be generated.','err');}
+
+function editDocument(id){
+
+    const doc =
+        findDocument(id);
+
+
+    if(!doc) return;
+
+
+    document.getElementById(
+        'editDocumentId'
+    ).value =
+        doc.id || '';
+
+
+    document.getElementById(
+        'documentSourceUrl'
+    ).value =
+        doc.url || '';
+
+
+    document.getElementById(
+        'documentTitle'
+    ).value =
+        doc.title || '';
+
+
+    document.getElementById(
+        'documentSection'
+    ).value =
+        doc.section || '';
+
+
+    document.getElementById(
+        'documentTopic'
+    ).value =
+        doc.topic || '';
+
+
+    document.getElementById(
+        'documentSemester'
+    ).value =
+        doc.semester || '';
+
+
+    document.getElementById(
+        'documentPasswords'
+    ).value =
+        doc.password_list || '';
+
+
+    document.getElementById(
+        'documentOrder'
+    ).value =
+        doc.order || 1;
+
+
+    document.getElementById(
+        'documentSource'
+    ).value =
+        doc.content_text || '';
+
+
+    document.getElementById(
+        'documentContent'
+    ).innerHTML =
+        sanitizeDocumentHTML(
+            doc.content_html || ''
+        );
+
+
+    showAdminTab(
+        'documents',
+        document.querySelector(
+            '.admin-tab'
+        )
+    );
+
+
+    document.getElementById(
+        'adminPanel'
+    ).scrollIntoView({
+        behavior:'smooth'
+    });
+
 }
-function stopDocumentAudio(){if(documentAudioPlayer){documentAudioPlayer.pause();documentAudioPlayer.currentTime=0;}if(documentAudioUrl){try{URL.revokeObjectURL(documentAudioUrl);}catch{}documentAudioUrl=null;}documentAudioBlob=null;}
 
-/* ===================================================== VIDEO ADMIN ===================================================== */ document .getElementById('videoForm') .addEventListener( 'submit', saveVideo ); async function saveVideo(event){ event.preventDefault(); if(!isAdmin()){ alert( 'Admin access required.' ); return; } const id = document .getElementById('editVideoId') .value; const record = { title: document .getElementById('videoTitle') .value .trim(), 'video id': document .getElementById('videoID') .value .trim(), 'password list': document .getElementById('videoPasswords') .value .trim(), section: document .getElementById('videoSection') .value, semester: document .getElementById('videoSemester') .value, order: parseInt( document .getElementById('videoOrder') .value, 10 ) }; let result; if(id){ result = await db .from('Videos') .update(record) .eq('id',id); }else{ result = await db .from('Videos') .insert([record]); } if(result.error){ alert( result.error.message ); return; } alert( id ? 'Video updated successfully.' : 'Video added successfully.' ); resetVideoForm(); await loadVideos(); renderContent(); renderExistingVideos(); } /* ===================================================== VIDEO LIST ===================================================== */ function renderExistingVideos(){ const box = document .getElementById('existingVideos'); if(!allVideos.length){ box.innerHTML = '<div class="empty">No Second-Year videos found.</div>'; return; } box.innerHTML = '<h3>Existing Second-Year Course Videos</h3>'; allVideos .forEach(video => { const item = document.createElement('div'); item.className = 'admin-item'; item.innerHTML = `<div class="admin-item-info"> <div class="admin-item-title"> ${escapeHTML(video.title)} </div> <div class="admin-item-meta"> ${escapeHTML(video.section || '')} — ${escapeHTML(video.semester || '')} </div> </div> <div class="admin-actions"> <button class="btn small" onclick="editVideo('${video.id}')"> Edit </button> <button class="btn small danger" onclick="deleteVideo('${video.id}')"> Delete </button> </div>`; box.appendChild(item); }); } /* ===================================================== EDIT VIDEO ===================================================== */ function editVideo(id){ const video = allVideos .find( x => String(x.id) === String(id) ); if(!video) return; document .getElementById('editVideoId') .value = video.id; document .getElementById('videoTitle') .value = video.title || ''; document .getElementById('videoID') .value = video['video id'] || ''; document .getElementById('videoPasswords') .value = video['password list'] || ''; document .getElementById('videoSection') .value = video.section || ''; document .getElementById('videoSemester') .value = video.semester || ''; document .getElementById('videoOrder') .value = video.order || 1; document .getElementById('videoTitle') .scrollIntoView({ behavior:'smooth' }); } /* ===================================================== DELETE VIDEO ===================================================== */ async function deleteVideo(id){ if(!isAdmin()) return; if( !confirm( 'Delete this video?' ) ) return; const { error } = await db .from('Videos') .delete() .eq('id',id); if(error){ alert( error.message ); return; } await loadVideos(); renderContent(); renderExistingVideos(); } /* ===================================================== RESET VIDEO ===================================================== */ function resetVideoForm(){ document .getElementById('videoForm') .reset(); document .getElementById('editVideoId') .value = ''; } /* ===================================================== AI NOTES + AUDIO ADMIN ===================================================== */
-const DOCUMENT_FUNCTION = "simplify-document";
-const TTS_FUNCTION = "smart-processor";
-let aiAudioPlayer = null;
-let aiAudioBlob = null;
-let aiAudioUrl = null;
-let aiAudioText = "";
 
-function aiAdminReady(){
-  if(!isAdmin()){
-    alert("Administrator authentication required.");
-    return false;
-  }
-  return true;
-}
+async function deleteDocument(id){
 
-async function invokeAiFunction(functionName,payload){
-  const {data:sessionData}=await db.auth.getSession();
-  if(!sessionData?.session) throw new Error("Please log in again.");
-  const result=await db.functions.invoke(functionName,{body:payload});
-  if(result.error){
-    let message=result.error.message||"Edge Function failed.";
-    if(result.error.context){
-      try{
-        const responseText=await result.error.context.text();
-        if(responseText){
-          try{const body=JSON.parse(responseText);message=body.error||body.message||responseText;}
-          catch{message=responseText;}
-        }
-      }catch{}
+    if(!isAdmin()){
+
+        alert(
+            'Admin access required.'
+        );
+
+        return;
+
     }
-    throw new Error(message);
-  }
-  return result.data;
+
+
+    if(
+        !confirm(
+            'Delete this document?'
+        )
+    ){
+
+        return;
+
+    }
+
+
+    const result =
+        await db
+        .from('documents')
+        .delete()
+        .eq('id',id);
+
+
+    if(result.error){
+
+        documentStatus(
+            result.error.message,
+            'err'
+        );
+
+        return;
+
+    }
+
+
+    documentStatus(
+        'Document deleted successfully.',
+        'ok'
+    );
+
+
+    await loadDocuments();
+
 }
 
-function aiSetStatus(message,type=""){
-  const el=document.getElementById("aiNotesStatus");
-  if(!el)return;
-  el.style.display="block";
-  el.textContent=message;
-  el.style.color=type==="err"?"#b91c1c":type==="ok"?"#15803d":"#555";
+
+function renderExistingDocuments(){
+
+    const container =
+        document.getElementById(
+            'existingDocuments'
+        );
+
+
+    if(!container) return;
+
+
+    if(!allDocuments.length){
+
+        container.innerHTML =
+            '<div class="empty">No documents found.</div>';
+
+        return;
+
+    }
+
+
+    container.innerHTML =
+        allDocuments.map(doc => `
+
+            <div class="admin-list-item">
+
+                <div>
+
+                    <strong>
+                        ${escapeHTML(doc.title)}
+                    </strong>
+
+                    <br>
+
+                    <small>
+
+                        ${escapeHTML(doc.section || '')}
+                        •
+                        ${escapeHTML(doc.semester || '')}
+                        •
+                        ${escapeHTML(doc.status || '')}
+
+                    </small>
+
+                </div>
+
+
+                <div class="admin-actions">
+
+                    <button
+                        class="btn btn-info btn-sm"
+                        onclick="openDocument('${doc.id}')">
+                        View
+                    </button>
+
+                    <button
+                        class="btn btn-secondary btn-sm"
+                        onclick="editDocument('${doc.id}')">
+                        Edit
+                    </button>
+
+                    <button
+                        class="btn btn-danger btn-sm"
+                        onclick="deleteDocument('${doc.id}')">
+                        Delete
+                    </button>
+
+                </div>
+
+            </div>
+
+        `).join('');
+
 }
 
-function populateAiCourseSelect(){
-  const select=document.getElementById("aiNotesCourse");
-  if(!select)return;
-  const current=select.value;
-  select.innerHTML='<option value="">Select Course</option>' + (allCourses||[]).map(c=>`<option value="${escapeHTML(c.name||"")}">${escapeHTML(c.name||"")}</option>`).join("");
-  if(current)select.value=current;
+
+/* =========================================================
+   SAVE DOCUMENT
+========================================================= */
+
+async function saveDocument(status){
+
+    if(!isAdmin()){
+
+        alert(
+            'Admin access required.'
+        );
+
+        return;
+
+    }
+
+
+    const id =
+        document.getElementById(
+            'editDocumentId'
+        ).value;
+
+
+    const title =
+        document.getElementById(
+            'documentTitle'
+        ).value.trim();
+
+
+    const section =
+        document.getElementById(
+            'documentSection'
+        ).value;
+
+
+    const topic =
+        document.getElementById(
+            'documentTopic'
+        ).value.trim();
+
+
+    const semester =
+        document.getElementById(
+            'documentSemester'
+        ).value;
+
+
+    const content =
+        sanitizeDocumentHTML(
+            document.getElementById(
+                'documentContent'
+            ).innerHTML
+        ).trim();
+
+
+    if(
+        !title ||
+        !section ||
+        !semester ||
+        !content
+    ){
+
+        documentStatus(
+            'Title, course, semester and document content are required.',
+            'err'
+        );
+
+        return;
+
+    }
+
+
+    const contentText =
+        (
+            new DOMParser()
+            .parseFromString(
+                content,
+                'text/html'
+            )
+            .body
+            .innerText || ''
+        ).trim();
+
+
+    /*
+      IMPORTANT FIX:
+
+      public.documents.url is NOT NULL.
+
+      Therefore, when there is no URL,
+      send an empty string instead of null.
+
+      WRONG:
+      url: ... || null
+
+      CORRECT:
+      url: ... || ''
+    */
+
+    const record = {
+
+        title,
+
+        section,
+
+        topic,
+
+        semester,
+
+        content_html:
+            content,
+
+        content_text:
+            contentText,
+
+        status,
+
+        password_list:
+            document.getElementById(
+                'documentPasswords'
+            ).value.trim(),
+
+        order:
+            parseInt(
+                document.getElementById(
+                    'documentOrder'
+                ).value,
+                10
+            ) || 1,
+
+        url:
+            document.getElementById(
+                'documentSourceUrl'
+            ).value.trim() || ''
+
+    };
+
+
+    let result;
+
+
+    if(id){
+
+        result =
+            await db
+            .from('documents')
+            .update(record)
+            .eq('id',id);
+
+    }else{
+
+        result =
+            await db
+            .from('documents')
+            .insert([record]);
+
+    }
+
+
+    if(result.error){
+
+        documentStatus(
+            result.error.message,
+            'err'
+        );
+
+        console.error(
+            'Document save error:',
+            result.error
+        );
+
+        return;
+
+    }
+
+
+    documentStatus(
+
+        status === 'published'
+            ? 'Document published successfully.'
+            : 'Document saved as a draft.',
+
+        'ok'
+
+    );
+
+
+    resetDocumentForm();
+
+    await loadDocuments();
+
+    renderContent();
+
+    renderExistingDocuments();
+
 }
+
+
+/* =========================================================
+   IMAGE FILES
+========================================================= */
+
+function filesToDataUrls(files){
+
+    const list =
+        Array.from(files || [])
+            .slice(0,8);
+
+
+    return Promise.all(
+        list.map(file => {
+
+            return new Promise(
+                resolve => {
+
+                    const reader =
+                        new FileReader();
+
+                    reader.onload =
+                        () => resolve(
+                            reader.result
+                        );
+
+                    reader.onerror =
+                        () => resolve(null);
+
+                    reader.readAsDataURL(
+                        file
+                    );
+
+                }
+            );
+
+        })
+    );
+
+}
+
+
+/* =========================================================
+   AI FUNCTIONS
+========================================================= */
+
+async function invokeAiFunction(
+    functionName,
+    payload
+){
+
+    /*
+      This assumes your Supabase Edge Functions
+      are deployed under:
+
+      /functions/v1/<function-name>
+    */
+
+
+    const response =
+        await fetch(
+            `${SUPABASE_URL}/functions/v1/${functionName}`,
+            {
+                method:'POST',
+
+                headers:{
+                    'Content-Type':
+                        'application/json',
+
+                    'Authorization':
+                        `Bearer ${SUPABASE_ANON_KEY}`
+                },
+
+                body:
+                    JSON.stringify(payload)
+            }
+        );
+
+
+    if(!response.ok){
+
+        const text =
+            await response.text();
+
+        throw new Error(
+            text ||
+            `AI request failed (${response.status})`
+        );
+
+    }
+
+
+    return response.json();
+
+}
+
+
+async function generateDocumentDraft(){
+
+    if(!isAdmin()){
+
+        alert(
+            'Admin access required.'
+        );
+
+        return;
+
+    }
+
+
+    const title =
+        document.getElementById(
+            'documentTitle'
+        ).value.trim();
+
+
+    const course =
+        document.getElementById(
+            'documentSection'
+        ).value;
+
+
+    const topic =
+        document.getElementById(
+            'documentTopic'
+        ).value.trim();
+
+
+    const source =
+        document.getElementById(
+            'documentSource'
+        ).value.trim();
+
+
+    if(!source){
+
+        documentStatus(
+            'Paste source notes first.',
+            'err'
+        );
+
+        return;
+
+    }
+
+
+    documentStatus(
+        'AI is generating the document...',
+        'info'
+    );
+
+
+    try{
+
+        const files =
+            document.getElementById(
+                'documentImages'
+            ).files;
+
+
+        const images =
+            await filesToDataUrls(
+                files
+            );
+
+
+        const result =
+            await invokeAiFunction(
+                DOCUMENT_FUNCTION,
+                {
+                    title,
+                    course,
+                    topic,
+                    source,
+                    images
+                }
+            );
+
+
+        const generated =
+            result.content_html ||
+            result.content ||
+            result.text ||
+            '';
+
+
+        if(!generated){
+
+            throw new Error(
+                'AI returned no document content.'
+            );
+
+        }
+
+
+        document.getElementById(
+            'documentContent'
+        ).innerHTML =
+            sanitizeDocumentHTML(
+                generated
+            );
+
+
+        documentStatus(
+            'AI document generated successfully. Review it before publishing.',
+            'ok'
+        );
+
+
+    }catch(error){
+
+        console.error(error);
+
+        documentStatus(
+            error.message,
+            'err'
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   EDITOR
+========================================================= */
+
+function formatDoc(command,value=null){
+
+    document.execCommand(
+        command,
+        false,
+        value
+    );
+
+
+    document.getElementById(
+        'documentContent'
+    ).focus();
+
+}
+
+
+function insertHeading(tag){
+
+    document.execCommand(
+        'formatBlock',
+        false,
+        tag
+    );
+
+}
+
+
+function insertLink(){
+
+    const url =
+        prompt(
+            'Enter URL:'
+        );
+
+
+    if(!url) return;
+
+
+    document.execCommand(
+        'createLink',
+        false,
+        url
+    );
+
+}
+
+
+/* =========================================================
+   TEXT TO SPEECH
+========================================================= */
+
+function getDocumentPlainText(){
+
+    const content =
+        document.getElementById(
+            'documentContent'
+        ).innerText;
+
+
+    return content.trim();
+
+}
+
+
+function documentReadAloud(){
+
+    const text =
+        getDocumentPlainText();
+
+
+    if(!text){
+
+        alert(
+            'There is no document text to read.'
+        );
+
+        return;
+
+    }
+
+
+    speechSynthesis.cancel();
+
+
+    const utterance =
+        new SpeechSynthesisUtterance(
+            text
+        );
+
+
+    utterance.rate = 1;
+
+    utterance.pitch = 1;
+
+
+    speechSynthesis.speak(
+        utterance
+    );
+
+}
+
+
+function stopAudio(){
+
+    speechSynthesis.cancel();
+
+
+    const player =
+        document.getElementById(
+            'aiAudioPlayer'
+        );
+
+
+    if(player){
+
+        player.pause();
+
+        player.currentTime = 0;
+
+    }
+
+}
+
+
+function pauseAudio(){
+
+    speechSynthesis.pause();
+
+
+    const player =
+        document.getElementById(
+            'aiAudioPlayer'
+        );
+
+
+    if(player){
+        player.pause();
+    }
+
+}
+
+
+function resumeAudio(){
+
+    speechSynthesis.resume();
+
+
+    const player =
+        document.getElementById(
+            'aiAudioPlayer'
+        );
+
+
+    if(player){
+        player.play().catch(()=>{});
+    }
+
+}
+
+
+/* =========================================================
+   VIDEO
+========================================================= */
+
+async function loadVideos(){
+
+    const result =
+        await db
+        .from('Videos')
+        .select('*')
+        .order('order',{
+            ascending:true
+        });
+
+
+    if(result.error){
+
+        console.warn(
+            'Videos:',
+            result.error.message
+        );
+
+        allVideos = [];
+
+        return;
+
+    }
+
+
+    let videos =
+        result.data || [];
+
+
+    if(!isAdmin()){
+
+        videos =
+            videos.filter(
+                v =>
+                    String(
+                        v.status || 'published'
+                    ).toLowerCase() ===
+                    'published' ||
+                    !('status' in v)
+            );
+
+    }
+
+
+    allVideos =
+        videos;
+
+
+    renderContent();
+
+    renderExistingVideos();
+
+    renderCourseGrid();
+
+}
+
+
+function getVideoId(video){
+
+    return (
+        video['video id'] ||
+        video.video_id ||
+        video.videoId ||
+        ''
+    );
+
+}
+
+
+async function openVideo(id){
+
+    const video =
+        allVideos.find(
+            v =>
+                String(v.id) ===
+                String(id)
+        );
+
+
+    if(!video) return;
+
+
+    if(!hasCourseAccess(video.section)){
+
+        const password =
+            prompt(
+                'Enter video password:'
+            );
+
+
+        if(!password){
+
+            alert(
+                'Access denied.'
+            );
+
+            return;
+
+        }
+
+
+        const allowed =
+            String(
+                video['password list'] || ''
+            )
+            .split(',')
+            .map(x => x.trim())
+            .filter(Boolean);
+
+
+        if(
+            !allowed.includes(password)
+        ){
+
+            alert(
+                'Incorrect password.'
+            );
+
+            return;
+
+        }
+
+    }
+
+
+    const videoId =
+        getVideoId(video);
+
+
+    if(!videoId){
+
+        alert(
+            'This video does not have a YouTube video ID.'
+        );
+
+        return;
+
+    }
+
+
+    document.getElementById(
+        'videoModalTitle'
+    ).textContent =
+        video.title || 'Video';
+
+
+    document.getElementById(
+        'videoViewer'
+    ).innerHTML = `
+
+        <iframe
+            src="https://www.youtube.com/embed/${encodeURIComponent(videoId)}"
+            title="${escapeHTML(video.title || 'Video')}"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen>
+        </iframe>
+
+    `;
+
+
+    openModal(
+        'videoModal'
+    );
+
+}
+
+
+async function saveVideo(){
+
+    if(!isAdmin()){
+
+        alert(
+            'Admin access required.'
+        );
+
+        return;
+
+    }
+
+
+    const title =
+        document.getElementById(
+            'videoTitle'
+        ).value.trim();
+
+
+    const videoId =
+        document.getElementById(
+            'videoId'
+        ).value.trim();
+
+
+    const password =
+        document.getElementById(
+            'videoPassword'
+        ).value.trim();
+
+
+    const section =
+        document.getElementById(
+            'videoSection'
+        ).value;
+
+
+    const semester =
+        document.getElementById(
+            'videoSemester'
+        ).value;
+
+
+    const order =
+        parseInt(
+            document.getElementById(
+                'videoOrder'
+            ).value,
+            10
+        ) || 1;
+
+
+    if(!title || !videoId){
+
+        showMessage(
+            'videoMessage',
+            'Video title and YouTube ID are required.',
+            'err'
+        );
+
+        return;
+
+    }
+
+
+    const record = {
+
+        title,
+
+        'video id':
+            videoId,
+
+        'password list':
+            password,
+
+        section,
+
+        semester,
+
+        order
+
+    };
+
+
+    const result =
+        await db
+        .from('Videos')
+        .insert([record]);
+
+
+    if(result.error){
+
+        showMessage(
+            'videoMessage',
+            result.error.message,
+            'err'
+        );
+
+        return;
+
+    }
+
+
+    showMessage(
+        'videoMessage',
+        'Video added successfully.',
+        'ok'
+    );
+
+
+    document.getElementById(
+        'videoTitle'
+    ).value = '';
+
+
+    document.getElementById(
+        'videoId'
+    ).value = '';
+
+
+    document.getElementById(
+        'videoPassword'
+    ).value = '';
+
+
+    await loadVideos();
+
+}
+
+
+async function deleteVideo(id){
+
+    if(!isAdmin()) return;
+
+
+    if(
+        !confirm(
+            'Delete this video?'
+        )
+    ){
+
+        return;
+
+    }
+
+
+    const result =
+        await db
+        .from('Videos')
+        .delete()
+        .eq('id',id);
+
+
+    if(result.error){
+
+        showMessage(
+            'videoMessage',
+            result.error.message,
+            'err'
+        );
+
+        return;
+
+    }
+
+
+    await loadVideos();
+
+}
+
+
+function renderExistingVideos(){
+
+    const container =
+        document.getElementById(
+            'existingVideos'
+        );
+
+
+    if(!container) return;
+
+
+    if(!allVideos.length){
+
+        container.innerHTML =
+            '<div class="empty">No videos found.</div>';
+
+        return;
+
+    }
+
+
+    container.innerHTML =
+        allVideos.map(video => `
+
+            <div class="admin-list-item">
+
+                <div>
+
+                    <strong>
+                        ${escapeHTML(video.title)}
+                    </strong>
+
+                    <br>
+
+                    <small>
+                        ${escapeHTML(video.section || '')}
+                        •
+                        ${escapeHTML(video.semester || '')}
+                    </small>
+
+                </div>
+
+                <div class="admin-actions">
+
+                    <button
+                        class="btn btn-info btn-sm"
+                        onclick="openVideo('${video.id}')">
+                        View
+                    </button>
+
+                    <button
+                        class="btn btn-danger btn-sm"
+                        onclick="deleteVideo('${video.id}')">
+                        Delete
+                    </button>
+
+                </div>
+
+            </div>
+
+        `).join('');
+
+}
+
+
+/* =========================================================
+   COURSE ADMIN
+========================================================= */
+
+async function saveCourse(){
+
+    if(!isAdmin()) return;
+
+
+    const name =
+        document.getElementById(
+            'courseName'
+        ).value.trim();
+
+
+    const icon =
+        document.getElementById(
+            'courseIcon'
+        ).value.trim() ||
+        '📚';
+
+
+    const description =
+        document.getElementById(
+            'courseDescription'
+        ).value.trim();
+
+
+    const order =
+        parseInt(
+            document.getElementById(
+                'courseOrder'
+            ).value,
+            10
+        ) || 1;
+
+
+    if(!name){
+
+        showMessage(
+            'courseMessage',
+            'Course name is required.',
+            'err'
+        );
+
+        return;
+
+    }
+
+
+    const result =
+        await db
+        .from('year_two_courses')
+        .insert([{
+
+            name,
+
+            icon,
+
+            description,
+
+            order,
+
+            status:'published'
+
+        }]);
+
+
+    if(result.error){
+
+        showMessage(
+            'courseMessage',
+            result.error.message,
+            'err'
+        );
+
+        return;
+
+    }
+
+
+    showMessage(
+        'courseMessage',
+        'Course added successfully.',
+        'ok'
+    );
+
+
+    document.getElementById(
+        'courseName'
+    ).value = '';
+
+
+    document.getElementById(
+        'courseDescription'
+    ).value = '';
+
+
+    await loadCourses();
+
+}
+
+
+async function deleteCourse(id){
+
+    if(!isAdmin()) return;
+
+
+    if(
+        !confirm(
+            'Delete this course?'
+        )
+    ){
+
+        return;
+
+    }
+
+
+    const result =
+        await db
+        .from('year_two_courses')
+        .delete()
+        .eq('id',id);
+
+
+    if(result.error){
+
+        showMessage(
+            'courseMessage',
+            result.error.message,
+            'err'
+        );
+
+        return;
+
+    }
+
+
+    await loadCourses();
+
+}
+
+
+function renderExistingCourses(){
+
+    const container =
+        document.getElementById(
+            'existingCourses'
+        );
+
+
+    if(!container) return;
+
+
+    if(!allCourses.length){
+
+        container.innerHTML =
+            '<div class="empty">Using default courses. No custom courses found.</div>';
+
+        return;
+
+    }
+
+
+    container.innerHTML =
+        allCourses.map(course => `
+
+            <div class="admin-list-item">
+
+                <div>
+
+                    <strong>
+                        ${escapeHTML(
+                            course.name ||
+                            course.title ||
+                            course.course ||
+                            ''
+                        )}
+                    </strong>
+
+                    <br>
+
+                    <small>
+                        ${escapeHTML(
+                            course.description || ''
+                        )}
+                    </small>
+
+                </div>
+
+                <button
+                    class="btn btn-danger btn-sm"
+                    onclick="deleteCourse('${course.id}')">
+                    Delete
+                </button>
+
+            </div>
+
+        `).join('');
+
+}
+
+
+/* =========================================================
+   SUBSCRIPTION ADMIN
+========================================================= */
+
+async function saveSubscription(){
+
+    if(!isAdmin()) return;
+
+
+    const email =
+        document.getElementById(
+            'subscriptionEmail'
+        ).value.trim();
+
+
+    const start =
+        document.getElementById(
+            'subscriptionStartDate'
+        ).value;
+
+
+    const duration =
+        parseInt(
+            document.getElementById(
+                'subscriptionDuration'
+            ).value,
+            10
+        );
+
+
+    const courses =
+        document.getElementById(
+            'subscriptionCourses'
+        ).value.trim();
+
+
+    if(!email || !start){
+
+        showMessage(
+            'subscriptionMessage',
+            'Email and start date are required.',
+            'err'
+        );
+
+        return;
+
+    }
+
+
+    const startDate =
+        new Date(
+            start + 'T00:00:00'
+        );
+
+
+    const endDate =
+        new Date(startDate);
+
+
+    endDate.setMonth(
+        endDate.getMonth() +
+        duration
+    );
+
+
+    const result =
+        await db
+        .from('subscription')
+        .insert([{
+
+            email,
+
+            start_date:
+                start,
+
+            'start date':
+                start,
+
+            duration,
+
+            'end date':
+                endDate
+                .toISOString()
+                .slice(0,10),
+
+            courses
+
+        }]);
+
+
+    if(result.error){
+
+        showMessage(
+            'subscriptionMessage',
+            result.error.message,
+            'err'
+        );
+
+        return;
+
+    }
+
+
+    showMessage(
+        'subscriptionMessage',
+        'Subscription added successfully.',
+        'ok'
+    );
+
+
+    await loadAllSubscriptions();
+
+}
+
+
+async function loadAllSubscriptions(){
+
+    if(!isAdmin()) return;
+
+
+    const result =
+        await db
+        .from('subscription')
+        .select('*')
+        .order('end date',{
+            ascending:false
+        });
+
+
+    if(result.error){
+
+        showMessage(
+            'subscriptionMessage',
+            result.error.message,
+            'err'
+        );
+
+        return;
+
+    }
+
+
+    allSubscriptions =
+        result.data || [];
+
+
+    renderSubscriptions();
+
+}
+
+
+function renderSubscriptions(){
+
+    const container =
+        document.getElementById(
+            'subscriptionList'
+        );
+
+
+    if(!container) return;
+
+
+    if(!allSubscriptions.length){
+
+        container.innerHTML =
+            '<div class="empty">No subscriptions found.</div>';
+
+        return;
+
+    }
+
+
+    container.innerHTML = `
+
+        <div class="table-wrap">
+
+            <table class="data-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Email</th>
+                        <th>Start</th>
+                        <th>End</th>
+                        <th>Duration</th>
+                        <th>Courses</th>
+                        <th>Status</th>
+                        <th>Action</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    ${allSubscriptions.map(sub => {
+
+                        const end =
+                            sub['end date'] ||
+                            sub.end_date;
+
+
+                        const expired =
+                            end &&
+                            new Date(end) <
+                            new Date();
+
+
+                        return `
+
+                            <tr>
+
+                                <td>
+                                    ${escapeHTML(
+                                        sub.email || ''
+                                    )}
+                                </td>
+
+                                <td>
+                                    ${escapeHTML(
+                                        sub['start date'] ||
+                                        sub.start_date ||
+                                        ''
+                                    )}
+                                </td>
+
+                                <td>
+                                    ${escapeHTML(
+                                        end || ''
+                                    )}
+                                </td>
+
+                                <td>
+                                    ${escapeHTML(
+                                        sub.duration || ''
+                                    )}
+                                </td>
+
+                                <td>
+                                    ${escapeHTML(
+                                        sub.courses || ''
+                                    )}
+                                </td>
+
+                                <td>
+                                    ${expired
+                                        ? 'Expired'
+                                        : 'Active'}
+                                </td>
+
+                                <td>
+
+                                    <button
+                                        class="btn btn-danger btn-sm"
+                                        onclick="deleteSubscription('${sub.id}')">
+                                        Delete
+                                    </button>
+
+                                </td>
+
+                            </tr>
+
+                        `;
+
+                    }).join('')}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    `;
+
+}
+
+
+async function deleteSubscription(id){
+
+    if(!isAdmin()) return;
+
+
+    if(
+        !confirm(
+            'Delete this subscription?'
+        )
+    ){
+
+        return;
+
+    }
+
+
+    const result =
+        await db
+        .from('subscription')
+        .delete()
+        .eq('id',id);
+
+
+    if(result.error){
+
+        showMessage(
+            'subscriptionMessage',
+            result.error.message,
+            'err'
+        );
+
+        return;
+
+    }
+
+
+    await loadAllSubscriptions();
+
+}
+
+
+/* =========================================================
+   AI NOTES
+========================================================= */
 
 async function aiSummariseNotes(){
-  if(!aiAdminReady())return;
-  const source=document.getElementById("aiSourceNotes").value.trim();
-  const title=document.getElementById("aiNotesTitle").value.trim()||"Thrives Archivers Notes";
-  const course=document.getElementById("aiNotesCourse").value;
-  const topic=document.getElementById("aiNotesTopic").value.trim();
-  if(!source){aiSetStatus("Paste the notes first.","err");return;}
-  aiSetStatus("AI is summarising the notes...");
-  try{
-    const result=await invokeAiFunction(DOCUMENT_FUNCTION,{title,course,topic,source});
-    const summary=result?.content_html||result?.content||result?.text||result?.summary||"";
-    document.getElementById("aiSummary").value=summary.replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim();
-    aiAudioText=document.getElementById("aiSummary").value||source;
-    disposeAiAudio();
-    aiSetStatus("AI summary generated successfully. You can edit it before reading aloud.","ok");
-  }catch(error){console.error(error);aiSetStatus(error.message||"AI summarisation failed.","err");}
+
+    const title =
+        document.getElementById(
+            'aiTitle'
+        ).value.trim();
+
+
+    const course =
+        document.getElementById(
+            'aiCourse'
+        ).value;
+
+
+    const topic =
+        document.getElementById(
+            'aiTopic'
+        ).value.trim();
+
+
+    const source =
+        document.getElementById(
+            'aiSourceNotes'
+        ).value.trim();
+
+
+    if(!source){
+
+        alert(
+            'Paste notes first.'
+        );
+
+        return;
+
+    }
+
+
+    const output =
+        document.getElementById(
+            'aiSummary'
+        );
+
+
+    output.value =
+        'AI is processing your notes...';
+
+
+    try{
+
+        const result =
+            await invokeAiFunction(
+                DOCUMENT_FUNCTION,
+                {
+                    title,
+                    course,
+                    topic,
+                    source,
+                    images:[]
+                }
+            );
+
+
+        const generated =
+            result.content_text ||
+            result.text ||
+            result.content ||
+            result.content_html ||
+            '';
+
+
+        output.value =
+            stripHTML(
+                generated
+            );
+
+
+    }catch(error){
+
+        console.error(error);
+
+        output.value =
+            'AI error: ' +
+            error.message;
+
+    }
+
 }
 
-function getAiAudioSpeed(){
-  const n=Number(document.getElementById("aiAudioSpeed")?.value||0.95);
-  return Math.min(2,Math.max(.5,n));
+
+function stripHTML(html){
+
+    const div =
+        document.createElement('div');
+
+    div.innerHTML =
+        html || '';
+
+    return div.innerText ||
+        div.textContent ||
+        '';
+
 }
 
-function base64ToBytesAi(base64){
-  let clean=String(base64||"").trim().replace(/^data:audio\/[^;]+;base64,/i,"").replace(/\s/g,"");
-  const binary=atob(clean);const bytes=new Uint8Array(binary.length);
-  for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);
-  return bytes;
-}
-
-function pcmToWavBlobAi(bytes,sampleRate=24000,channels=1,bitsPerSample=16){
-  const blockAlign=channels*(bitsPerSample/8),byteRate=sampleRate*blockAlign;
-  const buffer=new ArrayBuffer(44+bytes.length),view=new DataView(buffer);
-  const ws=(o,t)=>{for(let i=0;i<t.length;i++)view.setUint8(o+i,t.charCodeAt(i));};
-  ws(0,"RIFF");view.setUint32(4,36+bytes.length,true);ws(8,"WAVE");ws(12,"fmt ");
-  view.setUint32(16,16,true);view.setUint16(20,1,true);view.setUint16(22,channels,true);
-  view.setUint32(24,sampleRate,true);view.setUint32(28,byteRate,true);view.setUint16(32,blockAlign,true);
-  view.setUint16(34,bitsPerSample,true);ws(36,"data");view.setUint32(40,bytes.length,true);
-  new Uint8Array(buffer,44).set(bytes);return new Blob([buffer],{type:"audio/wav"});
-}
-
-function extractAiAudio(result){
-  let base64=result?.audio_base64||result?.audioBase64||result?.base64||result?.audio||result?.data?.audio_base64||result?.data?.audioBase64||result?.data?.base64||result?.data?.audio;
-  let mime=result?.mime_type||result?.mimeType||result?.content_type||result?.contentType||result?.data?.mime_type||result?.data?.mimeType||"audio/wav";
-  let sampleRate=Number(result?.sample_rate||result?.sampleRate||result?.data?.sample_rate||result?.data?.sampleRate||24000);
-  if(base64&&typeof base64==="object"){
-    base64=base64.data||base64.base64;
-    mime=base64?.mimeType||mime;
-  }
-  if(typeof base64==="string"&&base64.startsWith("data:")){const m=base64.match(/^data:([^;,]+)/);if(m)mime=m[1];}
-  if(!base64)throw new Error("The Edge Function returned no audio data.");
-  return {base64,mime,sampleRate};
-}
-
-function makeAiAudioBlob(result){
-  const {base64,mime,sampleRate}=extractAiAudio(result);
-  const bytes=base64ToBytesAi(base64),type=String(mime||"audio/wav").toLowerCase();
-  if(type.includes("audio/l16")||type.includes("audio/pcm")||type.includes("audio/raw")||type.includes("application/octet-stream"))return pcmToWavBlobAi(bytes,sampleRate||24000);
-  return new Blob([bytes],{type:mime||"audio/wav"});
-}
-
-function disposeAiAudio(){
-  if(aiAudioPlayer){try{aiAudioPlayer.pause();aiAudioPlayer.removeAttribute("src");aiAudioPlayer.load();}catch{}aiAudioPlayer=null;}
-  if(aiAudioUrl){try{URL.revokeObjectURL(aiAudioUrl);}catch{}aiAudioUrl=null;}
-  aiAudioBlob=null;
-  const box=document.getElementById("aiAudioPlayerBox");if(box)box.innerHTML="";
-  const info=document.getElementById("aiAudioInfo");if(info)info.style.display="none";
-}
-
-async function getAiAudio(){
-  if(!aiAdminReady())throw new Error("Administrator authentication required.");
-  const source=document.getElementById("aiSummary").value.trim()||document.getElementById("aiSourceNotes").value.trim();
-  if(!source)throw new Error("Paste notes or generate a summary first.");
-  aiAudioText=source;
-  if(aiAudioBlob)return aiAudioBlob;
-  aiSetStatus("Generating audio from the notes...");
-  const title=document.getElementById("aiNotesTitle").value.trim()||"Thrives Archivers Notes";
-  const data=await invokeAiFunction(TTS_FUNCTION,{text:source,title,language:"en-US",rate:getAiAudioSpeed(),voice:"Kore"});
-  if(data?.error)throw new Error(data.error);
-  aiAudioBlob=makeAiAudioBlob(data);
-  if(!aiAudioBlob||!aiAudioBlob.size)throw new Error("The generated audio file is empty.");
-  aiAudioUrl=URL.createObjectURL(aiAudioBlob);
-  const box=document.getElementById("aiAudioPlayerBox");
-  box.innerHTML="";
-  aiAudioPlayer=document.createElement("audio");
-  aiAudioPlayer.controls=true;aiAudioPlayer.preload="auto";aiAudioPlayer.src=aiAudioUrl;aiAudioPlayer.playbackRate=getAiAudioSpeed();
-  box.appendChild(aiAudioPlayer);
-  const info=document.getElementById("aiAudioInfo");
-  info.style.display="block";info.textContent=`Audio ready • ${Math.round(aiAudioBlob.size/1024)} KB • ${aiAudioBlob.type||"audio/wav"}`;
-  return aiAudioBlob;
-}
 
 async function aiReadNotesAloud(){
-  if(!aiAdminReady())return;
-  try{await getAiAudio();aiAudioPlayer.playbackRate=getAiAudioSpeed();await aiAudioPlayer.play();aiSetStatus("Playing generated audio.","ok");}
-  catch(error){console.error(error);aiSetStatus(error.message||"Could not generate audio.","err");}
-}
-function aiPauseAudio(){if(!aiAdminReady())return;if(aiAudioPlayer&&!aiAudioPlayer.paused)aiAudioPlayer.pause();}
-function aiResumeAudio(){if(!aiAdminReady())return;if(aiAudioPlayer&&aiAudioPlayer.paused&&aiAudioPlayer.src)aiAudioPlayer.play().catch(()=>{});}
-function aiStopAudio(){if(!aiAdminReady())return;if(aiAudioPlayer){aiAudioPlayer.pause();aiAudioPlayer.currentTime=0;}aiSetStatus("Audio stopped.");}
-function aiDownloadAudio(){
-  if(!aiAdminReady())return;
-  getAiAudio().then(blob=>{
-    const url=URL.createObjectURL(blob),a=document.createElement("a");
-    const title=(document.getElementById("aiNotesTitle").value.trim()||"Thrives Archivers Notes").replace(/[^a-z0-9-_]+/gi,"_");
-    a.href=url;a.download=title+".wav";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),5000);
-    aiSetStatus("Audio downloaded successfully.","ok");
-  }).catch(error=>aiSetStatus(error.message||"Audio download failed.","err"));
-}
-function clearAiNotes(){disposeAiAudio();document.getElementById("aiNotesTitle").value="";document.getElementById("aiNotesTopic").value="";document.getElementById("aiSourceNotes").value="";document.getElementById("aiSummary").value="";document.getElementById("aiNotesStatus").style.display="none";aiAudioText="";}
 
-/* ===================================================== SUBSCRIPTION ADMIN ===================================================== */ async function fetchSubscriptions(){ if(!isAdmin()) return; const { data, error } = await db .from('subscription') .select('*') .order( 'email', { ascending:true } ); if(error){ document .getElementById('subscriptionList') .innerHTML = '<div class="empty">Failed to load subscriptions.</div>'; console.error(error); return; } renderSubscriptions( data || [] ); } /* ===================================================== RENDER SUBSCRIPTIONS ===================================================== */ function renderSubscriptions(data){ const box = document .getElementById('subscriptionList'); box.innerHTML = '<h3>All Student Subscriptions</h3>'; if(!data.length){ box.innerHTML += '<div class="empty">No subscriptions found.</div>'; return; } data .forEach(sub => { const status = subscriptionStatus( sub ); const card = document.createElement('div'); card.className = 'subscription-card'; card.innerHTML = `<div class="subscription-top"> <div class="subscription-email"> ${escapeHTML(sub.email || '')} </div> <span class="status-badge ${status.className}"> ${status.text} </span> </div> <div class="subscription-details"> <div class="subscription-detail"> <strong>START DATE</strong> ${escapeHTML( sub['start date'] || '-' )} </div> <div class="subscription-detail"> <strong>DURATION</strong> ${escapeHTML( String(sub.duration || '-') )} months </div> <div class="subscription-detail"> <strong>END DATE</strong> ${escapeHTML( sub['end date'] || '-' )} </div> <div class="subscription-detail"> <strong>COURSES</strong> ${escapeHTML( sub.courses || 'All' )} </div> </div> <div style=" margin-top:12px; display:flex; gap:8px; flex-wrap:wrap; "> <button class="btn small" onclick="editSubscription('${encodeURIComponent(sub.email)}')"> Edit </button> <button class="btn small danger" onclick="deleteSubscription('${encodeURIComponent(sub.email)}')"> Delete </button> </div>`; box.appendChild(card); }); } /* ===================================================== SAVE SUBSCRIPTION ===================================================== */ document .getElementById('subscriptionForm') .addEventListener( 'submit', saveSubscription ); async function saveSubscription(event){ event.preventDefault(); if(!isAdmin()) return; const originalEmail = document .getElementById( 'originalSubscriptionEmail' ) .value .trim(); const email = document .getElementById( 'subscriptionEmail' ) .value .trim() .toLowerCase(); const start = document .getElementById( 'subscriptionStart' ) .value; const duration = parseInt( document .getElementById( 'subscriptionDuration' ) .value, 10 ); const courses = document .getElementById( 'subscriptionCourses' ) .value .trim(); if( !email || !start || Number.isNaN(duration) ){ alert( 'Please fill all required fields.' ); return; } const startDate = new Date( start + 'T00:00:00' ); const endDate = new Date( startDate ); endDate.setMonth( endDate.getMonth() + duration ); const end = endDate .toISOString() .split('T')[0]; const record = { email, 'start date': start, duration, 'end date': end, courses }; /* The existing First-Year subscription table uses these exact fields. */ const { error } = await db .from('subscription') .upsert( [record], { onConflict:'email' } ); if(error){ alert( 'Subscription error: ' + error.message ); return; } /* If an old email was being edited, remove the old subscription row. */ if( originalEmail && originalEmail !== email ){ await db .from('subscription') .delete() .eq( 'email', originalEmail ); } alert( 'Subscription/payment access saved successfully.' ); resetSubscriptionForm(); await fetchSubscriptions(); await loadSubscription(); updateUserStatus(); } /* ===================================================== EDIT SUBSCRIPTION ===================================================== */ async function editSubscription(encodedEmail){ const email = decodeURIComponent( encodedEmail ); const { data, error } = await db .from('subscription') .select('*') .eq( 'email', email ) .maybeSingle(); if(error){ alert( error.message ); return; } if(!data) return; document .getElementById( 'originalSubscriptionEmail' ) .value = data.email || ''; document .getElementById( 'subscriptionEmail' ) .value = data.email || ''; document .getElementById( 'subscriptionStart' ) .value = data['start date'] || ''; document .getElementById( 'subscriptionDuration' ) .value = data.duration || ''; document .getElementById( 'subscriptionCourses' ) .value = data.courses || ''; document .getElementById( 'subscriptionEmail' ) .scrollIntoView({ behavior:'smooth' }); } /* ===================================================== DELETE SUBSCRIPTION ===================================================== */ async function deleteSubscription(encodedEmail){ if(!isAdmin()) return; const email = decodeURIComponent( encodedEmail ); if( !confirm( 'Delete subscription for ' + email + '?' ) ) return; const { error } = await db .from('subscription') .delete() .eq( 'email', email ); if(error){ alert( error.message ); return; } alert( 'Subscription deleted.' ); await fetchSubscriptions(); if( currentUser && currentUser.email.toLowerCase() === email.toLowerCase() ){ await loadSubscription(); updateUserStatus(); } } /* ===================================================== RESET SUBSCRIPTION ===================================================== */ function resetSubscriptionForm(){ document .getElementById( 'subscriptionForm' ) .reset(); document .getElementById( 'originalSubscriptionEmail' ) .value = ''; } /* ===================================================== INITIALIZE ===================================================== */ async function initialize(){ const { data } = await db.auth.getSession(); if( data?.session?.user ){ currentUser = data.session.user; document .getElementById( 'loginTopBtn' ) .style.display = 'none'; document .getElementById( 'logoutBtn' ) .style.display = 'inline-block'; await loadSubscription(); } updateUserStatus(); await loadAllContent(); } initialize(); /* ===================================================== CLOSE MODALS ===================================================== */ document .getElementById( 'videoModalBg' ) .addEventListener( 'click', function(event){ if( event.target === this ){ closeVideo(); } } ); document .getElementById( 'documentViewerBg' ) .addEventListener( 'click', function(event){ if( event.target === this ){ closeDocumentViewer(); } } ); document .getElementById( 'loginModal' ) .addEventListener( 'click', function(event){ if( event.target === this ){ closeLogin(); } } ); document .addEventListener( 'keydown', function(event){ if( event.key === 'Escape' ){ closeVideo(); closeDocumentViewer(); closeLogin(); } } ); 
-</script> 
+    const text =
+        document.getElementById(
+            'aiSummary'
+        ).value.trim();
+
+
+    if(!text){
+
+        alert(
+            'Generate or enter AI notes first.'
+        );
+
+        return;
+
+    }
+
+
+    /*
+      Browser speech synthesis is used as
+      a reliable fallback.
+
+      Your smart-processor Edge Function
+      can still be used if you want generated
+      audio files.
+    */
+
+    speechSynthesis.cancel();
+
+
+    const utterance =
+        new SpeechSynthesisUtterance(
+            text
+        );
+
+
+    utterance.rate =
+        parseFloat(
+            document.getElementById(
+                'aiAudioSpeed'
+            ).value
+        ) || 1;
+
+
+    speechSynthesis.speak(
+        utterance
+    );
+
+
+    document.getElementById(
+        'aiAudioInfo'
+    ).innerHTML = `
+
+        <div class="notice ok">
+            Reading AI notes aloud...
+        </div>
+
+    `;
+
+}
+
+
+/* =========================================================
+   ADMIN TABS
+========================================================= */
+
+function showAdminTab(
+    tab,
+    button
+){
+
+    document
+        .querySelectorAll(
+            '.admin-tab-section'
+        )
+        .forEach(section => {
+
+            section.classList.add(
+                'hidden'
+            );
+
+        });
+
+
+    const selected =
+        document.getElementById(
+            'admin-' + tab
+        );
+
+
+    if(selected){
+
+        selected.classList.remove(
+            'hidden'
+        );
+
+    }
+
+
+    document
+        .querySelectorAll(
+            '.admin-tab'
+        )
+        .forEach(btn => {
+
+            btn.classList.remove(
+                'active'
+            );
+
+        });
+
+
+    if(button){
+
+        button.classList.add(
+            'active'
+        );
+
+    }
+
+
+    if(tab === 'subscriptions'){
+
+        loadAllSubscriptions();
+
+    }
+
+
+    if(tab === 'courses'){
+
+        renderExistingCourses();
+
+    }
+
+
+    if(tab === 'videos'){
+
+        renderExistingVideos();
+
+    }
+
+}
+
+
+/* =========================================================
+   MODALS
+========================================================= */
+
+function openModal(id){
+
+    document.getElementById(id)
+        .classList.remove(
+            'hidden'
+        );
+
+}
+
+
+function closeModal(id){
+
+    const modal =
+        document.getElementById(id);
+
+
+    if(modal){
+
+        modal.classList.add(
+            'hidden'
+        );
+
+    }
+
+
+    if(id === 'videoModal'){
+
+        document.getElementById(
+            'videoViewer'
+        ).innerHTML = '';
+
+    }
+
+}
+
+
+function closeModalOnBackground(
+    event,
+    id
+){
+
+    if(
+        event.target.id === id
+    ){
+
+        closeModal(id);
+
+    }
+
+}
+
+
+function openLoginModal(){
+
+    openModal(
+        'loginModal'
+    );
+
+}
+
+
+/* =========================================================
+   INITIALIZATION
+========================================================= */
+
+async function initialize(){
+
+    setSystemStatus(
+        'Loading learning materials...'
+    );
+
+
+    try{
+
+        const sessionResult =
+            await db.auth.getSession();
+
+
+        currentUser =
+            sessionResult.data.session?.user ||
+            null;
+
+
+        await loadCourses();
+
+        await loadDocuments();
+
+        await loadVideos();
+
+
+        if(currentUser){
+
+            await initializeUser();
+
+        }else{
+
+            document.getElementById(
+                'loginBtn'
+            ).classList.remove(
+                'hidden'
+            );
+
+            document.getElementById(
+                'logoutBtn'
+            ).classList.add(
+                'hidden'
+            );
+
+            document.getElementById(
+                'subscriptionStatus'
+            ).textContent =
+                'Guest';
+
+        }
+
+
+        renderCourseFilters();
+
+        renderCourseGrid();
+
+        renderContent();
+
+        renderExistingCourses();
+
+        renderExistingVideos();
+
+
+        setSystemStatus(
+            'Learning system ready.'
+        );
+
+
+    }catch(error){
+
+        console.error(error);
+
+        setSystemStatus(
+            'System error: ' +
+            error.message
+        );
+
+    }
+
+}
+
+
+db.auth.onAuthStateChange(
+    async (_event,session) => {
+
+        currentUser =
+            session?.user || null;
+
+
+        if(currentUser){
+
+            await initializeUser();
+
+            await loadDocuments();
+
+            await loadVideos();
+
+        }
+
+    }
+);
+
+
+document.addEventListener(
+    'keydown',
+    event => {
+
+        if(
+            event.key === 'Escape'
+        ){
+
+            [
+                'documentModal',
+                'videoModal',
+                'loginModal'
+            ].forEach(
+                closeModal
+            );
+
+        }
+
+    }
+);
+
+
+initialize();
+
+</script>
+
 </body>
- </html> 
+</html>
