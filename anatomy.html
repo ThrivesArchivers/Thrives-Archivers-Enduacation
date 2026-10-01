@@ -3967,57 +3967,125 @@ function filesToDataUrls(files){
    AI FUNCTIONS
 ========================================================= */
 
-async function invokeAiFunction(
-    functionName,
-    payload
-){
-
-    /*
-      This assumes your Supabase Edge Functions
-      are deployed under:
-
-      /functions/v1/<function-name>
-    */
-
-
-    const response =
-        await fetch(
-            `${SUPABASE_URL}/functions/v1/${functionName}`,
-            {
-                method:'POST',
-
-                headers:{
-                    'Content-Type':
-                        'application/json',
-
-                    'Authorization':
-                        `Bearer ${SUPABASE_ANON_KEY}`
-                },
-
-                body:
-                    JSON.stringify(payload)
-            }
-        );
-
-
-    if(!response.ok){
-
-        const text =
-            await response.text();
-
-        throw new Error(
-            text ||
-            `AI request failed (${response.status})`
-        );
-
+async
+ 
+function
+ 
+invokeAiFunction
+(
+functionName, payload
+) 
+{
+    
+const
+ {
+        
+data
+: { session },
+        
+error
+: sessionError
+    } = 
+await
+ db.auth.getSession();
+    
+if
+ (sessionError || !session?.access_token) {
+        
+throw
+ 
+new
+ 
+Error
+(
+'Please log in again before using the AI function.'
+);
     }
+    
+const
+ response = 
+await
+ fetch(
+        
+`
+${SUPABASE_URL}
+/functions/v1/
+${functionName}
+`
+,
+        {
+            
+method
+: 
+'POST'
+,
+            
+headers
+: {
+                
+'Content-Type'
+: 
+'application/json'
+,
+                
+'apikey'
+: SUPABASE_ANON_KEY,
+                
+'Authorization'
+: 
+`Bearer 
+${session.access_token}
+`
 
-
-    return response.json();
-
-}
-
-
+            },
+            
+body
+: 
+JSON
+.stringify(payload)
+        }
+    );
+    
+const
+ responseText = 
+await
+ response.text();
+    
+if
+ (!response.ok) {
+        
+throw
+ 
+new
+ 
+Error
+(responseText || 
+`AI request failed (
+${response.status}
+)`
+);
+    }
+    
+try
+ {
+        
+return
+ 
+JSON
+.parse(responseText);
+    } 
+catch
+ {
+        
+throw
+ 
+new
+ 
+Error
+(
+'The AI function returned a response that was not valid JSON.'
+);
+    }
 async function generateDocumentDraft(){
 
     if(!isAdmin()){
