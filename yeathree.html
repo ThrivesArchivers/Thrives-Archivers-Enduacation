@@ -1,1499 +1,5161 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Thrives Archivers Year Three Academic Learning Hub">
-  <title>Thrives Archivers | Year Three</title>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-
-  <style>
-    :root {
-      --blue: #1976d2;
-      --dark: #0d47a1;
-      --green: #16834a;
-      --red: #dc2626;
-      --orange: #d97706;
-      --purple: #7c3aed;
-      --bg: #f4f7fb;
-      --card: #fff;
-      --text: #1f2937;
-      --muted: #6b7280;
-      --border: #dbe4ef;
-      --shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: Arial, Helvetica, sans-serif;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.5;
-    }
-
-    button,
-    input,
-    textarea,
-    select {
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    button:disabled {
-      opacity: .6;
-      cursor: not-allowed;
-    }
-
-    a {
-      color: inherit;
-    }
-
-    header {
-      background: linear-gradient(135deg, var(--dark), var(--blue));
-      color: white;
-      padding: 16px 5%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 20px;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      box-shadow: 0 3px 15px rgba(0, 0, 0, 0.2);
-    }
-
-    .logo {
-      font-size: 21px;
-      font-weight: bold;
-    }
-
-    .logo small {
-      display: block;
-      font-size: 12px;
-      font-weight: normal;
-      opacity: .85;
-    }
-
-    nav {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      flex-wrap: wrap;
-    }
-
-    nav a {
-      color: white;
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 14px;
-    }
-
-    nav a:hover {
-      text-decoration: underline;
-    }
-
-    .container {
-      width: 92%;
-      max-width: 1200px;
-      margin: 30px auto;
-    }
-
-    .hero {
-      padding: 75px 20px;
-      text-align: center;
-      color: white;
-      background:
-        linear-gradient(135deg, rgba(13, 71, 161, 0.96), rgba(25, 118, 210, 0.92)),
-        radial-gradient(circle at top right, #90caf9, transparent 40%);
-    }
-
-    .hero h1 {
-      font-size: 52px;
-      margin-bottom: 8px;
-    }
-
-    .hero h2 {
-      font-weight: normal;
-      margin-bottom: 15px;
-    }
-
-    .hero p {
-      max-width: 760px;
-      margin: 8px auto;
-    }
-
-    .section-title {
-      text-align: center;
-      margin: 38px 0 22px;
-    }
-
-    .section-title h2 {
-      color: var(--dark);
-    }
-
-    .section-title p {
-      color: var(--muted);
-    }
-
-    .courses,
-    .resources {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-      gap: 18px;
-    }
-
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 20px;
-      box-shadow: var(--shadow);
-    }
-
-    .course {
-      border-top: 5px solid var(--blue);
-    }
-
-    .course h3,
-    .resource h3 {
-      color: var(--dark);
-      margin-bottom: 8px;
-    }
-
-    .course p,
-    .resource p {
-      color: var(--muted);
-      font-size: 14px;
-      margin-bottom: 12px;
-    }
-
-    .course-icon,
-    .resource-icon {
-      font-size: 35px;
-      margin-bottom: 8px;
-    }
-
-    .btn {
-      border: 0;
-      border-radius: 8px;
-      padding: 10px 14px;
-      background: var(--blue);
-      color: white;
-      font-weight: bold;
-      transition: .15s;
-    }
-
-    .btn:hover {
-      filter: brightness(.9);
-      transform: translateY(-1px);
-    }
-
-    .btn.green {
-      background: var(--green);
-    }
-
-    .btn.red {
-      background: var(--red);
-    }
-
-    .btn.orange {
-      background: var(--orange);
-    }
-
-    .btn.purple {
-      background: var(--purple);
-    }
-
-    .btn.light {
-      background: #e8f1ff;
-      color: var(--dark);
-    }
-
-    .actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 14px;
-    }
-
-    .search {
-      display: flex;
-      gap: 10px;
-      margin: 15px 0;
-    }
-
-    .search input {
-      flex: 1;
-    }
-
-    input,
-    textarea,
-    select {
-      width: 100%;
-      padding: 11px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      background: white;
-      color: var(--text);
-      outline: none;
-    }
-
-    input:focus,
-    textarea:focus,
-    select:focus {
-      border-color: var(--blue);
-      box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
-    }
-
-    textarea {
-      min-height: 140px;
-      resize: vertical;
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 14px;
-    }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .field.full {
-      grid-column: 1 / -1;
-    }
-
-    .field label {
-      color: var(--dark);
-      font-weight: bold;
-      font-size: 13px;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    .status {
-      padding: 11px;
-      border-radius: 8px;
-      background: #f3f4f6;
-      margin: 12px 0;
-      font-size: 14px;
-    }
-
-    .status.ok {
-      background: #dcfce7;
-      color: #166534;
-    }
-
-    .status.err {
-      background: #fee2e2;
-      color: #991b1b;
-    }
-
-    .status.warn {
-      background: #fef3c7;
-      color: #92400e;
-    }
-
-    .status.info {
-      background: #dbeafe;
-      color: #1e40af;
-    }
-
-    .badge {
-      display: inline-block;
-      margin-top: 10px;
-      padding: 4px 9px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: bold;
-      background: #e8f1ff;
-      color: var(--dark);
-    }
-
-    .resource {
-      cursor: pointer;
-      transition: .2s;
-    }
-
-    .resource:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-    }
-
-    .resource.locked {
-      border: 1px solid #fcd34d;
-      background: #fffdf7;
-    }
-
-    .admin {
-      background: white;
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-    }
-
-    .admin-layout {
-      display: grid;
-      grid-template-columns: 210px 1fr;
-    }
-
-    .sidebar {
-      background: var(--dark);
-      padding: 15px;
-    }
-
-    .sidebar button {
-      display: block;
-      width: 100%;
-      border: 0;
-      background: transparent;
-      color: white;
-      text-align: left;
-      padding: 12px;
-      border-radius: 7px;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
-
-    .sidebar button:hover,
-    .sidebar button.active {
-      background: rgba(255, 255, 255, 0.15);
-    }
-
-    .admin-content {
-      padding: 24px;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 12px;
-      margin: 15px 0;
-    }
-
-    .stat {
-      padding: 18px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      background: #f8fbff;
-    }
-
-    .stat strong {
-      display: block;
-      font-size: 30px;
-      color: var(--dark);
-    }
-
-    .list {
-      display: grid;
-      gap: 10px;
-      margin-top: 15px;
-    }
-
-    .list-item {
-      border: 1px solid var(--border);
-      border-radius: 9px;
-      padding: 13px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .list-item small {
-      color: var(--muted);
-    }
-
-    .modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.6);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 15px;
-      z-index: 30;
-    }
-
-    .modal.show {
-      display: flex;
-    }
-
-    .modal-box {
-      background: white;
-      border-radius: 14px;
-      padding: 24px;
-      width: min(850px, 100%);
-      max-height: 90vh;
-      overflow: auto;
-      position: relative;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
-    }
-
-    .close {
-      position: absolute;
-      right: 15px;
-      top: 10px;
-      border: 0;
-      background: none;
-      font-size: 28px;
-      color: #374151;
-    }
-
-    .viewer-content {
-      margin-top: 20px;
-      white-space: normal;
-    }
-
-    .viewer-content img {
-      max-width: 100%;
-      height: auto;
-    }
-
-    .viewer-content pre {
-      white-space: pre-wrap;
-      font-family: inherit;
-    }
-
-    .viewer-content table {
-      max-width: 100%;
-      overflow-x: auto;
-      display: block;
-    }
-
-    footer {
-      margin-top: 60px;
-      padding: 35px;
-      text-align: center;
-      color: white;
-      background: #111827;
-    }
-
-    footer a {
-      color: white;
-    }
-
-    .membership-panel {
-      margin-bottom: 20px;
-      background: linear-gradient(135deg, #eef7ff, #fff);
-    }
-
-    .resource-card {
-      display: grid;
-      gap: 10px;
-    }
-
-    .resource-meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .resource-badge {
-      display: inline-block;
-      padding: 4px 8px;
-      border-radius: 999px;
-      font-size: 11px;
-      font-weight: bold;
-      background: #eef6ff;
-      color: var(--dark);
-    }
-
-    .resource-badge.paid {
-      background: #fff7ed;
-      color: var(--orange);
-    }
-
-    .resource-actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 8px;
-    }
-
-    .lock-box {
-      padding: 12px;
-      background: #fff7ed;
-      border: 1px solid #fed7aa;
-      border-radius: 10px;
-      color: #9a5d00;
-      font-size: 13px;
-    }
-
-    .muted {
-      color: var(--muted);
-    }
-
-    .tab-panel {
-      display: block;
-    }
-
-    @media (max-width: 700px) {
-      header {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      nav {
-        width: 100%;
-      }
-
-      .hero h1 {
-        font-size: 38px;
-      }
-
-      .form-grid,
-      .admin-layout {
-        grid-template-columns: 1fr;
-      }
-
-      .sidebar {
-        display: flex;
-        overflow: auto;
-        gap: 5px;
-      }
-
-      .sidebar button {
-        min-width: max-content;
-      }
-
-      .list-item {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .search {
-        flex-direction: column;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thrives Archivers | Year Three</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+if(window.pdfjsLib){
+  window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+
+<style>
+:root{
+  --blue:#1976d2;
+  --dark:#0d47a1;
+  --green:#16834a;
+  --red:#dc2626;
+  --orange:#d97706;
+  --bg:#f4f7fb;
+  --card:#fff;
+  --text:#1f2937;
+  --muted:#6b7280;
+  --border:#dbe4ef;
+}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.5;
+}
+
+button,input,textarea,select{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+header{
+  background:linear-gradient(135deg,var(--dark),var(--blue));
+  color:white;
+  padding:16px 5%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:20px;
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+
+.logo{
+  font-size:21px;
+  font-weight:bold;
+}
+
+.logo small{
+  display:block;
+  font-size:12px;
+  font-weight:normal;
+  opacity:.85;
+}
+
+nav{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  flex-wrap:wrap;
+}
+
+nav a{
+  color:white;
+  text-decoration:none;
+  font-weight:bold;
+  font-size:14px;
+}
+
+.container{
+  width:92%;
+  max-width:1200px;
+  margin:30px auto;
+}
+
+.hero{
+  padding:75px 20px;
+  text-align:center;
+  color:white;
+  background:
+    linear-gradient(135deg,#0d47a1ee,#1976d2ee),
+    radial-gradient(circle at top right,#90caf9,transparent 40%);
+}
+
+.hero h1{
+  font-size:52px;
+  margin-bottom:8px;
+}
+
+.hero h2{
+  font-weight:normal;
+  margin-bottom:15px;
+}
+
+.hero p{
+  max-width:760px;
+  margin:8px auto;
+}
+
+.section-title{
+  text-align:center;
+  margin:38px 0 22px;
+}
+
+.section-title h2{
+  color:var(--dark);
+}
+
+.section-title p{
+  color:var(--muted);
+}
+
+.courses,
+.resources{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:18px;
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:20px;
+  box-shadow:0 6px 20px #0000000b;
+}
+
+.course{
+  border-top:5px solid var(--blue);
+}
+
+.course h3,
+.resource h3{
+  color:var(--dark);
+  margin-bottom:8px;
+}
+
+.course p,
+.resource p{
+  color:var(--muted);
+  font-size:14px;
+}
+
+.course-icon{
+  font-size:35px;
+  margin-bottom:8px;
+}
+
+.btn{
+  border:0;
+  border-radius:8px;
+  padding:10px 14px;
+  background:var(--blue);
+  color:white;
+  font-weight:bold;
+}
+
+.btn:hover{
+  filter:brightness(.9);
+}
+
+.btn.green{
+  background:var(--green);
+}
+
+.btn.red{
+  background:var(--red);
+}
+
+.btn.orange{
+  background:var(--orange);
+}
+
+.btn.light{
+  background:#e8f1ff;
+  color:var(--dark);
+}
+
+.actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:14px;
+}
+
+.search{
+  display:flex;
+  gap:10px;
+  margin:15px 0;
+}
+
+.search input{
+  flex:1;
+}
+
+input,textarea,select{
+  width:100%;
+  padding:11px;
+  border:1px solid var(--border);
+  border-radius:8px;
+  background:white;
+}
+
+textarea{
+  min-height:140px;
+  resize:vertical;
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+}
+
+.field{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.field.full{
+  grid-column:1/-1;
+}
+
+.field label{
+  color:var(--dark);
+  font-weight:bold;
+  font-size:13px;
+}
+
+.hidden{
+  display:none!important;
+}
+
+.status{
+  padding:11px;
+  border-radius:8px;
+  background:#f3f4f6;
+  margin:12px 0;
+  font-size:14px;
+}
+
+.status.ok{
+  background:#dcfce7;
+  color:#166534;
+}
+
+.status.err{
+  background:#fee2e2;
+  color:#991b1b;
+}
+
+.status.warn{
+  background:#fef3c7;
+  color:#92400e;
+}
+
+.badge{
+  display:inline-block;
+  margin-top:10px;
+  padding:4px 9px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:bold;
+  background:#e8f1ff;
+  color:var(--dark);
+}
+
+.resource{
+  cursor:pointer;
+  transition:.2s;
+}
+
+.resource:hover{
+  transform:translateY(-3px);
+  box-shadow:0 10px 25px #0002;
+}
+
+.resource-icon{
+  font-size:34px;
+}
+
+.admin{
+  background:white;
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:0 8px 30px #00000012;
+}
+
+.admin-layout{
+  display:grid;
+  grid-template-columns:210px 1fr;
+}
+
+.sidebar{
+  background:var(--dark);
+  padding:15px;
+}
+
+.sidebar button{
+  display:block;
+  width:100%;
+  border:0;
+  background:transparent;
+  color:white;
+  text-align:left;
+  padding:12px;
+  border-radius:7px;
+  margin-bottom:5px;
+  font-weight:bold;
+}
+
+.sidebar button:hover,
+.sidebar button.active{
+  background:#ffffff25;
+}
+
+.admin-content{
+  padding:24px;
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:12px;
+  margin:15px 0;
+}
+
+.stat{
+  padding:18px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  background:#f8fbff;
+}
+
+.stat strong{
+  display:block;
+  font-size:30px;
+  color:var(--dark);
+}
+
+.list{
+  display:grid;
+  gap:10px;
+  margin-top:15px;
+}
+
+.list-item{
+  border:1px solid var(--border);
+  border-radius:9px;
+  padding:13px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+}
+
+.list-item small{
+  color:var(--muted);
+}
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:#0009;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:15px;
+  z-index:30;
+}
+
+.modal.show{
+  display:flex;
+}
+
+.modal-box{
+  background:white;
+  border-radius:14px;
+  padding:24px;
+  width:min(850px,100%);
+  max-height:90vh;
+  overflow:auto;
+  position:relative;
+}
+
+.close{
+  position:absolute;
+  right:15px;
+  top:10px;
+  border:0;
+  background:none;
+  font-size:28px;
+}
+
+.viewer-content{
+  margin-top:20px;
+  white-space:normal;
+}
+
+.viewer-content img{
+  max-width:100%;
+}
+
+.viewer-content pre{
+  white-space:pre-wrap;
+  font-family:inherit;
+}
+
+footer{
+  margin-top:60px;
+  padding:35px;
+  text-align:center;
+  color:white;
+  background:#111827;
+}
+
+/* =========================================================
+   DOCUMENT TOOLBAR
+========================================================= */
+
+.document-toolbar{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:18px;
+  padding:12px;
+  background:#f8fbff;
+  border:1px solid var(--border);
+  border-radius:10px;
+}
+
+.document-toolbar .btn{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+}
+
+.read-status{
+  flex-basis:100%;
+  margin-top:2px;
+  color:var(--muted);
+  font-size:13px;
+}
+
+.audio-speed-control{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+  padding:8px 10px;
+  border:1px solid var(--border);
+  border-radius:8px;
+  background:white;
+}
+
+.audio-speed-control label{
+  font-size:13px;
+  font-weight:bold;
+  color:var(--dark);
+}
+
+.audio-speed-control select{
+  width:auto;
+  min-width:150px;
+  padding:8px 10px;
+}
+
+.audio-player-box{
+  flex-basis:100%;
+  padding:10px;
+  border:1px solid var(--border);
+  border-radius:9px;
+  background:white;
+  margin-top:4px;
+}
+
+.audio-player-box audio{
+  width:100%;
+}
+
+.audio-download-note{
+  margin-top:8px;
+  color:var(--muted);
+  font-size:12px;
+}
+
+.document-export{
+  width:190mm;
+  max-width:100%;
+  box-sizing:border-box;
+  background:#fff;
+  color:#111827;
+  padding:12mm 14mm;
+  margin:0 auto;
+}
+
+.document-export-header{
+  text-align:center;
+  border-bottom:2px solid #0d47a1;
+  padding-bottom:6mm;
+  margin-bottom:7mm;
+  break-inside:avoid;
+  page-break-inside:avoid;
+}
+
+.document-export-logo{
+  display:block;
+  width:25mm;
+  height:25mm;
+  object-fit:contain;
+  margin:0 auto 3mm;
+}
+
+.document-export-brand{
+  color:#0d47a1;
+  font-size:22px;
+  font-weight:800;
+  letter-spacing:.8px;
+}
+
+.document-export-title{
+  margin-top:3mm;
+  font-size:25px;
+  line-height:1.25;
+}
+
+.document-export-meta{
+  margin-top:3mm;
+  font-size:13px;
+  line-height:1.5;
+  color:#4b5563;
+}
+
+.document-export-body{
+  line-height:1.65;
+  font-size:15px;
+  word-wrap:break-word;
+  overflow-wrap:break-word;
+  word-break:normal;
+  orphans:3;
+  widows:3;
+}
+
+.document-export-body img{
+  max-width:100%;
+  height:auto;
+}
+
+.document-export-body table{
+  width:100%;
+  max-width:100%;
+  border-collapse:collapse;
+}
+
+.document-export-body pre{
+  white-space:pre-wrap;
+  overflow-wrap:break-word;
+}
+
+.document-export-body h1,
+.document-export-body h2,
+.document-export-body h3,
+.document-export-body h4,
+.document-export-body h5,
+.document-export-body h6,
+.document-export-body p,
+.document-export-body li,
+.document-export-body table,
+.document-export-body tr,
+.document-export-body blockquote,
+.document-export-body pre,
+.document-export-body figure,
+.document-export-body img,
+.pdf-avoid-break{
+  break-inside:avoid!important;
+  page-break-inside:avoid!important;
+}
+
+.document-export-promo{
+  margin-top:5mm;
+  padding:4mm;
+  border:1px solid #dbe4ef;
+  border-radius:3mm;
+  text-align:center;
+  background:#f8fbff;
+  line-height:1.6;
+  break-inside:avoid;
+  page-break-inside:avoid;
+}
+
+.document-export-promo strong{
+  color:#0d47a1;
+}
+
+.document-export-promo a{
+  color:#0d47a1;
+  text-decoration:none;
+  font-weight:700;
+  overflow-wrap:anywhere;
+}
+
+.document-export-footer{
+  margin-top:10mm;
+  padding-top:4mm;
+  border-top:1px solid #dbe4ef;
+  text-align:center;
+  color:#6b7280;
+  font-size:12px;
+  line-height:1.6;
+  break-inside:avoid;
+  page-break-inside:avoid;
+}
+
+.drive-document-wrapper iframe{
+  background:#fff;
+}
+
+.document-preview-page{
+  background:#fff;
+  width:190mm;
+  max-width:100%;
+  margin:0 auto;
+  box-shadow:0 2px 15px #0003;
+}
+
+@page{
+  size:A4 portrait;
+  margin:12mm;
+}
+
+@media print{
+  body *{
+    visibility:hidden!important;
+  }
+
+  #pdfPrintArea,
+  #pdfPrintArea *{
+    visibility:visible!important;
+  }
+
+  #pdfPrintArea{
+    position:absolute!important;
+    left:0!important;
+    top:0!important;
+    width:190mm!important;
+    max-width:190mm!important;
+    margin:0!important;
+    box-shadow:none!important;
+  }
+}
+
+@media(max-width:700px){
+
+  header{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .hero h1{
+    font-size:38px;
+  }
+
+  .form-grid,
+  .admin-layout{
+    grid-template-columns:1fr;
+  }
+
+  .sidebar{
+    display:flex;
+    overflow:auto;
+    gap:5px;
+  }
+
+  .sidebar button{
+    min-width:max-content;
+  }
+
+  .list-item{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+}
+</style>
 </head>
+
 <body>
 
-  <header>
-    <div class="logo">
-      THRIVES ARCHIVERS
-      <small>Year Three Learning Hub</small>
-    </div>
-
-    <nav>
-      <a href="#home">Home</a>
-      <a href="#courses">Courses</a>
-      <a href="#resources">Resources</a>
-      <a href="#admin" id="adminLink" class="hidden">Admin</a>
-      <button id="loginButton" class="btn light" onclick="openLogin()">Admin Login</button>
-      <button id="logoutButton" class="btn light hidden" onclick="logoutAdmin()">Logout</button>
-    </nav>
-  </header>
-
-  <section class="hero" id="home">
-    <h1>YEAR THREE</h1>
-    <h2>Thrives Archivers Academic Hub</h2>
-    <p>Access simplified documents, video lessons, quizzes and carefully organized learning resources in one place.</p>
-    <p><b><i>"Everything is possible to achieve if we are together."</i></b></p>
-  </section>
-
-  <main class="container">
-
-    <section class="card membership-panel">
-      <div class="section-title" style="margin: 0 0 20px;">
-        <h2>Student Access and Payment</h2>
-        <p>Sign in below to check your access or activate a 1-month paid subscription.</p>
-      </div>
-
-      <div class="form-grid">
-        <div class="field">
-          <label for="memberName">Full name</label>
-          <input id="memberName" type="text" placeholder="Enter student name">
-        </div>
-
-        <div class="field">
-          <label for="memberEmail">Email</label>
-          <input id="memberEmail" type="email" placeholder="student@email.com">
-        </div>
-      </div>
-
-      <div class="actions">
-        <button class="btn green" onclick="signInMember()">Login</button>
-        <button class="btn light" onclick="signOutMember()">Logout</button>
-        <button class="btn purple" onclick="activateOneMonthAccess()">Activate 1 Month Access</button>
-      </div>
-
-      <div id="memberStatus" class="status info">No student signed in yet.</div>
-    </section>
-
-    <section id="courses">
-      <div class="section-title">
-        <h2>Year Three Courses</h2>
-        <p>Select a course to view published resources.</p>
-      </div>
-
-      <div class="courses">
-        <div class="card course">
-          <div class="course-icon">🧬</div>
-          <h3>Pathology</h3>
-          <p>Disease processes, causes, mechanisms and clinical manifestations.</p>
-          <button class="btn" onclick="loadCourse('Pathology')">View Resources</button>
-        </div>
-
-        <div class="card course">
-          <div class="course-icon">🌍</div>
-          <h3>Public Health</h3>
-          <p>Disease prevention, health promotion, epidemiology and community health.</p>
-          <button class="btn" onclick="loadCourse('Public Health')">View Resources</button>
-        </div>
-
-        <div class="card course">
-          <div class="course-icon">💊</div>
-          <h3>Pharmacology</h3>
-          <p>Drugs, mechanisms of action, pharmacokinetics and adverse effects.</p>
-          <button class="btn" onclick="loadCourse('Pharmacology')">View Resources</button>
-        </div>
-
-        <div class="card course">
-          <div class="course-icon">⚖️</div>
-          <h3>Medical Ethics</h3>
-          <p>Ethical principles, professional conduct, patient rights and consent.</p>
-          <button class="btn" onclick="loadCourse('Medical Ethics')">View Resources</button>
-        </div>
-
-        <div class="card course">
-          <div class="course-icon">🦠</div>
-          <h3>Microbiology</h3>
-          <p>Microorganisms, bacteria, viruses, fungi, parasites and diagnosis.</p>
-          <button class="btn" onclick="loadCourse('Microbiology')">View Resources</button>
-        </div>
-      </div>
-    </section>
-
-    <section id="resources">
-      <div class="section-title">
-        <h2 id="resourceHeading">Published Learning Resources</h2>
-        <p id="resourceDescription">Choose a course or search all published resources.</p>
-      </div>
-
-      <div class="search">
-        <input id="resourceSearch" placeholder="Search resources..." oninput="filterResources()">
-        <button class="btn light" onclick="loadPublishedResources()">Refresh</button>
-      </div>
-
-      <div id="resourceArea" class="resources"></div>
-    </section>
-
-    <section id="admin" class="hidden">
-      <div class="section-title">
-        <h2>Administrator Panel</h2>
-        <p>Manage paid access, uploaded documents, summaries, and Google Drive links.</p>
-      </div>
-
-      <div class="admin">
-        <div class="admin-layout">
-          <aside class="sidebar">
-            <button class="active" data-tab="dashboard" onclick="showTab('dashboard', this)">Dashboard</button>
-            <button data-tab="payments" onclick="showTab('payments', this)">Paid Access</button>
-            <button data-tab="documents" onclick="showTab('documents', this)">Documents</button>
-            <button data-tab="drive" onclick="showTab('drive', this)">Drive Links</button>
-          </aside>
-
-          <div class="admin-content">
-            <div id="dashboardPanel" class="tab-panel">
-              <h3>Dashboard</h3>
-              <div class="stats">
-                <div class="stat"><strong id="totalResourcesStat">0</strong><span>Total resources</span></div>
-                <div class="stat"><strong id="activeMembersStat">0</strong><span>Active members</span></div>
-                <div class="stat"><strong id="paidRevenueStat">0</strong><span>Payments</span></div>
-              </div>
-
-              <div id="dashboardStatus" class="status info">Loading admin dashboard...</div>
-            </div>
-
-            <div id="paymentsPanel" class="tab-panel hidden">
-              <h3>Paid Access Management</h3>
-
-              <div class="form-grid" style="margin-top: 16px;">
-                <div class="field">
-                  <label>Student name</label>
-                  <input id="adminMemberName" type="text" placeholder="e.g. Jane Doe">
-                </div>
-
-                <div class="field">
-                  <label>Student email</label>
-                  <input id="adminMemberEmail" type="email" placeholder="student@email.com">
-                </div>
-              </div>
-
-              <div class="actions">
-                <button class="btn green" onclick="grantAccessManual()">Grant 1 Month Access</button>
-              </div>
-
-              <div id="paymentsStatus" class="status info">Manual access is enabled for 1 month at a time.</div>
-
-              <div id="paymentsList" class="list"></div>
-            </div>
-
-            <div id="documentsPanel" class="tab-panel hidden">
-              <h3>Upload PDF + AI Summary</h3>
-
-              <div class="form-grid">
-                <div class="field full">
-                  <label>Document title</label>
-                  <input id="documentTitle" type="text" placeholder="e.g. Pathology Revision Notes">
-                </div>
-
-                <div class="field">
-                  <label>Course</label>
-                  <select id="documentCourse">
-                    <option value="Pathology">Pathology</option>
-                    <option value="Public Health">Public Health</option>
-                    <option value="Pharmacology">Pharmacology</option>
-                    <option value="Medical Ethics">Medical Ethics</option>
-                    <option value="Microbiology">Microbiology</option>
-                  </select>
-                </div>
-
-                <div class="field">
-                  <label>Access type</label>
-                  <select id="documentAccess">
-                    <option value="free">Free</option>
-                    <option value="paid">Paid Access</option>
-                  </select>
-                </div>
-
-                <div class="field full">
-                  <label>Upload PDF</label>
-                  <input id="documentFile" type="file" accept="application/pdf">
-                </div>
-
-                <div class="field full">
-                  <label>Summary</label>
-                  <textarea id="documentSummary" placeholder="Write a summary for the uploaded PDF or paste a summary here."></textarea>
-                </div>
-              </div>
-
-              <div class="actions">
-                <button class="btn green" onclick="uploadPdfDocument()">Upload and Summarize</button>
-              </div>
-
-              <div id="documentStatus" class="status info">PDF extraction is available. If an AI endpoint is configured, it will be used. Otherwise, the summary is generated locally.</div>
-            </div>
-
-            <div id="drivePanel" class="tab-panel hidden">
-              <h3>Add Google Drive Resource</h3>
-
-              <div class="form-grid">
-                <div class="field">
-                  <label>Resource title</label>
-                  <input id="driveTitle" type="text" placeholder="e.g. Epidemiology Notes">
-                </div>
-
-                <div class="field">
-                  <label>Course</label>
-                  <select id="driveCourse">
-                    <option value="Pathology">Pathology</option>
-                    <option value="Public Health">Public Health</option>
-                    <option value="Pharmacology">Pharmacology</option>
-                    <option value="Medical Ethics">Medical Ethics</option>
-                    <option value="Microbiology">Microbiology</option>
-                  </select>
-                </div>
-
-                <div class="field">
-                  <label>Access type</label>
-                  <select id="driveAccess">
-                    <option value="free">Free</option>
-                    <option value="paid">Paid Access</option>
-                  </select>
-                </div>
-
-                <div class="field full">
-                  <label>Google Drive / Share link</label>
-                  <input id="driveLink" type="url" placeholder="https://drive.google.com/file/d/.../view">
-                </div>
-
-                <div class="field full">
-                  <label>Short description</label>
-                  <textarea id="driveDescription" placeholder="Add a short note for this resource."></textarea>
-                </div>
-              </div>
-
-              <div class="actions">
-                <button class="btn purple" onclick="addDriveResource()">Add Google Drive Resource</button>
-              </div>
-
-              <div id="driveStatus" class="status info">This allows two ways to add content: direct public Google Drive link or uploaded PDF summary.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-  </main>
-
-  <div id="loginModal" class="modal">
-    <div class="modal-box">
-      <button class="close" onclick="closeLogin()">×</button>
-      <h3>Admin Access</h3>
-
-      <div class="form-grid" style="margin-top: 16px;">
-        <div class="field full">
-          <label>Username</label>
-          <input id="adminUsername" type="text" placeholder="admin">
-        </div>
-
-        <div class="field full">
-          <label>Password</label>
-          <input id="adminPassword" type="password" placeholder="Enter password">
-        </div>
-      </div>
-
-      <div class="actions">
-        <button class="btn green" onclick="loginAdmin()">Login</button>
-      </div>
-
-      <div id="adminStatus" class="status info">Default admin login: admin / admin123</div>
-    </div>
-  </div>
-
-  <footer>
-    <p>Thrives Archivers • Year Three Academic Hub</p>
-    <p><a href="#home">Back to top</a></p>
-  </footer>
-
-  <script>
-    const STORAGE_KEYS = {
-      resources: 'thrives_year3_resources',
-      payments: 'thrives_year3_payments',
-      student: 'thrives_year3_student',
-      admin: 'thrives_year3_admin'
-    };
-
-    const DEFAULT_RESOURCES = [
-      {
-        id: 'pathology-1',
-        title: 'Pathology Core Revision',
-        course: 'Pathology',
-        description: 'A practical summary of disease mechanisms and diagnostic clues.',
-        type: 'document',
-        paid: false,
-        summary: 'Pathology reviews the structural and functional changes caused by disease. Students should connect onset of disease with inflammation, cell injury, adaptation, and healing.',
-        fileUrl: '',
-        driveUrl: ''
-      },
-      {
-        id: 'public-health-1',
-        title: 'Public Health Introduction',
-        course: 'Public Health',
-        description: 'Core public health concepts, prevention, and community health planning.',
-        type: 'document',
-        paid: false,
-        summary: 'Public health focuses on prevention, health promotion, health education, and disease surveillance within populations.',
-        fileUrl: '',
-        driveUrl: ''
-      },
-      {
-        id: 'pharmacology-1',
-        title: 'Pharmacology Essentials',
-        course: 'Pharmacology',
-        description: 'Drug classes, mechanisms, adverse effects, and therapeutic choices.',
-        type: 'document',
-        paid: true,
-        summary: 'Pharmacology links drug action with patient response. Focus on receptor binding, pharmacokinetics, dosing, and adverse effects.',
-        fileUrl: '',
-        driveUrl: ''
-      },
-      {
-        id: 'ethics-1',
-        title: 'Medical Ethics Overview',
-        course: 'Medical Ethics',
-        description: 'Consent, patient confidentiality, autonomy, and professionalism.',
-        type: 'document',
-        paid: true,
-        summary: 'Medical ethics protects patient dignity, autonomy, informed consent, and professional responsibility.',
-        fileUrl: '',
-        driveUrl: ''
-      }
-    ];
-
-    let currentStudent = getStoredStudent();
-
-    function getStoredStudent() {
-      const saved = localStorage.getItem(STORAGE_KEYS.student);
-      return saved ? JSON.parse(saved) : null;
-    }
-
-    function saveStudent(student) {
-      localStorage.setItem(STORAGE_KEYS.student, JSON.stringify(student));
-      currentStudent = student;
-    }
-
-    function clearStudent() {
-      localStorage.removeItem(STORAGE_KEYS.student);
-      currentStudent = null;
-    }
-
-    function getResources() {
-      const saved = localStorage.getItem(STORAGE_KEYS.resources);
-      if (!saved) {
-        localStorage.setItem(STORAGE_KEYS.resources, JSON.stringify(DEFAULT_RESOURCES));
-        return [...DEFAULT_RESOURCES];
-      }
-      try {
-        const data = JSON.parse(saved);
-        return Array.isArray(data) && data.length ? data : [...DEFAULT_RESOURCES];
-      } catch (error) {
-        return [...DEFAULT_RESOURCES];
-      }
-    }
-
-    function saveResources(resources) {
-      localStorage.setItem(STORAGE_KEYS.resources, JSON.stringify(resources));
-    }
-
-    function getPayments() {
-      const saved = localStorage.getItem(STORAGE_KEYS.payments);
-      if (!saved) {
-        localStorage.setItem(STORAGE_KEYS.payments, JSON.stringify([]));
-        return [];
-      }
-      try {
-        return JSON.parse(saved);
-      } catch (error) {
-        return [];
-      }
-    }
-
-    function savePayments(payments) {
-      localStorage.setItem(STORAGE_KEYS.payments, JSON.stringify(payments));
-    }
-
-    function openLogin() {
-      document.getElementById('loginModal').classList.add('show');
-    }
-
-    function closeLogin() {
-      document.getElementById('loginModal').classList.remove('show');
-    }
-
-    function loginAdmin() {
-      const username = document.getElementById('adminUsername').value.trim();
-      const password = document.getElementById('adminPassword').value.trim();
-      const adminStatus = document.getElementById('adminStatus');
-
-      if (username === 'admin' && password === 'admin123') {
-        localStorage.setItem(STORAGE_KEYS.admin, 'true');
-        adminStatus.className = 'status ok';
-        adminStatus.textContent = 'Admin login successful.';
-        document.getElementById('adminLink').classList.remove('hidden');
-        document.getElementById('admin').classList.remove('hidden');
-        closeLogin();
-        refreshAdminButtons();
-      } else {
-        adminStatus.className = 'status err';
-        adminStatus.textContent = 'Invalid admin login. Use admin / admin123.';
-      }
-    }
-
-    function isAdminLoggedIn() {
-      return localStorage.getItem(STORAGE_KEYS.admin) === 'true';
-    }
-
-    function refreshAdminButtons() {
-      const adminLink = document.getElementById('adminLink');
-      const adminSection = document.getElementById('admin');
-      const loginButton = document.getElementById('loginButton');
-      const logoutButton = document.getElementById('logoutButton');
-
-      if (isAdminLoggedIn()) {
-        adminLink.classList.remove('hidden');
-        adminSection.classList.remove('hidden');
-        loginButton.classList.add('hidden');
-        logoutButton.classList.remove('hidden');
-      } else {
-        adminLink.classList.add('hidden');
-        adminSection.classList.add('hidden');
-        loginButton.classList.remove('hidden');
-        logoutButton.classList.add('hidden');
-      }
-    }
-
-    function logoutAdmin() {
-      localStorage.removeItem(STORAGE_KEYS.admin);
-      refreshAdminButtons();
-      const adminStatus = document.getElementById('adminStatus');
-      if (adminStatus) {
-        adminStatus.className = 'status info';
-        adminStatus.textContent = 'Default admin login: admin / admin123';
-      }
-    }
-
-    function signInMember() {
-      const name = document.getElementById('memberName').value.trim();
-      const email = document.getElementById('memberEmail').value.trim();
-      const memberStatus = document.getElementById('memberStatus');
-
-      if (!name || !email) {
-        memberStatus.className = 'status err';
-        memberStatus.textContent = 'Please enter a full name and valid email.';
-        return;
-      }
-
-      const member = {
-        id: crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(),
-        name,
-        email: email.toLowerCase(),
-        signedInAt: new Date().toISOString()
-      };
-
-      saveStudent(member);
-      memberStatus.className = 'status ok';
-      memberStatus.textContent = `Signed in as ${member.name}. Checking active paid access...`;
-      refreshMemberStatus();
-      renderResources();
-    }
-
-    function signOutMember() {
-      clearStudent();
-      document.getElementById('memberStatus').className = 'status info';
-      document.getElementById('memberStatus').textContent = 'No student signed in yet.';
-      renderResources();
-    }
-
-    function getCurrentStudent() {
-      return getStoredStudent();
-    }
-
-    function hasActiveAccess(email) {
-      if (!email) return false;
-      const now = Date.now();
-      const payments = getPayments();
-      const active = payments.filter(payment => {
-        const isSameEmail = payment.email && payment.email.toLowerCase() === email.toLowerCase();
-        const isActive = payment.status === 'active';
-        const expiresAt = payment.expiresAt ? new Date(payment.expiresAt).getTime() : 0;
-        return isSameEmail && isActive && expiresAt > now;
-      });
-      return active.length > 0;
-    }
-
-    function getExpiryDate(email) {
-      if (!email) return null;
-      const payments = getPayments();
-      const sorted = payments
-        .filter(payment => payment.email && payment.email.toLowerCase() === email.toLowerCase())
-        .map(payment => new Date(payment.expiresAt || payment.createdAt).getTime())
-        .sort((a, b) => b - a);
-
-      return sorted.length ? new Date(sorted[0]).toISOString() : null;
-    }
-
-    function refreshMemberStatus() {
-      const student = getCurrentStudent();
-      const status = document.getElementById('memberStatus');
-
-      if (!student) {
-        status.className = 'status info';
-        status.textContent = 'No student signed in yet.';
-        return;
-      }
-
-      const access = hasActiveAccess(student.email);
-      const expiry = getExpiryDate(student.email);
-
-      if (access && expiry) {
-        status.className = 'status ok';
-        status.textContent = `${student.name} has active paid access until ${new Date(expiry).toLocaleString()}.`;
-      } else {
-        status.className = 'status warn';
-        status.textContent = `${student.name} does not have an active subscription. Activate 1 month access to unlock paid resources.`;
-      }
-    }
-
-    function activateOneMonthAccess() {
-      const student = getCurrentStudent();
-      const status = document.getElementById('memberStatus');
-
-      if (!student) {
-        status.className = 'status err';
-        status.textContent = 'Please sign in first before activating access.';
-        return;
-      }
-
-      grantAccessRecord(student.name, student.email, 'Manual payment');
-      refreshMemberStatus();
-      renderResources();
-    }
-
-    function grantAccessManual() {
-      const name = document.getElementById('adminMemberName').value.trim();
-      const email = document.getElementById('adminMemberEmail').value.trim();
-      const paymentsStatus = document.getElementById('paymentsStatus');
-
-      if (!name || !email) {
-        paymentsStatus.className = 'status err';
-        paymentsStatus.textContent = 'Please enter both student name and email.';
-        return;
-      }
-
-      grantAccessRecord(name, email, 'Admin granted access');
-      paymentsStatus.className = 'status ok';
-      paymentsStatus.textContent = `Access granted to ${name} (${email}) for 1 month.`;
-      renderPaymentsList();
-      refreshMemberStatus();
-      renderResources();
-    }
-
-    function grantAccessRecord(name, email, source) {
-      const payments = getPayments();
-      const now = new Date();
-      const expiresAt = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000).toISOString();
-      const record = {
-        id: crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(),
-        name,
-        email: email.toLowerCase(),
-        status: 'active',
-        source,
-        createdAt: now.toISOString(),
-        expiresAt,
-        paidAt: now.toISOString()
-      };
-
-      const existingIndex = payments.findIndex(item => item.email && item.email.toLowerCase() === email.toLowerCase());
-      if (existingIndex >= 0) {
-        payments[existingIndex] = record;
-      } else {
-        payments.unshift(record);
-      }
-
-      savePayments(payments);
-    }
-
-    function renderPaymentsList() {
-      const list = document.getElementById('paymentsList');
-      const payments = getPayments();
-
-      if (!payments.length) {
-        list.innerHTML = '<div class="list-item"><div><strong>No payments yet</strong><br><small>Manual access will appear here.</small></div></div>';
-        return;
-      }
-
-      list.innerHTML = payments.map(payment => {
-        const expiresText = payment.expiresAt ? new Date(payment.expiresAt).toLocaleString() : 'No expiry';
-        const active = payment.status === 'active' && payment.expiresAt && new Date(payment.expiresAt).getTime() > Date.now();
-        return `
-          <div class="list-item">
-            <div>
-              <strong>${payment.name}</strong><br>
-              <small>${payment.email} • ${payment.source}</small>
-            </div>
-            <div style="text-align: right;">
-              <strong style="color:${active ? '#16834a' : '#dc2626'};">${active ? 'Active' : 'Expired'}</strong><br>
-              <small>Expires: ${expiresText}</small>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function filterResources() {
-      renderResources();
-    }
-
-    function loadCourse(courseName) {
-      const search = document.getElementById('resourceSearch');
-      search.value = courseName;
-      renderResources();
-      document.getElementById('resourceHeading').textContent = `${courseName} Resources`;
-      document.getElementById('resourceDescription').textContent = `Showing published ${courseName.toLowerCase()} resources.`;
-    }
-
-    function loadPublishedResources() {
-      document.getElementById('resourceHeading').textContent = 'Published Learning Resources';
-      document.getElementById('resourceDescription').textContent = 'Choose a course or search all published resources.';
-      renderResources();
-    }
-
-    function renderResources() {
-      const area = document.getElementById('resourceArea');
-      const resources = getResources();
-      const student = getCurrentStudent();
-      const active = student ? hasActiveAccess(student.email) : false;
-      const query = document.getElementById('resourceSearch').value.trim().toLowerCase();
-
-      const filtered = resources.filter(resource => {
-        const inQuery = !query ||
-          resource.title.toLowerCase().includes(query) ||
-          resource.course.toLowerCase().includes(query) ||
-          resource.description.toLowerCase().includes(query);
-        return inQuery;
-      });
-
-      if (!filtered.length) {
-        area.innerHTML = '<div class="card"><p>No resources match your search.</p></div>';
-        return;
-      }
-
-      area.innerHTML = filtered.map(resource => {
-        const locked = resource.paid && !active;
-        const badge = resource.paid ? '<span class="resource-badge paid">Paid</span>' : '<span class="resource-badge">Free</span>';
-
-        return `
-          <div class="card resource ${locked ? 'locked' : ''}">
-            <div class="resource-card">
-              <div class="resource-meta">
-                <strong>${resource.course}</strong>
-                ${badge}
-              </div>
-              <h3>${resource.title}</h3>
-              <p>${resource.description}</p>
-
-              ${locked ? `
-                <div class="lock-box">
-                  Paid access required. Activate a 1-month subscription to unlock this resource.
-                </div>
-              ` : `
-                <div class="resource-meta">
-                  <span>${resource.type === 'drive' ? 'Google Drive' : resource.type === 'pdf' ? 'PDF Document' : 'Document'}</span>
-                  <span>${resource.summary ? 'Summary available' : 'No summary'}</span>
-                </div>
-              `}
-
-              <div class="resource-actions">
-                ${resource.paid && !active ? `
-                  <button class="btn purple" onclick="activateOneMonthAccess()">Unlock with 1 Month</button>
-                ` : ''}
-
-                ${resource.driveUrl ? `
-                  <a href="${resource.driveUrl}" target="_blank" rel="noopener" class="btn light">Open Link</a>
-                ` : ''}
-
-                ${resource.fileUrl ? `
-                  <a href="${resource.fileUrl}" target="_blank" rel="noopener" class="btn light">Open File</a>
-                ` : ''}
-
-                ${resource.summary && !locked ? `
-                  <button class="btn light" onclick="showResourceSummary('${resource.id}')">View Summary</button>
-                ` : ''}
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function showResourceSummary(resourceId) {
-      const resource = getResources().find(item => item.id === resourceId);
-      if (!resource) return;
-
-      const modal = document.createElement('div');
-      modal.className = 'modal show';
-      modal.innerHTML = `
-        <div class="modal-box">
-          <button class="close" onclick="this.parentElement.parentElement.remove()">×</button>
-          <h3>${resource.title}</h3>
-          <div class="status info">${resource.course}</div>
-          <div class="viewer-content">
-            <p>${resource.summary || 'No summary available.'}</p>
-          </div>
-        </div>
-      `;
-
-      document.body.appendChild(modal);
-    }
-
-    function showTab(tabName, button) {
-      document.querySelectorAll('.sidebar button').forEach(buttonEl => {
-        buttonEl.classList.toggle('active', buttonEl === button);
-      });
-
-      document.querySelectorAll('.tab-panel').forEach(panel => {
-        const shouldShow = panel.id === `${tabName}Panel`;
-        panel.classList.toggle('hidden', !shouldShow);
-      });
-    }
-
-    function updateDashboardStats() {
-      const payments = getPayments();
-      const resources = getResources();
-      const activeMembers = payments.filter(payment => {
-        const expiresAt = payment.expiresAt ? new Date(payment.expiresAt).getTime() : 0;
-        return payment.status === 'active' && expiresAt > Date.now();
-      }).length;
-
-      document.getElementById('totalResourcesStat').textContent = resources.length;
-      document.getElementById('activeMembersStat').textContent = activeMembers;
-      document.getElementById('paidRevenueStat').textContent = `${payments.length}`;
-
-      const dashboardStatus = document.getElementById('dashboardStatus');
-      if (isAdminLoggedIn()) {
-        dashboardStatus.className = 'status ok';
-        dashboardStatus.textContent = `${resources.length} resources available and ${activeMembers} active paid members.`;
-      } else {
-        dashboardStatus.className = 'status warn';
-        dashboardStatus.textContent = 'Admin login required to update and manage resources.';
-      }
-    }
-
-    async function uploadPdfDocument() {
-      const fileInput = document.getElementById('documentFile');
-      const file = fileInput.files[0];
-      const status = document.getElementById('documentStatus');
-      const title = document.getElementById('documentTitle').value.trim();
-      const course = document.getElementById('documentCourse').value;
-      const access = document.getElementById('documentAccess').value;
-      const summaryText = document.getElementById('documentSummary').value.trim();
-
-      if (!file && !summaryText) {
-        status.className = 'status err';
-        status.textContent = 'Please upload a PDF or paste a summary before saving.';
-        return;
-      }
-
-      status.className = 'status info';
-      status.textContent = 'Processing uploaded PDF and generating document summary...';
-
-      let extractedText = summaryText;
-      if (file && file.type === 'application/pdf') {
-        try {
-          extractedText = await extractPdfText(file);
-        } catch (error) {
-          console.error(error);
-          extractedText = summaryText || 'PDF processed locally. Please review and add a summary.';
-        }
-      }
-
-      const finalSummary = summaryText || buildSummaryFromText(extractedText, title || 'Document');
-
-      const resources = getResources();
-      const newResource = {
-        id: crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(),
-        title: title || file?.name || 'New document',
-        course,
-        description: finalSummary.substring(0, 120) + (finalSummary.length > 120 ? '...' : ''),
-        type: 'pdf',
-        paid: access === 'paid',
-        summary: finalSummary,
-        fileUrl: '',
-        driveUrl: ''
-      };
-
-      resources.unshift(newResource);
-      saveResources(resources);
-      fileInput.value = '';
-      document.getElementById('documentTitle').value = '';
-      document.getElementById('documentSummary').value = '';
-      updateDashboardStats();
-      renderResources();
-
-      status.className = 'status ok';
-      status.textContent = `PDF document uploaded and saved to ${course}. Summary created successfully.`;
-    }
-
-    function buildSummaryFromText(text, title) {
-      const cleaned = (text || '').replace(/\s+/g, ' ').trim();
-      if (!cleaned) {
-        return `Summary for ${title}: This resource provides foundational knowledge and key revision points for students.`;
-      }
-
-      const sentences = cleaned.split(/(?<=[.!?])\s+/).filter(Boolean);
-      const selected = sentences.slice(0, 4).join(' ');
-      return selected.length > 700 ? selected.substring(0, 700) + '...' : selected;
-    }
-
-    async function extractPdfText(file) {
-      if (!window.pdfjsLib) {
-        return file.name || 'PDF uploaded successfully and ready for summary.';
-      }
-
-      const arrayBuffer = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-      let text = '';
-
-      for (let pageIndex = 1; pageIndex <= pdf.numPages; pageIndex += 1) {
-        const page = await pdf.getPage(pageIndex);
-        const content = await page.getTextContent();
-        const pageText = content.items.map(item => item.str).join(' ');
-        text += ` ${pageText}`;
-      }
-
-      return text.trim();
-    }
-
-    function addDriveResource() {
-      const title = document.getElementById('driveTitle').value.trim();
-      const course = document.getElementById('driveCourse').value;
-      const access = document.getElementById('driveAccess').value;
-      const link = document.getElementById('driveLink').value.trim();
-      const description = document.getElementById('driveDescription').value.trim();
-      const status = document.getElementById('driveStatus');
-
-      if (!title || !link) {
-        status.className = 'status err';
-        status.textContent = 'Please enter both a title and Google Drive link.';
-        return;
-      }
-
-      const resources = getResources();
-      const newResource = {
-        id: crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(),
-        title,
-        course,
-        description: description || 'Google Drive resource for student revision.',
-        type: 'drive',
-        paid: access === 'paid',
-        summary: `Google Drive resource: ${title}. Students can access it through the provided link. ${description || ''}`,
-        fileUrl: '',
-        driveUrl: link
-      };
-
-      resources.unshift(newResource);
-      saveResources(resources);
-      updateDashboardStats();
-      renderResources();
-
-      document.getElementById('driveTitle').value = '';
-      document.getElementById('driveLink').value = '';
-      document.getElementById('driveDescription').value = '';
-
-      status.className = 'status ok';
-      status.textContent = `${title} added successfully to the ${course} resources.`;
-    }
-
-    function initialize() {
-      refreshAdminButtons();
-      refreshMemberStatus();
-      renderResources();
-      renderPaymentsList();
-      updateDashboardStats();
-      document.getElementById('resourceSearch').value = '';
-      if (isAdminLoggedIn()) {
-        document.getElementById('admin').classList.remove('hidden');
-      }
-    }
-
-    document.addEventListener('DOMContentLoaded', initialize);
-  </script>
+<header>
+
+<div class="logo">
+THRIVES ARCHIVERS
+<small>Year Three Learning Hub</small>
+</div>
+
+<nav>
+
+<a href="#home">Home</a>
+<a href="#courses">Courses</a>
+<a href="#resources">Resources</a>
+
+<a href="#admin" id="adminLink" class="hidden">
+Admin
+</a>
+
+<button
+id="loginButton"
+class="btn light"
+onclick="openLogin()">
+Admin Login
+</button>
+
+<button
+id="logoutButton"
+class="btn light hidden"
+onclick="logout()">
+Logout
+</button>
+
+</nav>
+
+</header>
+
+<section class="hero" id="home">
+
+<h1>YEAR THREE</h1>
+
+<h2>Thrives Archivers Academic Hub</h2>
+
+<p>
+Access simplified documents, video lessons, quizzes and organized
+learning resources in one place.
+</p>
+
+<p>
+<b>
+<i>
+"Everything is possible to achieve if we are together."
+</i>
+</b>
+</p>
+
+</section>
+
+<main class="container">
+
+<section id="courses">
+
+<div class="section-title">
+<h2>Year Three Courses</h2>
+<p>Select a course to view published resources.</p>
+</div>
+
+<div class="courses">
+
+<div class="card course">
+<div class="course-icon">🧬</div>
+<h3>Pathology</h3>
+<p>
+Disease processes, causes, mechanisms and clinical manifestations.
+</p>
+<button class="btn" onclick="loadCourse('Pathology')">
+View Resources
+</button>
+</div>
+
+<div class="card course">
+<div class="course-icon">🌍</div>
+<h3>Public Health</h3>
+<p>
+Disease prevention, health promotion, epidemiology and community health.
+</p>
+<button class="btn" onclick="loadCourse('Public Health')">
+View Resources
+</button>
+</div>
+
+<div class="card course">
+<div class="course-icon">💊</div>
+<h3>Pharmacology</h3>
+<p>
+Drugs, mechanisms of action, pharmacokinetics and adverse effects.
+</p>
+<button class="btn" onclick="loadCourse('Pharmacology')">
+View Resources
+</button>
+</div>
+
+<div class="card course">
+<div class="course-icon">⚖️</div>
+<h3>Medical Ethics</h3>
+<p>
+Ethical principles, professional conduct, patient rights and consent.
+</p>
+<button class="btn" onclick="loadCourse('Medical Ethics')">
+View Resources
+</button>
+</div>
+
+<div class="card course">
+<div class="course-icon">🦠</div>
+<h3>Microbiology</h3>
+<p>
+Microorganisms, bacteria, viruses, fungi, parasites and diagnosis.
+</p>
+<button class="btn" onclick="loadCourse('Microbiology')">
+View Resources
+</button>
+</div>
+
+</div>
+</section>
+
+<section id="resources">
+
+<div class="section-title">
+
+<h2 id="resourceHeading">
+Published Learning Resources
+</h2>
+
+<p id="resourceDescription">
+Choose a course or search all published resources.
+</p>
+
+</div>
+
+<div class="search">
+
+<input
+id="resourceSearch"
+placeholder="Search resources..."
+oninput="filterResources()">
+
+<button
+class="btn light"
+onclick="loadPublishedResources()">
+Refresh
+</button>
+
+</div>
+
+<div id="resourceArea" class="resources">
+
+<div class="card">
+Loading resources...
+</div>
+
+</div>
+
+</section>
+
+<section id="admin" class="hidden">
+
+<div class="section-title">
+<h2>Administrator Panel</h2>
+<p>Manage Year Three learning resources.</p>
+</div>
+
+<div class="admin">
+
+<div class="admin-layout">
+
+<aside class="sidebar">
+
+<button
+class="active"
+onclick="showTab('dashboard',this)">
+Dashboard
+</button>
+
+<button onclick="showTab('documents',this)">
+Documents
+</button>
+
+<button onclick="showTab('videos',this)">
+Videos
+</button>
+
+<button onclick="showTab('quizzes',this)">
+Quizzes
+</button>
+
+</aside>
+
+<div class="admin-content">
+
+<div id="tab-dashboard" class="tab">
+
+<h2>Dashboard</h2>
+
+<div class="stats">
+
+<div class="stat">
+Documents
+<strong id="documentCount">0</strong>
+</div>
+
+<div class="stat">
+Videos
+<strong id="videoCount">0</strong>
+</div>
+
+<div class="stat">
+Quizzes
+<strong id="quizCount">0</strong>
+</div>
+
+<div class="stat">
+Published
+<strong id="publishedCount">0</strong>
+</div>
+
+</div>
+
+<button class="btn" onclick="loadAdminData()">
+Refresh Dashboard
+</button>
+
+<div id="adminStatus"></div>
+
+</div>
+
+<div id="tab-documents" class="tab hidden">
+
+<h2>Document Manager</h2>
+
+<p style="color:var(--muted)">
+Add a normal document by Google Drive link, or use the document
+processor to simplify text, PDF or PowerPoint files.
+</p>
+
+<div class="form-grid" style="margin-top:18px">
+
+<div class="field">
+<label>Document title</label>
+<input id="documentTitle" placeholder="Example: Inflammation">
+</div>
+
+<div class="field">
+<label>Course</label>
+<select id="documentCourse">
+<option>Pathology</option>
+<option>Public Health</option>
+<option>Pharmacology</option>
+<option>Medical Ethics</option>
+<option>Microbiology</option>
+</select>
+</div>
+
+<div class="field">
+<label>Topic</label>
+<input id="documentTopic" placeholder="Topic or chapter">
+</div>
+
+<div class="field">
+<label>Semester</label>
+<select id="documentSemester">
+<option>Semester 1</option>
+<option>Semester 2</option>
+<option>Term 1</option>
+<option>Term 2</option>
+</select>
+</div>
+
+<div class="field full">
+
+<label>
+Google Drive document link
+<span style="color:var(--muted);font-weight:normal">
+(optional)
+</span>
+</label>
+
+<input
+id="documentDriveUrl"
+type="url"
+placeholder="Paste Google Drive file link here">
+
+<div style="font-size:12px;color:var(--muted);margin-top:6px">
+Use this when you want to publish the original PDF/PowerPoint.
+</div>
+
+</div>
+
+<div class="field full">
+
+<label>Upload PDF or PowerPoint for AI</label>
+
+<input
+id="documentFile"
+type="file"
+accept="application/pdf,.pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,.pptx,application/vnd.ms-powerpoint,.ppt">
+
+<div
+id="documentFileInfo"
+style="font-size:12px;color:var(--muted);margin-top:6px">
+Select a PDF or PowerPoint, then click AI Simplify.
+</div>
+
+</div>
+
+<div class="field full">
+
+<label>Source notes</label>
+
+<textarea
+id="documentSource"
+placeholder="Type or paste source notes here">
+</textarea>
+
+</div>
+
+<div class="field full">
+
+<label>Document content</label>
+
+<textarea
+id="documentContent"
+placeholder="AI-generated summary or your own document content will appear here">
+</textarea>
+
+</div>
+
+</div>
+
+<div class="actions">
+
+<button
+class="btn"
+onclick="simplifyDocument()">
+🤖 AI Simplify / Read File
+</button>
+
+<button
+class="btn light"
+onclick="openDrivePreviewFromForm()">
+🔗 Test Drive Link
+</button>
+
+<button
+class="btn green"
+onclick="saveDocument('published')">
+Publish Document
+</button>
+
+<button
+class="btn light"
+onclick="saveDocument('draft')">
+Save Draft
+</button>
+
+<button
+class="btn light"
+onclick="clearDocumentForm()">
+Clear
+</button>
+
+</div>
+
+<div id="documentStatus"></div>
+
+<h3 style="margin-top:25px">
+Existing Documents
+</h3>
+
+<div id="documentList" class="list"></div>
+
+</div>
+
+<div id="tab-videos" class="tab hidden">
+
+<h2>Video Manager</h2>
+
+<div class="form-grid">
+
+<div class="field">
+
+<label>Video title</label>
+
+<input
+id="videoTitle"
+placeholder="Lesson title">
+
+</div>
+
+<div class="field">
+
+<label>Course</label>
+
+<select id="videoCourse">
+<option>Pathology</option>
+<option>Public Health</option>
+<option>Pharmacology</option>
+<option>Medical Ethics</option>
+<option>Microbiology</option>
+</select>
+
+</div>
+
+<div class="field full">
+
+<label>YouTube URL</label>
+
+<input
+id="videoUrl"
+placeholder="https://www.youtube.com/watch?v=...">
+
+</div>
+
+<div class="field full">
+
+<label>Description</label>
+
+<textarea id="videoDescription"></textarea>
+
+</div>
+
+</div>
+
+<div class="actions">
+
+<button
+class="btn green"
+onclick="saveVideo()">
+Publish Video
+</button>
+
+</div>
+
+<div id="videoStatus"></div>
+
+<h3 style="margin-top:25px">
+Existing Videos
+</h3>
+
+<div id="videoList" class="list"></div>
+
+</div>
+
+<div id="tab-quizzes" class="tab hidden">
+
+<h2>Quiz Manager</h2>
+
+<div class="form-grid">
+
+<div class="field">
+
+<label>Quiz title</label>
+
+<input
+id="quizTitle"
+placeholder="Example: Inflammation Quiz">
+
+</div>
+
+<div class="field">
+
+<label>Course</label>
+
+<select id="quizCourse">
+<option>Pathology</option>
+<option>Public Health</option>
+<option>Pharmacology</option>
+<option>Medical Ethics</option>
+<option>Microbiology</option>
+</select>
+
+</div>
+
+<div class="field full">
+
+<label>Source notes</label>
+
+<textarea
+id="quizSource"
+placeholder="Paste notes for quiz generation">
+</textarea>
+
+</div>
+
+<div class="field">
+
+<label>Number of questions</label>
+
+<select id="quizCount">
+<option>5</option>
+<option>10</option>
+<option>15</option>
+<option>20</option>
+</select>
+
+</div>
+
+<div class="field">
+
+<label>Difficulty</label>
+
+<select id="quizDifficulty">
+<option>Easy</option>
+<option>Moderate</option>
+<option>Advanced</option>
+</select>
+
+</div>
+
+<div class="field full">
+
+<label>Quiz JSON</label>
+
+<textarea
+id="quizJson"
+placeholder="Generated quiz questions will appear here">
+</textarea>
+
+</div>
+
+</div>
+
+<div class="actions">
+
+<button
+class="btn"
+onclick="generateQuiz()">
+AI Generate Quiz
+</button>
+
+<button
+class="btn green"
+onclick="saveQuiz('published')">
+Publish Quiz
+</button>
+
+<button
+class="btn light"
+onclick="saveQuiz('draft')">
+Save Draft
+</button>
+
+</div>
+
+<div id="quizStatus"></div>
+
+<h3 style="margin-top:25px">
+Existing Quizzes
+</h3>
+
+<div id="quizList" class="list"></div>
+
+</div>
+
+</div>
+</div>
+</div>
+
+</section>
+
+</main>
+
+<footer>
+
+<h3>THRIVES ARCHIVERS</h3>
+
+<p>Year Three Learning Hub</p>
+
+<p>
+Everything is possible to achieve if we are together.
+</p>
+
+<p style="margin-top:12px">
+<a
+href="https://thrivesarchivers.github.io/Thrives-Archivers-Enduacation/"
+target="_blank"
+rel="noopener"
+style="color:white;font-weight:bold">
+Visit Thrives Archivers Website
+</a>
+</p>
+
+<p style="margin-top:8px">
+WhatsApp: <b>0762514399</b>
+— Inbox us to join our WhatsApp group.
+</p>
+
+</footer>
+
+<!-- LOGIN -->
+
+<div id="loginModal" class="modal">
+
+<div class="modal-box" style="max-width:430px">
+
+<button class="close" onclick="closeLogin()">×</button>
+
+<h2>Administrator Login</h2>
+
+<div class="field" style="margin-top:18px">
+
+<label>Email</label>
+
+<input
+id="loginEmail"
+type="email"
+value="thrivesarchivers@gmail.com">
+
+</div>
+
+<div class="field" style="margin-top:12px">
+
+<label>Password</label>
+
+<input
+id="loginPassword"
+type="password">
+
+</div>
+
+<button
+class="btn"
+style="width:100%;margin-top:15px"
+onclick="login()">
+Login
+</button>
+
+<div id="loginStatus"></div>
+
+</div>
+</div>
+
+<!-- VIEWER -->
+
+<div id="viewerModal" class="modal">
+
+<div class="modal-box">
+
+<button class="close" onclick="closeViewer()">×</button>
+
+<div id="documentActions" class="document-toolbar hidden">
+
+<button
+class="btn"
+onclick="readDocumentAloud()">
+🔊 Read Aloud
+</button>
+
+<button
+class="btn light"
+onclick="pauseReadAloud()">
+⏸ Pause
+</button>
+
+<button
+class="btn light"
+onclick="resumeReadAloud()">
+▶ Resume
+</button>
+
+<button
+class="btn light"
+onclick="stopReadAloud()">
+⏹ Stop
+</button>
+
+<button
+class="btn orange"
+onclick="printCurrentDocument()">
+🖨️ Print / Save as PDF
+</button>
+
+<button
+class="btn green"
+onclick="downloadDocumentAudio()">
+🎧 Download Audio
+</button>
+
+<div class="audio-speed-control">
+
+<label for="audioSpeed">
+🎚️ Audio Speed
+</label>
+
+<select
+id="audioSpeed"
+onchange="changeAudioSpeed(this.value)">
+
+<option value="0.5">
+Slowest (0.5×)
+</option>
+
+<option value="0.75">
+Slow (0.75×)
+</option>
+
+<option value="0.95" selected>
+Normal (0.95×)
+</option>
+
+<option value="1.25">
+Fast (1.25×)
+</option>
+
+<option value="1.5">
+Faster (1.5×)
+</option>
+
+<option value="2">
+Very Fast (2×)
+</option>
+
+<option value="2.5">
+Maximum (2.5×)
+</option>
+
+</select>
+
+</div>
+
+<div id="readStatus" class="read-status">
+Ready.
+</div>
+
+<div id="audioPlayerBox" class="audio-player-box hidden">
+
+<audio
+id="documentAudioPlayer"
+controls
+preload="metadata">
+</audio>
+
+<div class="audio-download-note">
+Audio generated by Thrives Archivers.
+</div>
+
+</div>
+
+</div>
+
+<div id="viewerContent" class="viewer-content"></div>
+
+</div>
+</div>
+
+<script>
+
+/* =========================================================
+   SUPABASE
+========================================================= */
+
+const SUPABASE_URL =
+'https://odwiqajuubcgrrqipyju.supabase.co';
+
+const SUPABASE_ANON_KEY =
+'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInR5cCI6IkpXVCJ9';
+
+const db =
+window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
+
+
+/* =========================================================
+   CONFIGURATION
+========================================================= */
+
+const ADMIN_EMAIL =
+'thrivesarchivers@gmail.com';
+
+const DOCUMENT_FUNCTION =
+'simplify-document';
+
+const QUIZ_FUNCTION =
+'generate-quiz-from-notes';
+
+/*
+=========================================================
+IMPORTANT
+=========================================================
+
+This is the audio Edge Function.
+
+DO NOT change this to "text-to-speech".
+
+=========================================================
+*/
+
+const TTS_FUNCTION =
+'smart-processor';
+
+
+const THRIVES_LOGO_URL =
+'./image1.jpg';
+
+const THRIVES_LOGO_FALLBACK_URL =
+'https://thrivesarchivers.github.io/Thrives-Archivers-Enduacation/image1.jpg';
+
+const THRIVES_WEBSITE_URL =
+'https://thrivesarchivers.github.io/Thrives-Archivers-Enduacation/';
+
+const THRIVES_WHATSAPP =
+'0762514399';
+
+
+/* =========================================================
+   GLOBALS
+========================================================= */
+
+let currentUser = null;
+let allResources = [];
+let currentDocument = null;
+
+/*
+Smart Processor audio state
+*/
+let ttsAudioBlob = null;
+let ttsAudioUrl = null;
+let ttsAudioMimeType = null;
+let ttsAudioKey = null;
+
+let audioGenerating = false;
+
+
+/* =========================================================
+   SHORT DOM
+========================================================= */
+
+const $ = id =>
+document.getElementById(id);
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHtml(value){
+
+return String(value ?? "")
+.replace(
+/[&<>"']/g,
+character => ({
+"&":"&amp;",
+"<":"&lt;",
+">":"&gt;",
+'"':"&quot;",
+"'":"&#039;"
+}[character])
+);
+
+}
+
+
+/* =========================================================
+   ESCAPE ATTRIBUTE
+========================================================= */
+
+function escapeAttribute(value){
+
+return String(value ?? "")
+.replace(/&/g,"&amp;")
+.replace(/"/g,"&quot;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;");
+
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+function showStatus(id,message,type=""){
+
+const element = $(id);
+
+if(!element) return;
+
+element.className =
+type
+? `status ${type}`
+: "status";
+
+element.textContent = message;
+
+}
+
+
+/* =========================================================
+   LOGIN MODAL
+========================================================= */
+
+function openLogin(){
+
+$("loginModal").classList.add("show");
+
+}
+
+function closeLogin(){
+
+$("loginModal").classList.remove("show");
+
+}
+
+function closeViewer(){
+
+stopReadAloud();
+
+$("viewerModal").classList.remove("show");
+
+}
+
+
+/* =========================================================
+   ADMIN TABS
+========================================================= */
+
+function showTab(name,button){
+
+document
+.querySelectorAll(".tab")
+.forEach(tab =>
+tab.classList.add("hidden")
+);
+
+const selectedTab =
+$(`tab-${name}`);
+
+if(selectedTab)
+selectedTab.classList.remove("hidden");
+
+document
+.querySelectorAll(".sidebar button")
+.forEach(item =>
+item.classList.remove("active")
+);
+
+if(button)
+button.classList.add("active");
+
+if(name==="documents")
+loadDocuments();
+
+if(name==="videos")
+loadVideos();
+
+if(name==="quizzes")
+loadQuizzes();
+
+}
+
+
+/* =========================================================
+   ADMIN CHECK
+========================================================= */
+
+function isCurrentUserAdmin(){
+
+if(!currentUser)
+return false;
+
+return (
+String(currentUser.email || "")
+.trim()
+.toLowerCase()
+===
+ADMIN_EMAIL.trim().toLowerCase()
+);
+
+}
+
+
+/* =========================================================
+   ADMIN UI
+========================================================= */
+
+function updateAdminUI(){
+
+const admin =
+isCurrentUserAdmin();
+
+$("admin").classList.toggle(
+"hidden",
+!admin
+);
+
+$("adminLink").classList.toggle(
+"hidden",
+!admin
+);
+
+$("loginButton").classList.toggle(
+"hidden",
+admin
+);
+
+$("logoutButton").classList.toggle(
+"hidden",
+!admin
+);
+
+}
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+async function login(){
+
+const email =
+$("loginEmail").value.trim();
+
+const password =
+$("loginPassword").value;
+
+if(!email){
+
+showStatus(
+"loginStatus",
+"Enter your email.",
+"err"
+);
+
+return;
+
+}
+
+if(!password){
+
+showStatus(
+"loginStatus",
+"Enter your password.",
+"err"
+);
+
+return;
+
+}
+
+showStatus(
+"loginStatus",
+"Signing in..."
+);
+
+try{
+
+const {data,error} =
+await db.auth.signInWithPassword({
+email,
+password
+});
+
+if(error){
+
+showStatus(
+"loginStatus",
+error.message,
+"err"
+);
+
+return;
+
+}
+
+currentUser =
+data.user;
+
+if(!isCurrentUserAdmin()){
+
+await db.auth.signOut();
+
+currentUser=null;
+
+updateAdminUI();
+
+showStatus(
+"loginStatus",
+"Login successful, but this account is not the configured administrator account.",
+"err"
+);
+
+return;
+
+}
+
+showStatus(
+"loginStatus",
+"Administrator login successful.",
+"ok"
+);
+
+setTimeout(()=>{
+
+closeLogin();
+
+updateAdminUI();
+
+$("admin").scrollIntoView({
+behavior:"smooth"
+});
+
+loadAdminData();
+
+},300);
+
+}catch(error){
+
+showStatus(
+"loginStatus",
+error.message || "Login failed.",
+"err"
+);
+
+}
+
+}
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+async function logout(){
+
+try{
+await db.auth.signOut();
+}catch(error){
+console.error(error);
+}
+
+currentUser=null;
+
+updateAdminUI();
+
+}
+
+
+/* =========================================================
+   EDGE FUNCTION INVOKER
+========================================================= */
+
+async function invokeFunction(
+functionName,
+payload
+){
+
+const {
+data:sessionData
+} =
+await db.auth.getSession();
+
+if(!sessionData.session){
+
+throw new Error(
+"Please log in again."
+);
+
+}
+
+const result =
+await db.functions.invoke(
+functionName,
+{
+body:payload
+}
+);
+
+if(result.error){
+
+let message =
+result.error.message ||
+"Edge Function failed.";
+
+if(result.error.context){
+
+try{
+
+const responseText =
+await result.error.context.text();
+
+if(responseText){
+
+try{
+
+const body =
+JSON.parse(responseText);
+
+message =
+body.error ||
+body.message ||
+responseText;
+
+}catch{
+
+message =
+responseText;
+
+}
+
+}
+
+}catch{}
+
+}
+
+throw new Error(
+`${functionName}: ${message}`
+);
+
+}
+
+if(result.data?.error){
+
+throw new Error(
+result.data.error
+);
+
+}
+
+return result.data;
+
+}
+
+
+/* =========================================================
+   PUBLISHED RESOURCES
+========================================================= */
+
+async function loadPublishedResources(course=""){
+
+$("resourceArea").innerHTML =
+"<div class='card'>Loading resources...</div>";
+
+let documentQuery =
+db
+.from("year_three_documents")
+.select("*")
+.eq("status","published");
+
+let videoQuery =
+db
+.from("year_three_videos")
+.select("*")
+.eq("status","published");
+
+let quizQuery =
+db
+.from("year_three_quizzes")
+.select("*")
+.eq("status","published");
+
+if(course){
+
+documentQuery =
+documentQuery.eq("course",course);
+
+videoQuery =
+videoQuery.eq("course",course);
+
+quizQuery =
+quizQuery.eq("course",course);
+
+}
+
+const [
+documents,
+videos,
+quizzes
+] =
+await Promise.all([
+documentQuery,
+videoQuery,
+quizQuery
+]);
+
+const error =
+documents.error ||
+videos.error ||
+quizzes.error;
+
+if(error){
+
+$("resourceArea").innerHTML =
+`
+<div class="status err">
+${escapeHtml(error.message)}
+</div>
+`;
+
+return;
+
+}
+
+allResources = [
+
+...(documents.data || [])
+.map(item => ({
+...item,
+resourceType:"Document"
+})),
+
+...(videos.data || [])
+.map(item => ({
+...item,
+resourceType:"Video"
+})),
+
+...(quizzes.data || [])
+.map(item => ({
+...item,
+resourceType:"Quiz"
+}))
+
+];
+
+renderResources(allResources);
+
+if(course){
+
+$("resourceHeading").textContent =
+`${course} Resources`;
+
+$("resourceDescription").textContent =
+`Published resources for ${course}.`;
+
+}else{
+
+$("resourceHeading").textContent =
+"Published Learning Resources";
+
+$("resourceDescription").textContent =
+"Published documents, videos and quizzes.";
+
+}
+
+}
+
+
+/* =========================================================
+   RENDER RESOURCES
+========================================================= */
+
+function renderResources(resources){
+
+if(!resources.length){
+
+$("resourceArea").innerHTML =
+"<div class='card'>No published resources found.</div>";
+
+return;
+
+}
+
+$("resourceArea").innerHTML =
+resources.map(item => {
+
+const icon =
+item.resourceType==="Document"
+? "📚"
+:
+item.resourceType==="Video"
+? "🎥"
+:
+"📝";
+
+const description =
+item.topic ||
+item.description ||
+item.course ||
+"";
+
+const safeItem =
+JSON.stringify(item)
+.replace(/</g,"\\u003c")
+.replace(/>/g,"\\u003e")
+.replace(/&/g,"\\u0026")
+.replace(/'/g,"&#039;");
+
+return `
+
+<article
+class="card resource"
+data-search="${escapeHtml(
+`${item.title} ${description} ${item.course}`
+)}"
+onclick='openResource(${safeItem})'>
+
+<div class="resource-icon">
+${icon}
+</div>
+
+<h3>
+${escapeHtml(item.title)}
+</h3>
+
+<p>
+${escapeHtml(description)}
+</p>
+
+<span class="badge">
+${escapeHtml(item.resourceType)}
+</span>
+
+</article>
+
+`;
+
+}).join("");
+
+}
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+function filterResources(){
+
+const query =
+$("resourceSearch")
+.value
+.toLowerCase()
+.trim();
+
+const filtered =
+allResources.filter(item =>
+
+`
+${item.title}
+${item.topic || ""}
+${item.description || ""}
+${item.course || ""}
+`
+.toLowerCase()
+.includes(query)
+
+);
+
+renderResources(filtered);
+
+}
+
+
+/* =========================================================
+   COURSE
+========================================================= */
+
+function loadCourse(course){
+
+loadPublishedResources(course);
+
+$("resources").scrollIntoView({
+behavior:"smooth"
+});
+
+}
+
+
+/* =========================================================
+   OPEN RESOURCE
+========================================================= */
+
+function openResource(item){
+
+stopReadAloud();
+
+currentDocument=null;
+
+$("documentActions")
+.classList.add("hidden");
+
+$("audioPlayerBox")
+.classList.add("hidden");
+
+let html =
+`<h2>${escapeHtml(item.title)}</h2>`;
+
+html +=
+`<p class="badge">
+${escapeHtml(item.course || "")}
+</p>`;
+
+
+/* DOCUMENT */
+
+if(item.resourceType==="Document"){
+
+currentDocument=item;
+
+$("documentActions")
+.classList.remove("hidden");
+
+$("readStatus").textContent =
+"Ready to read.";
+
+html += `
+
+<div
+id="documentReaderContent"
+style="margin-top:20px">
+
+${
+item.content_html ||
+`
+<pre>
+${escapeHtml(item.content_text || "")}
+</pre>
+`
+}
+
+</div>
+
+`;
+
+}
+
+
+/* VIDEO */
+
+if(item.resourceType==="Video"){
+
+const videoId =
+getYoutubeId(item.url);
+
+html += `
+
+<p style="margin-top:15px">
+${escapeHtml(item.description || "")}
+</p>
+
+`;
+
+if(videoId){
+
+html += `
+
+<div
+style="
+position:relative;
+padding-bottom:56.25%;
+height:0;
+margin-top:18px">
+
+<iframe
+src="https://www.youtube.com/embed/${escapeHtml(videoId)}"
+style="
+position:absolute;
+inset:0;
+width:100%;
+height:100%;
+border:0"
+allowfullscreen>
+</iframe>
+
+</div>
+
+`;
+
+}else{
+
+html += `
+
+<a
+class="btn"
+href="${escapeAttribute(item.url)}"
+target="_blank"
+rel="noopener">
+
+Open Video
+
+</a>
+
+`;
+
+}
+
+}
+
+
+/* QUIZ */
+
+if(item.resourceType==="Quiz"){
+
+let questions=[];
+
+try{
+
+questions =
+Array.isArray(item.questions)
+? item.questions
+: JSON.parse(item.questions || "[]");
+
+}catch{
+
+questions=[];
+
+}
+
+html +=
+`<div style="margin-top:20px">`;
+
+questions.forEach((question,index)=>{
+
+html += `
+
+<div
+class="card"
+style="margin:12px 0">
+
+<b>
+${index+1}.
+${escapeHtml(question.question)}
+</b>
+
+${
+(question.options || [])
+.map(
+(option,optionIndex)=>`
+
+<label
+style="
+display:block;
+margin-top:8px">
+
+<input
+type="radio"
+name="question-${index}"
+value="${optionIndex}">
+
+${String.fromCharCode(65+optionIndex)}.
+${escapeHtml(option)}
+
+</label>
+
+`
+)
+.join("")
+}
+
+</div>
+
+`;
+
+});
+
+html += `
+
+<button
+class="btn green"
+onclick='gradeQuiz(${JSON.stringify(questions)})'>
+
+Submit Quiz
+
+</button>
+
+<div id="quizResult"></div>
+
+</div>
+
+`;
+
+}
+
+$("viewerContent").innerHTML=html;
+
+$("viewerModal")
+.classList.add("show");
+
+}
+
+
+/* =========================================================
+   AUDIO SYSTEM
+   SMART-PROCESSOR
+========================================================= */
+
+function getAudioSpeed(){
+
+const control =
+$("audioSpeed");
+
+const value =
+Number(control?.value || 0.95);
+
+return Math.min(
+2.5,
+Math.max(0.5,value)
+);
+
+}
+
+
+/*
+Create a unique cache key.
+
+This prevents regenerating the same document
+when the student presses Read Aloud repeatedly.
+*/
+
+function getCurrentTtsCacheKey(){
+
+if(!currentDocument)
+return null;
+
+return [
+currentDocument.id || "",
+currentDocument.updated_at || "",
+currentDocument.title || "",
+getAudioSpeed()
+].join("|");
+
+}
+
+
+/*
+Clean previous generated audio.
+*/
+
+function disposeTtsAudio(){
+
+const player =
+$("documentAudioPlayer");
+
+if(player){
+
+player.pause();
+player.removeAttribute("src");
+player.load();
+
+}
+
+if(ttsAudioUrl){
+
+URL.revokeObjectURL(ttsAudioUrl);
+
+}
+
+ttsAudioUrl=null;
+ttsAudioBlob=null;
+ttsAudioMimeType=null;
+ttsAudioKey=null;
+
+$("audioPlayerBox")
+.classList.add("hidden");
+
+}
+
+
+/*
+Convert Base64 to Uint8Array.
+*/
+
+function base64ToUint8Array(base64){
+
+let clean =
+String(base64 || "")
+.trim();
+
+clean =
+clean.replace(
+/^data:[^;]+;base64,/i,
+""
+);
+
+const binary =
+atob(clean);
+
+const bytes =
+new Uint8Array(binary.length);
+
+for(let i=0;i<binary.length;i++){
+
+bytes[i] =
+binary.charCodeAt(i);
+
+}
+
+return bytes;
+
+}
+
+
+/*
+PCM 16-bit mono -> WAV.
+
+Smart Processor may return raw PCM/L16.
+This converts it into a browser-downloadable WAV file.
+*/
+
+function pcmToWavBlob(
+pcmBytes,
+sampleRate=24000,
+channels=1,
+bitsPerSample=16
+){
+
+const blockAlign =
+channels *
+(bitsPerSample / 8);
+
+const byteRate =
+sampleRate *
+blockAlign;
+
+const buffer =
+new ArrayBuffer(
+44 + pcmBytes.length
+);
+
+const view =
+new DataView(buffer);
+
+function writeString(offset,string){
+
+for(let i=0;i<string.length;i++){
+
+view.setUint8(
+offset+i,
+string.charCodeAt(i)
+);
+
+}
+
+}
+
+writeString(0,"RIFF");
+
+view.setUint32(
+4,
+36 + pcmBytes.length,
+true
+);
+
+writeString(8,"WAVE");
+
+writeString(12,"fmt ");
+
+view.setUint32(
+16,
+16,
+true
+);
+
+view.setUint16(
+20,
+1,
+true
+);
+
+view.setUint16(
+22,
+channels,
+true
+);
+
+view.setUint32(
+24,
+sampleRate,
+true
+);
+
+view.setUint32(
+28,
+byteRate,
+true
+);
+
+view.setUint16(
+32,
+blockAlign,
+true
+);
+
+view.setUint16(
+34,
+bitsPerSample,
+true
+);
+
+writeString(36,"data");
+
+view.setUint32(
+40,
+pcmBytes.length,
+true
+);
+
+new Uint8Array(
+buffer,
+44
+).set(pcmBytes);
+
+return new Blob(
+[buffer],
+{type:"audio/wav"}
+);
+
+}
+
+
+/*
+Convert Smart Processor response into an audio Blob.
+*/
+
+function makeAudioBlob(result){
+
+if(!result)
+throw new Error(
+"Smart Processor returned no data."
+);
+
+const base64 =
+result.audio_base64 ||
+result.audio ||
+result.data?.audio_base64 ||
+result.data?.audio;
+
+if(!base64){
+
+throw new Error(
+"Smart Processor did not return audio_base64."
+);
+
+}
+
+const bytes =
+base64ToUint8Array(base64);
+
+const mime =
+String(
+result.mime_type ||
+result.mimeType ||
+result.content_type ||
+result.data?.mime_type ||
+"audio/wav"
+).toLowerCase();
+
+
+/*
+Raw PCM formats.
+*/
+
+if(
+mime.includes("pcm") ||
+mime.includes("l16") ||
+mime.includes("raw")
+){
+
+const sampleRate =
+Number(
+result.sample_rate ||
+result.sampleRate ||
+result.data?.sample_rate ||
+24000
+);
+
+const channels =
+Number(
+result.channels ||
+result.data?.channels ||
+1
+);
+
+return {
+blob:pcmToWavBlob(
+bytes,
+sampleRate,
+channels,
+16
+),
+mime:"audio/wav"
+};
+
+}
+
+
+/*
+Already encoded audio.
+*/
+
+return {
+blob:new Blob(
+[bytes],
+{type:mime}
+),
+mime
+};
+
+}
+
+
+/*
+Generate audio through smart-processor.
+*/
+
+async function getTtsAudio(){
+
+if(!currentDocument){
+
+throw new Error(
+"Open a document first."
+);
+
+}
+
+const text =
+getDocumentPlainText(
+currentDocument
+);
+
+if(!text){
+
+throw new Error(
+"This document has no readable text."
+);
+
+}
+
+const key =
+getCurrentTtsCacheKey();
+
+
+/*
+Use cached audio when possible.
+*/
+
+if(
+ttsAudioBlob &&
+ttsAudioKey===key
+){
+
+return ttsAudioBlob;
+
+}
+
+
+/*
+Prevent double generation.
+*/
+
+if(audioGenerating){
+
+throw new Error(
+"Audio is already being generated. Please wait."
+);
+
+}
+
+audioGenerating=true;
+
+$("readStatus").textContent =
+"Generating audio from the document...";
+
+try{
+
+/*
+IMPORTANT:
+This calls smart-processor.
+*/
+
+const result =
+await invokeFunction(
+TTS_FUNCTION,
+{
+text,
+title:
+currentDocument.title ||
+"Thrives Archivers Document",
+
+language:"en-US",
+
+rate:getAudioSpeed(),
+
+voice:"Kore"
+}
+);
+
+const audio =
+makeAudioBlob(result);
+
+ttsAudioBlob =
+audio.blob;
+
+ttsAudioMimeType =
+audio.mime;
+
+ttsAudioKey =
+key;
+
+if(ttsAudioUrl)
+URL.revokeObjectURL(ttsAudioUrl);
+
+ttsAudioUrl =
+URL.createObjectURL(
+ttsAudioBlob
+);
+
+const player =
+$("documentAudioPlayer");
+
+player.src =
+ttsAudioUrl;
+
+player.playbackRate =
+getAudioSpeed();
+
+$("audioPlayerBox")
+.classList.remove("hidden");
+
+return ttsAudioBlob;
+
+}finally{
+
+audioGenerating=false;
+
+}
+
+}
+
+
+/*
+Read Aloud now uses the generated Smart Processor audio.
+*/
+
+async function readDocumentAloud(){
+
+if(!currentDocument){
+
+alert(
+"Open a document first."
+);
+
+return;
+
+}
+
+try{
+
+stopReadAloud();
+
+$("readStatus").textContent =
+"Preparing audio...";
+
+const blob =
+await getTtsAudio();
+
+if(!blob)
+throw new Error(
+"No audio was generated."
+);
+
+const player =
+$("documentAudioPlayer");
+
+player.src =
+ttsAudioUrl;
+
+player.playbackRate =
+getAudioSpeed();
+
+player.onplay = () => {
+
+$("readStatus").textContent =
+`Reading document at ${getAudioSpeed()}× speed...`;
+
+};
+
+player.onpause = () => {
+
+if(
+!player.ended &&
+player.currentTime>0
+){
+
+$("readStatus").textContent =
+"Reading paused.";
+
+}
+
+};
+
+player.onended = () => {
+
+$("readStatus").textContent =
+"Reading finished.";
+
+};
+
+player.onerror = () => {
+
+$("readStatus").textContent =
+"Audio playback failed.";
+
+};
+
+await player.play();
+
+}catch(error){
+
+console.error(
+"Smart Processor audio error:",
+error
+);
+
+$("readStatus").textContent =
+"Audio generation failed.";
+
+alert(
+"Audio generation failed.\n\n" +
+(error.message || error)
+);
+
+}
+
+}
+
+
+/*
+Pause generated audio.
+*/
+
+function pauseReadAloud(){
+
+const player =
+$("documentAudioPlayer");
+
+if(
+player &&
+!player.paused
+){
+
+player.pause();
+
+$("readStatus").textContent =
+"Reading paused.";
+
+}
+
+}
+
+
+/*
+Resume generated audio.
+*/
+
+async function resumeReadAloud(){
+
+const player =
+$("documentAudioPlayer");
+
+if(
+player &&
+player.paused &&
+player.src
+){
+
+try{
+
+player.playbackRate =
+getAudioSpeed();
+
+await player.play();
+
+$("readStatus").textContent =
+"Reading resumed.";
+
+}catch(error){
+
+console.error(error);
+
+}
+
+}
+
+}
+
+
+/*
+Stop generated audio.
+*/
+
+function stopReadAloud(){
+
+const player =
+$("documentAudioPlayer");
+
+if(player){
+
+player.pause();
+
+try{
+
+player.currentTime=0;
+
+}catch{}
+
+}
+
+const status =
+$("readStatus");
+
+if(status){
+
+status.textContent =
+currentDocument
+? "Ready to read."
+: "Ready.";
+
+}
+
+}
+
+
+/*
+Change audio speed.
+
+This does not regenerate the audio.
+It changes playback speed immediately.
+*/
+
+function changeAudioSpeed(value){
+
+const speed =
+Number(value);
+
+if(!Number.isFinite(speed))
+return;
+
+const player =
+$("documentAudioPlayer");
+
+if(player){
+
+player.playbackRate =
+speed;
+
+}
+
+$("readStatus").textContent =
+`Audio speed set to ${speed}×.`;
+
+}
+
+
+/*
+Download the generated Smart Processor audio.
+*/
+
+async function downloadDocumentAudio(){
+
+if(!currentDocument){
+
+alert(
+"Open a document first."
+);
+
+return;
+
+}
+
+try{
+
+$("readStatus").textContent =
+"Preparing audio for download...";
+
+const blob =
+await getTtsAudio();
+
+if(!blob){
+
+throw new Error(
+"No audio file was generated."
+);
+
+}
+
+const objectUrl =
+ttsAudioUrl ||
+URL.createObjectURL(blob);
+
+const extension =
+ttsAudioMimeType?.includes("mpeg")
+? "mp3"
+:ttsAudioMimeType?.includes("ogg")
+? "ogg"
+:ttsAudioMimeType?.includes("webm")
+? "webm"
+:"wav";
+
+const a =
+document.createElement("a");
+
+a.href =
+objectUrl;
+
+a.download =
+`${sanitizeFileName(
+currentDocument.title ||
+"Thrives-Archivers-Document"
+)}.${extension}`;
+
+document.body.appendChild(a);
+
+a.click();
+
+a.remove();
+
+$("readStatus").textContent =
+"Audio downloaded successfully.";
+
+}catch(error){
+
+console.error(
+"Audio download error:",
+error
+);
+
+alert(
+"Audio download failed.\n\n" +
+(error.message || error)
+);
+
+}
+
+}
+
+
+/* =========================================================
+   DOCUMENT TEXT
+========================================================= */
+
+function getDocumentPlainText(doc){
+
+const raw =
+doc?.content_html ||
+doc?.content_text ||
+"";
+
+const temp =
+document.createElement("div");
+
+temp.innerHTML=raw;
+
+return (
+temp.innerText ||
+temp.textContent ||
+""
+)
+.replace(/\s+\n/g,"\n")
+.replace(/\n{3,}/g,"\n\n")
+.trim();
+
+}
+
+
+/* =========================================================
+   DOCUMENT PRINT
+========================================================= */
+
+async function getLogoDataUrl(){
+
+const urls=[
+THRIVES_LOGO_URL,
+THRIVES_LOGO_FALLBACK_URL
+];
+
+for(const url of urls){
+
+try{
+
+const response =
+await fetch(
+url,
+{
+mode:"cors",
+cache:"no-store"
+}
+);
+
+if(!response.ok)
+continue;
+
+const blob =
+await response.blob();
+
+return await new Promise(
+(resolve,reject)=>{
+
+const reader =
+new FileReader();
+
+reader.onload =
+()=>resolve(reader.result);
+
+reader.onerror =
+reject;
+
+reader.readAsDataURL(blob);
+
+});
+
+}catch{}
+
+}
+
+return null;
+
+}
+
+
+async function prepareExportDocument(doc){
+
+if(!doc)
+return doc;
+
+const copy={...doc};
+
+const logo =
+await getLogoDataUrl();
+
+if(logo)
+copy._exportLogoDataUrl=logo;
+
+return copy;
+
+}
+
+
+function buildBrandedDocumentHTML(doc){
+
+const title =
+doc?.title ||
+"Thrives Archivers Document";
+
+const course =
+doc?.course || "";
+
+const topic =
+doc?.topic || "";
+
+const semester =
+doc?.semester || "";
+
+const content =
+doc?.content_html ||
+`<pre style="white-space:pre-wrap">
+${escapeHtml(doc?.content_text || "")}
+</pre>`;
+
+return `
+
+<div id="pdfPrintArea" class="document-export">
+
+<div class="document-export-header pdf-avoid-break">
+
+<img
+class="document-export-logo"
+src="${escapeAttribute(
+doc?._exportLogoDataUrl ||
+THRIVES_LOGO_URL
+)}"
+alt="Thrives Archivers Logo">
+
+<div class="document-export-brand">
+THRIVES ARCHIVERS
+</div>
+
+<div class="document-export-title">
+${escapeHtml(title)}
+</div>
+
+<div class="document-export-meta">
+
+<b>Course:</b>
+${escapeHtml(course || "Not specified")}
+
+&nbsp; | &nbsp;
+
+<b>Topic:</b>
+${escapeHtml(topic || "Not specified")}
+
+&nbsp; | &nbsp;
+
+<b>Semester:</b>
+${escapeHtml(semester || "Not specified")}
+
+</div>
+
+</div>
+
+<div class="document-export-body">
+
+${content}
+
+</div>
+
+<div class="document-export-promo pdf-avoid-break">
+
+<strong>
+Access More Thrives Archivers Learning Materials
+</strong>
+
+<br>
+
+Visit our website for more documents, videos,
+quizzes and lessons:
+
+<br>
+
+<a
+href="${THRIVES_WEBSITE_URL}"
+target="_blank">
+
+${THRIVES_WEBSITE_URL}
+
+</a>
+
+<br><br>
+
+<strong>
+Join Our WhatsApp Group
+</strong>
+
+<br>
+
+Inbox
+<b>${THRIVES_WHATSAPP}</b>
+to join the Thrives Archivers WhatsApp group.
+
+</div>
+
+<div class="document-export-footer pdf-avoid-break">
+
+<b>
+THRIVES ARCHIVERS • Year Three Learning Hub
+</b>
+
+<br>
+
+Educational document generated from the
+Thrives Archivers platform.
+
+</div>
+
+</div>
+
+`;
+
+}
+
+
+function sanitizeFileName(name){
+
+return String(name)
+.replace(/[\\/:*?"<>|]+/g,"-")
+.replace(/\s+/g," ")
+.trim()
+.slice(0,120)
+||
+"document";
+
+}
+
+
+function createExportElement(doc){
+
+const wrapper =
+document.createElement("div");
+
+wrapper.innerHTML =
+buildBrandedDocumentHTML(doc);
+
+const element =
+wrapper.firstElementChild;
+
+preparePdfElement(element);
+
+return element;
+
+}
+
+
+function preparePdfElement(element){
+
+if(!element)
+return;
+
+element
+.querySelectorAll(
+"h1,h2,h3,h4,h5,h6,p,li,table,tr,blockquote,pre,figure,img"
+)
+.forEach(node =>
+node.classList.add("pdf-avoid-break")
+);
+
+}
+
+
+async function printCurrentDocument(){
+
+if(!currentDocument){
+
+alert(
+"Open a document first."
+);
+
+return;
+
+}
+
+const old =
+document.getElementById(
+"pdfPrintArea"
+);
+
+if(old)
+old.remove();
+
+const doc =
+await prepareExportDocument(
+currentDocument
+);
+
+const element =
+createExportElement(doc);
+
+document.body.appendChild(
+element
+);
+
+window.print();
+
+setTimeout(
+()=>element.remove(),
+1000
+);
+
+}
+
+
+/* =========================================================
+   QUIZ GRADING
+========================================================= */
+
+function gradeQuiz(questions){
+
+let score=0;
+
+questions.forEach(
+(question,index)=>{
+
+const selected =
+document.querySelector(
+`input[name="question-${index}"]:checked`
+);
+
+if(
+selected &&
+Number(selected.value) ===
+Number(question.correctIndex)
+){
+
+score++;
+
+}
+
+});
+
+const percentage =
+questions.length
+? Math.round(
+score/questions.length*100
+)
+:0;
+
+const result =
+$("quizResult");
+
+if(result){
+
+result.innerHTML=`
+
+<div class="status ok">
+
+Score:
+${score}/${questions.length}
+(${percentage}%)
+
+</div>
+
+`;
+
+}
+
+}
+
+
+/* =========================================================
+   YOUTUBE
+========================================================= */
+
+function getYoutubeId(url){
+
+try{
+
+const parsed =
+new URL(url);
+
+if(
+parsed.hostname.includes("youtu.be")
+){
+
+return parsed
+.pathname
+.slice(1)
+.split("/")[0];
+
+}
+
+if(
+parsed.searchParams.get("v")
+){
+
+return parsed
+.searchParams
+.get("v");
+
+}
+
+const match =
+parsed.pathname.match(
+/\/(embed|shorts|live)\/([^/?]+)/
+);
+
+return match
+? match[2]
+:null;
+
+}catch{
+
+return null;
+
+}
+
+}
+
+
+/* =========================================================
+   GOOGLE DRIVE
+========================================================= */
+
+function getDriveFileId(url){
+
+try{
+
+const parsed =
+new URL(
+String(url || "").trim()
+);
+
+if(
+!parsed.hostname.includes(
+"drive.google.com"
+)
+)
+return null;
+
+const pathMatch =
+parsed.pathname.match(
+/\/file\/d\/([^/]+)/
+);
+
+if(pathMatch)
+return pathMatch[1];
+
+return (
+parsed.searchParams.get("id") ||
+null
+);
+
+}catch{
+
+return null;
+
+}
+
+}
+
+
+function getDrivePreviewUrl(url){
+
+const id =
+getDriveFileId(url);
+
+return id
+? `https://drive.google.com/file/d/${encodeURIComponent(id)}/preview`
+:null;
+
+}
+
+
+function buildDriveDocumentHtml(
+url,
+title
+){
+
+const preview =
+getDrivePreviewUrl(url);
+
+if(!preview)
+return "";
+
+return `
+
+<div
+class="drive-document-wrapper"
+style="margin-top:18px">
+
+<div
+style="
+position:relative;
+width:100%;
+padding-bottom:75%;
+background:#f4f7fb;
+border-radius:12px;
+overflow:hidden;
+border:1px solid #dbe4ef">
+
+<iframe
+src="${escapeAttribute(preview)}"
+title="${escapeAttribute(title || "Document")}"
+style="
+position:absolute;
+inset:0;
+width:100%;
+height:100%;
+border:0"
+allow="autoplay"
+allowfullscreen>
+</iframe>
+
+</div>
+
+<div
+style="margin-top:10px;text-align:center">
+
+<a
+class="btn"
+href="${escapeAttribute(url)}"
+target="_blank"
+rel="noopener">
+
+Open Document
+
+</a>
+
+</div>
+
+</div>
+
+`;
+
+}
+
+
+function openDrivePreviewFromForm(){
+
+const url =
+$("documentDriveUrl")?.value.trim();
+
+if(!url){
+
+showStatus(
+"documentStatus",
+"Paste a Google Drive document link first.",
+"err"
+);
+
+return;
+
+}
+
+const preview =
+getDrivePreviewUrl(url);
+
+if(!preview){
+
+showStatus(
+"documentStatus",
+"Please enter a valid Google Drive file link.",
+"err"
+);
+
+return;
+
+}
+
+window.open(
+preview,
+"_blank",
+"noopener"
+);
+
+}
+
+
+/* =========================================================
+   FILE READING
+========================================================= */
+
+function updateDocumentFileInfo(){
+
+const file =
+$("documentFile")?.files?.[0];
+
+const info =
+$("documentFileInfo");
+
+if(!info)
+return;
+
+if(!file){
+
+info.textContent =
+"Select a PDF or PowerPoint, then click AI Simplify.";
+
+return;
+
+}
+
+const mb =
+(file.size/1024/1024)
+.toFixed(2);
+
+info.textContent =
+`${file.name} • ${mb} MB`;
+
+}
+
+
+async function extractPdfText(file){
+
+const arrayBuffer =
+await file.arrayBuffer();
+
+if(!window.pdfjsLib){
+
+throw new Error(
+"PDF reader is still loading. Please wait."
+);
+
+}
+
+const pdf =
+await window.pdfjsLib
+.getDocument({
+data:arrayBuffer
+})
+.promise;
+
+const pages=[];
+
+for(
+let pageNo=1;
+pageNo<=pdf.numPages;
+pageNo++
+){
+
+const page =
+await pdf.getPage(pageNo);
+
+const textContent =
+await page.getTextContent();
+
+const text =
+textContent.items
+.map(item=>item.str || "")
+.join(" ");
+
+if(text.trim()){
+
+pages.push(
+`PAGE ${pageNo}\n${text}`
+);
+
+}
+
+}
+
+return pages.join("\n\n");
+
+}
+
+
+async function extractPowerPointText(file){
+
+if(!window.JSZip){
+
+throw new Error(
+"PowerPoint reader is not available."
+);
+
+}
+
+const zip =
+await window.JSZip.loadAsync(
+await file.arrayBuffer()
+);
+
+const names =
+Object.keys(zip.files)
+.filter(
+name =>
+/^ppt\/slides\/slide\d+\.xml$/i
+.test(name)
+)
+.sort(
+(a,b)=>
+Number(
+a.match(/slide(\d+)\.xml/i)?.[1] || 0
+)
+-
+Number(
+b.match(/slide(\d+)\.xml/i)?.[1] || 0
+)
+);
+
+if(!names.length){
+
+throw new Error(
+"No readable PowerPoint slides were found."
+);
+
+}
+
+const slides=[];
+
+for(const name of names){
+
+const xml =
+await zip.files[name]
+.async("text");
+
+const doc =
+new DOMParser()
+.parseFromString(
+xml,
+"application/xml"
+);
+
+const texts =
+[
+...doc.getElementsByTagNameNS("*","t")
+]
+.map(
+node =>
+node.textContent || ""
+)
+.filter(Boolean);
+
+if(texts.length){
+
+slides.push(
+`SLIDE ${name.match(/slide(\d+)\.xml/i)?.[1] || ""}\n${texts.join(" ")}`
+);
+
+}
+
+}
+
+return slides.join("\n\n");
+
+}
+
+
+async function extractUploadedDocumentText(file){
+
+const type =
+String(file.type || "")
+.toLowerCase();
+
+const name =
+file.name.toLowerCase();
+
+if(
+type==="application/pdf" ||
+name.endsWith(".pdf")
+){
+
+return extractPdfText(file);
+
+}
+
+if(
+name.endsWith(".pptx") ||
+type.includes(
+"presentationml.presentation"
+)
+){
+
+return extractPowerPointText(file);
+
+}
+
+if(name.endsWith(".ppt")){
+
+throw new Error(
+"Legacy .ppt files are not supported in the browser reader. Save as .pptx or use Google Drive."
+);
+
+}
+
+throw new Error(
+"Please select a PDF or PowerPoint file."
+);
+
+}
+
+
+/* =========================================================
+   AI DOCUMENT SIMPLIFICATION
+========================================================= */
+
+async function simplifyDocument(){
+
+const title =
+$("documentTitle").value.trim();
+
+const source =
+$("documentSource").value.trim();
+
+const file =
+$("documentFile")?.files?.[0] ||
+null;
+
+if(!title){
+
+showStatus(
+"documentStatus",
+"Enter a document title first.",
+"err"
+);
+
+return;
+
+}
+
+if(!source && !file){
+
+showStatus(
+"documentStatus",
+"Type/paste notes or select a PDF/PowerPoint first.",
+"err"
+);
+
+return;
+
+}
+
+showStatus(
+"documentStatus",
+file
+? "Reading uploaded document..."
+: "AI is simplifying the document..."
+);
+
+try{
+
+let sourceForAi =
+source;
+
+if(file){
+
+sourceForAi =
+await extractUploadedDocumentText(
+file
+);
+
+if(!sourceForAi.trim()){
+
+throw new Error(
+"No selectable text was found in this file."
+);
+
+}
+
+const maxChars =
+180000;
+
+if(
+sourceForAi.length >
+maxChars
+){
+
+sourceForAi =
+sourceForAi.slice(
+0,
+145000
+)
++
+"\n\n[Middle of document omitted for request size]\n\n"
++
+sourceForAi.slice(
+-35000
+);
+
+}
+
+}
+
+showStatus(
+"documentStatus",
+"AI is summarising the document..."
+);
+
+const result =
+await invokeFunction(
+DOCUMENT_FUNCTION,
+{
+title,
+course:
+$("documentCourse").value,
+topic:
+$("documentTopic").value.trim(),
+source:
+sourceForAi
+}
+);
+
+$("documentContent").value =
+result.content_html ||
+result.content ||
+result.text ||
+"";
+
+showStatus(
+"documentStatus",
+"AI draft generated. Review it before saving.",
+"ok"
+);
+
+}catch(error){
+
+console.error(error);
+
+showStatus(
+"documentStatus",
+error.message ||
+String(error),
+"err"
+);
+
+}
+
+}
+
+
+/* =========================================================
+   SAVE DOCUMENT
+========================================================= */
+
+async function saveDocument(status){
+
+if(!isCurrentUserAdmin()){
+
+showStatus(
+"documentStatus",
+"Administrator authentication required.",
+"err"
+);
+
+return;
+
+}
+
+const title =
+$("documentTitle").value.trim();
+
+const driveUrl =
+$("documentDriveUrl")?.value.trim() ||
+"";
+
+let content =
+$("documentContent").value.trim();
+
+if(!title){
+
+showStatus(
+"documentStatus",
+"Document title is required.",
+"err"
+);
+
+return;
+
+}
+
+if(driveUrl){
+
+if(!getDrivePreviewUrl(driveUrl)){
+
+showStatus(
+"documentStatus",
+"Please enter a valid Google Drive file link.",
+"err"
+);
+
+return;
+
+}
+
+content =
+buildDriveDocumentHtml(
+driveUrl,
+title
+);
+
+}
+
+if(!content){
+
+showStatus(
+"documentStatus",
+"Add a Google Drive link, generate an AI summary, or enter document content.",
+"err"
+);
+
+return;
+
+}
+
+const {error} =
+await db
+.from("year_three_documents")
+.insert({
+
+title,
+
+course:
+$("documentCourse").value,
+
+topic:
+$("documentTopic").value.trim(),
+
+semester:
+$("documentSemester").value,
+
+content_html:
+content,
+
+content_text:
+driveUrl
+? `Google Drive document: ${title}`
+: content.replace(
+/<[^>]*>/g,
+""
+),
+
+status,
+
+created_by:
+currentUser.id
+
+});
+
+if(error){
+
+showStatus(
+"documentStatus",
+error.message,
+"err"
+);
+
+return;
+
+}
+
+showStatus(
+"documentStatus",
+status==="published"
+? "Document published successfully."
+: "Document saved as a draft.",
+"ok"
+);
+
+clearDocumentForm();
+
+loadDocuments();
+
+loadAdminData();
+
+loadPublishedResources();
+
+}
+
+
+/* =========================================================
+   CLEAR DOCUMENT
+========================================================= */
+
+function clearDocumentForm(){
+
+[
+"documentTitle",
+"documentTopic",
+"documentDriveUrl",
+"documentSource",
+"documentContent"
+]
+.forEach(id=>{
+
+if($(id))
+$(id).value="";
+
+});
+
+if($("documentFile"))
+$("documentFile").value="";
+
+updateDocumentFileInfo();
+
+}
+
+
+/* =========================================================
+   SAVE VIDEO
+========================================================= */
+
+async function saveVideo(){
+
+if(!isCurrentUserAdmin()){
+
+showStatus(
+"videoStatus",
+"Administrator authentication required.",
+"err"
+);
+
+return;
+
+}
+
+const title =
+$("videoTitle").value.trim();
+
+const url =
+$("videoUrl").value.trim();
+
+if(!title || !url){
+
+showStatus(
+"videoStatus",
+"Video title and URL are required.",
+"err"
+);
+
+return;
+
+}
+
+if(!getYoutubeId(url)){
+
+showStatus(
+"videoStatus",
+"Enter a valid YouTube URL.",
+"err"
+);
+
+return;
+
+}
+
+const {error} =
+await db
+.from("year_three_videos")
+.insert({
+
+title,
+
+course:
+$("videoCourse").value,
+
+url,
+
+description:
+$("videoDescription")
+.value.trim(),
+
+status:"published",
+
+created_by:
+currentUser.id
+
+});
+
+if(error){
+
+showStatus(
+"videoStatus",
+error.message,
+"err"
+);
+
+return;
+
+}
+
+showStatus(
+"videoStatus",
+"Video published successfully.",
+"ok"
+);
+
+$("videoTitle").value="";
+$("videoUrl").value="";
+$("videoDescription").value="";
+
+loadVideos();
+loadAdminData();
+loadPublishedResources();
+
+}
+
+
+/* =========================================================
+   GENERATE QUIZ
+========================================================= */
+
+async function generateQuiz(){
+
+const source =
+$("quizSource").value.trim();
+
+if(!source){
+
+showStatus(
+"quizStatus",
+"Enter source notes first.",
+"err"
+);
+
+return;
+
+}
+
+if(!isCurrentUserAdmin()){
+
+showStatus(
+"quizStatus",
+"Administrator authentication required.",
+"err"
+);
+
+return;
+
+}
+
+showStatus(
+"quizStatus",
+"AI is generating the quiz..."
+);
+
+try{
+
+const result =
+await invokeFunction(
+QUIZ_FUNCTION,
+{
+
+source_text:
+source,
+
+title:
+$("quizTitle").value.trim(),
+
+course:
+$("quizCourse").value,
+
+count:
+Number(
+$("quizCount").value
+),
+
+difficulty:
+$("quizDifficulty").value
+
+}
+);
+
+const questions =
+result.questions ||
+result.quiz ||
+result.data ||
+[];
+
+$("quizJson").value =
+JSON.stringify(
+questions,
+null,
+2
+);
+
+showStatus(
+"quizStatus",
+"Quiz generated. Review the questions before publishing.",
+"ok"
+);
+
+}catch(error){
+
+showStatus(
+"quizStatus",
+error.message,
+"err"
+);
+
+}
+
+}
+
+
+/* =========================================================
+   SAVE QUIZ
+========================================================= */
+
+async function saveQuiz(status){
+
+if(!isCurrentUserAdmin()){
+
+showStatus(
+"quizStatus",
+"Administrator authentication required.",
+"err"
+);
+
+return;
+
+}
+
+let questions;
+
+try{
+
+questions =
+JSON.parse(
+$("quizJson").value
+);
+
+}catch{
+
+showStatus(
+"quizStatus",
+"Quiz JSON is invalid.",
+"err"
+);
+
+return;
+
+}
+
+if(
+!Array.isArray(questions) ||
+!questions.length
+){
+
+showStatus(
+"quizStatus",
+"Generate or enter quiz questions first.",
+"err"
+);
+
+return;
+
+}
+
+const {error} =
+await db
+.from("year_three_quizzes")
+.insert({
+
+title:
+$("quizTitle")
+.value.trim() ||
+"Year Three Quiz",
+
+course:
+$("quizCourse").value,
+
+questions,
+
+status,
+
+created_by:
+currentUser.id
+
+});
+
+if(error){
+
+showStatus(
+"quizStatus",
+error.message,
+"err"
+);
+
+return;
+
+}
+
+showStatus(
+"quizStatus",
+"Quiz saved successfully.",
+"ok"
+);
+
+$("quizJson").value="";
+
+loadQuizzes();
+loadAdminData();
+loadPublishedResources();
+
+}
+
+
+/* =========================================================
+   LOAD DOCUMENTS
+========================================================= */
+
+async function loadDocuments(){
+
+if(!isCurrentUserAdmin())
+return;
+
+const {
+data,
+error
+} =
+await db
+.from("year_three_documents")
+.select("*");
+
+if(error){
+
+$("documentList").innerHTML =
+`
+<div class="status err">
+${escapeHtml(error.message)}
+</div>
+`;
+
+return;
+
+}
+
+const documents =
+data || [];
+
+$("documentList").innerHTML =
+documents.map(item=>`
+
+<div class="list-item">
+
+<div>
+
+<b>
+${escapeHtml(item.title)}
+</b>
+
+<br>
+
+<small>
+${escapeHtml(item.course)}
+ ·
+${escapeHtml(item.status)}
+</small>
+
+</div>
+
+<div class="actions">
+
+<button
+class="btn orange"
+onclick="toggleStatus(
+'year_three_documents',
+'${escapeAttribute(item.id)}',
+'${escapeAttribute(item.status)}'
+)">
+
+${
+item.status==="published"
+? "Unpublish"
+: "Publish"
+}
+
+</button>
+
+<button
+class="btn red"
+onclick="deleteItem(
+'year_three_documents',
+'${escapeAttribute(item.id)}',
+loadDocuments
+)">
+
+Delete
+
+</button>
+
+</div>
+
+</div>
+
+`).join("")
+||
+"<div class='card'>No documents yet.</div>";
+
+}
+
+
+/* =========================================================
+   LOAD VIDEOS
+========================================================= */
+
+async function loadVideos(){
+
+if(!isCurrentUserAdmin())
+return;
+
+const {
+data,
+error
+} =
+await db
+.from("year_three_videos")
+.select("*");
+
+if(error){
+
+$("videoList").innerHTML =
+`
+<div class="status err">
+${escapeHtml(error.message)}
+</div>
+`;
+
+return;
+
+}
+
+const videos =
+data || [];
+
+$("videoList").innerHTML =
+videos.map(item=>`
+
+<div class="list-item">
+
+<div>
+
+<b>
+${escapeHtml(item.title)}
+</b>
+
+<br>
+
+<small>
+${escapeHtml(item.course)}
+ ·
+${escapeHtml(item.status)}
+</small>
+
+</div>
+
+<div class="actions">
+
+<button
+class="btn orange"
+onclick="toggleStatus(
+'year_three_videos',
+'${escapeAttribute(item.id)}',
+'${escapeAttribute(item.status)}'
+)">
+
+${
+item.status==="published"
+? "Unpublish"
+: "Publish"
+}
+
+</button>
+
+<button
+class="btn red"
+onclick="deleteItem(
+'year_three_videos',
+'${escapeAttribute(item.id)}',
+loadVideos
+)">
+
+Delete
+
+</button>
+
+</div>
+
+</div>
+
+`).join("")
+||
+"<div class='card'>No videos yet.</div>";
+
+}
+
+
+/* =========================================================
+   LOAD QUIZZES
+========================================================= */
+
+async function loadQuizzes(){
+
+if(!isCurrentUserAdmin())
+return;
+
+const {
+data,
+error
+} =
+await db
+.from("year_three_quizzes")
+.select("*");
+
+if(error){
+
+$("quizList").innerHTML =
+`
+<div class="status err">
+${escapeHtml(error.message)}
+</div>
+`;
+
+return;
+
+}
+
+const quizzes =
+data || [];
+
+$("quizList").innerHTML =
+quizzes.map(item=>`
+
+<div class="list-item">
+
+<div>
+
+<b>
+${escapeHtml(item.title)}
+</b>
+
+<br>
+
+<small>
+${escapeHtml(item.course)}
+ ·
+${escapeHtml(item.status)}
+</small>
+
+</div>
+
+<div class="actions">
+
+<button
+class="btn orange"
+onclick="toggleStatus(
+'year_three_quizzes',
+'${escapeAttribute(item.id)}',
+'${escapeAttribute(item.status)}'
+)">
+
+${
+item.status==="published"
+? "Unpublish"
+: "Publish"
+}
+
+</button>
+
+<button
+class="btn red"
+onclick="deleteItem(
+'year_three_quizzes',
+'${escapeAttribute(item.id)}',
+loadQuizzes
+)">
+
+Delete
+
+</button>
+
+</div>
+
+</div>
+
+`).join("")
+||
+"<div class='card'>No quizzes yet.</div>";
+
+}
+
+
+/* =========================================================
+   TOGGLE STATUS
+========================================================= */
+
+async function toggleStatus(
+table,
+id,
+currentStatus
+){
+
+if(!isCurrentUserAdmin()){
+
+alert(
+"Administrator authentication required."
+);
+
+return;
+
+}
+
+const newStatus =
+currentStatus==="published"
+? "draft"
+: "published";
+
+const {error} =
+await db
+.from(table)
+.update({
+status:newStatus
+})
+.eq("id",id);
+
+if(error){
+
+alert(error.message);
+
+return;
+
+}
+
+loadAdminData();
+loadPublishedResources();
+
+if(table==="year_three_documents")
+loadDocuments();
+
+if(table==="year_three_videos")
+loadVideos();
+
+if(table==="year_three_quizzes")
+loadQuizzes();
+
+}
+
+
+/* =========================================================
+   DELETE
+========================================================= */
+
+async function deleteItem(
+table,
+id,
+refresh
+){
+
+if(!isCurrentUserAdmin()){
+
+alert(
+"Administrator authentication required."
+);
+
+return;
+
+}
+
+if(
+!confirm(
+"Delete this resource permanently?"
+)
+)
+return;
+
+const {error} =
+await db
+.from(table)
+.delete()
+.eq("id",id);
+
+if(error){
+
+alert(error.message);
+
+return;
+
+}
+
+refresh();
+
+loadAdminData();
+
+loadPublishedResources();
+
+}
+
+
+/* =========================================================
+   ADMIN DASHBOARD
+========================================================= */
+
+async function loadAdminData(){
+
+if(!isCurrentUserAdmin())
+return;
+
+const tables=[
+"year_three_documents",
+"year_three_videos",
+"year_three_quizzes"
+];
+
+const counts =
+await Promise.all(
+tables.map(
+table =>
+db
+.from(table)
+.select(
+"id",
+{
+count:"exact",
+head:true
+}
+)
+)
+);
+
+const published =
+await Promise.all(
+tables.map(
+table =>
+db
+.from(table)
+.select(
+"id",
+{
+count:"exact",
+head:true
+}
+)
+.eq("status","published")
+)
+);
+
+$("documentCount").textContent =
+counts[0].count || 0;
+
+$("videoCount").textContent =
+counts[1].count || 0;
+
+$("quizCount").textContent =
+counts[2].count || 0;
+
+$("publishedCount").textContent =
+published.reduce(
+(total,result)=>
+total+(result.count || 0),
+0
+);
+
+if(
+counts.some(
+result=>result.error
+)
+){
+
+showStatus(
+"adminStatus",
+"One or more database tables could not be read. Check your Supabase tables and RLS policies.",
+"warn"
+);
+
+}else{
+
+showStatus(
+"adminStatus",
+"Administrator dashboard connected successfully.",
+"ok"
+);
+
+}
+
+loadDocuments();
+loadVideos();
+loadQuizzes();
+
+}
+
+
+/* =========================================================
+   SESSION
+========================================================= */
+
+async function restoreSession(){
+
+try{
+
+const {
+data,
+error
+} =
+await db.auth.getSession();
+
+if(error){
+
+console.error(error);
+
+currentUser=null;
+
+updateAdminUI();
+
+return;
+
+}
+
+currentUser =
+data?.session?.user ||
+null;
+
+updateAdminUI();
+
+if(isCurrentUserAdmin())
+loadAdminData();
+
+}catch(error){
+
+console.error(error);
+
+currentUser=null;
+
+updateAdminUI();
+
+}
+
+}
+
+
+/* =========================================================
+   AUTH LISTENER
+========================================================= */
+
+db.auth.onAuthStateChange(
+(event,session)=>{
+
+currentUser =
+session?.user ||
+null;
+
+updateAdminUI();
+
+if(isCurrentUserAdmin())
+loadAdminData();
+
+}
+);
+
+
+/* =========================================================
+   ADMIN LINK
+========================================================= */
+
+$("adminLink")
+.addEventListener(
+"click",
+event=>{
+
+event.preventDefault();
+
+$("admin")
+.scrollIntoView({
+behavior:"smooth"
+});
+
+}
+);
+
+
+/* =========================================================
+   CLEAN AUDIO WHEN PAGE CLOSES
+========================================================= */
+
+window.addEventListener(
+"beforeunload",
+()=>{
+
+if(ttsAudioUrl)
+URL.revokeObjectURL(
+ttsAudioUrl
+);
+
+}
+);
+
+
+/* =========================================================
+   INITIAL LOAD
+========================================================= */
+
+document.addEventListener(
+"DOMContentLoaded",
+async()=>{
+
+updateAdminUI();
+
+await restoreSession();
+
+loadPublishedResources();
+
+$("documentFile")
+?.addEventListener(
+"change",
+updateDocumentFileInfo
+);
+
+}
+);
+
+</script>
+
 </body>
 </html>
